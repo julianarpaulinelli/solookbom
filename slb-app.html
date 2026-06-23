@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLB — So Look Bom</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;color:#1a1a1a;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:#fff;border-bottom:1px solid #e8e7e3;position:sticky;top:0;z-index:10}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;background:#1a1a1a;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;letter-spacing:1px}
+.logo-name{font-size:15px;font-weight:600}
+.logo-sub{font-size:11px;color:#888;margin-top:1px}
+.user-chips{display:flex;gap:6px}
+.chip{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;cursor:pointer;border:2px solid transparent;transition:border-color 0.15s;title:attr(data-name)}
+.chip:hover{border-color:#1a1a1a}
+.chip-JU{background:#E1F5EE;color:#0F6E56}
+.chip-FE{background:#E6F1FB;color:#185FA5}
+.chip-VI{background:#FAEEDA;color:#854F0B}
+.chip-YA{background:#FBEAF0;color:#993556}
+.nav{display:flex;gap:4px;padding:10px 24px;background:#fff;border-bottom:1px solid #e8e7e3}
+.nav-btn{padding:7px 16px;border-radius:8px;font-size:13px;cursor:pointer;border:none;background:transparent;color:#666;transition:all 0.15s;display:flex;align-items:center;gap:6px;font-weight:500}
+.nav-btn.active{background:#f0efe9;color:#1a1a1a}
+.nav-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.content{padding:24px;max-width:900px;margin:0 auto}
+.section{display:none}
+.section.active{display:block}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-size:17px;font-weight:600}
+.btn-add{padding:8px 16px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;font-weight:500}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.metric{background:#fff;border:1px solid #e8e7e3;border-radius:10px;padding:14px;text-align:center}
+.metric-val{font-size:24px;font-weight:600}
+.metric-lbl{font-size:12px;color:#888;margin-top:3px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.filter-btn{padding:5px 13px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid #e0dfd9;background:transparent;color:#666;transition:all 0.15s;font-weight:500}
+.filter-btn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.card{background:#fff;border:1px solid #e8e7e3;border-radius:12px;padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:border-color 0.15s}
+.card:hover{border-color:#bbb}
+.card-left{flex:1}
+.card-title{font-size:14px;font-weight:600;margin-bottom:5px}
+.card-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:600}
+.badge-todo{background:#F1EFE8;color:#5F5E5A}
+.badge-doing{background:#FAEEDA;color:#854F0B}
+.badge-done{background:#EAF3DE;color:#3B6D11}
+.badge-blocked{background:#FCEBEB;color:#A32D2D}
+.badge-prospecto{background:#F1EFE8;color:#5F5E5A}
+.badge-negociando{background:#FAEEDA;color:#854F0B}
+.badge-ativo{background:#EAF3DE;color:#3B6D11}
+.badge-pausado{background:#FCEBEB;color:#A32D2D}
+.badge-despesa{background:#F1EFE8;color:#5F5E5A}
+.badge-investimento{background:#E6F1FB;color:#185FA5}
+.cat-tag{font-size:11px;color:#888;background:#f5f4f0;padding:2px 8px;border-radius:20px}
+.avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
+.card-right{display:flex;align-items:center;gap:8px}
+.cost-val{font-size:15px;font-weight:600;white-space:nowrap}
+.empty{text-align:center;padding:40px 0;color:#aaa;font-size:14px}
+.loading{text-align:center;padding:40px 0;color:#aaa;font-size:14px}
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:100;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:14px;padding:22px;width:100%;max-width:420px;border:1px solid #e8e7e3}
+.modal-title{font-size:15px;font-weight:600;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center}
+.modal-close{cursor:pointer;color:#aaa;font-size:20px;border:none;background:none;line-height:1}
+.form-group{margin-bottom:13px}
+.form-label{font-size:12px;color:#666;margin-bottom:5px;display:block;font-weight:500}
+.form-input,.form-select,.form-textarea{width:100%;padding:9px 11px;border:1px solid #e0dfd9;border-radius:8px;font-size:14px;background:#fff;color:#1a1a1a;outline:none;transition:border-color 0.15s;font-family:inherit}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:#1a1a1a}
+.form-textarea{resize:vertical;min-height:70px}
+.btn-save{width:100%;padding:10px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;margin-top:4px;font-weight:600}
+.btn-save:hover{background:#333}
+.toast{position:fixed;bottom:24px;right:24px;background:#1a1a1a;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.delete-btn{background:none;border:none;cursor:pointer;color:#ccc;font-size:16px;padding:4px;border-radius:6px;transition:color 0.15s;line-height:1}
+.delete-btn:hover{color:#e24b4a}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark">SLB</div>
+    <div>
+      <div class="logo-name">So Look Bom</div>
+      <div class="logo-sub">Gestão da marca</div>
+    </div>
+  </div>
+  <div class="user-chips" id="socios-chips"></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showTab('tarefas',this)">
+    <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Tarefas
+  </button>
+  <button class="nav-btn" onclick="showTab('fornecedores',this)">
+    <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    Fornecedores
+  </button>
+  <button class="nav-btn" onclick="showTab('custos',this)">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    Custos
+  </button>
+</div>
+
+<div class="content">
+
+  <!-- TAREFAS -->
+  <div class="section active" id="tab-tarefas">
+    <div class="section-header">
+      <span class="section-title">Tarefas</span>
+      <button class="btn-add" onclick="openModal('task')">+ Nova tarefa</button>
+    </div>
+    <div class="cols" id="task-metrics"></div>
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterTasks('all',this)">Todas</button>
+      <button class="filter-btn" onclick="filterTasks('todo',this)">A fazer</button>
+      <button class="filter-btn" onclick="filterTasks('doing',this)">Em andamento</button>
+      <button class="filter-btn" onclick="filterTasks('done',this)">Concluído</button>
+      <button class="filter-btn" onclick="filterTasks('blocked',this)">Bloqueado</button>
+    </div>
+    <div id="task-list"><div class="loading">Carregando tarefas...</div></div>
+  </div>
+
+  <!-- FORNECEDORES -->
+  <div class="section" id="tab-fornecedores">
+    <div class="section-header">
+      <span class="section-title">Fornecedores</span>
+      <button class="btn-add" onclick="openModal('supplier')">+ Novo fornecedor</button>
+    </div>
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterSuppliers('all',this)">Todos</button>
+      <button class="filter-btn" onclick="filterSuppliers('Confecção',this)">Confecção</button>
+      <button class="filter-btn" onclick="filterSuppliers('Arte',this)">Arte</button>
+      <button class="filter-btn" onclick="filterSuppliers('Tecnologia',this)">Tecnologia</button>
+      <button class="filter-btn" onclick="filterSuppliers('Marketing',this)">Marketing</button>
+    </div>
+    <div id="supplier-list"><div class="loading">Carregando fornecedores...</div></div>
+  </div>
+
+  <!-- CUSTOS -->
+  <div class="section" id="tab-custos">
+    <div class="section-header">
+      <span class="section-title">Custos & Despesas</span>
+      <button class="btn-add" onclick="openModal('cost')">+ Novo custo</button>
+    </div>
+    <div class="cols" id="cost-metrics"></div>
+    <div id="cost-list"><div class="loading">Carregando custos...</div></div>
+  </div>
+
+</div>
+
+<!-- MODAL TAREFA -->
+<div class="modal-bg" id="modal-task">
+  <div class="modal">
+    <div class="modal-title">Nova tarefa <button class="modal-close" onclick="closeModal('task')">×</button></div>
+    <div class="form-group"><label class="form-label">Título *</label><input class="form-input" id="t-title" placeholder="Ex: Criar logo da marca"></div>
+    <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="t-cat" placeholder="Ex: Marca, Site, Artes..."></div>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="t-status">
+        <option value="todo">A fazer</option>
+        <option value="doing">Em andamento</option>
+        <option value="done">Concluído</option>
+        <option value="blocked">Bloqueado</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Responsável</label>
+      <select class="form-select" id="t-owner"></select>
+    </div>
+    <div class="form-group"><label class="form-label">Prazo</label><input class="form-input" id="t-prazo" type="date"></div>
+    <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="t-desc" placeholder="Detalhes da tarefa..."></textarea></div>
+    <button class="btn-save" onclick="saveTask()">Salvar tarefa</button>
+  </div>
+</div>
+
+<!-- MODAL FORNECEDOR -->
+<div class="modal-bg" id="modal-supplier">
+  <div class="modal">
+    <div class="modal-title">Novo fornecedor <button class="modal-close" onclick="closeModal('supplier')">×</button></div>
+    <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="s-name" placeholder="Nome do fornecedor"></div>
+    <div class="form-group"><label class="form-label">Categoria</label>
+      <select class="form-select" id="s-cat">
+        <option>Confecção</option><option>Arte</option><option>Tecnologia</option><option>Marketing</option><option>Jurídico</option><option>Outro</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Contato</label><input class="form-input" id="s-contact" placeholder="WhatsApp ou e-mail"></div>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="s-status">
+        <option value="prospecto">Prospecto</option>
+        <option value="negociando">Negociando</option>
+        <option value="ativo">Ativo</option>
+        <option value="pausado">Pausado</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="s-obs" placeholder="Notas sobre o fornecedor..."></textarea></div>
+    <button class="btn-save" onclick="saveSupplier()">Salvar fornecedor</button>
+  </div>
+</div>
+
+<!-- MODAL CUSTO -->
+<div class="modal-bg" id="modal-cost">
+  <div class="modal">
+    <div class="modal-title">Novo custo <button class="modal-close" onclick="closeModal('cost')">×</button></div>
+    <div class="form-group"><label class="form-label">Descrição *</label><input class="form-input" id="c-name" placeholder="Ex: Domínio solookbom.com.br"></div>
+    <div class="form-group"><label class="form-label">Categoria</label>
+      <select class="form-select" id="c-cat">
+        <option>Tecnologia</option><option>Confecção</option><option>Arte & Design</option><option>Marketing</option><option>Jurídico</option><option>Outro</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Valor (R$) *</label><input class="form-input" id="c-val" type="number" step="0.01" placeholder="0,00"></div>
+    <div class="form-group"><label class="form-label">Tipo</label>
+      <select class="form-select" id="c-type">
+        <option value="despesa">Despesa</option>
+        <option value="investimento">Investimento</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Data</label><input class="form-input" id="c-date" type="date"></div>
+    <button class="btn-save" onclick="saveCost()">Salvar custo</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://urajtknwzqbwihrvgjel.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyYWp0a253enFid2locnZnamVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjg0OTQsImV4cCI6MjA5NzgwNDQ5NH0.GPCqGjkceSd7hoSO4J0neD7asLwCWh1BaMD-ZYbxpZw';
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const statusLabel = {todo:'A fazer',doing:'Em andamento',done:'Concluído',blocked:'Bloqueado'};
+const supStatusLabel = {prospecto:'Prospecto',negociando:'Negociando',ativo:'Ativo',pausado:'Pausado'};
+
+let allTasks = [], allSuppliers = [], allCosts = [], socios = [];
+let taskFilter = 'all', supFilter = 'all';
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+function showTab(tab, btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function openModal(type) { document.getElementById('modal-'+type).classList.add('open'); }
+function closeModal(type) { document.getElementById('modal-'+type).classList.remove('open'); }
+
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+
+// SOCIOS
+async function loadSocios() {
+  const { data } = await db.from('socios').select('*').order('nome');
+  socios = data || [];
+  const chips = document.getElementById('socios-chips');
+  chips.innerHTML = socios.map(s=>`<div class="chip chip-${s.iniciais}" title="${s.nome}">${s.iniciais}</div>`).join('');
+  const ownerSelect = document.getElementById('t-owner');
+  ownerSelect.innerHTML = '<option value="">— Sem responsável —</option>' + socios.map(s=>`<option value="${s.id}">${s.nome}</option>`).join('');
+}
+
+// TAREFAS
+async function loadTasks() {
+  const { data } = await db.from('tarefas').select('*, socios(nome,iniciais)').order('created_at',{ascending:false});
+  allTasks = data || [];
+  renderTasks();
+}
+
+function renderTasks() {
+  const filtered = taskFilter==='all' ? allTasks : allTasks.filter(t=>t.status===taskFilter);
+  const list = document.getElementById('task-list');
+  const m = document.getElementById('task-metrics');
+  m.innerHTML = `
+    <div class="metric"><div class="metric-val">${allTasks.length}</div><div class="metric-lbl">Total</div></div>
+    <div class="metric"><div class="metric-val">${allTasks.filter(t=>t.status==='doing').length}</div><div class="metric-lbl">Em andamento</div></div>
+    <div class="metric"><div class="metric-val">${allTasks.filter(t=>t.status==='done').length}</div><div class="metric-lbl">Concluídas</div></div>
+    <div class="metric"><div class="metric-val">${allTasks.filter(t=>t.status==='blocked').length}</div><div class="metric-lbl">Bloqueadas</div></div>
+  `;
+  if(!filtered.length){list.innerHTML='<div class="empty">Nenhuma tarefa encontrada</div>';return;}
+  list.innerHTML = filtered.map(t=>`
+    <div class="card">
+      <div class="card-left">
+        <div class="card-title">${t.titulo}</div>
+        <div class="card-meta">
+          <span class="badge badge-${t.status}">${statusLabel[t.status]}</span>
+          ${t.categoria?`<span class="cat-tag">${t.categoria}</span>`:''}
+          ${t.prazo?`<span style="font-size:11px;color:#aaa">📅 ${new Date(t.prazo).toLocaleDateString('pt-BR')}</span>`:''}
+        </div>
+      </div>
+      <div class="card-right">
+        ${t.socios?`<div class="avatar chip-${t.socios.iniciais}" title="${t.socios.nome}">${t.socios.iniciais}</div>`:''}
+        <button class="delete-btn" onclick="deleteTask('${t.id}')" title="Excluir">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterTasks(f, btn) {
+  taskFilter = f;
+  document.querySelectorAll('#tab-tarefas .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTasks();
+}
+
+async function saveTask() {
+  const titulo = document.getElementById('t-title').value.trim();
+  if(!titulo){showToast('Informe o título da tarefa');return;}
+  const payload = {
+    titulo,
+    categoria: document.getElementById('t-cat').value||null,
+    status: document.getElementById('t-status').value,
+    responsavel_id: document.getElementById('t-owner').value||null,
+    prazo: document.getElementById('t-prazo').value||null,
+    descricao: document.getElementById('t-desc').value||null,
+  };
+  const { error } = await db.from('tarefas').insert(payload);
+  if(error){showToast('Erro ao salvar');return;}
+  closeModal('task');
+  ['t-title','t-cat','t-prazo','t-desc'].forEach(id=>document.getElementById(id).value='');
+  showToast('Tarefa criada!');
+  loadTasks();
+}
+
+async function deleteTask(id) {
+  if(!confirm('Excluir esta tarefa?'))return;
+  await db.from('tarefas').delete().eq('id',id);
+  showToast('Tarefa excluída');
+  loadTasks();
+}
+
+// FORNECEDORES
+async function loadSuppliers() {
+  const { data } = await db.from('fornecedores').select('*').order('nome');
+  allSuppliers = data || [];
+  renderSuppliers();
+}
+
+function renderSuppliers() {
+  const filtered = supFilter==='all' ? allSuppliers : allSuppliers.filter(s=>s.categoria===supFilter);
+  const list = document.getElementById('supplier-list');
+  if(!filtered.length){list.innerHTML='<div class="empty">Nenhum fornecedor encontrado</div>';return;}
+  list.innerHTML = filtered.map(s=>`
+    <div class="card">
+      <div class="card-left">
+        <div class="card-title">${s.nome}</div>
+        <div class="card-meta">
+          <span class="badge badge-${s.status}">${supStatusLabel[s.status]}</span>
+          <span class="cat-tag">${s.categoria}</span>
+          ${s.contato?`<span style="font-size:11px;color:#aaa">${s.contato}</span>`:''}
+        </div>
+        ${s.observacoes?`<div style="font-size:12px;color:#999;margin-top:5px">${s.observacoes}</div>`:''}
+      </div>
+      <div class="card-right">
+        <button class="delete-btn" onclick="deleteSupplier('${s.id}')" title="Excluir">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterSuppliers(f, btn) {
+  supFilter = f;
+  document.querySelectorAll('#tab-fornecedores .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSuppliers();
+}
+
+async function saveSupplier() {
+  const nome = document.getElementById('s-name').value.trim();
+  if(!nome){showToast('Informe o nome do fornecedor');return;}
+  const payload = {
+    nome,
+    categoria: document.getElementById('s-cat').value,
+    contato: document.getElementById('s-contact').value||null,
+    status: document.getElementById('s-status').value,
+    observacoes: document.getElementById('s-obs').value||null,
+  };
+  const { error } = await db.from('fornecedores').insert(payload);
+  if(error){showToast('Erro ao salvar');return;}
+  closeModal('supplier');
+  ['s-name','s-contact','s-obs'].forEach(id=>document.getElementById(id).value='');
+  showToast('Fornecedor adicionado!');
+  loadSuppliers();
+}
+
+async function deleteSupplier(id) {
+  if(!confirm('Excluir este fornecedor?'))return;
+  await db.from('fornecedores').delete().eq('id',id);
+  showToast('Fornecedor excluído');
+  loadSuppliers();
+}
+
+// CUSTOS
+async function loadCosts() {
+  const { data } = await db.from('custos').select('*').order('created_at',{ascending:false});
+  allCosts = data || [];
+  renderCosts();
+}
+
+function renderCosts() {
+  const list = document.getElementById('cost-list');
+  const total = allCosts.reduce((a,c)=>a+parseFloat(c.valor),0);
+  const inv = allCosts.filter(c=>c.tipo==='investimento').reduce((a,c)=>a+parseFloat(c.valor),0);
+  const desp = allCosts.filter(c=>c.tipo==='despesa').reduce((a,c)=>a+parseFloat(c.valor),0);
+  document.getElementById('cost-metrics').innerHTML = `
+    <div class="metric"><div class="metric-val">R$ ${total.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div><div class="metric-lbl">Total</div></div>
+    <div class="metric"><div class="metric-val">R$ ${inv.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div><div class="metric-lbl">Investimentos</div></div>
+    <div class="metric"><div class="metric-val">R$ ${desp.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div><div class="metric-lbl">Despesas</div></div>
+    <div class="metric"><div class="metric-val">${allCosts.length}</div><div class="metric-lbl">Lançamentos</div></div>
+  `;
+  if(!allCosts.length){list.innerHTML='<div class="empty">Nenhum custo registrado</div>';return;}
+  list.innerHTML = allCosts.map(c=>`
+    <div class="card">
+      <div class="card-left">
+        <div class="card-title">${c.descricao}</div>
+        <div class="card-meta">
+          <span class="badge badge-${c.tipo}">${c.tipo}</span>
+          <span class="cat-tag">${c.categoria}</span>
+          ${c.data?`<span style="font-size:11px;color:#aaa">${new Date(c.data+'T12:00:00').toLocaleDateString('pt-BR')}</span>`:''}
+        </div>
+      </div>
+      <div class="card-right">
+        <span class="cost-val">R$ ${parseFloat(c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2})}</span>
+        <button class="delete-btn" onclick="deleteCost('${c.id}')" title="Excluir">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function saveCost() {
+  const descricao = document.getElementById('c-name').value.trim();
+  const valor = parseFloat(document.getElementById('c-val').value);
+  if(!descricao||!valor){showToast('Preencha descrição e valor');return;}
+  const payload = {
+    descricao,
+    categoria: document.getElementById('c-cat').value,
+    valor,
+    tipo: document.getElementById('c-type').value,
+    data: document.getElementById('c-date').value||null,
+  };
+  const { error } = await db.from('custos').insert(payload);
+  if(error){showToast('Erro ao salvar');return;}
+  closeModal('cost');
+  ['c-name','c-val','c-date'].forEach(id=>document.getElementById(id).value='');
+  showToast('Custo registrado!');
+  loadCosts();
+}
+
+async function deleteCost(id) {
+  if(!confirm('Excluir este lançamento?'))return;
+  await db.from('custos').delete().eq('id',id);
+  showToast('Custo excluído');
+  loadCosts();
+}
+
+// Init
+async function init() {
+  await loadSocios();
+  await Promise.all([loadTasks(), loadSuppliers(), loadCosts()]);
+}
+init();
+</script>
+</body>
+</html>
