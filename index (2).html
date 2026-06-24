@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLB — Só Look Bom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Montserrat+Alternates:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0A0A0A;
+  --dark:  #141414;
+  --mid:   #1E1E1E;
+  --border:#2A2A2A;
+  --white: #F2F2F0;
+  --muted: #666;
+  --neon:  #D4FF00;
+  --neon-bg:     rgba(212,255,0,.08);
+  --neon-border: rgba(212,255,0,.25);
+  --red:   #FF4444;
+  --amber: #F5A623;
+  --green: #44FF88;
+  --blue:  #44AAFF;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  min-height: 100vh;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── TYPOGRAPHY HELPERS ── */
+.font-alt { font-family: 'Montserrat Alternates', sans-serif; }
+.upper     { text-transform: uppercase; letter-spacing: 2px; }
+
+/* ── LOGIN ── */
+#login-screen {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.login-box { width: 100%; max-width: 360px; text-align: center; }
+.login-logo { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 32px; }
+.login-brand { font-family: 'Montserrat Alternates', sans-serif; font-size: 26px; font-weight: 800; letter-spacing: 8px; }
+.login-tagline { font-size: 9px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; }
+.login-divider { height: 1px; background: var(--border); margin: 24px 0; }
+.login-group { margin-bottom: 14px; text-align: left; }
+.login-label { display: block; margin-bottom: 7px; font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+.login-input {
+  width: 100%; padding: 11px 13px;
+  background: var(--mid); border: 1px solid var(--border); border-radius: 6px;
+  font: 13px 'Montserrat', sans-serif; color: var(--white); outline: none;
+  transition: border-color .2s; cursor: pointer;
+}
+.login-input:focus { border-color: var(--neon); }
+.login-btn {
+  width: 100%; margin-top: 4px; padding: 12px;
+  background: var(--neon); color: var(--black); border: none; border-radius: 6px;
+  font: 800 11px 'Montserrat', sans-serif; letter-spacing: 3px; text-transform: uppercase;
+  cursor: pointer; transition: opacity .2s;
+}
+.login-btn:hover { opacity: .85; }
+.login-error { display: none; margin-top: 10px; font-size: 10px; letter-spacing: 1px; color: var(--red); text-transform: uppercase; }
+
+/* ── APP SHELL ── */
+#app-screen { display: none; flex-direction: column; min-height: 100vh; }
+
+/* ── TOPBAR ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 54px; padding: 0 24px;
+  background: var(--black); border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 20;
+}
+.logo { display: flex; align-items: center; gap: 11px; cursor: pointer; }
+.logo-name { font-family: 'Montserrat Alternates', sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 5px; }
+.logo-sub  { font-size: 8px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-top: 1px; }
+.topbar-right { display: flex; align-items: center; gap: 14px; }
+.logged-as { font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+.logout-btn {
+  padding: 5px 10px;
+  font: 700 9px 'Montserrat', sans-serif; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); background: none; border: 1px solid var(--border); border-radius: 4px;
+  cursor: pointer; transition: all .2s;
+}
+.logout-btn:hover { border-color: var(--neon); color: var(--neon); }
+
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  display: none; align-items: center; gap: 8px;
+  padding: 9px 24px; border-bottom: 1px solid var(--border);
+  font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+}
+.breadcrumb.visible { display: flex; }
+.bc-home { cursor: pointer; color: var(--muted); }
+.bc-home:hover { color: var(--neon); }
+.bc-sep { color: var(--border); }
+.bc-cur { color: var(--neon); font-weight: 700; }
+
+/* ── HOME ── */
+.home-wrap { padding: 36px 24px 32px; max-width: 960px; margin: 0 auto; width: 100%; }
+.home-greeting { margin-bottom: 28px; }
+.home-greeting h1 { font-family: 'Montserrat Alternates', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; }
+.home-greeting h1 span { color: var(--neon); }
+.home-greeting p { font-size: 9px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
+.home-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.stat-pill {
+  background: var(--mid); border: 1px solid var(--border); border-radius: 7px;
+  padding: 10px 16px; cursor: pointer; transition: border-color .2s;
+}
+.stat-pill:hover { border-color: var(--neon-border); }
+.stat-pill .val { font-family: 'Montserrat Alternates', sans-serif; font-size: 17px; font-weight: 800; line-height: 1; }
+.stat-pill .lbl { font-size: 9px; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; margin-top: 3px; }
+.stat-pill.neon  .val { color: var(--neon); }
+.stat-pill.alert .val { color: var(--red); }
+.home-mod-label { font-size: 9px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.home-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.home-card {
+  display: flex; align-items: center; gap: 12px;
+  flex: 1 1 130px; max-width: 200px; padding: 16px 14px;
+  background: var(--mid); border: 1px solid var(--border); border-radius: 10px;
+  cursor: pointer; transition: all .2s;
+}
+.home-card:hover { border-color: var(--neon-border); background: #1a1a1a; }
+.home-card:hover .hc-icon { border-color: var(--neon-border); background: var(--neon-bg); }
+.home-card:hover .hc-icon svg { stroke: var(--neon); }
+.home-card:hover .hc-label { color: var(--neon); }
+.hc-icon {
+  width: 36px; height: 36px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--black); border: 1px solid var(--border); border-radius: 7px;
+  transition: all .2s;
+}
+.hc-icon svg { width: 18px; height: 18px; stroke: var(--white); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s; }
+.hc-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; transition: color .2s; }
+.hc-count { font-size: 10px; color: var(--muted); }
+
+/* ── CONTENT SECTIONS ── */
+.cw { display: none; padding: 24px; max-width: 960px; margin: 0 auto; width: 100%; }
+.cw.visible { display: block; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.section-title { font-family: 'Montserrat Alternates', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; }
+.btn-add {
+  padding: 8px 16px;
+  background: var(--neon); color: var(--black); border: none; border-radius: 5px;
+  font: 800 10px 'Montserrat', sans-serif; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: opacity .2s;
+}
+.btn-add:hover { opacity: .85; }
+
+/* ── METRICS ROW ── */
+.metrics { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.metric { background: var(--mid); border: 1px solid var(--border); border-radius: 8px; padding: 11px 14px; min-width: 100px; }
+.metric-val { font-family: 'Montserrat Alternates', sans-serif; font-size: 19px; font-weight: 800; }
+.metric-lbl { font-size: 9px; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+
+/* ── FILTERS ── */
+.filters { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 9px; align-items: center; }
+.fl { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.fb {
+  padding: 3px 11px;
+  background: transparent; border: 1px solid var(--border); border-radius: 20px;
+  font: 700 9px 'Montserrat', sans-serif; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--muted); cursor: pointer; transition: all .15s;
+}
+.fb.active { background: var(--neon); border-color: var(--neon); color: var(--black); }
+
+/* ── CARDS ── */
+.card { background: var(--mid); border: 1px solid var(--border); border-radius: 10px; padding: 13px 15px; margin-bottom: 7px; transition: border-color .2s; }
+.card.cl { cursor: pointer; }
+.card.cl:hover { border-color: var(--neon-border); }
+.card-row  { display: flex; align-items: flex-start; gap: 11px; }
+.card-body { flex: 1; min-width: 0; }
+.card-title{ font-size: 13px; font-weight: 700; letter-spacing: .3px; margin-bottom: 5px; }
+.card-meta { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-bottom: 3px; }
+.card-desc { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.6; }
+.card-actions { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+.stock-low { border-color: rgba(255,68,68,.35) !important; }
+
+/* ── BADGES ── */
+.badge {
+  font-size: 9px; padding: 2px 7px; border-radius: 20px;
+  font-weight: 700; white-space: nowrap; letter-spacing: .5px;
+  text-transform: uppercase; border: 1px solid transparent;
+}
+.b-todo       { background: rgba(102,102,102,.15); color: var(--muted);  border-color: var(--border); }
+.b-doing      { background: rgba(245,166,35,.12);  color: var(--amber);  border-color: rgba(245,166,35,.3); }
+.b-done       { background: rgba(68,255,136,.1);   color: var(--green);  border-color: rgba(68,255,136,.25); }
+.b-blocked    { background: rgba(255,68,68,.1);    color: var(--red);    border-color: rgba(255,68,68,.25); }
+.b-prospecto  { background: rgba(102,102,102,.15); color: var(--muted);  border-color: var(--border); }
+.b-negociando { background: rgba(245,166,35,.12);  color: var(--amber);  border-color: rgba(245,166,35,.3); }
+.b-ativo      { background: rgba(68,255,136,.1);   color: var(--green);  border-color: rgba(68,255,136,.25); }
+.b-inativo    { background: rgba(102,102,102,.15); color: var(--muted);  border-color: var(--border); }
+.b-pausado    { background: rgba(255,68,68,.1);    color: var(--red);    border-color: rgba(255,68,68,.25); }
+.b-despesa    { background: rgba(102,102,102,.15); color: var(--muted);  border-color: var(--border); }
+.b-investimento { background: rgba(68,170,255,.1); color: var(--blue);   border-color: rgba(68,170,255,.25); }
+.b-alta       { background: rgba(255,68,68,.1);    color: var(--red);    border-color: rgba(255,68,68,.25); }
+.b-media      { background: rgba(245,166,35,.12);  color: var(--amber);  border-color: rgba(245,166,35,.3); }
+.b-baixa      { background: rgba(68,255,136,.1);   color: var(--green);  border-color: rgba(68,255,136,.25); }
+.b-gold       { background: rgba(212,255,0,.1);    color: var(--neon);   border-color: var(--neon-border); }
+.b-silver     { background: rgba(180,180,180,.1);  color: #aaa;          border-color: #333; }
+.b-bronze     { background: rgba(245,166,35,.12);  color: var(--amber);  border-color: rgba(245,166,35,.3); }
+.b-fixo       { background: rgba(68,170,255,.1);   color: var(--blue);   border-color: rgba(68,170,255,.25); }
+.b-variavel   { background: rgba(245,166,35,.12);  color: var(--amber);  border-color: rgba(245,166,35,.3); }
+.b-gratis     { background: rgba(68,255,136,.1);   color: var(--green);  border-color: rgba(68,255,136,.25); }
+.b-socio      { background: rgba(212,255,0,.1);    color: var(--neon);   border-color: var(--neon-border); }
+.b-equipe     { background: rgba(68,170,255,.1);   color: var(--blue);   border-color: rgba(68,170,255,.25); }
+.b-externo    { background: rgba(102,102,102,.15); color: var(--muted);  border-color: var(--border); }
+.cat-tag  { font-size: 9px; color: var(--muted); background: var(--black); padding: 2px 7px; border-radius: 20px; border: 1px solid var(--border); }
+.tag-pill { font-size: 9px; color: var(--muted); background: var(--black); padding: 2px 7px; border-radius: 20px; border: 1px solid var(--border); white-space: nowrap; }
+.tag-pill.yes { border-color: var(--neon-border); color: var(--neon); background: var(--neon-bg); }
+
+/* ── AVATARS ── */
+.av  { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; flex-shrink: 0; background: var(--black); color: var(--muted); border: 1px solid var(--border); }
+.avg { display: flex; gap: 3px; }
+
+/* ── PEOPLE CARD ── */
+.person-card { background: var(--mid); border: 1px solid var(--border); border-radius: 10px; padding: 12px 15px; margin-bottom: 7px; display: flex; align-items: center; gap: 11px; }
+.person-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; background: var(--black); border: 1px solid var(--border); }
+
+/* ── DELETE BUTTON ── */
+.del { background: none; border: none; cursor: pointer; color: var(--border); font-size: 17px; padding: 2px 4px; line-height: 1; transition: color .15s; }
+.del:hover { color: var(--red); }
+
+/* ── MODAL ── */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.8); z-index: 100; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; backdrop-filter: blur(3px); }
+.modal-bg.open { display: flex; }
+.modal { background: var(--dark); border: 1px solid var(--border); border-radius: 12px; padding: 22px; width: 100%; max-width: 500px; margin: auto; }
+.modal-title { font-family: 'Montserrat Alternates', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--neon); margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }
+.modal-close { font-size: 20px; color: var(--muted); background: none; border: none; cursor: pointer; line-height: 1; transition: color .15s; }
+.modal-close:hover { color: var(--white); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-group { margin-bottom: 11px; }
+.form-label { display: block; margin-bottom: 5px; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%; padding: 8px 10px;
+  background: var(--black); border: 1px solid var(--border); border-radius: 6px;
+  font: 12px 'Montserrat', sans-serif; color: var(--white);
+  outline: none; transition: border-color .15s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--neon); }
+.form-textarea { resize: vertical; min-height: 58px; }
+.form-section { font-size: 9px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--neon); margin: 15px 0 10px; padding-top: 13px; border-top: 1px solid var(--border); }
+.form-check { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--muted); cursor: pointer; }
+.form-check input { width: 14px; height: 14px; cursor: pointer; accent-color: var(--neon); }
+.btn-save {
+  width: 100%; margin-top: 8px; padding: 11px;
+  background: var(--neon); color: var(--black); border: none; border-radius: 6px;
+  font: 800 10px 'Montserrat', sans-serif; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: opacity .2s;
+}
+.btn-save:hover { opacity: .85; }
+
+/* ── SIDE PANEL ── */
+.panel { position: fixed; right: 0; top: 0; bottom: 0; width: 360px; background: var(--dark); border-left: 1px solid var(--border); z-index: 50; transform: translateX(100%); transition: transform .25s; overflow-y: auto; padding: 22px; }
+.panel.open { transform: translateX(0); }
+.panel-close { background: none; border: none; cursor: pointer; font-size: 19px; color: var(--muted); float: right; transition: color .15s; }
+.panel-close:hover { color: var(--white); }
+.panel-title { font-family: 'Montserrat Alternates', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 1px; margin-bottom: 3px; }
+.panel-section { font-size: 9px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--neon); margin: 14px 0 7px; padding-top: 12px; border-top: 1px solid var(--border); }
+.panel-row { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.panel-row span:first-child { color: var(--muted); white-space: nowrap; }
+.panel-row span:last-child  { color: var(--white); font-weight: 600; text-align: right; }
+.overlay { display: none; position: fixed; inset: 0; z-index: 40; }
+.overlay.open { display: block; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 22px; right: 22px; background: var(--neon); color: var(--black); padding: 9px 16px; border-radius: 5px; font: 800 10px 'Montserrat', sans-serif; letter-spacing: 2px; text-transform: uppercase; z-index: 999; opacity: 0; transform: translateY(6px); transition: all .2s; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateY(0); }
+.empty, .loading { text-align: center; padding: 44px 0; color: var(--muted); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ LOGIN ═══════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <polygon points="28,3 53,48 3,48" stroke="#F2F2F0" stroke-width="2.5" fill="none"/>
+        <polygon points="28,13 45,43 11,43" stroke="#F2F2F0" stroke-width="1.8" fill="none"/>
+        <polygon points="28,22 38,40 18,40" stroke="#D4FF00" stroke-width="1.8" fill="none"/>
+      </svg>
+      <div>
+        <div class="login-brand">S L B</div>
+        <div class="login-tagline">Vista a Experiência</div>
+      </div>
+    </div>
+    <div class="login-divider"></div>
+    <div class="login-group">
+      <label class="login-label" for="login-user">Identificação</label>
+      <select class="login-input" id="login-user">
+        <option value="">Selecione seu nome</option>
+        <option value="JU">Juliana Paulinelli</option>
+        <option value="FE">Fernando Araújo</option>
+        <option value="VI">Victor Paulinelli</option>
+        <option value="YA">Yasmin Zurdo</option>
+      </select>
+    </div>
+    <div class="login-group">
+      <label class="login-label" for="login-pass">Senha</label>
+      <input class="login-input" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" id="login-btn">Entrar</button>
+    <p class="login-error" id="login-error">Credenciais incorretas</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════ APP ═══════════════════════ -->
+<div id="app-screen">
+
+  <header class="topbar">
+    <div class="logo" id="logo-home">
+      <svg width="26" height="26" viewBox="0 0 40 40" fill="none">
+        <polygon points="20,2 38,35 2,35" stroke="#F2F2F0" stroke-width="2.2" fill="none"/>
+        <polygon points="20,10 31,32 9,32" stroke="#F2F2F0" stroke-width="1.6" fill="none"/>
+        <polygon points="20,18 27,30 13,30" stroke="#D4FF00" stroke-width="1.6" fill="none"/>
+      </svg>
+      <div>
+        <div class="logo-name">S L B</div>
+        <div class="logo-sub">Só Look Bom</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="logged-as" id="logged-label"></span>
+      <button class="logout-btn" id="logout-btn">Sair</button>
+    </div>
+  </header>
+
+  <nav class="breadcrumb" id="breadcrumb">
+    <span class="bc-home" id="bc-home">Início</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-cur" id="bc-cur"></span>
+  </nav>
+
+  <!-- HOME -->
+  <main class="home-wrap" id="home-screen">
+    <div class="home-greeting">
+      <h1 id="home-title">Olá, <span>SLB</span> 👋</h1>
+      <p>Painel de gestão · Só Look Bom</p>
+    </div>
+    <div class="home-stats" id="home-stats"></div>
+    <p class="home-mod-label">Módulos</p>
+    <div class="home-grid">
+      <div class="home-card" data-sec="tarefas">
+        <div class="hc-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div><p class="hc-label">Tarefas</p><p class="hc-count" id="cnt-tarefas">—</p></div>
+      </div>
+      <div class="home-card" data-sec="fornecedores">
+        <div class="hc-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <div><p class="hc-label">Fornecedores</p><p class="hc-count" id="cnt-fornecedores">—</p></div>
+      </div>
+      <div class="home-card" data-sec="financas">
+        <div class="hc-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div><p class="hc-label">Finanças</p><p class="hc-count" id="cnt-financas">—</p></div>
+      </div>
+      <div class="home-card" data-sec="estoque">
+        <div class="hc-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+        <div><p class="hc-label">Estoque</p><p class="hc-count" id="cnt-estoque">—</p></div>
+      </div>
+      <div class="home-card" data-sec="fretes">
+        <div class="hc-icon"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg></div>
+        <div><p class="hc-label">Fretes</p><p class="hc-count" id="cnt-fretes">—</p></div>
+      </div>
+      <div class="home-card" data-sec="parceiros">
+        <div class="hc-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div><p class="hc-label">Parceiros</p><p class="hc-count" id="cnt-parceiros">—</p></div>
+      </div>
+      <div class="home-card" data-sec="pessoas">
+        <div class="hc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+        <div><p class="hc-label">Pessoas</p><p class="hc-count" id="cnt-pessoas">—</p></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- SECTIONS -->
+  <section class="cw" id="section-tarefas">
+    <div class="section-header"><h2 class="section-title">Tarefas</h2><button class="btn-add" data-modal="task">+ Nova tarefa</button></div>
+    <div class="metrics" id="task-metrics"></div>
+    <div class="filters"><span class="fl">Status:</span>
+      <button class="fb active" data-f="task" data-k="status" data-v="all">Todas</button>
+      <button class="fb" data-f="task" data-k="status" data-v="todo">A fazer</button>
+      <button class="fb" data-f="task" data-k="status" data-v="doing">Em andamento</button>
+      <button class="fb" data-f="task" data-k="status" data-v="done">Concluído</button>
+      <button class="fb" data-f="task" data-k="status" data-v="blocked">Bloqueado</button>
+    </div>
+    <div class="filters"><span class="fl">Prioridade:</span>
+      <button class="fb active" data-f="task" data-k="prio" data-v="all">Todas</button>
+      <button class="fb" data-f="task" data-k="prio" data-v="alta">Alta</button>
+      <button class="fb" data-f="task" data-k="prio" data-v="media">Média</button>
+      <button class="fb" data-f="task" data-k="prio" data-v="baixa">Baixa</button>
+    </div>
+    <div id="task-list"><p class="loading">Carregando...</p></div>
+  </section>
+
+  <section class="cw" id="section-fornecedores">
+    <div class="section-header"><h2 class="section-title">Fornecedores</h2><button class="btn-add" data-modal="supplier">+ Novo fornecedor</button></div>
+    <div class="metrics" id="sup-metrics"></div>
+    <div class="filters"><span class="fl">Status:</span>
+      <button class="fb active" data-f="sup" data-k="status" data-v="all">Todos</button>
+      <button class="fb" data-f="sup" data-k="status" data-v="ativo">Ativos</button>
+      <button class="fb" data-f="sup" data-k="status" data-v="negociando">Negociando</button>
+      <button class="fb" data-f="sup" data-k="status" data-v="prospecto">Prospectos</button>
+    </div>
+    <div class="filters"><span class="fl">Classe:</span>
+      <button class="fb active" data-f="sup" data-k="cls" data-v="all">Todas</button>
+      <button class="fb" data-f="sup" data-k="cls" data-v="gold">🥇 Gold</button>
+      <button class="fb" data-f="sup" data-k="cls" data-v="silver">🥈 Silver</button>
+      <button class="fb" data-f="sup" data-k="cls" data-v="bronze">🥉 Bronze</button>
+    </div>
+    <div class="filters"><span class="fl">Aprovação:</span>
+      <button class="fb active" data-f="sup" data-k="aprov" data-v="all">Todos</button>
+      <button class="fb" data-f="sup" data-k="aprov" data-v="sim">Aprovados</button>
+      <button class="fb" data-f="sup" data-k="aprov" data-v="nao">Pendentes</button>
+    </div>
+    <div id="supplier-list"><p class="loading">Carregando...</p></div>
+  </section>
+
+  <section class="cw" id="section-financas">
+    <div class="section-header"><h2 class="section-title">Finanças</h2><button class="btn-add" data-modal="cost">+ Novo lançamento</button></div>
+    <div class="metrics" id="cost-metrics"></div>
+    <div class="filters"><span class="fl">Tipo:</span>
+      <button class="fb active" data-f="fin" data-k="tipo" data-v="all">Todos</button>
+      <button class="fb" data-f="fin" data-k="tipo" data-v="investimento">Investimentos</button>
+      <button class="fb" data-f="fin" data-k="tipo" data-v="despesa">Despesas</button>
+    </div>
+    <div id="cost-list"><p class="loading">Carregando...</p></div>
+  </section>
+
+  <section class="cw" id="section-estoque">
+    <div class="section-header"><h2 class="section-title">Estoque</h2><button class="btn-add" data-modal="estoque">+ Novo item</button></div>
+    <div class="metrics" id="estoque-metrics"></div>
+    <div class="filters"><span class="fl">Categoria:</span>
+      <button class="fb active" data-f="est" data-k="cat" data-v="all">Todos</button>
+      <button class="fb" data-f="est" data-k="cat" data-v="Tecido">Tecidos</button>
+      <button class="fb" data-f="est" data-k="cat" data-v="Aviamento">Aviamentos</button>
+      <button class="fb" data-f="est" data-k="cat" data-v="Produto acabado">Acabados</button>
+      <button class="fb" data-f="est" data-k="cat" data-v="Embalagem">Embalagem</button>
+    </div>
+    <div id="estoque-list"><p class="loading">Carregando...</p></div>
+  </section>
+
+  <section class="cw" id="section-fretes">
+    <div class="section-header"><h2 class="section-title">Fretes</h2><button class="btn-add" data-modal="frete">+ Nova tabela</button></div>
+    <div class="metrics" id="frete-metrics"></div>
+    <div class="filters"><span class="fl">Tipo:</span>
+      <button class="fb active" data-f="fre" data-k="tipo" data-v="all">Todos</button>
+      <button class="fb" data-f="fre" data-k="tipo" data-v="fixo">Fixo</button>
+      <button class="fb" data-f="fre" data-k="tipo" data-v="variavel">Variável</button>
+      <button class="fb" data-f="fre" data-k="tipo" data-v="gratis">Grátis</button>
+    </div>
+    <div id="frete-list"><p class="loading">Carregando...</p></div>
+  </section>
+
+  <section class="cw" id="section-parceiros">
+    <div class="section-header"><h2 class="section-title">Parceiros</h2><button class="btn-add" data-modal="parceiro">+ Novo parceiro</button></div>
+    <div class="metrics" id="parceiro-metrics"></div>
+    <div class="filters"><span class="fl">Status:</span>
+      <button class="fb active" data-f="par" data-k="status" data-v="all">Todos</button>
+      <button class="fb" data-f="par" data-k="status" data-v="ativo">Ativos</button>
+      <button class="fb" data-f="par" data-k="status" data-v="prospecto">Prospectos</button>
+      <button class="fb" data-f="par" data-k="status" data-v="inativo">Inativos</button>
+    </div>
+    <div id="parceiro-list"><p class="loading">Carregando...</p></div>
+  </section>
+
+  <section class="cw" id="section-pessoas">
+    <div class="section-header"><h2 class="section-title">Pessoas</h2><button class="btn-add" data-modal="pessoa">+ Nova pessoa</button></div>
+    <div class="filters"><span class="fl">Tipo:</span>
+      <button class="fb active" data-f="pes" data-k="tipo" data-v="all">Todas</button>
+      <button class="fb" data-f="pes" data-k="tipo" data-v="socio">Sócios</button>
+      <button class="fb" data-f="pes" data-k="tipo" data-v="equipe">Equipe</button>
+      <button class="fb" data-f="pes" data-k="tipo" data-v="externo">Externos</button>
+    </div>
+    <div id="pessoa-list"><p class="loading">Carregando...</p></div>
+  </section>
+
+</div><!-- /#app-screen -->
+
+<div class="overlay" id="overlay"></div>
+<aside class="panel" id="sup-panel">
+  <button class="panel-close" id="panel-close">×</button>
+  <div id="sup-panel-content"></div>
+</aside>
+
+<!-- ═══════════════════════ MODALS ═══════════════════════ -->
+<div class="modal-bg" id="modal-task"><div class="modal">
+  <div class="modal-title">Nova Tarefa<button class="modal-close" data-close="task">×</button></div>
+  <div class="form-group"><label class="form-label">Título *</label><input class="form-input" id="t-title" placeholder="Descreva a tarefa"></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="t-cat"><option value="">—</option><option>Marca</option><option>Site</option><option>Artes</option><option>Produto</option><option>Fornecedor</option><option>Marketing</option><option>Jurídico</option><option>Financeiro</option><option>Outro</option></select></div>
+    <div class="form-group"><label class="form-label">Prioridade</label><select class="form-select" id="t-prio"><option value="alta">🔴 Alta</option><option value="media" selected>🟡 Média</option><option value="baixa">🟢 Baixa</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="t-status"><option value="todo">A fazer</option><option value="doing">Em andamento</option><option value="done">Concluído</option><option value="blocked">Bloqueado</option></select></div>
+    <div class="form-group"><label class="form-label">Prazo</label><input class="form-input" id="t-prazo" type="date"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="t-owner"></select></div>
+    <div class="form-group"><label class="form-label">Co-responsável</label><select class="form-select" id="t-coowner"></select></div>
+  </div>
+  <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="t-desc" placeholder="Contexto, links..."></textarea></div>
+  <div class="form-group"><label class="form-label">Tags (vírgula)</label><input class="form-input" id="t-tags" placeholder="urgente, aprovação"></div>
+  <div class="form-group"><label class="form-label">Comentários</label><textarea class="form-textarea" id="t-coment" placeholder="Notas e histórico..."></textarea></div>
+  <button class="btn-save" id="save-task">Salvar Tarefa</button>
+</div></div>
+
+<div class="modal-bg" id="modal-supplier"><div class="modal">
+  <div class="modal-title">Novo Fornecedor<button class="modal-close" data-close="supplier">×</button></div>
+  <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="s-name" placeholder="Nome do fornecedor"></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="s-cat"><option>Confecção</option><option>Tecidos</option><option>Aviamentos</option><option>Estamparia</option><option>Arte &amp; Design</option><option>Fotografia</option><option>Tecnologia</option><option>Marketing</option><option>Jurídico</option><option>Embalagem</option><option>Outro</option></select></div>
+    <div class="form-group"><label class="form-label">Classificação</label><select class="form-select" id="s-class"><option value="bronze">🥉 Bronze</option><option value="silver">🥈 Silver</option><option value="gold">🥇 Gold</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="s-status"><option value="prospecto">Prospecto</option><option value="negociando">Negociando</option><option value="ativo">Ativo</option><option value="pausado">Pausado</option></select></div>
+    <div class="form-group"><label class="form-label">Aprovação</label><select class="form-select" id="s-aprov"><option value="false">⏳ Pendente</option><option value="true">✅ Aprovado</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Avaliação</label><select class="form-select" id="s-aval"><option value="5">⭐⭐⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option><option value="3" selected>⭐⭐⭐</option><option value="2">⭐⭐</option><option value="1">⭐</option></select></div>
+    <div class="form-group"><label class="form-label">Responsável SLB</label><select class="form-select" id="s-resp"></select></div>
+  </div>
+  <p class="form-section">Contato</p>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="s-whatsapp" placeholder="(11) 9 9999-0000"></div>
+    <div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="s-email" placeholder="contato@"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Site</label><input class="form-input" id="s-site" placeholder="www."></div>
+    <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="s-insta" placeholder="@"></div>
+  </div>
+  <div class="form-group"><label class="form-label">CNPJ</label><input class="form-input" id="s-cnpj" placeholder="00.000.000/0000-00"></div>
+  <p class="form-section">Localização</p>
+  <div class="form-group"><label class="form-label">Endereço</label><input class="form-input" id="s-end" placeholder="Rua, número, bairro"></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="s-cidade" placeholder="São Paulo"></div>
+    <div class="form-group"><label class="form-label">Estado</label><select class="form-select" id="s-estado"><option value="">—</option><option>MG</option><option>RJ</option><option selected>SP</option><option>PR</option><option>RS</option><option>SC</option><option>BA</option><option>CE</option><option>DF</option><option>GO</option><option>PE</option><option>Outro</option></select></div>
+  </div>
+  <p class="form-section">Condições</p>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Prazo produção</label><input class="form-input" id="s-prazo" placeholder="15 dias úteis"></div>
+    <div class="form-group"><label class="form-label">Pagamento</label><input class="form-input" id="s-pagto" placeholder="PIX, boleto..."></div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px">
+    <label class="form-check"><input type="checkbox" id="s-frete"> Frete incluso</label>
+    <label class="form-check"><input type="checkbox" id="s-pedmin"> Pedido mínimo</label>
+    <label class="form-check"><input type="checkbox" id="s-visita"> Visita local</label>
+  </div>
+  <div class="form-group" id="frete-info-group" style="display:none"><label class="form-label">Detalhe frete</label><input class="form-input" id="s-frete-info" placeholder="Grátis acima de R$ 500"></div>
+  <div id="pedmin-group" style="display:none"><div class="form-row">
+    <div class="form-group"><label class="form-label">Valor mínimo (R$)</label><input class="form-input" id="s-pedmin-val" type="number" placeholder="500"></div>
+    <div class="form-group"><label class="form-label">Qtd mínima</label><input class="form-input" id="s-pedmin-qtd" placeholder="12 peças/modelo"></div>
+  </div></div>
+  <div class="form-group" style="margin-top:6px"><label class="form-label">Observações</label><textarea class="form-textarea" id="s-obs"></textarea></div>
+  <button class="btn-save" id="save-supplier">Salvar Fornecedor</button>
+</div></div>
+
+<div class="modal-bg" id="modal-cost"><div class="modal">
+  <div class="modal-title">Novo Lançamento<button class="modal-close" data-close="cost">×</button></div>
+  <div class="form-group"><label class="form-label">Descrição *</label><input class="form-input" id="c-name" placeholder="Ex: Domínio solookbom.com.br"></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="c-cat"><option>Tecnologia</option><option>Confecção</option><option>Arte &amp; Design</option><option>Marketing</option><option>Jurídico</option><option>Outro</option></select></div>
+    <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="c-type"><option value="despesa">Despesa</option><option value="investimento">Investimento</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Valor (R$) *</label><input class="form-input" id="c-val" type="number" step="0.01" placeholder="0,00"></div>
+    <div class="form-group"><label class="form-label">Data</label><input class="form-input" id="c-date" type="date"></div>
+  </div>
+  <button class="btn-save" id="save-cost">Salvar</button>
+</div></div>
+
+<div class="modal-bg" id="modal-estoque"><div class="modal">
+  <div class="modal-title">Novo Item de Estoque<button class="modal-close" data-close="estoque">×</button></div>
+  <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="e-nome" placeholder="Ex: Tecido linho bege"></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="e-cat"><option>Tecido</option><option>Aviamento</option><option>Produto acabado</option><option>Embalagem</option><option>Outro</option></select></div>
+    <div class="form-group"><label class="form-label">SKU</label><input class="form-input" id="e-sku" placeholder="TEC-001"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Quantidade *</label><input class="form-input" id="e-qtd" type="number" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">Unidade</label><select class="form-select" id="e-un"><option value="un">un</option><option value="m">m</option><option value="m²">m²</option><option value="kg">kg</option><option value="pç">pç</option><option value="cx">cx</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Qtd mínima (alerta)</label><input class="form-input" id="e-qtdmin" type="number" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">Localização</label><input class="form-input" id="e-local" placeholder="Prateleira A3"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Preço custo</label><input class="form-input" id="e-custo" type="number" step="0.01" placeholder="0,00"></div>
+    <div class="form-group"><label class="form-label">Preço venda</label><input class="form-input" id="e-venda" type="number" step="0.01" placeholder="0,00"></div>
+  </div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="e-obs"></textarea></div>
+  <button class="btn-save" id="save-estoque">Salvar Item</button>
+</div></div>
+
+<div class="modal-bg" id="modal-frete"><div class="modal">
+  <div class="modal-title">Tabela de Frete<button class="modal-close" data-close="frete">×</button></div>
+  <div class="form-group"><label class="form-label">Transportadora *</label><input class="form-input" id="fr-trans" placeholder="Correios, Jadlog..."></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="fr-tipo"><option value="fixo">Fixo</option><option value="variavel">Variável</option><option value="gratis">Grátis</option></select></div>
+    <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="fr-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Região</label><input class="form-input" id="fr-regiao" placeholder="Sul e Sudeste"></div>
+    <div class="form-group"><label class="form-label">Prazo (dias úteis)</label><input class="form-input" id="fr-prazo" type="number" placeholder="5"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Preço fixo (R$)</label><input class="form-input" id="fr-preco" type="number" step="0.01" placeholder="0,00"></div>
+    <div class="form-group"><label class="form-label">Por kg (R$)</label><input class="form-input" id="fr-preckg" type="number" step="0.01" placeholder="0,00"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Peso máx (kg)</label><input class="form-input" id="fr-pesomax" type="number" step="0.1" placeholder="30"></div>
+    <div class="form-group"><label class="form-label">Pedido mínimo (R$)</label><input class="form-input" id="fr-pedmin" type="number" step="0.01" placeholder="0,00"></div>
+  </div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="fr-obs"></textarea></div>
+  <button class="btn-save" id="save-frete">Salvar Frete</button>
+</div></div>
+
+<div class="modal-bg" id="modal-parceiro"><div class="modal">
+  <div class="modal-title">Novo Parceiro<button class="modal-close" data-close="parceiro">×</button></div>
+  <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="pa-nome" placeholder="Nome / empresa"></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Tipo de parceria</label><input class="form-input" id="pa-tipo" placeholder="Influencer, Loja..."></div>
+    <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="pa-status"><option value="prospecto">Prospecto</option><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="pa-whatsapp" placeholder="(11) 9 9999-0000"></div>
+    <div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="pa-email" placeholder="contato@"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="pa-insta" placeholder="@"></div>
+    <div class="form-group"><label class="form-label">Site</label><input class="form-input" id="pa-site" placeholder="www."></div>
+  </div>
+  <div class="form-group"><label class="form-label">Responsável SLB</label><select class="form-select" id="pa-resp"></select></div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="pa-obs"></textarea></div>
+  <button class="btn-save" id="save-parceiro">Salvar Parceiro</button>
+</div></div>
+
+<div class="modal-bg" id="modal-pessoa"><div class="modal">
+  <div class="modal-title">Nova Pessoa<button class="modal-close" data-close="pessoa">×</button></div>
+  <div class="form-group"><label class="form-label">Nome completo *</label><input class="form-input" id="p-nome" placeholder="Nome da pessoa"></div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Cargo / Função</label><input class="form-input" id="p-cargo" placeholder="Designer, Fotógrafo..."></div>
+    <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="p-tipo"><option value="equipe">Equipe</option><option value="externo">Externo</option><option value="socio">Sócio</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="p-whatsapp" placeholder="(11) 9 9999-0000"></div>
+    <div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="p-email" placeholder="nome@email.com"></div>
+  </div>
+  <button class="btn-save" id="save-pessoa">Salvar Pessoa</button>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ── CONFIG ──────────────────────────────────────────────
+  var SB_URL = 'https://urajtknwzqbwihrvgjel.supabase.co';
+  var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyYWp0a253enFid2locnZnamVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjg0OTQsImV4cCI6MjA5NzgwNDQ5NH0.GPCqGjkceSd7hoSO4J0neD7asLwCWh1BaMD-ZYbxpZw';
+  var PWD    = 'SLB272Atucuri';
+  var db     = supabase.createClient(SB_URL, SB_KEY);
+
+  // ── LABELS ──────────────────────────────────────────────
+  var LABELS = {
+    status:  { todo:'A fazer', doing:'Em andamento', done:'Concluído', blocked:'Bloqueado' },
+    supSt:   { prospecto:'Prospecto', negociando:'Negociando', ativo:'Ativo', pausado:'Pausado', inativo:'Inativo' },
+    cls:     { gold:'🥇 Gold', silver:'🥈 Silver', bronze:'🥉 Bronze' },
+    prio:    { alta:'Alta', media:'Média', baixa:'Baixa' },
+    pessoa:  { socio:'Sócio', equipe:'Equipe', externo:'Externo' },
+    frete:   { fixo:'Fixo', variavel:'Variável', gratis:'Grátis' },
+    section: { tarefas:'Tarefas', fornecedores:'Fornecedores', financas:'Finanças', estoque:'Estoque', fretes:'Fretes', parceiros:'Parceiros', pessoas:'Pessoas' }
+  };
+
+  // ── STATE ────────────────────────────────────────────────
+  var data = { tasks:[], suppliers:[], costs:[], pessoas:[], estoques:[], fretes:[], parceiros:[] };
+  var filters = {
+    task: { status:'all', prio:'all' },
+    sup:  { status:'all', cls:'all', aprov:'all' },
+    fin:  { tipo:'all' },
+    est:  { cat:'all' },
+    fre:  { tipo:'all' },
+    par:  { status:'all' },
+    pes:  { tipo:'all' }
+  };
+  var me = null;
+
+  // ── UTILS ────────────────────────────────────────────────
+  function $(id)    { return document.getElementById(id); }
+  function val(id)  { return $(id) ? $(id).value : ''; }
+  function num(id)  { return parseFloat(val(id)) || 0; }
+  function iNum(id) { return parseInt(val(id)) || 0; }
+
+  function ini(name) {
+    return name.split(' ').filter(Boolean).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join('');
+  }
+  function av(name, tip) { return '<div class="av" title="' + (tip || name) + '">' + ini(name) + '</div>'; }
+  function stars(n) { n = n || 3; return '★'.repeat(n) + '☆'.repeat(5 - n); }
+  function money(v) { return 'R$ ' + parseFloat(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
+  function fmtDate(d) { return d ? new Date(d + 'T12:00:00').toLocaleDateString('pt-BR') : ''; }
+  function prow(label, value) {
+    if (!value && value !== false && value !== 0) return '';
+    return '<div class="panel-row"><span>' + label + '</span><span>' + value + '</span></div>';
+  }
+
+  function toast(msg) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function () { t.classList.remove('show'); }, 2200);
+  }
+
+  // ── NAVIGATION ───────────────────────────────────────────
+  function goHome() {
+    document.querySelectorAll('.cw').forEach(function (s) { s.classList.remove('visible'); });
+    $('home-screen').style.display = 'block';
+    $('breadcrumb').classList.remove('visible');
+  }
+  function openSection(name) {
+    $('home-screen').style.display = 'none';
+    document.querySelectorAll('.cw').forEach(function (s) { s.classList.remove('visible'); });
+    $('section-' + name).classList.add('visible');
+    $('breadcrumb').classList.add('visible');
+    $('bc-cur').textContent = LABELS.section[name] || name;
+  }
+  function openModal(type)  { $('modal-' + type).classList.add('open'); }
+  function closeModal(type) { $('modal-' + type).classList.remove('open'); }
+  function closePanel() { $('sup-panel').classList.remove('open'); $('overlay').classList.remove('open'); }
+
+  function applyFilter(entity, key, value, btn) {
+    filters[entity][key] = value;
+    btn.closest('.filters').querySelectorAll('.fb').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var renders = { task: renderTasks, sup: renderSuppliers, fin: renderCosts, est: renderEstoque, fre: renderFretes, par: renderParceiros, pes: renderPessoas };
+    if (renders[entity]) renders[entity]();
+  }
+
+  // ── AUTH ─────────────────────────────────────────────────
+  function doLogin() {
+    var u = val('login-user'), p = val('login-pass');
+    if (!u || p !== PWD) { $('login-error').style.display = 'block'; return; }
+    $('login-error').style.display = 'none';
+    me = u;
+    sessionStorage.setItem('slb_user', u);
+    showApp();
+  }
+  function doLogout() {
+    sessionStorage.removeItem('slb_user');
+    me = null;
+    $('login-screen').style.display = 'flex';
+    $('app-screen').style.display   = 'none';
+    $('login-pass').value = '';
+    $('login-user').value = '';
+  }
+  function showApp() {
+    $('login-screen').style.display = 'none';
+    $('app-screen').style.display   = 'flex';
+    var names = { JU:'Juliana', FE:'Fernando', VI:'Victor', YA:'Yasmin' };
+    var h = new Date().getHours();
+    var greet = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+    var name = names[me] || me;
+    $('home-title').innerHTML  = greet + ', <span>' + name + '</span> 👋';
+    $('logged-label').textContent = name.toUpperCase();
+    init();
+  }
+
+  // ── PESSOAS ──────────────────────────────────────────────
+  function loadPessoas() {
+    return db.from('pessoas').select('*').eq('ativo', true).order('nome')
+      .then(function (r) {
+        data.pessoas = r.data || [];
+        var opts = '<option value="">— Nenhum —</option>' +
+          data.pessoas.map(function (p) {
+            return '<option value="' + p.id + '">' + p.nome + (p.cargo ? ' · ' + p.cargo : '') + '</option>';
+          }).join('');
+        ['t-owner','t-coowner','s-resp','pa-resp'].forEach(function (id) {
+          var el = $(id); if (el) el.innerHTML = opts;
+        });
+        var loginMap = { JU:'Juliana Paulinelli', FE:'Fernando Araújo', VI:'Victor Paulinelli', YA:'Yasmin Zurdo' };
+        var myP = data.pessoas.find(function (p) { return p.nome === loginMap[me]; });
+        if (myP) ['t-owner','s-resp','pa-resp'].forEach(function (id) { var el = $(id); if (el) el.value = myP.id; });
+        $('cnt-pessoas').textContent = data.pessoas.length + ' cadastradas';
+        renderPessoas();
+      });
+  }
+  function renderPessoas() {
+    var tipo = filters.pes.tipo;
+    var list = tipo === 'all' ? data.pessoas : data.pessoas.filter(function (p) { return p.tipo === tipo; });
+    var el = $('pessoa-list');
+    if (!list.length) { el.innerHTML = '<p class="empty">Nenhuma pessoa cadastrada</p>'; return; }
+    el.innerHTML = list.map(function (p) {
+      return '<div class="person-card">' +
+        '<div class="person-avatar">' + ini(p.nome) + '</div>' +
+        '<div style="flex:1">' +
+          '<p style="font-size:13px;font-weight:700">' + p.nome + '</p>' +
+          '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:3px">' +
+            (p.cargo ? '<span style="font-size:10px;color:var(--muted)">' + p.cargo + '</span>' : '') +
+            '<span class="badge b-' + p.tipo + '">' + (LABELS.pessoa[p.tipo] || p.tipo) + '</span>' +
+            (p.whatsapp ? '<span style="font-size:10px;color:var(--muted)">📱 ' + p.whatsapp + '</span>' : '') +
+            (p.email    ? '<span style="font-size:10px;color:var(--muted)">✉️ ' + p.email + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+        (p.tipo !== 'socio' ? '<button class="del" data-del-pessoa="' + p.id + '">×</button>' : '') +
+      '</div>';
+    }).join('');
+  }
+  function savePessoa() {
+    var nome = val('p-nome').trim();
+    if (!nome) { toast('Informe o nome'); return; }
+    db.from('pessoas').insert({ nome: nome, cargo: val('p-cargo') || null, tipo: val('p-tipo'), whatsapp: val('p-whatsapp') || null, email: val('p-email') || null })
+      .then(function () {
+        closeModal('pessoa');
+        ['p-nome','p-cargo','p-whatsapp','p-email'].forEach(function (id) { $(id).value = ''; });
+        toast('Pessoa cadastrada!');
+        loadPessoas();
+      });
+  }
+
+  // ── TAREFAS ──────────────────────────────────────────────
+  function loadTasks() {
+    return db.from('tarefas')
+      .select('*,responsavel:pessoas!tarefas_responsavel_pessoa_id_fkey(nome),coresponsavel:pessoas!tarefas_co_responsavel_pessoa_id_fkey(nome)')
+      .order('created_at', { ascending: false })
+      .then(function (r) {
+        data.tasks = r.data || [];
+        var doing = data.tasks.filter(function (t) { return t.status === 'doing'; }).length;
+        $('cnt-tarefas').textContent = doing + ' em andamento';
+        renderTasks();
+      });
+  }
+  function renderTasks() {
+    var f = filters.task;
+    var list = data.tasks.filter(function (t) {
+      return (f.status === 'all' || t.status === f.status) &&
+             (f.prio   === 'all' || t.prioridade === f.prio);
+    });
+    var doing = data.tasks.filter(function (t) { return t.status === 'doing'; }).length;
+    var done  = data.tasks.filter(function (t) { return t.status === 'done'; }).length;
+    var blk   = data.tasks.filter(function (t) { return t.status === 'blocked'; }).length;
+    $('task-metrics').innerHTML =
+      metric(data.tasks.length, 'Total') +
+      metric(doing, 'Em andamento', 'var(--amber)') +
+      metric(done,  'Concluídas',   'var(--green)') +
+      metric(blk,   'Bloqueadas',   'var(--red)');
+    var el = $('task-list');
+    if (!list.length) { el.innerHTML = '<p class="empty">Nenhuma tarefa encontrada</p>'; return; }
+    el.innerHTML = list.map(function (t) {
+      return '<div class="card"><div class="card-row">' +
+        '<div class="card-body">' +
+          '<p class="card-title">' + t.titulo + '</p>' +
+          '<div class="card-meta">' +
+            badge(t.status, LABELS.status[t.status]) +
+            badge(t.prioridade || 'media', LABELS.prio[t.prioridade || 'media']) +
+            (t.categoria ? catTag(t.categoria) : '') +
+            (t.prazo ? '<span style="font-size:9px;color:var(--muted)">📅 ' + fmtDate(t.prazo) + '</span>' : '') +
+          '</div>' +
+          (t.descricao ? '<p class="card-desc">' + t.descricao + '</p>' : '') +
+          (t.tags ? '<div style="margin-top:5px;display:flex;gap:3px;flex-wrap:wrap">' +
+            t.tags.split(',').map(function (g) { return '<span class="tag-pill">' + g.trim() + '</span>'; }).join('') +
+          '</div>' : '') +
+        '</div>' +
+        '<div class="card-actions">' +
+          '<div class="avg">' +
+            (t.responsavel   ? av(t.responsavel.nome,   'Resp: '  + t.responsavel.nome)   : '') +
+            (t.coresponsavel ? av(t.coresponsavel.nome, 'Co: '    + t.coresponsavel.nome) : '') +
+          '</div>' +
+          '<button class="del" data-del-task="' + t.id + '">×</button>' +
+        '</div>' +
+      '</div></div>';
+    }).join('');
+  }
+  function saveTask() {
+    var titulo = val('t-title').trim();
+    if (!titulo) { toast('Informe o título'); return; }
+    var o = val('t-owner'), c = val('t-coowner');
+    db.from('tarefas').insert({
+      titulo: titulo, categoria: val('t-cat') || null, prioridade: val('t-prio'),
+      status: val('t-status'), responsavel_pessoa_id: o || null,
+      co_responsavel_pessoa_id: (c && c !== o ? c : null),
+      prazo: val('t-prazo') || null, descricao: val('t-desc') || null,
+      tags: val('t-tags') || null, comentarios: val('t-coment') || null
+    }).then(function () {
+      closeModal('task');
+      ['t-title','t-prazo','t-desc','t-tags','t-coment'].forEach(function (id) { $(id).value = ''; });
+      toast('Tarefa criada!');
+      loadTasks();
+    });
+  }
+
+  // ── FORNECEDORES ─────────────────────────────────────────
+  function loadSuppliers() {
+    return db.from('fornecedores')
+      .select('*,responsavel:pessoas!fornecedores_responsavel_pessoa_id_fkey(nome)')
+      .order('nome')
+      .then(function (r) {
+        data.suppliers = r.data || [];
+        var ativos = data.suppliers.filter(function (s) { return s.status === 'ativo'; }).length;
+        $('cnt-fornecedores').textContent = ativos + ' ativos';
+        renderSuppliers();
+      });
+  }
+  function renderSuppliers() {
+    var f = filters.sup;
+    var list = data.suppliers.filter(function (s) {
+      return (f.status === 'all' || s.status === f.status) &&
+             (f.cls   === 'all' || s.classificacao === f.cls) &&
+             (f.aprov === 'all' || (f.aprov === 'sim' && s.aprovado) || (f.aprov === 'nao' && !s.aprovado));
+    });
+    var ativos = data.suppliers.filter(function (s) { return s.status === 'ativo'; }).length;
+    var aprov  = data.suppliers.filter(function (s) { return s.aprovado; }).length;
+    var gold   = data.suppliers.filter(function (s) { return s.classificacao === 'gold'; }).length;
+    $('sup-metrics').innerHTML =
+      metric(data.suppliers.length, 'Total') +
+      metric(ativos, 'Ativos',    'var(--green)') +
+      metric(aprov,  'Aprovados', 'var(--neon)') +
+      metric(gold,   '🥇 Gold',   'var(--neon)');
+    var el = $('supplier-list');
+    if (!list.length) { el.innerHTML = '<p class="empty">Nenhum fornecedor</p>'; return; }
+    el.innerHTML = list.map(function (s) {
+      return '<div class="card cl" data-open-sup="' + s.id + '"><div class="card-row">' +
+        '<div class="card-body">' +
+          '<p class="card-title">' + s.nome + ' <span style="font-size:11px;color:#e8b000;margin-left:3px">' + stars(s.avaliacao) + '</span></p>' +
+          '<div class="card-meta">' +
+            badge(s.status, LABELS.supSt[s.status]) +
+            badge(s.classificacao || 'bronze', LABELS.cls[s.classificacao || 'bronze']) +
+            (s.aprovado ? badge('ativo','✅ Aprovado') : badge('prospecto','⏳ Pendente')) +
+            catTag(s.categoria) +
+            (s.cidade ? '<span style="font-size:9px;color:var(--muted)">📍 ' + s.cidade + (s.estado ? '/' + s.estado : '') + '</span>' : '') +
+          '</div>' +
+          '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px">' +
+            (s.tem_frete    ? '<span class="tag-pill yes">✓ Frete</span>' : '') +
+            (s.pedido_minimo ? '<span class="tag-pill">Ped. mín</span>'  : '') +
+            (s.visita_local  ? '<span class="tag-pill yes">✓ Visita</span>' : '') +
+            (s.whatsapp      ? '<span class="tag-pill">📱 ' + s.whatsapp + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="card-actions">' +
+          (s.responsavel ? av(s.responsavel.nome, s.responsavel.nome) : '') +
+          '<button class="del" data-del-sup="' + s.id + '">×</button>' +
+        '</div>' +
+      '</div></div>';
+    }).join('');
+  }
+  function openSupPanel(id) {
+    var s = data.suppliers.find(function (x) { return x.id === id; });
+    if (!s) return;
+    $('sup-panel-content').innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">' +
+        '<div><p class="panel-title">' + s.nome + '</p><p style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px">' + s.categoria + '</p></div>' +
+        badge(s.classificacao || 'bronze', LABELS.cls[s.classificacao || 'bronze']) +
+      '</div>' +
+      '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">' +
+        badge(s.status, LABELS.supSt[s.status]) +
+        (s.aprovado ? badge('ativo','✅ Aprovado') : badge('prospecto','⏳ Pendente')) +
+        '<span style="color:#e8b000">' + stars(s.avaliacao) + '</span>' +
+      '</div>' +
+      '<p class="panel-section">Contato</p>' +
+      prow('WhatsApp', s.whatsapp) + prow('E-mail', s.email) + prow('Site', s.site) +
+      prow('Instagram', s.instagram) + prow('CNPJ', s.cnpj) +
+      (s.responsavel ? prow('Resp. SLB', s.responsavel.nome) : '') +
+      '<p class="panel-section">Localização</p>' +
+      prow('Endereço', s.endereco) + prow('Cidade', s.cidade) + prow('Estado', s.estado) +
+      '<p class="panel-section">Condições</p>' +
+      prow('Prazo',    s.prazo_producao) + prow('Pagamento', s.forma_pagamento) +
+      prow('Frete incluso', s.tem_frete ? 'Sim' : 'Não') +
+      (s.tem_frete && s.frete_info ? prow('Detalhe frete', s.frete_info) : '') +
+      prow('Pedido mínimo', s.pedido_minimo ? 'Sim' : 'Não') +
+      (s.pedido_minimo && s.pedido_minimo_valor ? prow('Valor mínimo', money(s.pedido_minimo_valor)) : '') +
+      (s.pedido_minimo && s.pedido_minimo_qtd   ? prow('Qtd mínima', s.pedido_minimo_qtd) : '') +
+      prow('Visita local', s.visita_local ? 'Sim' : 'Não') +
+      (s.observacoes ? '<p class="panel-section">Observações</p><p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:3px">' + s.observacoes + '</p>' : '');
+    $('sup-panel').classList.add('open');
+    $('overlay').classList.add('open');
+  }
+  function saveSupplier() {
+    var nome = val('s-name').trim();
+    if (!nome) { toast('Informe o nome'); return; }
+    var tf = $('s-frete').checked, tp = $('s-pedmin').checked;
+    db.from('fornecedores').insert({
+      nome: nome, categoria: val('s-cat'), classificacao: val('s-class'),
+      status: val('s-status'), aprovado: val('s-aprov') === 'true',
+      avaliacao: iNum('s-aval') || 3,
+      responsavel_pessoa_id: val('s-resp') || null,
+      whatsapp: val('s-whatsapp') || null, email: val('s-email') || null,
+      site: val('s-site') || null, instagram: val('s-insta') || null, cnpj: val('s-cnpj') || null,
+      endereco: val('s-end') || null, cidade: val('s-cidade') || null, estado: val('s-estado') || null,
+      tem_frete: tf, frete_info: tf ? val('s-frete-info') || null : null,
+      pedido_minimo: tp, pedido_minimo_valor: tp ? num('s-pedmin-val') || null : null,
+      pedido_minimo_qtd: tp ? val('s-pedmin-qtd') || null : null,
+      visita_local: $('s-visita').checked,
+      prazo_producao: val('s-prazo') || null, forma_pagamento: val('s-pagto') || null,
+      observacoes: val('s-obs') || null
+    }).then(function () { closeModal('supplier'); toast('Fornecedor adicionado!'); loadSuppliers(); });
+  }
+
+  // ── CUSTOS ───────────────────────────────────────────────
+  function loadCosts() {
+    return db.from('custos').select('*').order('created_at', { ascending: false })
+      .then(function (r) {
+        data.costs = r.data || [];
+        $('cnt-financas').textContent = money(data.costs.reduce(function (a, c) { return a + parseFloat(c.valor); }, 0));
+        renderCosts();
+      });
+  }
+  function renderCosts() {
+    var tipo = filters.fin.tipo;
+    var list = tipo === 'all' ? data.costs : data.costs.filter(function (c) { return c.tipo === tipo; });
+    var tot  = data.costs.reduce(function (a, c) { return a + parseFloat(c.valor); }, 0);
+    var inv  = data.costs.filter(function (c) { return c.tipo === 'investimento'; }).reduce(function (a, c) { return a + parseFloat(c.valor); }, 0);
+    var desp = data.costs.filter(function (c) { return c.tipo === 'despesa'; }).reduce(function (a, c) { return a + parseFloat(c.valor); }, 0);
+    $('cost-metrics').innerHTML =
+      metric(money(tot),  'Total') +
+      metric(money(inv),  'Investimentos', 'var(--blue)') +
+      metric(money(desp), 'Despesas', 'var(--muted)') +
+      metric(data.costs.length, 'Lançamentos');
+    var el = $('cost-list');
+    if (!list.length) { el.innerHTML = '<p class="empty">Nenhum lançamento</p>'; return; }
+    el.innerHTML = list.map(function (c) {
+      return '<div class="card"><div class="card-row">' +
+        '<div class="card-body">' +
+          '<p class="card-title">' + c.descricao + '</p>' +
+          '<div class="card-meta">' + badge(c.tipo, c.tipo) + catTag(c.categoria) +
+            (c.data ? '<span style="font-size:9px;color:var(--muted)">' + fmtDate(c.data) + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="card-actions">' +
+          '<span style="font-size:13px;font-weight:800;white-space:nowrap">' + money(c.valor) + '</span>' +
+          '<button class="del" data-del-cost="' + c.id + '">×</button>' +
+        '</div>' +
+      '</div></div>';
+    }).join('');
+  }
+  function saveCost() {
+    var d = val('c-name').trim(), v = num('c-val');
+    if (!d || !v) { toast('Preencha descrição e valor'); return; }
+    db.from('custos').insert({ descricao: d, categoria: val('c-cat'), valor: v, tipo: val('c-type'), data: val('c-date') || null })
+      .then(function () {
+        closeModal('cost');
+        ['c-name','c-val','c-date'].forEach(function (id) { $(id).value = ''; });
+        toast('Salvo!');
+        loadCosts();
+      });
+  }
+
+  // ── ESTOQUE ──────────────────────────────────────────────
+  function loadEstoque() {
+    return db.from('estoque').select('*').order('nome')
+      .then(function (r) {
+        data.estoques = r.data || [];
+        var b = data.estoques.filter(function (e) { return e.quantidade <= e.quantidade_minima; }).length;
+        $('cnt-estoque').textContent = data.estoques.length + ' itens' + (b > 0 ? ' · ⚠️ ' + b : '');
+        renderEstoque();
+      });
+  }
+  function renderEstoque() {
+    var cat = filters.est.cat;
+    var list = cat === 'all' ? data.estoques : data.estoques.filter(function (e) { return e.categoria === cat; });
+    var baixo = data.estoques.filter(function (e) { return e.quantidade <= e.quantidade_minima; }).length;
+    $('estoque-metrics').innerHTML =
+      metric(data.estoques.length, 'Itens') +
+      metric(baixo, '⚠️ Estoque baixo', baixo > 0 ? 'var(--red)' : 'var(--green)');
+    var el = $('estoque-list');
+    if (!list.length) { el.innerHTML = '<p class="empty">Nenhum item</p>'; return; }
+    el.innerHTML = list.map(function (e) {
+      var low = e.quantidade <= e.quantidade_minima;
+      return '<div class="card' + (low ? ' stock-low' : '') + '"><div class="card-row">' +
+        '<div class="card-body">' +
+          '<p class="card-title">' + e.nome + (low ? ' <span style="color:var(--red);font-size:10px">⚠️ baixo</span>' : '') + '</p>' +
+          '<div class="card-meta">' + catTag(e.categoria || '—') +
+            (e.sku ? catTag('SKU: ' + e.sku) : '') +
+            (e.localizacao ? '<span style="font-size:9px;color:var(--muted)">📦 ' + e.localizacao + '</span>' : '') +
+          '</div>' +
+          (e.preco_custo || e.preco_venda ?
+            '<p style="font-size:10px;color:var(--muted);margin-top:3px">' +
+              (e.preco_custo ? 'Custo: ' + money(e.preco_custo) : '') +
+              (e.preco_custo && e.preco_venda ? ' · ' : '') +
+              (e.preco_venda ? 'Venda: ' + money(e.preco_venda) : '') +
+            '</p>' : '') +
+        '</div>' +
+        '<div class="card-actions" style="flex-direction:column;align-items:flex-end;gap:2px">' +
+          '<span style="font-size:19px;font-weight:900">' + e.quantidade + '</span>' +
+          '<span style="font-size:9px;color:var(--muted)">' + (e.unidade || 'un') + ' · mín ' + (e.quantidade_minima || 0) + '</span>' +
+          '<button class="del" data-del-est="' + e.id + '">×</button>' +
+        '</div>' +
+      '</div></div>';
+    }).join('');
+  }
+  function saveEstoque() {
+    var nome = val('e-nome').trim();
+    if (!nome) { toast('Informe o nome'); return; }
+    db.from('estoque').insert({
+      nome: nome, categoria: val('e-cat'), sku: val('e-sku') || null,
+      quantidade: iNum('e-qtd'), unidade: val('e-un'),
+      quantidade_minima: iNum('e-qtdmin'), localizacao: val('e-local') || null,
+      preco_custo: num('e-custo') || null, preco_venda: num('e-venda') || null,
+      observacoes: val('e-obs') || null
+    }).then(function () {
+      closeModal('estoque');
+      ['e-nome','e-sku','e-qtd','e-qtdmin','e-local','e-custo','e-venda','e-obs'].forEach(function (id) { $(id).value = ''; });
+      toast('Item adicionado!');
+      loadEstoque();
+    });
+  }
+
+  // ── FRETES ───────────────────────────────────────────────
+  function loadFretes() {
+    return db.from('fretes').select('*').order('transportadora')
+      .then(function (r) {
+        data.fretes = r.data || [];
+        $('cnt-fretes').textContent = data.fretes.filter(function (f) { return f.status === 'ativo'; }).length + ' ativas';
+        renderFretes();
+      });
+  }
+  function renderFretes() {
+    var tipo = filters.fre.tipo;
+    var list = tipo === 'all' ? data.fretes : data.fretes.filter(function (f) { return f.tipo === tipo; });
+    var ativos = data.fretes.filter(function (f) { return f.status === 'ativo'; }).length;
+    $('frete-metrics').innerHTML = metric(data.fretes.length, 'Tabelas') + metric(ativos, 'Ativas', 'var(--green)');
+    var el = $('frete-list');
+    if (!list.length) { el.innerHTML = '<p class="empty">Nenhuma tabela de frete</p>'; return; }
+    el.innerHTML = list.map(function (f) {
+      return '<div class="card"><div class="card-row">' +
+        '<div class="card-body">' +
+          '<p class="card-title">' + f.transportadora + '</p>' +
+          '<div class="card-meta">' +
+            badge(f.tipo, LABELS.frete[f.tipo]) +
+            badge(f.status === 'ativo' ? 'ativo' : 'inativo', f.status === 'ativo' ? 'Ativo' : 'Inativo') +
+            (f.regiao    ? catTag('📍 ' + f.regiao) : '') +
+            (f.prazo_dias ? '<span style="font-size:9px;color:var(--muted)">⏱ ' + f.prazo_dias + ' dias</span>' : '') +
+          '</div>' +
+          '<p style="font-size:10px;color:var(--muted);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap">' +
+            (f.preco               ? '<span>Fixo: '    + money(f.preco)               + '</span>' : '') +
+            (f.preco_kg            ? '<span>Por kg: '  + money(f.preco_kg)            + '</span>' : '') +
+            (f.peso_max            ? '<span>Máx: '     + f.peso_max                   + 'kg</span>' : '') +
+            (f.valor_minimo_pedido ? '<span>Ped. mín: '+ money(f.valor_minimo_pedido) + '</span>' : '') +
+          '</p>' +
+        '</div>' +
+        '<div class="card-actions"><button class="del" data-del-fre="' + f.id + '">×</button></div>' +
+      '</div></div>';
+    }).join('');
+  }
+  function saveFrete() {
+    var t = val('fr-trans').trim();
+    if (!t) { toast('Informe a transportadora'); return; }
+    db.from('fretes').insert({
+      transportadora: t, tipo: val('fr-tipo'), status: val('fr-status'),
+      regiao: val('fr-regiao') || null, prazo_dias: iNum('fr-prazo') || null,
+      preco: num('fr-preco') || null, preco_kg: num('fr-preckg') || null,
+      peso_max: num('fr-pesomax') || null, valor_minimo_pedido: num('fr-pedmin') || null,
+      observacoes: val('fr-obs') || null
+    }).then(function () {
+      closeModal('frete');
+      ['fr-trans','fr-regiao','fr-prazo','fr-preco','fr-preckg','fr-pesomax','fr-pedmin','fr-obs'].forEach(function (id) { $(id).value = ''; });
+      toast('Frete salvo!');
+      loadFretes();
+    });
+  }
+
+  // ── PARCEIROS ────────────────────────────────────────────
+  function loadParceiros() {
+    return db.from('parceiros')
+      .select('*,responsavel:pessoas!parceiros_responsavel_pessoa_id_fkey(nome)')
+      .order('nome')
+      .then(function (r) {
+        data.parceiros = r.data || [];
+        $('cnt-parceiros').textContent = data.parceiros.filter(function (p) { return p.status === 'ativo'; }).length + ' ativos';
+        renderParceiros();
+      });
+  }
+  function renderParceiros() {
+    var status = filters.par.status;
+    var list = status === 'all' ? data.parceiros : data.parceiros.filter(function (p) { return p.status === status; });
+    var ativos = data.parceiros.filter(function (p) { return p.status === 'ativo'; }).length;
+    $('parceiro-metrics').innerHTML = metric(data.parceiros.length, 'Total') + metric(ativos, 'Ativos', 'var(--green)');
+    var el = $('parceiro-list');
+    if (!list.length) { el.innerHTML = '<p class="empty">Nenhum parceiro</p>'; return; }
+    el.innerHTML = list.map(function (p) {
+      return '<div class="card"><div class="card-row">' +
+        '<div class="card-body">' +
+          '<p class="card-title">' + p.nome + '</p>' +
+          '<div class="card-meta">' +
+            badge(p.status, LABELS.supSt[p.status] || p.status) +
+            (p.tipo      ? catTag(p.tipo) : '') +
+            (p.instagram ? '<span style="font-size:9px;color:var(--muted)">' + p.instagram + '</span>' : '') +
+            (p.whatsapp  ? '<span class="tag-pill">📱 ' + p.whatsapp + '</span>' : '') +
+          '</div>' +
+          (p.observacoes ? '<p class="card-desc">' + p.observacoes + '</p>' : '') +
+        '</div>' +
+        '<div class="card-actions">' +
+          (p.responsavel ? av(p.responsavel.nome, p.responsavel.nome) : '') +
+          '<button class="del" data-del-par="' + p.id + '">×</button>' +
+        '</div>' +
+      '</div></div>';
+    }).join('');
+  }
+  function saveParceiro() {
+    var nome = val('pa-nome').trim();
+    if (!nome) { toast('Informe o nome'); return; }
+    db.from('parceiros').insert({
+      nome: nome, tipo: val('pa-tipo') || null, status: val('pa-status'),
+      whatsapp: val('pa-whatsapp') || null, email: val('pa-email') || null,
+      instagram: val('pa-insta') || null, site: val('pa-site') || null,
+      responsavel_pessoa_id: val('pa-resp') || null, observacoes: val('pa-obs') || null
+    }).then(function () {
+      closeModal('parceiro');
+      ['pa-nome','pa-tipo','pa-whatsapp','pa-email','pa-insta','pa-site','pa-obs'].forEach(function (id) { $(id).value = ''; });
+      toast('Parceiro adicionado!');
+      loadParceiros();
+    });
+  }
+
+  // ── HOME STATS ───────────────────────────────────────────
+  function updateStats() {
+    var doing = data.tasks.filter(function (t) { return t.status === 'doing'; }).length;
+    var blk   = data.tasks.filter(function (t) { return t.status === 'blocked'; }).length;
+    var total = data.costs.reduce(function (a, c) { return a + parseFloat(c.valor); }, 0);
+    var baixo = data.estoques.filter(function (e) { return e.quantidade <= e.quantidade_minima; }).length;
+    var html = statPill(doing, 'Em andamento', 'neon', 'tarefas') +
+               (blk   > 0 ? statPill(blk,   'Bloqueadas',    'alert', 'tarefas')  : '') +
+               statPill(money(total), 'Investidos', '', 'financas') +
+               (baixo > 0 ? statPill(baixo, 'Estoque baixo', 'alert', 'estoque')  : '');
+    $('home-stats').innerHTML = html;
+  }
+
+  // ── HTML HELPERS ─────────────────────────────────────────
+  function badge(cls, label)  { return '<span class="badge b-' + cls + '">' + label + '</span>'; }
+  function catTag(text)       { return '<span class="cat-tag">' + text + '</span>'; }
+  function metric(val, label, color) {
+    return '<div class="metric"><div class="metric-val"' + (color ? ' style="color:' + color + '"' : '') + '>' + val + '</div><div class="metric-lbl">' + label + '</div></div>';
+  }
+  function statPill(val, label, cls, sec) {
+    return '<div class="stat-pill' + (cls ? ' ' + cls : '') + '" data-sec="' + sec + '">' +
+      '<div class="val">' + val + '</div><div class="lbl">' + label + '</div>' +
+    '</div>';
+  }
+
+  // ── DELEGATION — single listener for all dynamic clicks ──
+  function handleDelegated(e) {
+    var btn = e.target.closest('[data-del-task],[data-del-sup],[data-del-cost],[data-del-est],[data-del-fre],[data-del-par],[data-del-pessoa],[data-open-sup],[data-sec]');
+    if (!btn) return;
+    if (btn.dataset.delTask)    { e.stopPropagation(); if (confirm('Excluir?')) db.from('tarefas').delete().eq('id', btn.dataset.delTask).then(function () { toast('Excluída'); loadTasks(); }); }
+    if (btn.dataset.delSup)     { e.stopPropagation(); if (confirm('Excluir?')) db.from('fornecedores').delete().eq('id', btn.dataset.delSup).then(function () { toast('Excluído'); loadSuppliers(); }); }
+    if (btn.dataset.delCost)    { if (confirm('Excluir?')) db.from('custos').delete().eq('id', btn.dataset.delCost).then(function () { toast('Excluído'); loadCosts(); }); }
+    if (btn.dataset.delEst)     { if (confirm('Excluir?')) db.from('estoque').delete().eq('id', btn.dataset.delEst).then(function () { toast('Excluído'); loadEstoque(); }); }
+    if (btn.dataset.delFre)     { if (confirm('Excluir?')) db.from('fretes').delete().eq('id', btn.dataset.delFre).then(function () { toast('Excluída'); loadFretes(); }); }
+    if (btn.dataset.delPar)     { if (confirm('Excluir?')) db.from('parceiros').delete().eq('id', btn.dataset.delPar).then(function () { toast('Excluído'); loadParceiros(); }); }
+    if (btn.dataset.delPessoa)  { if (confirm('Remover?')) db.from('pessoas').update({ ativo: false }).eq('id', btn.dataset.delPessoa).then(function () { toast('Removida'); loadPessoas(); }); }
+    if (btn.dataset.openSup)    openSupPanel(btn.dataset.openSup);
+    if (btn.dataset.sec)        openSection(btn.dataset.sec);
+  }
+
+  // ── INIT ─────────────────────────────────────────────────
+  function init() {
+    loadPessoas().then(function () {
+      return Promise.all([loadTasks(), loadSuppliers(), loadCosts(), loadEstoque(), loadFretes(), loadParceiros()]);
+    }).then(updateStats);
+  }
+
+  // ── EVENT LISTENERS ──────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function () {
+    // Login
+    $('login-btn').addEventListener('click', doLogin);
+    $('login-pass').addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+    $('logout-btn').addEventListener('click', doLogout);
+
+    // Navigation
+    $('logo-home').addEventListener('click', goHome);
+    $('bc-home').addEventListener('click', goHome);
+    $('overlay').addEventListener('click', closePanel);
+    $('panel-close').addEventListener('click', closePanel);
+
+    // Add buttons
+    document.querySelectorAll('[data-modal]').forEach(function (btn) {
+      btn.addEventListener('click', function () { openModal(btn.dataset.modal); });
+    });
+
+    // Close modals
+    document.querySelectorAll('.modal-close').forEach(function (btn) {
+      btn.addEventListener('click', function () { closeModal(btn.dataset.close); });
+    });
+    document.querySelectorAll('.modal-bg').forEach(function (m) {
+      m.addEventListener('click', function (e) { if (e.target === m) m.classList.remove('open'); });
+    });
+
+    // Filter buttons
+    document.querySelectorAll('.fb').forEach(function (btn) {
+      btn.addEventListener('click', function () { applyFilter(btn.dataset.f, btn.dataset.k, btn.dataset.v, btn); });
+    });
+
+    // Supplier conditional fields
+    $('s-frete').addEventListener('change',  function (e) { $('frete-info-group').style.display = e.target.checked ? 'block' : 'none'; });
+    $('s-pedmin').addEventListener('change', function (e) { $('pedmin-group').style.display     = e.target.checked ? 'block' : 'none'; });
+
+    // Save buttons
+    $('save-task').addEventListener('click',     saveTask);
+    $('save-supplier').addEventListener('click', saveSupplier);
+    $('save-cost').addEventListener('click',     saveCost);
+    $('save-estoque').addEventListener('click',  saveEstoque);
+    $('save-frete').addEventListener('click',    saveFrete);
+    $('save-parceiro').addEventListener('click', saveParceiro);
+    $('save-pessoa').addEventListener('click',   savePessoa);
+
+    // Delegated clicks (dynamic cards)
+    document.addEventListener('click', handleDelegated);
+
+    // Session restore
+    var saved = sessionStorage.getItem('slb_user');
+    if (saved) { me = saved; showApp(); }
+  });
+
+})();
+</script>
+</body>
+</html>
