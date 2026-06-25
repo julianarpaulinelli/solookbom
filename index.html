@@ -1932,29 +1932,7 @@ function saveEvento(){
 
 
 
-// (old parceiro fn replaced above)
-  return db.from('parceiros').select('*,responsavel:pessoas!parceiros_responsavel_pessoa_id_fkey(nome)').order('nome').then(function(r){
-    D.parceiros=r.data||[];renderParceiros();
-  });
-}
-function renderParceiros(){
-  var st=F.par.status;var list=st==='all'?D.parceiros:D.parceiros.filter(function(p){return p.status===st;});
-  $('parceiro-metrics').innerHTML=metric(D.parceiros.length,'Total')+metric(D.parceiros.filter(function(p){return p.status==='ativo';}).length,'Ativos','var(--green)');
-  var el=$('parceiro-list');if(!list.length){el.innerHTML='<p class="empty">Nenhum parceiro</p>';return;}
-  el.innerHTML=list.map(function(p){return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+p.nome+'</p><div class="card-meta">'+badge(p.status,L.supSt[p.status]||p.status)+(p.tipo?catTag(p.tipo):'')+(p.instagram?'<span style="font-size:9px;color:var(--muted)">'+p.instagram+'</span>':'')+(p.whatsapp?'<span class="tag-pill">📱 '+p.whatsapp+'</span>':'')+'</div>'+(p.observacoes?'<p class="card-desc">'+p.observacoes+'</p>':'')+'</div><div class="card-actions">'+(p.responsavel?av(p.responsavel.nome,p.responsavel.nome):'')+editBtn(p.id,'parceiro')+'<button class="del" data-del-par="'+p.id+'">×</button></div></div></div>';}).join('');
-}
-function openParceiroEdit(id){
-  var p=D.parceiros.find(function(x){return x.id===id;});if(!p)return;
-  $('pa-id').value=p.id;$('pa-nome').value=p.nome;$('pa-tipo').value=p.tipo||'';$('pa-status').value=p.status;$('pa-whatsapp').value=p.whatsapp||'';$('pa-email').value=p.email||'';$('pa-insta').value=p.instagram||'';$('pa-site').value=p.site||'';$('pa-obs').value=p.observacoes||'';
-  if(p.responsavel_pessoa_id)$('pa-resp').value=p.responsavel_pessoa_id;var dBtn=document.getElementById('delete-parceiro');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('parceiro');
-}
-function saveParceiro(){
-  var nome=val('pa-nome').trim();if(!nome){toast('Informe o nome');return;}
-  var id=val('pa-id');
-  var payload={nome:nome,tipo:val('pa-tipo')||null,status:val('pa-status'),whatsapp:val('pa-whatsapp')||null,email:val('pa-email')||null,instagram:val('pa-insta')||null,site:val('pa-site')||null,responsavel_pessoa_id:val('pa-resp')||null,observacoes:val('pa-obs')||null};
-  var q=id?db.from('parceiros').update(payload).eq('id',id):db.from('parceiros').insert(payload);
-  q.then(function(){closeModal('parceiro');resetForm('parceiro');toast(id?'Atualizado!':'Adicionado!');loadParceiros();});
-}
+
 
 // -- DASHBOARD --
 var dashPersonFilter='all';
@@ -2026,7 +2004,6 @@ function renderDashboard(){
   var contasVencidas=D.costs.filter(function(c){return c.status_pagto==='vencido';});
   var contasPend=D.costs.filter(function(c){return c.status_pagto==='pendente';});
   var contasVencer5=D.costs.filter(function(c){return c.data_vencimento&&c.data_vencimento>=hoje&&c.data_vencimento<=in5Str&&c.status_pagto!=='pago';});
-  var comprometido90=D.costs.filter(function(c){return c.status_pagto!=='pago'&&((c.data_vencimento&&c.data_vencimento>hoje&&c.data_vencimento<=in5Str)||c.tipo_compromisso==='recorrente'||c.tipo_compromisso==='parcelado');}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
   var totMes=D.costs.filter(function(c){return c.data&&c.data.startsWith(curMonth2);}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
 
   // ── TAREFAS ──────────────────────────────────────────────
@@ -2073,13 +2050,11 @@ function renderDashboard(){
   if(g3)g3.innerHTML=
     hcKpi(mo(totMes),'Gastos/mes','var(--blue)')+
     hcKpi(contasVencidas.length,'Vencidas',contasVencidas.length?'var(--red)':'var(--muted)')+
-    hcKpi(contasVencer5.length,'Vencem em 5d',contasVencer5.length?'var(--amber)':'var(--muted)')+
-    hcKpi(mo(comprometido90),'Comprom. 90d','var(--purple)');
+    hcKpi(contasVender5.length,'Vencem em 5d',contasVencer5.length?'var(--amber)':'var(--muted)');
   setCritical('hcard-financas',contasVencidas.length,contasVencer5.length);
   var finRows='';
   contasVencidas.slice(0,2).forEach(function(c){finRows+=hcRow('var(--red)',c.descricao,'vencida'+(c.data_vencimento?' em '+fmtDate(c.data_vencimento):''),mo(c.valor),'VENCIDA','red','financas');});
-  contasVencer5.slice(0,2).forEach(function(c){finRows+=hcRow('var(--amber)',c.descricao,'vence em '+fmtDate(c.data_vencimento),mo(c.valor),'5 dias','amber','financas');});
-  D.costs.filter(function(c){return c.tipo_compromisso==='recorrente'||c.recorrente;}).slice(0,2).forEach(function(c){finRows+=hcRow('var(--blue)',c.descricao,c.recorrencia||'recorrente',mo(c.valor),'REC','blue','financas');});
+  contasVencer5.slice(0,3).forEach(function(c){finRows+=hcRow('var(--amber)',c.descricao,'vence em '+fmtDate(c.data_vencimento),mo(c.valor),'5 dias','amber','financas');});
   if(!finRows&&contasPend.length){contasPend.slice(0,3).forEach(function(c){finRows+=hcRow('var(--amber)',c.descricao,'pendente',mo(c.valor),'PEND','amber','financas');});}
   var g4=document.getElementById('hcb-financas');
   if(g4)g4.innerHTML=finRows||hcEmpty('Financas em dia',true);
