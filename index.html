@@ -277,90 +277,62 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
   .dash-home{grid-template-columns:1fr 1fr}
 }
 
-/* ══ DASHBOARD ══════════════════════════════════════════════ */
-.dash-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+/* ══ DASHBOARD ════════════════════════════════════════════════════════ */
+.dash-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
 .dash-main-title{font-family:'Montserrat Alternates',sans-serif;font-size:20px;font-weight:800;letter-spacing:1px;margin-bottom:4px}
 .dash-main-sub{font-size:11px;color:var(--muted);letter-spacing:.5px}
 .dash-person-filter{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.dpf-btn{padding:5px 12px;background:var(--card);border:1px solid var(--border);border-radius:20px;font:700 10px 'Montserrat',sans-serif;letter-spacing:1px;color:var(--muted);cursor:pointer;transition:all .15s;text-transform:uppercase}
+.dpf-btn{padding:5px 14px;background:var(--card);border:1px solid var(--border);border-radius:20px;font:700 10px 'Montserrat',sans-serif;letter-spacing:1px;color:var(--muted);cursor:pointer;transition:all .15s;text-transform:uppercase}
 .dpf-btn.active{background:var(--neon);border-color:var(--neon);color:#000}
 .dpf-btn:hover:not(.active){border-color:var(--neon-bd);color:var(--neon)}
-
-/* SECTION LABELS */
-.dash-section-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin:20px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.alert-label{color:var(--red)}
-.warn-label{color:var(--amber)}
-
-/* ALERT GRID */
-.alert-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
-.alert-card{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;border:1px solid;cursor:pointer;transition:opacity .2s;flex:1 1 240px;max-width:380px;min-width:200px}
-.alert-card:hover{opacity:.85}
-.alert-card.red{background:rgba(255,68,68,.1);border-color:rgba(255,68,68,.35)}
-.alert-card.amber{background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.35)}
-.alert-card.green{background:rgba(68,255,136,.08);border-color:rgba(68,255,136,.3)}
-.alert-card.blue{background:rgba(68,170,255,.08);border-color:rgba(68,170,255,.3)}
-.alert-card.purple{background:rgba(170,136,255,.08);border-color:rgba(170,136,255,.3)}
-.ac-icon{font-size:20px;flex-shrink:0;line-height:1}
-.ac-body{flex:1;min-width:0}
-.ac-val{font-family:'Montserrat Alternates',sans-serif;font-size:22px;font-weight:800;line-height:1}
-.ac-val.red{color:var(--red)}.ac-val.amber{color:var(--amber)}.ac-val.green{color:var(--green)}.ac-val.blue{color:var(--blue)}.ac-val.purple{color:var(--purple)}
-.ac-label{font-size:10px;letter-spacing:.5px;color:var(--muted);margin-top:2px}
-.ac-sub{font-size:9px;color:var(--muted);margin-top:1px;opacity:.7}
-.ac-arrow{font-size:14px;color:var(--border);flex-shrink:0}
-
-/* KPI STRIP */
-.kpi-strip{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
-.kpi-s{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;min-width:100px;cursor:pointer;transition:border-color .2s}
-.kpi-s:hover{border-color:var(--neon-bd)}
-.kpi-s-val{font-family:'Montserrat Alternates',sans-serif;font-size:18px;font-weight:800}
-.kpi-s-lbl{font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-top:2px}
-
-/* MAIN GRID */
-.dash-main-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px}
-@media(max-width:1100px){.dash-main-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:700px){.dash-main-grid{grid-template-columns:1fr}}
-
-/* PANELS */
-.dash-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;min-height:160px}
-.dp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.dp-title{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
-.dp-link{background:none;border:none;font:600 9px 'Montserrat',sans-serif;letter-spacing:1px;color:var(--neon);cursor:pointer;text-transform:uppercase;padding:2px 0;transition:opacity .2s}
-.dp-link:hover{opacity:.75}
-
-/* PANEL ROWS */
-.dp-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(128,128,128,.07);cursor:pointer;transition:background .15s}
-.dp-row:last-child{border:none}
-.dp-row:hover{background:var(--card);border-radius:6px;padding-left:6px;padding-right:6px}
-.dp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.dp-text{flex:1;min-width:0}
-.dp-name{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dp-sub{font-size:9px;color:var(--muted);margin-top:1px}
-.dp-right{font-size:10px;white-space:nowrap;flex-shrink:0;font-weight:700}
-.dp-tag{font-size:9px;padding:1px 6px;border-radius:10px;border:1px solid transparent;white-space:nowrap;font-weight:700}
-.dp-empty{text-align:center;padding:24px 0;color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase}
-
-/* RESP BAR */
-.resp-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.resp-ini{width:28px;height:28px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0}
-.resp-info{flex:1}
-.resp-name{font-size:10px;font-weight:700;margin-bottom:3px}
-.resp-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
-.resp-fill{height:100%;border-radius:3px;background:var(--neon)}
-.resp-counts{display:flex;gap:8px;margin-top:3px}
-.resp-count-item{font-size:9px;display:flex;align-items:center;gap:3px}
-
-/* MODULE ALERTS */
-.mod-alert{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(128,128,128,.07);cursor:pointer}
-.mod-alert:last-child{border:none}
-.mod-alert:hover .mod-text{color:var(--neon)}
-.mod-icon{font-size:14px;flex-shrink:0;margin-top:1px}
-.mod-text{font-size:11px;flex:1;line-height:1.4}
-.mod-badge{font-size:9px;padding:1px 6px;border-radius:10px;font-weight:700;flex-shrink:0}
-.mod-badge.red{background:rgba(255,68,68,.15);color:var(--red)}
-.mod-badge.amber{background:rgba(245,166,35,.15);color:var(--amber)}
-.mod-badge.green{background:rgba(68,255,136,.1);color:var(--green)}
-.mod-badge.blue{background:rgba(68,170,255,.1);color:var(--blue)}
-
+.home-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+@media(max-width:720px){.home-cards-grid{grid-template-columns:1fr}}
+.home-cat-card{background:var(--surface);border:1px solid var(--border);border-left-width:3px;border-left-color:transparent;border-radius:12px;overflow:hidden;transition:border-color .2s}
+.home-cat-card.has-critical{border-left-color:var(--red)}
+.home-cat-card.has-warn{border-left-color:var(--amber)}
+.hcc-header{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;cursor:pointer;transition:background .15s}
+.hcc-header:hover{background:var(--card)}
+.hcc-header:hover .hcc-link{color:var(--neon)}
+.hcc-icon-wrap{width:30px;height:30px;border-radius:7px;border:1px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hcc-title{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;flex:1}
+.hcc-link{font-size:9px;letter-spacing:1px;font-weight:700;color:var(--muted);text-transform:uppercase;white-space:nowrap;transition:color .15s}
+.hcc-kpis{display:flex;padding:0 16px 12px}
+.hcc-kpi{flex:1;text-align:center;padding:8px 4px;border-right:1px solid var(--border)}
+.hcc-kpi:last-child{border-right:none}
+.hcc-kpi-val{font-family:'Montserrat Alternates',sans-serif;font-size:19px;font-weight:800;line-height:1;margin-bottom:2px}
+.hcc-kpi-lbl{font-size:9px;letter-spacing:.5px;color:var(--muted);text-transform:uppercase}
+.hcc-divider{height:1px;background:var(--border);margin:0 16px}
+.hcc-body{padding:8px 16px 14px}
+.hcc-resp{padding:0 16px 14px}
+.hc-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(128,128,128,.07);cursor:pointer}
+.hc-row:last-child{border:none}
+.hc-row:hover .hc-name{color:var(--neon)}
+.hc-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.hc-text{flex:1;min-width:0}
+.hc-name{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .15s}
+.hc-sub{font-size:9px;color:var(--muted);margin-top:1px}
+.hc-right{font-size:10px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.hc-tag{font-size:9px;padding:1px 6px;border-radius:10px;border:1px solid;font-weight:700;white-space:nowrap;flex-shrink:0;text-transform:uppercase;letter-spacing:.5px}
+.hc-tag.red{background:rgba(255,68,68,.1);color:var(--red);border-color:rgba(255,68,68,.25)}
+.hc-tag.amber{background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.25)}
+.hc-tag.green{background:rgba(68,255,136,.08);color:var(--green);border-color:rgba(68,255,136,.2)}
+.hc-tag.neon{background:rgba(212,255,0,.08);color:var(--neon);border-color:rgba(212,255,0,.2)}
+.hc-tag.blue{background:rgba(68,170,255,.08);color:var(--blue);border-color:rgba(68,170,255,.2)}
+.hc-tag.muted{background:var(--card);color:var(--muted);border-color:var(--border)}
+.hc-empty{padding:16px 0;text-align:center;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.hc-empty.good{color:var(--green)}
+.hc-resp-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(128,128,128,.06)}
+.hc-resp-row:last-child{border:none}
+.hc-resp-ini{width:24px;height:24px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;flex-shrink:0}
+.hc-resp-name{font-size:10px;font-weight:600;min-width:52px}
+.hc-resp-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.hc-resp-fill{height:100%;border-radius:2px;background:var(--neon)}
+.hc-resp-num{font-size:12px;font-weight:800;min-width:18px;text-align:right}
+.hc-resp-tags{display:flex;gap:3px}
+.aprov-chip-mini{font-size:8px;padding:1px 5px;border-radius:10px;font-weight:700}
+.aprov-chip-mini.ok{background:rgba(68,255,136,.15);color:var(--green)}
+.aprov-chip-mini.nok{background:rgba(128,128,128,.1);color:var(--muted)}
+.resp-bar,.dp-header,.dp-title,.dp-link,.dp-row,.dp-dot,.dp-text,.dp-name,.dp-sub,.dp-right,.dp-empty,.dp-tag,.dash-panel,.dash-section-label,.warn-label,.alert-label,.dash-main-grid,.alert-grid,.kpi-strip,.alert-card,.kpi-s,.mod-alert{display:none!important}
 </style>
 </head>
 <body>
@@ -480,64 +452,45 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 
         <!-- DASHBOARD HOME -->
         <div class="cw visible" id="section-home">
-          <!-- HEADER + FILTRO PESSOA -->
           <div class="dash-header">
-            <div>
-              <h2 class="dash-main-title" id="dash-greeting">Bom dia! 👋</h2>
-              <p class="dash-main-sub">Aqui está o que precisa da sua atenção hoje</p>
-            </div>
-            <div class="dash-person-filter" id="dash-person-filter">
-              <button class="dpf-btn active" data-person="all">Todos</button>
-            </div>
+            <div><h2 class="dash-main-title" id="dash-greeting">Bom dia!</h2><p class="dash-main-sub">Seu painel de operacoes</p></div>
+            <div class="dash-person-filter" id="dash-person-filter"><button class="dpf-btn active" data-person="all">Todos</button></div>
           </div>
-
-          <!-- ALERTAS CRÍTICOS (vermelho) -->
-          <div class="dash-section-label alert-label">🚨 Ação imediata necessária</div>
-          <div class="alert-grid" id="dash-critical"></div>
-
-          <!-- ALERTAS DE ATENÇÃO (amarelo) -->
-          <div class="dash-section-label warn-label" id="warn-label">⚠️ Atenção nos próximos dias</div>
-          <div class="alert-grid" id="dash-warn"></div>
-
-          <!-- KPIs RÁPIDOS -->
-          <div class="dash-section-label">📊 Visão geral</div>
-          <div class="kpi-strip" id="kpi-row"></div>
-
-          <!-- GRID PRINCIPAL -->
-          <div class="dash-main-grid">
-            <!-- TAREFAS -->
-            <div class="dash-panel">
-              <div class="dp-header"><span class="dp-title">Tarefas em andamento</span><button class="dp-link" data-sec="tarefas">Ver tudo →</button></div>
-              <div id="dash-tasks-doing"></div>
+          <div class="home-cards-grid">
+            <div class="home-cat-card" id="hcard-tarefas">
+              <div class="hcc-header" data-sec="tarefas"><div class="hcc-icon-wrap" style="background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><span class="hcc-title">Tarefas</span><span class="hcc-link">Ver tudo &#8250;</span></div>
+              <div class="hcc-kpis" id="hck-tarefas"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-tarefas"></div><div class="hcc-resp" id="hcr-tarefas"></div>
             </div>
-            <!-- TAREFAS POR PESSOA -->
-            <div class="dash-panel">
-              <div class="dp-header"><span class="dp-title">Tarefas por responsável</span></div>
-              <div id="dash-tasks-by-resp"></div>
+            <div class="home-cat-card" id="hcard-financas">
+              <div class="hcc-header" data-sec="financas"><div class="hcc-icon-wrap" style="background:rgba(68,170,255,.1);border-color:rgba(68,170,255,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><span class="hcc-title">Financas</span><span class="hcc-link">Ver tudo &#8250;</span></div>
+              <div class="hcc-kpis" id="hck-financas"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-financas"></div>
             </div>
-            <!-- ÚLTIMOS PEDIDOS -->
-            <div class="dash-panel">
-              <div class="dp-header"><span class="dp-title">Últimos pedidos</span><button class="dp-link" data-sec="pedidos">Ver tudo →</button></div>
-              <div id="dash-pedidos"></div>
+            <div class="home-cat-card" id="hcard-pedidos">
+              <div class="hcc-header" data-sec="pedidos"><div class="hcc-icon-wrap" style="background:rgba(212,255,0,.08);border-color:rgba(212,255,0,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div><span class="hcc-title">Pedidos</span><span class="hcc-link">Ver tudo &#8250;</span></div>
+              <div class="hcc-kpis" id="hck-pedidos"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-pedidos"></div>
             </div>
-            <!-- APROVAÇÕES -->
-            <div class="dash-panel">
-              <div class="dp-header"><span class="dp-title">Aprovações pendentes</span><button class="dp-link" data-sec="producao">Ver tudo →</button></div>
-              <div id="dash-aprov"></div>
+            <div class="home-cat-card" id="hcard-producao">
+              <div class="hcc-header" data-sec="producao"><div class="hcc-icon-wrap" style="background:rgba(170,136,255,.1);border-color:rgba(170,136,255,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div><span class="hcc-title">Producao</span><span class="hcc-link">Ver tudo &#8250;</span></div>
+              <div class="hcc-kpis" id="hck-producao"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-producao"></div>
             </div>
-            <!-- FINANÇAS -->
-            <div class="dash-panel">
-              <div class="dp-header"><span class="dp-title">Finanças do mês</span><button class="dp-link" data-sec="financas">Ver tudo →</button></div>
-              <div id="dash-fin"></div>
+            <div class="home-cat-card" id="hcard-fornecedores">
+              <div class="hcc-header" data-sec="fornecedores"><div class="hcc-icon-wrap" style="background:rgba(68,255,136,.08);border-color:rgba(68,255,136,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><span class="hcc-title">Fornecedores</span><span class="hcc-link">Ver tudo &#8250;</span></div>
+              <div class="hcc-kpis" id="hck-fornecedores"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-fornecedores"></div>
             </div>
-            <!-- ALERTAS MÓDULOS -->
-            <div class="dash-panel">
-              <div class="dp-header"><span class="dp-title">Alertas dos módulos</span></div>
-              <div id="dash-modules"></div>
+            <div class="home-cat-card" id="hcard-estoque">
+              <div class="hcc-header" data-sec="estoque"><div class="hcc-icon-wrap" style="background:rgba(68,170,255,.08);border-color:rgba(68,170,255,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div><span class="hcc-title">Estoque &amp; Produtos</span><span class="hcc-link">Ver tudo &#8250;</span></div>
+              <div class="hcc-kpis" id="hck-estoque"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-estoque"></div>
+            </div>
+            <div class="home-cat-card" id="hcard-colecoes">
+              <div class="hcc-header" data-sec="colecoes"><div class="hcc-icon-wrap" style="background:rgba(170,136,255,.08);border-color:rgba(170,136,255,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="hcc-title">Colecoes</span><span class="hcc-link">Ver tudo &#8250;</span></div>
+              <div class="hcc-kpis" id="hck-colecoes"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-colecoes"></div>
+            </div>
+            <div class="home-cat-card" id="hcard-parceiros">
+              <div class="hcc-header" data-sec="parceiros"><div class="hcc-icon-wrap" style="background:rgba(68,255,136,.06);border-color:rgba(68,255,136,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="hcc-title">Parceiros &amp; Fretes</span><span class="hcc-link">Ver tudo &#8250;</span></div>
+              <div class="hcc-kpis" id="hck-parceiros"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-parceiros"></div>
             </div>
           </div>
         </div>
-
         <!-- TAREFAS -->
         <div class="cw" id="section-tarefas">
           <div class="section-header"><h2 class="section-title">Tarefas</h2><div class="header-actions"><button class="btn-sec" id="toggle-view-btn">📅 Cronograma</button><button class="btn-add" data-modal="task">+ Nova tarefa</button></div></div>
@@ -920,7 +873,6 @@ function loadPessoas(){
       rf.querySelectorAll('.fb').forEach(function(b){b.addEventListener('click',function(){applyFilter(b.dataset.f,b.dataset.k,b.dataset.v,b);});});
     }
     buildPersonFilter();
-    buildPersonFilter();
     renderPessoas();
   });
 }
@@ -1298,7 +1250,7 @@ function saveParceiro(){
   q.then(function(){closeModal('parceiro');resetForm('parceiro');toast(id?'Atualizado!':'Adicionado!');loadParceiros();});
 }
 
-// ── DASHBOARD ──────────────────────────────────────────────
+// -- DASHBOARD --
 var dashPersonFilter='all';
 
 function buildPersonFilter(){
@@ -1322,6 +1274,26 @@ function filterByPerson(arr,field){
   return arr.filter(function(x){return x[field]===dashPersonFilter||(x.responsavel&&x.responsavel.id===dashPersonFilter);});
 }
 
+function hcKpi(val,lbl,color){
+  return '<div class="hcc-kpi"><div class="hcc-kpi-val"'+(color?' style="color:'+color+'"':'')+'>'+val+'</div><div class="hcc-kpi-lbl">'+lbl+'</div></div>';
+}
+function hcRow(dot,name,sub,right,tag,tagCls,sec){
+  return '<div class="hc-row" data-sec="'+(sec||'')+'">'+
+    '<div class="hc-dot" style="background:'+dot+'"></div>'+
+    '<div class="hc-text"><p class="hc-name">'+name+'</p>'+(sub?'<p class="hc-sub">'+sub+'</p>':'')+'</div>'+
+    (right?'<span class="hc-right">'+right+'</span>':'')+
+    (tag?'<span class="hc-tag '+(tagCls||'muted')+'">'+tag+'</span>':'')+
+  '</div>';
+}
+function hcEmpty(msg,good){return '<div class="hc-empty'+(good?' good':'')+'">'+msg+'</div>';}
+
+function setCritical(cardId,hasCrit,hasWarn){
+  var el=document.getElementById(cardId);if(!el)return;
+  el.classList.remove('has-critical','has-warn');
+  if(hasCrit)el.classList.add('has-critical');
+  else if(hasWarn)el.classList.add('has-warn');
+}
+
 function renderDashboard(){
   var now=new Date();
   var todayStr=now.toISOString().split('T')[0];
@@ -1331,67 +1303,45 @@ function renderDashboard(){
   var h=now.getHours();var g=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
   var pName='';
   if(dashPersonFilter!=='all'){var pp=D.pessoas.find(function(p){return p.id===dashPersonFilter;});if(pp)pName=', '+pp.nome.split(' ')[0];}
-  var gt=document.getElementById('dash-greeting');if(gt)gt.textContent=g+pName+' ';
+  var gt=document.getElementById('dash-greeting');if(gt)gt.textContent=g+pName;
 
   var myTasks=filterByPerson(D.tasks,'responsavel_pessoa_id');
   var myProd=filterByPerson(D.producoes,'responsavel_id');
   var myPed=filterByPerson(D.pedidos,'responsavel_id');
 
-  // CRITICOS
-  var atrasadas=myTasks.filter(function(t){return t.prazo&&t.prazo<todayStr&&t.status!=='done';});
+  // Pre-compute flags
+  var hoje=todayStr;
+  var atrasadas=myTasks.filter(function(t){return t.prazo&&t.prazo<hoje&&t.status!=='done';});
   var bloqueadas=myTasks.filter(function(t){return t.status==='blocked';});
-  var aprovPend=D.producoes.filter(function(p){return p.status==='aprovacao';});
+  var pertoPrazo=myTasks.filter(function(t){return t.prazo&&t.prazo>=hoje&&t.prazo<=in2Str&&t.status!=='done';});
+  var doing=myTasks.filter(function(t){return t.status==='doing';});
+  var todo=myTasks.filter(function(t){return t.status==='todo';});
+  var curMonth2=curMonth;
   var contasVencidas=D.costs.filter(function(c){return c.status_pagto==='vencido';});
-  var estoqueBaixo=D.estoques.filter(function(e){return e.quantidade<=e.quantidade_minima;});
-  var critCards=[];
-  if(atrasadas.length)critCards.push(alertCard('red','!',atrasadas.length,'Tarefas atrasadas','prazo vencido','tarefas'));
-  if(bloqueadas.length)critCards.push(alertCard('red','X',bloqueadas.length,'Tarefas bloqueadas','aguardando desbloqueio','tarefas'));
-  if(aprovPend.length)critCards.push(alertCard('red','OK',aprovPend.length,'Aprovacoes pendentes','producoes aguardando','producao'));
-  if(contasVencidas.length)critCards.push(alertCard('red','$',contasVencidas.length,'Contas vencidas',mo(contasVencidas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0))+' em atraso','financas'));
-  if(estoqueBaixo.length)critCards.push(alertCard('red','~',estoqueBaixo.length,'Estoque baixo','itens abaixo do minimo','estoque'));
-  var critEl=document.getElementById('dash-critical');
-  if(critEl)critEl.innerHTML=critCards.length?critCards.join(''):'<div class="dp-empty" style="color:var(--green)">Nenhuma acao critica pendente!</div>';
+  var contasPend=D.costs.filter(function(c){return c.status_pagto==='pendente';});
+  var contasVencer5=D.costs.filter(function(c){return c.data_vencimento&&c.data_vencimento>=hoje&&c.data_vencimento<=in5Str&&c.status_pagto!=='pago';});
+  var totMes=D.costs.filter(function(c){return c.data&&c.data.startsWith(curMonth2);}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
 
-  // ATENCAO
-  var perto=myTasks.filter(function(t){return t.prazo&&t.prazo>todayStr&&t.prazo<=in2Str&&t.status!=='done';});
-  var contasVencer=D.costs.filter(function(c){return c.data_vencimento&&c.data_vencimento>todayStr&&c.data_vencimento<=in5Str&&c.status_pagto!=='pago';});
-  var prodFim=myProd.filter(function(p){return p.data_prev_fim&&p.data_prev_fim>todayStr&&p.data_prev_fim<=in5Str;});
-  var warnCards=[];
-  if(perto.length)warnCards.push(alertCard('amber','T',perto.length,'Tarefas vencendo','prazo nos proximos 2 dias','tarefas'));
-  if(contasVencer.length)warnCards.push(alertCard('amber','$',contasVencer.length,'Contas a vencer',mo(contasVencer.reduce(function(a,c){return a+parseFloat(c.valor||0);},0))+' nos prox. 5 dias','financas'));
-  if(prodFim.length)warnCards.push(alertCard('amber','P',prodFim.length,'Producoes encerrando','previsao de conclusao proxima','producao'));
-  var warnEl=document.getElementById('dash-warn');if(warnEl)warnEl.innerHTML=warnCards.length?warnCards.join(''):'';
-  var wl=document.getElementById('warn-label');if(wl)wl.style.display=warnCards.length?'':'none';
-
-  // KPI STRIP
-  var doing=myTasks.filter(function(t){return t.status==='doing';}).length;
-  var todo=myTasks.filter(function(t){return t.status==='todo';}).length;
-  var totMes=D.costs.filter(function(c){return c.data&&c.data.startsWith(curMonth);}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
-  var totRec=D.pedidos.reduce(function(a,p){return a+parseFloat(p.valor_total||0);},0);
-  var kpiEl=document.getElementById('kpi-row');
-  if(kpiEl)kpiEl.innerHTML=
-    kpiS(doing,'Em andamento','var(--amber)','tarefas')+
-    kpiS(todo,'A fazer','var(--muted)','tarefas')+
-    kpiS(myPed.filter(function(p){return p.status==='enviado';}).length,'Ped. enviados','var(--neon)','pedidos')+
-    kpiS(mo(totMes),'Gastos/mes','var(--blue)','financas')+
-    kpiS(mo(totRec),'Receita total','var(--green)','pedidos')+
-    kpiS(D.colecoes.filter(function(c){return c.status==='lancada';}).length,'Colecoes ativas','var(--purple)','colecoes')+
-    kpiS(D.suppliers.filter(function(s){return s.aprovado;}).length,'Fornec. aprovados','var(--green)','fornecedores')+
-    kpiS(D.producoes.filter(function(p){return p.status==='disponivel';}).length,'Disp. venda','var(--neon)','producao');
-
-  // TAREFAS EM ANDAMENTO
-  var doingList=myTasks.filter(function(t){return t.status==='doing';}).slice(0,7);
-  var dtEl=document.getElementById('dash-tasks-doing');
-  if(dtEl)dtEl.innerHTML=doingList.length?doingList.map(function(t){
-    var overdue=t.prazo&&t.prazo<todayStr;
-    var soon=t.prazo&&t.prazo<=in2Str&&t.prazo>=todayStr;
-    var dotC=overdue?'var(--red)':'var(--amber)';
-    var sub=(t.responsavel?t.responsavel.nome.split(' ')[0]:'--')+(t.prazo?' | '+fmtDate(t.prazo):'')+(overdue?' ATRASADA':'')+(soon?' vence em breve':'');
-    var tag=t.prioridade==='alta'?'<span class="dp-tag" style="background:rgba(255,68,68,.12);color:var(--red);border-color:rgba(255,68,68,.3)">alta</span>':'';
-    return '<div class="dp-row" data-sec="tarefas"><div class="dp-dot" style="background:'+dotC+'"></div><div class="dp-text"><p class="dp-name">'+t.titulo+'</p><p class="dp-sub">'+sub+'</p></div>'+tag+'</div>';
-  }).join(''):'<div class="dp-empty">Nenhuma em andamento</div>';
-
-  // TAREFAS POR RESPONSAVEL
+  // ── TAREFAS ──────────────────────────────────────────────
+  var g0=document.getElementById('hck-tarefas');
+  if(g0)g0.innerHTML=
+    hcKpi(atrasadas.length,'Atrasadas',atrasadas.length?'var(--red)':'var(--muted)')+
+    hcKpi(bloqueadas.length,'Bloqueadas',bloqueadas.length?'var(--red)':'var(--muted)')+
+    hcKpi(doing.length,'Andamento','var(--amber)')+
+    hcKpi(todo.length,'A fazer','var(--muted)');
+  setCritical('hcard-tarefas',atrasadas.length||bloqueadas.length,pertoPrazo.length);
+  var taskRows='';
+  // atrasadas primeiro
+  atrasadas.slice(0,3).forEach(function(t){taskRows+=hcRow('var(--red)',t.titulo,(t.responsavel?t.responsavel.nome.split(' ')[0]:'')+(t.prazo?' | '+fmtDate(t.prazo):''),'','ATRASADA','red','tarefas');});
+  // vencendo em breve
+  pertoPrazo.slice(0,2).forEach(function(t){taskRows+=hcRow('var(--amber)',t.titulo,(t.responsavel?t.responsavel.nome.split(' ')[0]:'')+(t.prazo?' | '+fmtDate(t.prazo):''),'','2 dias','amber','tarefas');});
+  // bloqueadas
+  bloqueadas.slice(0,2).forEach(function(t){taskRows+=hcRow('var(--red)',t.titulo,t.responsavel?t.responsavel.nome.split(' ')[0]:'',' ','BLOQUEADA','red','tarefas');});
+  // em andamento
+  if(!atrasadas.length&&!bloqueadas.length&&!pertoPrazo.length){doing.slice(0,4).forEach(function(t){taskRows+=hcRow('var(--amber)',t.titulo,t.responsavel?t.responsavel.nome.split(' ')[0]:'',' ',(t.prioridade==='alta'?'ALTA':''),(t.prioridade==='alta'?'red':'muted'),'tarefas');});}
+  var g1=document.getElementById('hcb-tarefas');
+  if(g1)g1.innerHTML=taskRows||hcEmpty('Todas as tarefas em dia',true);
+  // Por responsável
   var respMap={};
   D.tasks.filter(function(t){return t.status!=='done';}).forEach(function(t){
     var rid=t.responsavel_pessoa_id||'none';
@@ -1403,65 +1353,117 @@ function renderDashboard(){
     else respMap[rid].todo++;
   });
   var maxT=Math.max.apply(null,Object.values(respMap).map(function(r){return r.total;}).concat([1]));
-  var respKeys=Object.keys(respMap).sort(function(a,b){return respMap[b].total-respMap[a].total;});
-  var drEl=document.getElementById('dash-tasks-by-resp');
-  if(drEl)drEl.innerHTML=respKeys.length?respKeys.map(function(k){
+  var respHtml=Object.keys(respMap).sort(function(a,b){return respMap[b].total-respMap[a].total;}).map(function(k){
     var r=respMap[k];var pct=Math.round(r.total/maxT*100);
-    return '<div class="resp-bar"><div class="resp-ini">'+ini(r.nome)+'</div><div class="resp-info"><p class="resp-name">'+r.nome+'</p><div class="resp-track"><div class="resp-fill" style="width:'+pct+'%"></div></div><div class="resp-counts">'+(r.blocked?'<span class="resp-count-item" style="color:var(--red)">bloq '+r.blocked+'</span>':'')+'<span class="resp-count-item" style="color:var(--amber)">and '+r.doing+'</span><span class="resp-count-item" style="color:var(--muted)">abr '+r.todo+'</span></div></div><span style="font-size:13px;font-weight:800">'+r.total+'</span></div>';
-  }).join(''):'<div class="dp-empty">Nenhuma tarefa aberta</div>';
+    return '<div class="hc-resp-row"><div class="hc-resp-ini">'+ini(r.nome)+'</div><span class="hc-resp-name">'+r.nome+'</span><div class="hc-resp-track"><div class="hc-resp-fill" style="width:'+pct+'%"></div></div><div class="hc-resp-tags">'+(r.blocked?'<span class="hc-tag red">'+r.blocked+'</span>':'')+'<span class="hc-tag amber">'+r.doing+'</span><span class="hc-tag muted">'+r.todo+'</span></div><span class="hc-resp-num">'+r.total+'</span></div>';
+  }).join('');
+  var g2=document.getElementById('hcr-tarefas');if(g2)g2.innerHTML=respHtml;
 
-  // PEDIDOS
+  // ── FINANCAS ─────────────────────────────────────────────
+  var totVenc=contasVencidas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var totPend=contasPend.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var g3=document.getElementById('hck-financas');
+  if(g3)g3.innerHTML=
+    hcKpi(mo(totMes),'Gastos/mes','var(--blue)')+
+    hcKpi(contasVencidas.length,'Vencidas',contasVencidas.length?'var(--red)':'var(--muted)')+
+    hcKpi(contasVender5.length,'Vencem em 5d',contasVencer5.length?'var(--amber)':'var(--muted)');
+  setCritical('hcard-financas',contasVencidas.length,contasVencer5.length);
+  var finRows='';
+  contasVencidas.slice(0,2).forEach(function(c){finRows+=hcRow('var(--red)',c.descricao,'vencida'+(c.data_vencimento?' em '+fmtDate(c.data_vencimento):''),mo(c.valor),'VENCIDA','red','financas');});
+  contasVencer5.slice(0,3).forEach(function(c){finRows+=hcRow('var(--amber)',c.descricao,'vence em '+fmtDate(c.data_vencimento),mo(c.valor),'5 dias','amber','financas');});
+  if(!finRows&&contasPend.length){contasPend.slice(0,3).forEach(function(c){finRows+=hcRow('var(--amber)',c.descricao,'pendente',mo(c.valor),'PEND','amber','financas');});}
+  var g4=document.getElementById('hcb-financas');
+  if(g4)g4.innerHTML=finRows||hcEmpty('Financas em dia',true);
+
+  // ── PEDIDOS ──────────────────────────────────────────────
   var pedColors={pago:'var(--green)',separacao:'var(--blue)',producao:'var(--amber)',enviado:'var(--neon)',entregue:'var(--green)',troca:'var(--purple)',cancelado:'var(--red)'};
-  var dpEl=document.getElementById('dash-pedidos');
-  if(dpEl)dpEl.innerHTML=myPed.slice(0,6).map(function(p){
-    return '<div class="dp-row" data-sec="pedidos"><div class="dp-dot" style="background:'+(pedColors[p.status]||'var(--muted)')+'"></div><div class="dp-text"><p class="dp-name"><span style="color:var(--neon);font-weight:800;font-size:10px">'+p.numero+'</span> '+p.cliente_nome+'</p><p class="dp-sub">'+L.pedSt[p.status]+(p.codigo_rastreio?' | '+p.codigo_rastreio:'')+'</p></div><span class="dp-right">'+mo(p.valor_total)+'</span></div>';
-  }).join('')||'<div class="dp-empty">Nenhum pedido</div>';
+  var trocas=myPed.filter(function(p){return p.status==='troca';}).length;
+  var enviados=myPed.filter(function(p){return p.status==='enviado';}).length;
+  var totRec=myPed.reduce(function(a,p){return a+parseFloat(p.valor_total||0);},0);
+  var g5=document.getElementById('hck-pedidos');
+  if(g5)g5.innerHTML=hcKpi(myPed.length,'Total')+hcKpi(enviados,'Enviados','var(--neon)')+hcKpi(trocas,'Trocas',trocas?'var(--red)':'var(--muted)')+hcKpi(mo(totRec),'Receita','var(--green)');
+  setCritical('hcard-pedidos',trocas>0,false);
+  var semRastreio=myPed.filter(function(p){return p.status==='enviado'&&!p.codigo_rastreio;});
+  var pedRows='';
+  if(trocas)myPed.filter(function(p){return p.status==='troca';}).slice(0,2).forEach(function(p){pedRows+=hcRow('var(--purple)',p.numero+' '+p.cliente_nome,'em troca',mo(p.valor_total),'TROCA','amber','pedidos');});
+  if(semRastreio.length)semRastreio.slice(0,2).forEach(function(p){pedRows+=hcRow('var(--amber)',p.numero+' '+p.cliente_nome,'enviado sem rastreio',mo(p.valor_total),'SEM RASTR','amber','pedidos');});
+  myPed.filter(function(p){return p.status==='enviado'&&p.codigo_rastreio;}).slice(0,3).forEach(function(p){pedRows+=hcRow(pedColors[p.status]||'var(--muted)',p.numero+' '+p.cliente_nome,L.pedSt[p.status]+(p.codigo_rastreio?' | '+p.codigo_rastreio:''),mo(p.valor_total),'','','pedidos');});
+  if(!pedRows)myPed.slice(0,4).forEach(function(p){pedRows+=hcRow(pedColors[p.status]||'var(--muted)',p.numero+' '+p.cliente_nome,L.pedSt[p.status],mo(p.valor_total),'','','pedidos');});
+  var g6=document.getElementById('hcb-pedidos');
+  if(g6)g6.innerHTML=pedRows||hcEmpty('Nenhum pedido ainda');
 
-  // APROVACOES
-  var daEl=document.getElementById('dash-aprov');
-  if(daEl)daEl.innerHTML=aprovPend.slice(0,5).map(function(p){
-    return '<div class="dp-row" data-sec="producao"><div class="dp-dot" style="background:var(--purple)"></div><div class="dp-text"><p class="dp-name">'+p.nome+'</p><p class="dp-sub" style="display:flex;gap:3px;margin-top:3px"><span class="aprov-chip-mini '+(p.aprovado_ju?'ok':'nok')+'">JU</span><span class="aprov-chip-mini '+(p.aprovado_fe?'ok':'nok')+'">FE</span><span class="aprov-chip-mini '+(p.aprovado_vi?'ok':'nok')+'">VI</span><span class="aprov-chip-mini '+(p.aprovado_ya?'ok':'nok')+'">YA</span></p></div></div>';
-  }).join('')||'<div class="dp-empty" style="color:var(--green)">Sem pendentes</div>';
-
-  // FINANCAS
-  var pendFin=D.costs.filter(function(c){return c.status_pagto==='pendente'||c.status_pagto==='vencido';});
-  var dfEl=document.getElementById('dash-fin');
-  if(dfEl)dfEl.innerHTML=
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:11px;color:var(--muted)">Total do mes</span><span style="font-size:15px;font-weight:800">'+mo(totMes)+'</span></div>'+
-    (pendFin.slice(0,4).map(function(c){var v=c.status_pagto==='vencido';return '<div class="dp-row" data-sec="financas"><div class="dp-dot" style="background:'+(v?'var(--red)':'var(--amber)')+'"></div><div class="dp-text"><p class="dp-name">'+c.descricao+'</p><p class="dp-sub">'+(c.data_vencimento?'Vence: '+fmtDate(c.data_vencimento):'pendente')+(c.pago_por?' | '+c.pago_por.nome.split(' ')[0]:'')+'</p></div><span class="dp-right" style="color:'+(v?'var(--red)':'var(--amber)')+'">'+mo(c.valor)+'</span></div>';}).join('')||'<div class="dp-empty" style="color:var(--green)">Sem pendencias</div>');
-
-  // ALERTAS MODULOS
-  var modAlerts=[];
-  var fNaoAprov=D.suppliers.filter(function(s){return !s.aprovado&&s.status==='ativo';}).length;
-  if(fNaoAprov)modAlerts.push({icon:'truck',text:fNaoAprov+' fornecedor(es) ativo(s) sem aprovacao',cls:'amber',sec:'fornecedores'});
-  var colProd=D.colecoes.filter(function(c){return c.status==='em_producao';}).length;
-  if(colProd)modAlerts.push({icon:'col',text:colProd+' colecao(oes) em producao',cls:'blue',sec:'colecoes'});
-  var prodSemCol=D.produtos.filter(function(p){return !p.colecao_id;}).length;
-  if(prodSemCol)modAlerts.push({icon:'tag',text:prodSemCol+' produto(s) sem colecao',cls:'amber',sec:'produtos'});
-  var dispVenda=D.producoes.filter(function(p){return p.status==='disponivel';}).length;
-  if(dispVenda)modAlerts.push({icon:'ok',text:dispVenda+' producao(oes) disponivel para venda',cls:'green',sec:'producao'});
-  var pedTroca=D.pedidos.filter(function(p){return p.status==='troca';}).length;
-  if(pedTroca)modAlerts.push({icon:'troca',text:pedTroca+' pedido(s) em troca/devolucao',cls:'red',sec:'pedidos'});
-  var semRastreio=D.pedidos.filter(function(p){return p.status==='enviado'&&!p.codigo_rastreio;}).length;
-  if(semRastreio)modAlerts.push({icon:'box',text:semRastreio+' pedido(s) enviado(s) sem rastreio',cls:'amber',sec:'pedidos'});
-  if(!D.fretes.filter(function(f){return f.status==='ativo';}).length)modAlerts.push({icon:'frete',text:'Nenhuma tabela de frete ativa',cls:'red',sec:'fretes'});
-  var parcPend=D.parceiros.filter(function(p){return p.status==='prospecto';}).length;
-  if(parcPend)modAlerts.push({icon:'hand',text:parcPend+' parceiro(s) em prospeccao',cls:'blue',sec:'parceiros'});
+  // ── PRODUCAO ─────────────────────────────────────────────
+  var aprovPend=D.producoes.filter(function(p){return p.status==='aprovacao';});
   var emProd=D.producoes.filter(function(p){return p.status==='em_producao';}).length;
-  if(emProd)modAlerts.push({icon:'fab',text:emProd+' producao(oes) em andamento',cls:'blue',sec:'producao'});
-  var dmEl=document.getElementById('dash-modules');
-  var iconMap={truck:'&#128666;',col:'&#128450;',tag:'&#127991;',ok:'&#9989;',troca:'&#128260;',box:'&#128230;',frete:'&#128667;',hand:'&#129309;',fab:'&#127981;'};
-  if(dmEl)dmEl.innerHTML=modAlerts.length?modAlerts.map(function(a){
-    return '<div class="mod-alert" data-sec="'+a.sec+'"><span class="mod-icon">'+(iconMap[a.icon]||a.icon)+'</span><span class="mod-text">'+a.text+'</span><span class="mod-badge '+a.cls+'">'+a.sec+'</span></div>';
-  }).join(''):'<div class="dp-empty">Nenhum alerta nos modulos</div>';
+  var dispVenda=D.producoes.filter(function(p){return p.status==='disponivel';}).length;
+  var g7=document.getElementById('hck-producao');
+  if(g7)g7.innerHTML=hcKpi(aprovPend.length,'Aprov. pend.',aprovPend.length?'var(--red)':'var(--muted)')+hcKpi(emProd,'Em producao','var(--amber)')+hcKpi(dispVenda,'Disponivel','var(--green)');
+  setCritical('hcard-producao',aprovPend.length,false);
+  var prdRows='';
+  aprovPend.slice(0,3).forEach(function(p){
+    var chips='<span class="aprov-chip-mini '+(p.aprovado_ju?'ok':'nok')+'">JU</span><span class="aprov-chip-mini '+(p.aprovado_fe?'ok':'nok')+'">FE</span><span class="aprov-chip-mini '+(p.aprovado_vi?'ok':'nok')+'">VI</span><span class="aprov-chip-mini '+(p.aprovado_ya?'ok':'nok')+'">YA</span>';
+    prdRows+='<div class="hc-row" data-sec="producao"><div class="hc-dot" style="background:var(--purple)"></div><div class="hc-text"><p class="hc-name">'+p.nome+'</p><p class="hc-sub" style="display:flex;gap:3px;margin-top:2px">'+chips+'</p></div><span class="hc-tag red">APROVACAO</span></div>';
+  });
+  myProd.filter(function(p){return p.status==='em_producao';}).slice(0,3).forEach(function(p){prdRows+=hcRow('var(--amber)',p.nome,(p.colecao?p.colecao.nome:'')+(p.data_prev_fim?' | '+fmtDate(p.data_prev_fim):''),'','EM PROD','blue','producao');});
+  if(dispVenda&&!prdRows)myProd.filter(function(p){return p.status==='disponivel';}).slice(0,3).forEach(function(p){prdRows+=hcRow('var(--green)',p.nome,p.colecao?p.colecao.nome:'','','DISPONIVEL','green','producao');});
+  var g8=document.getElementById('hcb-producao');if(g8)g8.innerHTML=prdRows||hcEmpty('Nenhuma producao ativa');
+
+  // ── FORNECEDORES ─────────────────────────────────────────
+  var fNaoAprov=D.suppliers.filter(function(s){return !s.aprovado&&s.status==='ativo';}).length;
+  var fAtivos=D.suppliers.filter(function(s){return s.status==='ativo';}).length;
+  var fGold=D.suppliers.filter(function(s){return s.classificacao==='gold';}).length;
+  var g9=document.getElementById('hck-fornecedores');
+  if(g9)g9.innerHTML=hcKpi(D.suppliers.length,'Total')+hcKpi(fAtivos,'Ativos','var(--green)')+hcKpi(fGold,'Gold','var(--neon)')+hcKpi(fNaoAprov,'Sem aprov.',fNaoAprov?'var(--amber)':'var(--muted)');
+  setCritical('hcard-fornecedores',false,fNaoAprov>0);
+  var supRows='';
+  if(fNaoAprov)D.suppliers.filter(function(s){return !s.aprovado&&s.status==='ativo';}).slice(0,3).forEach(function(s){supRows+=hcRow('var(--amber)',s.nome,s.categoria,'','SEM APROV','amber','fornecedores');});
+  D.suppliers.filter(function(s){return s.classificacao==='gold'&&s.aprovado;}).slice(0,3).forEach(function(s){supRows+=hcRow('var(--neon)',s.nome,s.categoria+' | '+stars(s.avaliacao),'','GOLD','neon','fornecedores');});
+  var g10=document.getElementById('hcb-fornecedores');if(g10)g10.innerHTML=supRows||hcEmpty('Nenhum alerta de fornecedor',true);
+
+  // ── ESTOQUE + PRODUTOS ──────────────────────────────────
+  var estBaixo=D.estoques.filter(function(e){return e.quantidade<=e.quantidade_minima;});
+  var prodSemCol=D.produtos.filter(function(p){return !p.colecao_id;}).length;
+  var g11=document.getElementById('hck-estoque');
+  if(g11)g11.innerHTML=hcKpi(D.estoques.length,'Itens')+hcKpi(estBaixo.length,'Baixo',estBaixo.length?'var(--red)':'var(--muted)')+hcKpi(D.produtos.length,'Produtos')+hcKpi(prodSemCol,'Sem colecao',prodSemCol?'var(--amber)':'var(--muted)');
+  setCritical('hcard-estoque',estBaixo.length>0,prodSemCol>0);
+  var estRows='';
+  estBaixo.slice(0,4).forEach(function(e){estRows+=hcRow('var(--red)',e.nome,e.categoria,e.quantidade+' '+e.unidade,'BAIXO','red','estoque');});
+  if(!estRows&&prodSemCol)D.produtos.filter(function(p){return !p.colecao_id;}).slice(0,3).forEach(function(p){estRows+=hcRow('var(--amber)',p.sku+' '+p.nome,p.categoria||'','','SEM COL','amber','produtos');});
+  var g12=document.getElementById('hcb-estoque');if(g12)g12.innerHTML=estRows||hcEmpty('Estoque e produtos ok',true);
+
+  // ── COLECOES ─────────────────────────────────────────────
+  var colLancadas=D.colecoes.filter(function(c){return c.status==='lancada';}).length;
+  var colEmProd=D.colecoes.filter(function(c){return c.status==='em_producao';}).length;
+  var g13=document.getElementById('hck-colecoes');
+  if(g13)g13.innerHTML=hcKpi(D.colecoes.length,'Total')+hcKpi(colEmProd,'Em producao','var(--amber)')+hcKpi(colLancadas,'Lancadas','var(--green)');
+  setCritical('hcard-colecoes',false,false);
+  var colRows='';
+  D.colecoes.filter(function(c){return c.status==='em_producao'||c.status==='lancada';}).slice(0,5).forEach(function(c){
+    var prods=D.produtos.filter(function(p){return p.colecao_id===c.id;});
+    var rec=prods.reduce(function(a,p){return a+(p.preco_venda||0);},0);
+    var tagCls=c.status==='lancada'?'green':'amber';
+    colRows+=hcRow('var(--purple)',c.nome,(c.temporada||'')+(c.ano?' '+c.ano:'')+'  |  '+prods.length+' prods',(rec>0?mo(rec):''),L.colSt[c.status],tagCls,'colecoes');
+  });
+  var g14=document.getElementById('hcb-colecoes');if(g14)g14.innerHTML=colRows||hcEmpty('Nenhuma colecao ativa');
+
+  // ── PARCEIROS + FRETES ───────────────────────────────────
+  var parcAtivos=D.parceiros.filter(function(p){return p.status==='ativo';}).length;
+  var parcProsp=D.parceiros.filter(function(p){return p.status==='prospecto';}).length;
+  var fretesAtivos=D.fretes.filter(function(f){return f.status==='ativo';}).length;
+  var g15=document.getElementById('hck-parceiros');
+  if(g15)g15.innerHTML=hcKpi(parcAtivos,'Parceiros ativos','var(--green)')+hcKpi(parcProsp,'Em prosp.','var(--muted)')+hcKpi(fretesAtivos,'Fretes ativos',fretesAtivos?'var(--green)':'var(--red)');
+  setCritical('hcard-parceiros',!fretesAtivos,parcProsp>0);
+  var parRows='';
+  if(!fretesAtivos)parRows+=hcRow('var(--red)','Nenhuma tabela de frete ativa','Configure fretes para os pedidos','','URGENTE','red','fretes');
+  D.parceiros.filter(function(p){return p.status==='prospecto';}).slice(0,3).forEach(function(p){parRows+=hcRow('var(--blue)',p.nome,p.tipo||'parceiro','','PROSP','blue','parceiros');});
+  D.parceiros.filter(function(p){return p.status==='ativo';}).slice(0,3).forEach(function(p){parRows+=hcRow('var(--green)',p.nome,p.tipo||'parceiro','','ATIVO','green','parceiros');});
+  var g16=document.getElementById('hcb-parceiros');if(g16)g16.innerHTML=parRows||hcEmpty('Nenhum parceiro cadastrado');
 }
 
-function alertCard(cls,icon,val,label,sub,sec){
-  return '<div class="alert-card '+cls+'" data-sec="'+sec+'"><span class="ac-icon">'+icon+'</span><div class="ac-body"><div class="ac-val '+cls+'">'+val+'</div><div class="ac-label">'+label+'</div><div class="ac-sub">'+sub+'</div></div><span class="ac-arrow">&#8250;</span></div>';
-}
-function kpiS(v,l,color,sec){return '<div class="kpi-s" data-sec="'+sec+'"><div class="kpi-s-val" style="color:'+color+'">'+v+'</div><div class="kpi-s-lbl">'+l+'</div></div>';}
-function kpi(v,l,color,sec){return '<div class="kpi" data-sec="'+sec+'"><div class="kpi-accent" style="background:'+color+'"></div><div class="kpi-val" style="color:'+color+'">'+v+'</div><div class="kpi-label">'+l+'</div></div>';}
-
+function contasVender5(){return [];}
+function alertCard(){return '';}
+function kpiS(){return '';}
+function kpi(){return '';}
 
 // ── BADGE HELPERS ──────────────────────────────────────────
 function updateBadge(name,count){var b=$('badge-'+name);if(!b)return;b.style.display=count>0?'':'none';b.textContent=count;}
