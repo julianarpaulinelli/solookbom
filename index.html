@@ -8,26 +8,30 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Montserrat+Alternates:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ── THEMES ── */
-:root{
-  --bg:#0A0A0A;--surface:#141414;--card:#1E1E1E;--border:#2A2A2A;
-  --fg:#F2F2F0;--muted:#666;--muted2:#999;
-  --neon:#D4FF00;--neon-bg:rgba(212,255,0,.08);--neon-bd:rgba(212,255,0,.25);
-  --red:#FF4444;--amber:#F5A623;--green:#44FF88;--blue:#44AAFF;--purple:#AA88FF;
+/* ── TOKENS ─────────────────────────────────────────────────── */
+:root {
+  --bg:#0A0A0A; --surface:#141414; --card:#1E1E1E; --border:#2A2A2A;
+  --fg:#F2F2F0; --muted:#666; --muted2:#999;
+  --neon:#D4FF00; --neon-bg:rgba(212,255,0,.08); --neon-bd:rgba(212,255,0,.25);
+  --red:#FF4444; --amber:#F5A623; --green:#44FF88; --blue:#44AAFF; --purple:#AA88FF;
   --shadow:0 2px 12px rgba(0,0,0,.4);
-  --sidebar-w:220px;
+  --sidebar-w:220px; --radius:10px; --radius-sm:6px;
 }
-[data-theme="light"]{
-  --bg:#F5F4F0;--surface:#FFFFFF;--card:#F0EFE9;--border:#E0DFD9;
-  --fg:#1A1A1A;--muted:#888;--muted2:#555;
-  --neon:#5C7A00;--neon-bg:rgba(92,122,0,.08);--neon-bd:rgba(92,122,0,.25);
+[data-theme="light"] {
+  --bg:#F5F4F0; --surface:#FFF; --card:#F0EFE9; --border:#E0DFD9;
+  --fg:#1A1A1A; --muted:#888; --muted2:#555;
+  --neon:#5C7A00; --neon-bg:rgba(92,122,0,.08); --neon-bd:rgba(92,122,0,.25);
   --shadow:0 2px 12px rgba(0,0,0,.1);
 }
+
+/* ── RESET ──────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);min-height:100vh;font-size:13px;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 
-/* ── LOGIN ── */
+/* ── LOGIN ──────────────────────────────────────────────────── */
 #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .login-box{width:100%;max-width:360px;text-align:center}
 .login-logo{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:32px}
@@ -36,30 +40,30 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .login-divider{height:1px;background:var(--border);margin:24px 0}
 .login-group{margin-bottom:14px;text-align:left}
 .login-label{display:block;margin-bottom:7px;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
-.login-input{width:100%;padding:11px 13px;background:var(--card);border:1px solid var(--border);border-radius:6px;font:13px 'Montserrat',sans-serif;color:var(--fg);outline:none;transition:border-color .2s}
+.login-input{width:100%;padding:11px 13px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);font:13px 'Montserrat',sans-serif;color:var(--fg);outline:none;transition:border-color .2s}
 .login-input:focus{border-color:var(--neon)}
-.login-btn{width:100%;margin-top:4px;padding:12px;background:var(--neon);color:#000;border:none;border-radius:6px;font:800 11px 'Montserrat',sans-serif;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
+.login-btn{width:100%;margin-top:4px;padding:12px;background:var(--neon);color:#000;border:none;border-radius:var(--radius-sm);font:800 11px 'Montserrat',sans-serif;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
 .login-btn:hover{opacity:.85}
 .login-error{display:none;margin-top:10px;font-size:10px;letter-spacing:1px;color:var(--red);text-transform:uppercase}
 
-/* ── APP SHELL ── */
+/* ── APP SHELL ──────────────────────────────────────────────── */
 #app-screen{display:none;min-height:100vh}
 .app-layout{display:flex;min-height:100vh}
 
-/* ── SIDEBAR ── */
+/* ── SIDEBAR ────────────────────────────────────────────────── */
 .sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:30;transition:transform .25s}
 .sidebar-logo{display:flex;align-items:center;gap:10px;padding:18px 16px;border-bottom:1px solid var(--border);cursor:pointer}
-.sidebar-logo svg{flex-shrink:0}
 .logo-name{font-family:'Montserrat Alternates',sans-serif;font-size:11px;font-weight:800;letter-spacing:4px}
 .logo-sub{font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:1px}
 .sidebar-nav{flex:1;overflow-y:auto;padding:8px 0}
 .nav-section{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:14px 16px 6px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;transition:all .15s;border-left:2px solid transparent;margin-bottom:1px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;transition:all .15s;border-left:2px solid transparent;margin-bottom:1px;user-select:none}
 .nav-item:hover{background:var(--card);color:var(--fg)}
 .nav-item.active{background:var(--neon-bg);border-left-color:var(--neon);color:var(--neon)}
 .nav-item svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.nav-label{font-size:12px;font-weight:600;letter-spacing:.3px}
+.nav-label{font-size:11px;font-weight:600;letter-spacing:.3px;flex:1}
 .nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:20px;min-width:18px;text-align:center}
+.nav-item-disabled{opacity:.35;cursor:default;pointer-events:none}
 .sidebar-footer{padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .logged-name{font-size:11px;font-weight:600;color:var(--muted2)}
 .sidebar-actions{display:flex;align-items:center;gap:8px}
@@ -68,67 +72,47 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .logout-btn{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;padding:5px 8px;font-family:'Montserrat',sans-serif;transition:all .2s}
 .logout-btn:hover{border-color:var(--red);color:var(--red)}
 
-/* ── MAIN AREA ── */
+/* ── MAIN AREA ──────────────────────────────────────────────── */
 .main-area{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
 .topbar{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
 .page-title{font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
 .topbar-right{display:flex;align-items:center;gap:12px}
 .topbar-user{font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
-
-/* ── CONTENT ── */
+.sidebar-toggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:var(--fg)}
 .content{flex:1;padding:24px;max-width:1100px;width:100%}
+
+/* ── SECTIONS ───────────────────────────────────────────────── */
 .cw{display:none}.cw.visible{display:block}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
 .section-title{font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
 .header-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── BUTTONS ────────────────────────────────────────────────── */
 .btn-add{padding:8px 16px;background:var(--neon);color:#000;border:none;border-radius:5px;font:800 10px 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
 .btn-add:hover{opacity:.85}
 .btn-sec{padding:8px 14px;background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:5px;font:700 10px 'Montserrat',sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .btn-sec:hover{border-color:var(--neon-bd);color:var(--neon)}
 
-/* ── DASHBOARD HOME ── */
-.dash-home{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s}
-.kpi:hover{border-color:var(--neon-bd)}
-.kpi-accent{position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
-.kpi-val{font-family:'Montserrat Alternates',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;line-height:1}
-.kpi-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
-.kpi-sub{font-size:10px;color:var(--muted2);margin-top:4px}
-.dash-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
-.dash-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
-.dash-card-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.dash-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(128,128,128,.08)}
-.dash-item:last-child{border:none}
-.dash-item-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.dash-item-label{flex:1;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dash-item-val{font-size:11px;font-weight:700;white-space:nowrap}
-.aprov-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(128,128,128,.08)}
-.aprov-row:last-child{border:none}
-.aprov-chips-mini{display:flex;gap:3px}
-.aprov-chip-mini{font-size:8px;padding:1px 5px;border-radius:10px;font-weight:700}
-.aprov-chip-mini.ok{background:rgba(68,255,136,.15);color:var(--green)}
-.aprov-chip-mini.nok{background:rgba(128,128,128,.1);color:var(--muted)}
-
-/* ── METRICS ── */
+/* ── METRICS ────────────────────────────────────────────────── */
 .metrics{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .metric{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 14px;min-width:100px}
 .metric-val{font-family:'Montserrat Alternates',sans-serif;font-size:19px;font-weight:800}
 .metric-lbl{font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-top:2px}
 
-/* ── FILTERS ── */
+/* ── FILTERS ────────────────────────────────────────────────── */
 .filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px;align-items:center}
 .fl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 .fb{padding:3px 11px;background:transparent;border:1px solid var(--border);border-radius:20px;font:700 9px 'Montserrat',sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .15s}
 .fb.active{background:var(--neon);border-color:var(--neon);color:#000}
 
-/* ── SEARCH ── */
+/* ── SEARCH ─────────────────────────────────────────────────── */
 .search-bar{display:flex;gap:8px;margin-bottom:12px}
-.search-input{flex:1;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;font:13px 'Montserrat',sans-serif;color:var(--fg);outline:none;transition:border-color .2s}
+.search-input{flex:1;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);font:13px 'Montserrat',sans-serif;color:var(--fg);outline:none;transition:border-color .2s}
 .search-input:focus{border-color:var(--neon)}
 .search-input::placeholder{color:var(--muted)}
 
-/* ── CARDS ── */
-.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:7px;transition:border-color .2s}
+/* ── CARDS ──────────────────────────────────────────────────── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;margin-bottom:7px;transition:border-color .2s}
 .card.cl{cursor:pointer}.card.cl:hover{border-color:var(--neon-bd)}
 .card-row{display:flex;align-items:flex-start;gap:11px}
 .card-body{flex:1;min-width:0}
@@ -138,102 +122,59 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .card-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .stock-low{border-color:rgba(255,68,68,.35)!important}
 
-/* ── BADGES ── */
+/* ── BADGES ─────────────────────────────────────────────────── */
 .badge{font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase;border:1px solid transparent}
-.b-todo{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
-.b-doing{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
-.b-done{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
-.b-blocked{background:rgba(255,68,68,.1);color:var(--red);border-color:rgba(255,68,68,.25)}
-.b-prospecto,.b-pendente{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
-.b-negociando{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
-.b-ativo,.b-pago{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
-.b-inativo{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
-.b-pausado,.b-cancelado,.b-vencido{background:rgba(255,68,68,.1);color:var(--red);border-color:rgba(255,68,68,.25)}
+/* status */
+.b-todo,.b-prospecto,.b-pendente,.b-inativo,.b-ideacao,.b-planejamento,.b-planejado,.b-planejada,.b-encerrada,.b-encerrado,.b-externo{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
+.b-doing,.b-negociando,.b-media,.b-variavel,.b-aprovacao,.b-em_producao,.b-separacao,.b-producao,.b-amber{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
+.b-done,.b-ativo,.b-pago,.b-entregue,.b-recebido,.b-disponivel,.b-lancada,.b-postado,.b-ativa,.b-green{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
+.b-blocked,.b-pausado,.b-cancelado,.b-vencido,.b-red{background:rgba(255,68,68,.1);color:var(--red);border-color:rgba(255,68,68,.25)}
+.b-alta{background:rgba(255,68,68,.1);color:var(--red);border-color:rgba(255,68,68,.25)}
+.b-baixa{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
+.b-gold,.b-produzido,.b-enviado{background:rgba(212,255,0,.1);color:var(--neon);border-color:var(--neon-bd)}
+.b-silver{background:rgba(180,180,180,.1);color:#aaa;border-color:#333}
+.b-bronze,.b-bronze-t{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
+.b-fixo,.b-socio,.b-equipe,.b-em_criacao,.b-confirmado,.b-contato,.b-blue{background:rgba(68,170,255,.1);color:var(--blue);border-color:rgba(68,170,255,.25)}
+.b-gratis,.b-free{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
+.b-troca,.b-produto_enviado,.b-produto-enviado,.b-aprovacao-prd{background:rgba(170,136,255,.12);color:var(--purple);border-color:rgba(170,136,255,.3)}
 .b-despesa{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
 .b-investimento{background:rgba(68,170,255,.1);color:var(--blue);border-color:rgba(68,170,255,.25)}
-.b-alta{background:rgba(255,68,68,.1);color:var(--red);border-color:rgba(255,68,68,.25)}
-.b-media{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
-.b-baixa{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
-.b-gold{background:rgba(212,255,0,.1);color:var(--neon);border-color:var(--neon-bd)}
-.b-silver{background:rgba(180,180,180,.1);color:#aaa;border-color:#333}
-.b-bronze{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
-.b-fixo,.b-socio{background:rgba(68,170,255,.1);color:var(--blue);border-color:rgba(68,170,255,.25)}
-.b-variavel,.b-media,.b-aprovacao{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
-.b-gratis,.b-equipe{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
-.b-externo{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
-.b-produto-enviado,.b-produto_enviado{background:rgba(68,170,255,.1);color:var(--blue);border-color:rgba(68,170,255,.25)}
-.b-postou{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
-.b-contato{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
-.b-encerrado{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
-.b-planejado{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
-.b-confirmado{background:rgba(68,170,255,.1);color:var(--blue);border-color:rgba(68,170,255,.25)}
-.b-postado{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
-.b-ativa{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
-.b-planejada{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
-.b-encerrada{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
-.b-ideacao{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
-.b-em_criacao{background:rgba(68,170,255,.1);color:var(--blue);border-color:rgba(68,170,255,.25)}
-.b-em_producao{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
-.b-produzido{background:rgba(212,255,0,.1);color:var(--neon);border-color:var(--neon-bd)}
-.b-recebido,.b-entregue,.b-disponivel{background:rgba(68,255,136,.15);color:var(--green);border-color:rgba(68,255,136,.4)}
-.b-separacao,.b-enviado{background:rgba(68,170,255,.1);color:var(--blue);border-color:rgba(68,170,255,.25)}
-.b-troca{background:rgba(170,136,255,.12);color:var(--purple);border-color:rgba(170,136,255,.3)}
-.b-planejamento{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
-.b-lancada{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
-.b-encerrada{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
 .b-recorrente{background:rgba(170,136,255,.12);color:var(--purple);border-color:rgba(170,136,255,.3)}
+/* tier */
+.tier-badge{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;border:1px solid;text-transform:uppercase;letter-spacing:.5px}
+.tier-diamante{background:rgba(68,170,255,.15);color:var(--blue);border-color:rgba(68,170,255,.3)}
+.tier-ouro{background:rgba(212,255,0,.1);color:var(--neon);border-color:var(--neon-bd)}
+.tier-prata{background:rgba(180,180,180,.1);color:#aaa;border-color:#333}
+.tier-bronze{background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.25)}
+
+/* ── TAGS / PILLS ───────────────────────────────────────────── */
 .cat-tag{font-size:9px;color:var(--muted);background:var(--bg);padding:2px 7px;border-radius:20px;border:1px solid var(--border)}
 .tag-pill{font-size:9px;color:var(--muted);background:var(--bg);padding:2px 7px;border-radius:20px;border:1px solid var(--border);white-space:nowrap}
 .tag-pill.yes{border-color:var(--neon-bd);color:var(--neon);background:var(--neon-bg)}
-.av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;background:var(--bg);color:var(--muted);border:1px solid var(--border)}
-.avg{display:flex;gap:3px}
 .sku-tag{font-family:'Montserrat Alternates',sans-serif;font-size:10px;font-weight:700;color:var(--neon);background:var(--neon-bg);border:1px solid var(--neon-bd);padding:2px 8px;border-radius:4px;letter-spacing:1px}
 .pedido-num{font-family:'Montserrat Alternates',sans-serif;font-size:12px;font-weight:800;color:var(--neon)}
+.pontos-badge{font-size:10px;font-weight:700;color:var(--purple);background:rgba(170,136,255,.1);border:1px solid rgba(170,136,255,.25);padding:2px 8px;border-radius:20px}
+.vip-badge{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;background:rgba(212,255,0,.1);color:var(--neon);border:1px solid var(--neon-bd)}
+.social-handles{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.social-pill{font-size:9px;padding:2px 7px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--muted)}
+.social-pill.ig{border-color:rgba(180,0,180,.3);color:#cc44cc}
+.social-pill.tt{border-color:rgba(255,0,80,.3);color:#ff4466}
+.social-pill.th{border-color:rgba(100,100,100,.3);color:var(--muted)}
+.social-pill.yt{border-color:rgba(255,0,0,.3);color:#ff4444}
 
-/* ── APPROVALS ── */
-.aprov-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
-.aprov-chip{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;letter-spacing:.5px}
-.aprov-chip.ok{background:rgba(68,255,136,.15);color:var(--green);border:1px solid rgba(68,255,136,.3)}
-.aprov-chip.nok{background:rgba(102,102,102,.1);color:var(--muted);border:1px solid var(--border)}
-
-/* ── TIMELINE ── */
-.timeline{margin-top:16px}
-.tl-month{margin-bottom:20px}
-.tl-month-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
-.tl-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(128,128,128,.08)}
-.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.tl-dot.todo{background:var(--muted)}.tl-dot.doing{background:var(--amber)}.tl-dot.done{background:var(--green)}.tl-dot.blocked{background:var(--red)}
-.tl-info{flex:1;min-width:0}
-.tl-name{font-size:12px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tl-meta{font-size:10px;color:var(--muted);display:flex;gap:6px;align-items:center}
-.tl-date{font-size:10px;color:var(--muted);white-space:nowrap;flex-shrink:0}
-.tl-no-date{font-size:10px;color:var(--border);white-space:nowrap;flex-shrink:0;font-style:italic}
-
-/* ── DASHBOARD CHARTS ── */
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
-.sup-dash-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
-.sup-dash-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.bar-item{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.bar-label{font-size:11px;font-weight:600;min-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
-.bar-fill{height:100%;border-radius:3px;background:var(--neon);transition:width .4s}
-.bar-val{font-size:10px;color:var(--muted);white-space:nowrap;min-width:30px;text-align:right}
-.pie-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
-.pie-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.pie-label{font-size:11px;flex:1}
-.pie-pct{font-size:11px;font-weight:700}
-
-/* ── PERSON CARD ── */
-.person-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 15px;margin-bottom:7px;display:flex;align-items:center;gap:11px}
+/* ── AVATARS ────────────────────────────────────────────────── */
+.av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+.avg{display:flex;gap:3px}
+.person-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 15px;margin-bottom:7px;display:flex;align-items:center;gap:11px}
 .person-avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:var(--bg);border:1px solid var(--border)}
 
-/* ── ICON BUTTONS ── */
+/* ── ICON BUTTONS ───────────────────────────────────────────── */
 .del{background:none;border:none;cursor:pointer;color:var(--border);font-size:17px;padding:2px 4px;line-height:1;transition:color .15s}
 .del:hover{color:var(--red)}
 .edit-btn{background:none;border:none;cursor:pointer;color:var(--border);font-size:13px;padding:3px 6px;line-height:1;transition:color .15s;border-radius:4px}
 .edit-btn:hover{color:var(--neon);background:var(--neon-bg)}
 
-/* ── MODAL ── */
+/* ── MODAL ──────────────────────────────────────────────────── */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
 .modal-bg.open{display:flex}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;width:100%;max-width:520px;margin:auto;box-shadow:var(--shadow)}
@@ -245,7 +186,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .form-group{margin-bottom:11px}
 .form-label{display:block;margin-bottom:5px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
-.form-input,.form-select,.form-textarea{width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font:12px 'Montserrat',sans-serif;color:var(--fg);outline:none;transition:border-color .15s}
+.form-input,.form-select,.form-textarea{width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);font:12px 'Montserrat',sans-serif;color:var(--fg);outline:none;transition:border-color .15s}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--neon)}
 .form-input[readonly]{color:var(--muted);cursor:not-allowed}
 .form-textarea{resize:vertical;min-height:58px}
@@ -253,15 +194,14 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .form-check{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);cursor:pointer}
 .form-check input{width:14px;height:14px;cursor:pointer;accent-color:var(--neon)}
 .modal-footer{display:flex;gap:8px;margin-top:12px}
-.btn-save{flex:1;padding:11px;background:var(--neon);color:#000;border:none;border-radius:6px;font:800 10px 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
+.btn-save{flex:1;padding:11px;background:var(--neon);color:#000;border:none;border-radius:var(--radius-sm);font:800 10px 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
 .btn-save:hover{opacity:.85}
-.btn-delete-modal{padding:11px 14px;background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.3);border-radius:6px;font:700 10px 'Montserrat',sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-delete-modal{padding:11px 14px;background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.3);border-radius:var(--radius-sm);font:700 10px 'Montserrat',sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .btn-delete-modal:hover{background:var(--red);color:#fff}
-
-.btn-close-modal{flex:0 0 auto;padding:11px 16px;background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:6px;font:700 10px 'Montserrat',sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-close-modal{padding:11px 16px;background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:var(--radius-sm);font:700 10px 'Montserrat',sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .btn-close-modal:hover{border-color:var(--red);color:var(--red)}
 
-/* ── PANEL ── */
+/* ── SIDE PANEL ─────────────────────────────────────────────── */
 .panel{position:fixed;right:0;top:0;bottom:0;width:380px;background:var(--surface);border-left:1px solid var(--border);z-index:50;transform:translateX(100%);transition:transform .25s;overflow-y:auto;padding:22px;box-shadow:var(--shadow)}
 .panel.open{transform:translateX(0)}
 .panel-close{background:none;border:none;cursor:pointer;font-size:19px;color:var(--muted);float:right;transition:color .15s}
@@ -274,23 +214,27 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .overlay{display:none;position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.1)}
 .overlay.open{display:block}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:22px;right:22px;background:var(--neon);color:#000;padding:9px 16px;border-radius:5px;font:800 10px 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase;z-index:999;opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none}
-.toast.show{opacity:1;transform:translateY(0)}
-.empty,.loading{text-align:center;padding:44px 0;color:var(--muted);font-size:10px;letter-spacing:2px;text-transform:uppercase}
+/* ── APPROVAL CHIPS ─────────────────────────────────────────── */
+.aprov-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.aprov-chip{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;letter-spacing:.5px}
+.aprov-chip.ok,.aprov-chip-mini.ok{background:rgba(68,255,136,.15);color:var(--green);border:1px solid rgba(68,255,136,.3)}
+.aprov-chip.nok,.aprov-chip-mini.nok{background:rgba(102,102,102,.1);color:var(--muted);border:1px solid var(--border)}
+.aprov-chip-mini{font-size:8px;padding:1px 5px;border-radius:10px;font-weight:700}
 
-/* ── MOBILE ── */
-.sidebar-toggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:var(--fg)}
-@media(max-width:768px){
-  .sidebar{transform:translateX(-100%);z-index:100}
-  .sidebar.open{transform:translateX(0)}
-  .main-area{margin-left:0}
-  .sidebar-toggle{display:flex}
-  .dash-row,.dash-grid,.form-row,.form-row3{grid-template-columns:1fr}
-  .dash-home{grid-template-columns:1fr 1fr}
-}
+/* ── TIMELINE (tarefas) ─────────────────────────────────────── */
+.timeline{margin-top:16px}
+.tl-month{margin-bottom:20px}
+.tl-month-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.tl-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(128,128,128,.08)}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tl-dot.todo{background:var(--muted)}.tl-dot.doing{background:var(--amber)}.tl-dot.done{background:var(--green)}.tl-dot.blocked{background:var(--red)}
+.tl-info{flex:1;min-width:0}
+.tl-name{font-size:12px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl-meta{font-size:10px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.tl-date,.tl-no-date{font-size:10px;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.tl-no-date{font-style:italic;color:var(--border)}
 
-/* ══ DASHBOARD ════════════════════════════════════════════════════════ */
+/* ── DASHBOARD HOME ─────────────────────────────────────────── */
 .dash-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
 .dash-main-title{font-family:'Montserrat Alternates',sans-serif;font-size:20px;font-weight:800;letter-spacing:1px;margin-bottom:4px}
 .dash-main-sub{font-size:11px;color:var(--muted);letter-spacing:.5px}
@@ -299,7 +243,6 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .dpf-btn.active{background:var(--neon);border-color:var(--neon);color:#000}
 .dpf-btn:hover:not(.active){border-color:var(--neon-bd);color:var(--neon)}
 .home-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
-@media(max-width:720px){.home-cards-grid{grid-template-columns:1fr}}
 .home-cat-card{background:var(--surface);border:1px solid var(--border);border-left-width:3px;border-left-color:transparent;border-radius:12px;overflow:hidden;transition:border-color .2s}
 .home-cat-card.has-critical{border-left-color:var(--red)}
 .home-cat-card.has-warn{border-left-color:var(--amber)}
@@ -342,14 +285,25 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .hc-resp-fill{height:100%;border-radius:2px;background:var(--neon)}
 .hc-resp-num{font-size:12px;font-weight:800;min-width:18px;text-align:right}
 .hc-resp-tags{display:flex;gap:3px}
-.aprov-chip-mini{font-size:8px;padding:1px 5px;border-radius:10px;font-weight:700}
-.aprov-chip-mini.ok{background:rgba(68,255,136,.15);color:var(--green)}
-.aprov-chip-mini.nok{background:rgba(128,128,128,.1);color:var(--muted)}
-.resp-bar,.dp-header,.dp-title,.dp-link,.dp-row,.dp-dot,.dp-text,.dp-name,.dp-sub,.dp-right,.dp-empty,.dp-tag,.dash-panel,.dash-section-label,.warn-label,.alert-label,.dash-main-grid,.alert-grid,.kpi-strip,.alert-card,.kpi-s,.mod-alert{display:none!important}
-/* ══ FINANCIAL DASHBOARD ════════════════════════════════════ */
+
+/* ── SUPPLIER DASHBOARD ─────────────────────────────────────── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.sup-dash-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.sup-dash-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.bar-item{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bar-label{font-size:11px;font-weight:600;min-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;background:var(--neon);transition:width .4s}
+.bar-val{font-size:10px;color:var(--muted);white-space:nowrap;min-width:30px;text-align:right}
+.pie-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.pie-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pie-label{font-size:11px;flex:1}
+.pie-pct{font-size:11px;font-weight:700}
+
+/* ── FINANCIAL DASHBOARD ────────────────────────────────────── */
 .fin-dash{margin-bottom:20px}
 .fin-dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:16px}
-.fin-kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}
+.fin-kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;position:relative;overflow:hidden}
 .fin-kpi-accent{position:absolute;top:0;left:0;right:0;height:2px}
 .fin-kpi-val{font-family:'Montserrat Alternates',sans-serif;font-size:20px;font-weight:800;line-height:1;margin-bottom:3px}
 .fin-kpi-lbl{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
@@ -368,18 +322,13 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .fin-alert-val{font-size:12px;font-weight:800;white-space:nowrap;flex-shrink:0}
 .fin-section-label{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:16px 0 8px;padding-bottom:7px;border-bottom:1px solid var(--border)}
 .fin-two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-@media(max-width:700px){.fin-two-col{grid-template-columns:1fr}}
-.fin-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.fin-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
 .fin-panel-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
 .fin-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .fin-bar-label{font-size:10px;font-weight:600;min-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fin-bar-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
 .fin-bar-fill{height:100%;border-radius:3px;transition:width .4s}
 .fin-bar-val{font-size:10px;color:var(--muted);white-space:nowrap;min-width:70px;text-align:right;font-weight:600}
-.fin-month-row{display:flex;align-items:flex-end;gap:4px;height:60px;margin-bottom:6px}
-.fin-month-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
-.fin-month-bar{width:100%;border-radius:3px 3px 0 0;min-height:2px;transition:height .3s}
-.fin-month-label{font-size:8px;color:var(--muted);text-align:center;white-space:nowrap}
 .fin-comp-row{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(128,128,128,.07)}
 .fin-comp-row:last-child{border:none}
 .fin-comp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:3px}
@@ -399,36 +348,34 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .fin-tl-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .fin-tl-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
 .fin-tl-val{font-weight:700;white-space:nowrap}
-.fin-empty{text-align:center;padding:20px 0;color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase}
 .fin-socio-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
 .fin-socio-ini{width:26px;height:26px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0}
 .fin-socio-name{font-size:10px;font-weight:600;min-width:60px}
 .fin-socio-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
 .fin-socio-fill{height:100%;border-radius:3px;background:var(--blue)}
 .fin-socio-val{font-size:10px;font-weight:700;min-width:70px;text-align:right}
+.fin-empty{text-align:center;padding:20px 0;color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase}
 
-/* ══ MARKETING / CRM ═══════════════════════════════════════ */
-.tier-badge{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;border:1px solid;text-transform:uppercase;letter-spacing:.5px}
-.tier-diamante{background:rgba(68,170,255,.15);color:var(--blue);border-color:rgba(68,170,255,.3)}
-.tier-ouro{background:rgba(212,255,0,.1);color:var(--neon);border-color:var(--neon-bd)}
-.tier-prata{background:rgba(180,180,180,.1);color:#aaa;border-color:#333}
-.tier-bronze{background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.25)}
-.vip-badge{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;background:rgba(212,255,0,.1);color:var(--neon);border:1px solid var(--neon-bd)}
-.roi-positive{color:var(--green);font-weight:800}
-.roi-negative{color:var(--red);font-weight:800}
+/* ── MARKETING ──────────────────────────────────────────────── */
 .mkt-metric{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted)}
 .mkt-metric b{color:var(--fg);font-weight:700}
-.social-handles{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.social-pill{font-size:9px;padding:2px 7px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--muted)}
-.social-pill.ig{border-color:rgba(180,0,180,.3);color:#cc44cc}
-.social-pill.tt{border-color:rgba(255,0,80,.3);color:#ff4466}
-.social-pill.th{border-color:rgba(100,100,100,.3);color:var(--muted)}
-.social-pill.yt{border-color:rgba(255,0,0,.3);color:#ff4444}
-.evento-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid rgba(128,128,128,.07)}
-.evento-item:last-child{border:none}
-.evento-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:3px}
-.evento-dot.confirmado{background:var(--green)}.evento-dot.negociacao{background:var(--amber)}.evento-dot.cancelado{background:var(--red)}
-.pontos-badge{font-size:10px;font-weight:700;color:var(--purple);background:rgba(170,136,255,.1);border:1px solid rgba(170,136,255,.25);padding:2px 8px;border-radius:20px}
+.roi-positive{color:var(--green);font-weight:800}
+.roi-negative{color:var(--red);font-weight:800}
+
+/* ── TOAST ──────────────────────────────────────────────────── */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--neon);color:#000;padding:9px 16px;border-radius:5px;font:800 10px 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase;z-index:999;opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.empty,.loading{text-align:center;padding:44px 0;color:var(--muted);font-size:10px;letter-spacing:2px;text-transform:uppercase}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main-area{margin-left:0}
+  .sidebar-toggle{display:flex}
+  .dash-grid,.fin-two-col,.form-row,.form-row3{grid-template-columns:1fr}
+  .home-cards-grid{grid-template-columns:1fr}
+}
 
 </style>
 </head>
@@ -1030,6 +977,7 @@ var F={task:{status:'all',prio:'all',resp:'all'},sup:{status:'all',cls:'all',apr
 var me=null,taskView='list',isDark=true;
 
 function $(id){return document.getElementById(id);}
+  function set(id,html){var e=document.getElementById(id);if(e)e.innerHTML=html;}
 function val(id){return $(id)?$(id).value:'';}
 function num(id){return parseFloat(val(id))||0;}
 function iNum(id){return parseInt(val(id))||0;}
@@ -1184,7 +1132,7 @@ function openTaskEdit(id){
   $('task-modal-title').textContent='Editar Tarefa';$('t-id').value=t.id;$('t-title').value=t.titulo;$('t-cat').value=t.categoria||'';$('t-prio').value=t.prioridade||'media';$('t-status').value=t.status;$('t-prazo').value=t.prazo||'';$('t-desc').value=t.descricao||'';$('t-tags').value=t.tags||'';$('t-coment').value=t.comentarios||'';
   if(t.responsavel_pessoa_id)$('t-owner').value=t.responsavel_pessoa_id;
   if(t.co_responsavel_pessoa_id)$('t-coowner').value=t.co_responsavel_pessoa_id;
-  var dBtn=document.getElementById('delete-task');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('task');
+  var dBtn=$('delete-task');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('task');
 }
 function saveTask(){
   var titulo=val('t-title').trim();if(!titulo){toast('Informe o título');return;}
@@ -1224,7 +1172,7 @@ function openSupEdit(id){
   if(s.responsavel_pessoa_id)$('s-resp').value=s.responsavel_pessoa_id;
   $('s-frete').checked=!!s.tem_frete;$('frete-info-group').style.display=s.tem_frete?'block':'none';$('s-frete-info').value=s.frete_info||'';
   $('s-pedmin').checked=!!s.pedido_minimo;$('pedmin-group').style.display=s.pedido_minimo?'block':'none';$('s-pedmin-val').value=s.pedido_minimo_valor||'';$('s-pedmin-qtd').value=s.pedido_minimo_qtd||'';
-  $('s-visita').checked=!!s.visita_local;var dBtn=document.getElementById('delete-supplier');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('supplier');
+  $('s-visita').checked=!!s.visita_local;var dBtn=$('delete-supplier');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('supplier');
 }
 function saveSupplier(){
   var nome=val('s-name').trim();if(!nome){toast('Informe o nome');return;}
@@ -1440,7 +1388,7 @@ function openCostEdit(id){
   $('cost-modal-title').textContent='Editar Lançamento';$('c-id').value=c.id;$('c-name').value=c.descricao;$('c-cat').value=c.categoria||'';$('c-type').value=c.tipo;$('c-val').value=c.valor||'';$('c-date').value=c.data||'';$('c-venc').value=c.data_vencimento||'';$('c-status-pagto').value=c.status_pagto||'pago';$('c-metodo').value=c.metodo_pagto||'';
   if(c.pago_por_id)$('c-pago-por').value=c.pago_por_id;
   $('c-recorrente').checked=!!c.recorrente;$('recorrencia-group').style.display=c.recorrente?'block':'none';$('c-recorrencia').value=c.recorrencia||'mensal';
-  var dBtn=document.getElementById('delete-cost');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('cost');
+  var dBtn=$('delete-cost');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('cost');
 }
 function saveCost(){
   var d=val('c-name').trim(),v=num('c-val');if(!d||!v){toast('Preencha descrição e valor');return;}
@@ -1473,7 +1421,7 @@ function openProdutoEdit(id){
   $('prod-modal-title').textContent='Editar Produto';$('pr-id').value=p.id;$('pr-sku').value=p.sku;$('pr-nome').value=p.nome;$('pr-cat').value=p.categoria||'';$('pr-cor').value=p.cor||'';$('pr-tamanho').value=p.tamanho||'';$('pr-custo').value=p.custo||'';$('pr-venda').value=p.preco_venda||'';$('pr-obs').value=p.observacoes||'';
   if(p.fornecedor_id)$('pr-fornecedor').value=p.fornecedor_id;
   if(p.colecao_id)$('pr-colecao').value=p.colecao_id;
-  updateMargem();var dBtn=document.getElementById('delete-produto');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('produto');
+  updateMargem();var dBtn=$('delete-produto');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('produto');
 }
 function updateMargem(){var c=num('pr-custo'),v=num('pr-venda');$('pr-margem').value=v>0&&c>0?Math.round(((v-c)/v)*100)+'%':'—';}
 function nextSKU(){if(!D.produtos.length)return 'SLB0001';var nums=D.produtos.map(function(p){return parseInt((p.sku||'SLB0000').replace('SLB',''))||0;});return 'SLB'+String(Math.max.apply(null,nums)+1).padStart(4,'0');}
@@ -1501,7 +1449,7 @@ function renderEstoque(){
 }
 function openEstoqueEdit(id){
   var e=D.estoques.find(function(x){return x.id===id;});if(!e)return;
-  $('est-modal-title').textContent='Editar Item';$('e-id').value=e.id;$('e-nome').value=e.nome;$('e-cat').value=e.categoria||'';$('e-sku').value=e.sku||'';$('e-qtd').value=e.quantidade||0;$('e-un').value=e.unidade||'un';$('e-qtdmin').value=e.quantidade_minima||0;$('e-local').value=e.localizacao||'';$('e-custo').value=e.preco_custo||'';$('e-venda').value=e.preco_venda||'';$('e-obs').value=e.observacoes||'';var dBtn=document.getElementById('delete-estoque');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('estoque');
+  $('est-modal-title').textContent='Editar Item';$('e-id').value=e.id;$('e-nome').value=e.nome;$('e-cat').value=e.categoria||'';$('e-sku').value=e.sku||'';$('e-qtd').value=e.quantidade||0;$('e-un').value=e.unidade||'un';$('e-qtdmin').value=e.quantidade_minima||0;$('e-local').value=e.localizacao||'';$('e-custo').value=e.preco_custo||'';$('e-venda').value=e.preco_venda||'';$('e-obs').value=e.observacoes||'';var dBtn=$('delete-estoque');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('estoque');
 }
 function saveEstoque(){
   var nome=val('e-nome').trim();if(!nome){toast('Informe o nome');return;}
@@ -1534,7 +1482,7 @@ function renderColecoes(){
 function openColecaoEdit(id){
   var c=D.colecoes.find(function(x){return x.id===id;});if(!c)return;
   $('col-modal-title').textContent='Editar Coleção';$('col-id').value=c.id;$('col-nome').value=c.nome;$('col-temporada').value=c.temporada||'';$('col-ano').value=c.ano||'';$('col-status').value=c.status;$('col-lancamento').value=c.data_lancamento||'';$('col-desc').value=c.descricao||'';
-  if(c.responsavel_id)$('col-resp').value=c.responsavel_id;var dBtn=document.getElementById('delete-colecao');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('colecao');
+  if(c.responsavel_id)$('col-resp').value=c.responsavel_id;var dBtn=$('delete-colecao');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('colecao');
 }
 function saveColecao(){
   var nome=val('col-nome').trim();if(!nome){toast('Informe o nome');return;}
@@ -1565,7 +1513,7 @@ function openProducaoEdit(id){
   var p=D.producoes.find(function(x){return x.id===id;});if(!p)return;
   $('prd-modal-title').textContent='Editar Produção';$('prd-id').value=p.id;$('prd-nome').value=p.nome;$('prd-status').value=p.status;$('prd-qtd').value=p.quantidade||'';$('prd-custo').value=p.custo_total||'';$('prd-inicio').value=p.data_inicio||'';$('prd-prevfim').value=p.data_prev_fim||'';$('prd-obs').value=p.observacoes||'';
   if(p.colecao_id)$('prd-colecao').value=p.colecao_id;if(p.fornecedor_id)$('prd-fornecedor').value=p.fornecedor_id;if(p.responsavel_id)$('prd-resp').value=p.responsavel_id;
-  $('aprov-ju').checked=!!p.aprovado_ju;$('aprov-fe').checked=!!p.aprovado_fe;$('aprov-vi').checked=!!p.aprovado_vi;$('aprov-ya').checked=!!p.aprovado_ya;var dBtn=document.getElementById('delete-producao');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('producao');
+  $('aprov-ju').checked=!!p.aprovado_ju;$('aprov-fe').checked=!!p.aprovado_fe;$('aprov-vi').checked=!!p.aprovado_vi;$('aprov-ya').checked=!!p.aprovado_ya;var dBtn=$('delete-producao');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('producao');
 }
 function saveProducao(){
   var nome=val('prd-nome').trim();if(!nome){toast('Informe o nome');return;}
@@ -1595,7 +1543,7 @@ function renderPedidos(){
 function openPedidoEdit(id){
   var p=D.pedidos.find(function(x){return x.id===id;});if(!p)return;
   $('ped-modal-title').textContent='Editar Pedido';$('ped-id').value=p.id;$('ped-cliente').value=p.cliente_nome;$('ped-cpf').value=p.cliente_cpf||'';$('ped-email').value=p.cliente_email||'';$('ped-fone').value=p.cliente_fone||'';$('ped-status').value=p.status;$('ped-canal').value=p.canal_venda||'';$('ped-valor').value=p.valor_total||'';$('ped-frete').value=p.valor_frete||'';$('ped-transp').value=p.transportadora||'';$('ped-rastreio').value=p.codigo_rastreio||'';$('ped-obs').value=p.observacoes||'';
-  if(p.colecao_id)$('ped-colecao').value=p.colecao_id;if(p.responsavel_id)$('ped-resp').value=p.responsavel_id;var dBtn=document.getElementById('delete-pedido');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('pedido');
+  if(p.colecao_id)$('ped-colecao').value=p.colecao_id;if(p.responsavel_id)$('ped-resp').value=p.responsavel_id;var dBtn=$('delete-pedido');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('pedido');
 }
 function savePedido(){
   var cliente=val('ped-cliente').trim();if(!cliente){toast('Informe o nome do cliente');return;}
@@ -1656,7 +1604,7 @@ function loadPostagens() {
     .then(function(r) {
       D.postagens = r.data || [];
       var postadas = D.postagens.filter(function(p){return p.status==='postado';}).length;
-      var badge = document.getElementById('badge-postagens');
+      var badge = $('badge-postagens');
       if(badge){ var pend=D.postagens.filter(function(p){return p.status==='planejado'||p.status==='confirmado';}).length; badge.style.display=pend>0?'':'none'; badge.textContent=pend; }
       renderPostagens();
     });
@@ -1668,9 +1616,9 @@ function renderPostagens() {
   });
   var totAlcance = D.postagens.filter(function(p){return p.status==='postado';}).reduce(function(a,p){return a+(p.alcance||0);},0);
   var totVendas  = D.postagens.reduce(function(a,p){return a+(p.vendas_geradas||0);},0);
-  var postEl = document.getElementById('postagem-metrics');
+  var postEl = $('postagem-metrics');
   if(postEl) postEl.innerHTML = metric(D.postagens.length,'Total') + metric(D.postagens.filter(function(p){return p.status==='postado';}).length,'Postadas','var(--green)') + metric(fmtNum(totAlcance),'Alcance total','var(--neon)') + metric(totVendas,'Vendas geradas','var(--amber)');
-  var el = document.getElementById('postagem-list');
+  var el = $('postagem-list');
   if(!el) return;
   if(!list.length){el.innerHTML='<p class="empty">Nenhuma postagem encontrada</p>';return;}
   el.innerHTML = list.map(function(p){
@@ -1691,24 +1639,24 @@ function renderPostagens() {
 }
 function openPostagemEdit(id){
   var p=D.postagens.find(function(x){return x.id===id;});if(!p)return;
-  document.getElementById('post-modal-title').textContent='Editar Postagem';
-  document.getElementById('po-id').value=p.id;
-  document.getElementById('po-rede').value=p.rede||'instagram_reels';
-  document.getElementById('po-tipo').value=p.tipo_conteudo||'';
-  document.getElementById('po-data-prev').value=p.data_prevista||'';
-  document.getElementById('po-data-real').value=p.data_real||'';
-  document.getElementById('po-status').value=p.status||'planejado';
-  document.getElementById('po-link').value=p.link_postagem||'';
-  document.getElementById('po-alcance').value=p.alcance||'';
-  document.getElementById('po-curtidas').value=p.curtidas||'';
-  document.getElementById('po-coments').value=p.comentarios||'';
-  document.getElementById('po-cliques').value=p.cliques||'';
-  document.getElementById('po-vendas').value=p.vendas_geradas||'';
-  document.getElementById('po-cod-desc').value=p.codigo_desconto||'';
-  document.getElementById('po-obs').value=p.observacoes||'';
-  if(p.parceiro_id) document.getElementById('po-parceiro').value=p.parceiro_id;
-  if(p.colecao_id)  document.getElementById('po-colecao').value=p.colecao_id;
-  var dBtn=document.getElementById('delete-postagem');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  $('post-modal-title').textContent='Editar Postagem';
+  $('po-id').value=p.id;
+  $('po-rede').value=p.rede||'instagram_reels';
+  $('po-tipo').value=p.tipo_conteudo||'';
+  $('po-data-prev').value=p.data_prevista||'';
+  $('po-data-real').value=p.data_real||'';
+  $('po-status').value=p.status||'planejado';
+  $('po-link').value=p.link_postagem||'';
+  $('po-alcance').value=p.alcance||'';
+  $('po-curtidas').value=p.curtidas||'';
+  $('po-coments').value=p.comentarios||'';
+  $('po-cliques').value=p.cliques||'';
+  $('po-vendas').value=p.vendas_geradas||'';
+  $('po-cod-desc').value=p.codigo_desconto||'';
+  $('po-obs').value=p.observacoes||'';
+  if(p.parceiro_id) $('po-parceiro').value=p.parceiro_id;
+  if(p.colecao_id)  $('po-colecao').value=p.colecao_id;
+  var dBtn=$('delete-postagem');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
   openModal('postagem');
 }
 function savePostagem(){
@@ -1733,9 +1681,9 @@ function renderMarketing(){
   var totInvest=D.marketing.reduce(function(a,m){return a+parseFloat(m.investimento||0);},0);
   var totRec=D.marketing.reduce(function(a,m){return a+parseFloat(m.receita_gerada||0);},0);
   var roi=totInvest>0?((totRec-totInvest)/totInvest*100).toFixed(0):0;
-  var el=document.getElementById('marketing-metrics');
+  var el=$('marketing-metrics');
   if(el) el.innerHTML=metric(D.marketing.length,'Ações')+metric(D.marketing.filter(function(m){return m.status==='ativa';}).length,'Ativas','var(--green)')+metric(mo(totInvest),'Investido','var(--blue)')+metric(roi+'%','ROI',roi>=0?'var(--green)':'var(--red)');
-  var listEl=document.getElementById('marketing-list');if(!listEl)return;
+  var listEl=$('marketing-list');if(!listEl)return;
   if(!list.length){listEl.innerHTML='<p class="empty">Nenhuma ação encontrada</p>';return;}
   listEl.innerHTML=list.map(function(m){
     var roi_m=m.investimento>0&&m.receita_gerada?Math.round((m.receita_gerada-m.investimento)/m.investimento*100):null;
@@ -1756,26 +1704,26 @@ function renderMarketing(){
 }
 function openMarketingEdit(id){
   var m=D.marketing.find(function(x){return x.id===id;});if(!m)return;
-  document.getElementById('mkt-modal-title').textContent='Editar Ação';
-  document.getElementById('mk-id').value=m.id;
-  document.getElementById('mk-titulo').value=m.titulo;
-  document.getElementById('mk-tipo').value=m.tipo||'post_organico';
-  document.getElementById('mk-plat').value=m.plataforma||'instagram';
-  document.getElementById('mk-status').value=m.status||'planejada';
-  document.getElementById('mk-inicio').value=m.data_inicio||'';
-  document.getElementById('mk-fim').value=m.data_fim||'';
-  document.getElementById('mk-invest').value=m.investimento||'';
-  document.getElementById('mk-publico').value=m.publico_alvo||'';
-  document.getElementById('mk-desc').value=m.descricao||'';
-  document.getElementById('mk-alcance').value=m.alcance||'';
-  document.getElementById('mk-impressoes').value=m.impressoes||'';
-  document.getElementById('mk-cliques').value=m.cliques||'';
-  document.getElementById('mk-leads').value=m.leads||'';
-  document.getElementById('mk-vendas').value=m.vendas||'';
-  document.getElementById('mk-receita').value=m.receita_gerada||'';
-  if(m.colecao_id) document.getElementById('mk-colecao').value=m.colecao_id;
-  if(m.responsavel_id) document.getElementById('mk-resp').value=m.responsavel_id;
-  var dBtn=document.getElementById('delete-marketing');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  $('mkt-modal-title').textContent='Editar Ação';
+  $('mk-id').value=m.id;
+  $('mk-titulo').value=m.titulo;
+  $('mk-tipo').value=m.tipo||'post_organico';
+  $('mk-plat').value=m.plataforma||'instagram';
+  $('mk-status').value=m.status||'planejada';
+  $('mk-inicio').value=m.data_inicio||'';
+  $('mk-fim').value=m.data_fim||'';
+  $('mk-invest').value=m.investimento||'';
+  $('mk-publico').value=m.publico_alvo||'';
+  $('mk-desc').value=m.descricao||'';
+  $('mk-alcance').value=m.alcance||'';
+  $('mk-impressoes').value=m.impressoes||'';
+  $('mk-cliques').value=m.cliques||'';
+  $('mk-leads').value=m.leads||'';
+  $('mk-vendas').value=m.vendas||'';
+  $('mk-receita').value=m.receita_gerada||'';
+  if(m.colecao_id) $('mk-colecao').value=m.colecao_id;
+  if(m.responsavel_id) $('mk-resp').value=m.responsavel_id;
+  var dBtn=$('delete-marketing');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
   openModal('marketing');
 }
 function saveMarketing(){
@@ -1803,9 +1751,9 @@ function renderClientes(){
   });
   var vips=D.clientes.filter(function(c){return c.vip;}).length;
   var totGasto=D.clientes.reduce(function(a,c){return a+parseFloat(c.valor_total_gasto||0);},0);
-  var el=document.getElementById('cliente-metrics');
+  var el=$('cliente-metrics');
   if(el) el.innerHTML=metric(D.clientes.length,'Clientes')+metric(vips,'VIPs','var(--neon)')+metric(mo(totGasto),'Receita total','var(--green)')+metric(D.clientes.filter(function(c){return c.tier==='diamante'||c.tier==='ouro';}).length,'Clientes premium','var(--purple)');
-  var listEl=document.getElementById('cliente-list');if(!listEl)return;
+  var listEl=$('cliente-list');if(!listEl)return;
   if(!list.length){listEl.innerHTML='<p class="empty">Nenhum cliente encontrado</p>';return;}
   listEl.innerHTML=list.map(function(c){
     return '<div class="card"><div class="card-row"><div class="card-body">' +
@@ -1826,29 +1774,29 @@ function renderClientes(){
 }
 function openClienteEdit(id){
   var c=D.clientes.find(function(x){return x.id===id;});if(!c)return;
-  document.getElementById('cli-modal-title').textContent='Editar Cliente';
-  document.getElementById('cl-id').value=c.id;
-  document.getElementById('cl-nome').value=c.nome;
-  document.getElementById('cl-cpf').value=c.cpf||'';
-  document.getElementById('cl-email').value=c.email||'';
-  document.getElementById('cl-tel').value=c.telefone||'';
-  document.getElementById('cl-cidade').value=c.cidade||'';
-  document.getElementById('cl-estado').value=c.estado||'';
-  document.getElementById('cl-nasc').value=c.data_nascimento||'';
-  document.getElementById('cl-origem').value=c.canal_origem||'';
-  document.getElementById('cl-tam').value=c.tamanho_pref||'';
-  document.getElementById('cl-estilo').value=c.estilo_pref||'';
-  document.getElementById('cl-vip').checked=!!c.vip;
-  document.getElementById('cl-optin-wp').checked=!!c.optin_whatsapp;
-  document.getElementById('cl-optin-email').checked=!!c.optin_email;
-  document.getElementById('cl-obs').value=c.observacoes||'';
-  var dBtn=document.getElementById('delete-cliente');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  $('cli-modal-title').textContent='Editar Cliente';
+  $('cl-id').value=c.id;
+  $('cl-nome').value=c.nome;
+  $('cl-cpf').value=c.cpf||'';
+  $('cl-email').value=c.email||'';
+  $('cl-tel').value=c.telefone||'';
+  $('cl-cidade').value=c.cidade||'';
+  $('cl-estado').value=c.estado||'';
+  $('cl-nasc').value=c.data_nascimento||'';
+  $('cl-origem').value=c.canal_origem||'';
+  $('cl-tam').value=c.tamanho_pref||'';
+  $('cl-estilo').value=c.estilo_pref||'';
+  $('cl-vip').checked=!!c.vip;
+  $('cl-optin-wp').checked=!!c.optin_whatsapp;
+  $('cl-optin-email').checked=!!c.optin_email;
+  $('cl-obs').value=c.observacoes||'';
+  var dBtn=$('delete-cliente');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
   openModal('cliente');
 }
 function saveCliente(){
   var nome=val('cl-nome').trim();if(!nome){toast('Informe o nome');return;}
   var id=val('cl-id');
-  var payload={nome:nome,cpf:val('cl-cpf')||null,email:val('cl-email')||null,telefone:val('cl-tel')||null,cidade:val('cl-cidade')||null,estado:val('cl-estado')||null,data_nascimento:val('cl-nasc')||null,canal_origem:val('cl-origem')||null,tamanho_pref:val('cl-tam')||null,estilo_pref:val('cl-estilo')||null,vip:document.getElementById('cl-vip').checked,optin_whatsapp:document.getElementById('cl-optin-wp').checked,optin_email:document.getElementById('cl-optin-email').checked,observacoes:val('cl-obs')||null,updated_at:new Date().toISOString()};
+  var payload={nome:nome,cpf:val('cl-cpf')||null,email:val('cl-email')||null,telefone:val('cl-tel')||null,cidade:val('cl-cidade')||null,estado:val('cl-estado')||null,data_nascimento:val('cl-nasc')||null,canal_origem:val('cl-origem')||null,tamanho_pref:val('cl-tam')||null,estilo_pref:val('cl-estilo')||null,vip:$('cl-vip').checked,optin_whatsapp:$('cl-optin-wp').checked,optin_email:$('cl-optin-email').checked,observacoes:val('cl-obs')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('clientes').update(payload).eq('id',id):db.from('clientes').insert(payload);
   q.then(function(){closeModal('cliente');resetForm('cliente');toast(id?'Atualizado!':'Cadastrado!');loadClientes();});
 }
@@ -1860,7 +1808,7 @@ function loadParceiros(){
       D.parceiros=r.data||[];
       // populate selects
       var pOpts='<option value="">— Nenhum —</option>'+D.parceiros.map(function(p){return '<option value="'+p.id+'">'+p.nome+'</option>';}).join('');
-      var poEl=document.getElementById('po-parceiro');if(poEl)poEl.innerHTML=pOpts;
+      var poEl=$('po-parceiro');if(poEl)poEl.innerHTML=pOpts;
       renderParceiros();
     });
 }
@@ -1869,9 +1817,9 @@ function renderParceiros(){
   var ativos=D.parceiros.filter(function(p){return p.status==='ativo';}).length;
   var totSeg=D.parceiros.reduce(function(a,p){return a+(p.seguidores_ig||0)+(p.seguidores_tiktok||0);},0);
   var totVendas=D.parceiros.reduce(function(a,p){return a+(p.vendas_geradas||0);},0);
-  var el=document.getElementById('parceiro-metrics');
+  var el=$('parceiro-metrics');
   if(el) el.innerHTML=metric(D.parceiros.length,'Total')+metric(ativos,'Ativos','var(--green)')+metric(fmtNum(totSeg),'Alcance total','var(--neon)')+metric(totVendas,'Vendas geradas','var(--amber)');
-  var listEl=document.getElementById('parceiro-list');if(!listEl)return;
+  var listEl=$('parceiro-list');if(!listEl)return;
   if(!list.length){listEl.innerHTML='<p class="empty">Nenhum parceiro</p>';return;}
   listEl.innerHTML=list.map(function(p){
     var handles='';
@@ -1890,7 +1838,7 @@ function renderParceiros(){
 }
 function openParceiroEdit(id){
   var p=D.parceiros.find(function(x){return x.id===id;});if(!p)return;
-  document.getElementById('par-modal-title').textContent='Editar Parceiro';
+  $('par-modal-title').textContent='Editar Parceiro';
   var fields={
     'pa-id':p.id,'pa-nome':p.nome,'pa-tipo':p.tipo||'influenciador','pa-status':p.status,'pa-status-collab':p.status_collab||'prospecto',
     'pa-nicho':p.nicho||'','pa-cidade':p.cidade||'','pa-ig':p.handle_ig||'','pa-ig-seg':p.seguidores_ig||'','pa-tt':p.handle_tiktok||'','pa-tt-seg':p.seguidores_tiktok||'',
@@ -1899,9 +1847,9 @@ function openParceiroEdit(id){
     'pa-cod-desc':p.codigo_desconto||'','pa-resultado':p.resultado||'','pa-end-envio':p.endereco_envio||''
   };
   Object.keys(fields).forEach(function(k){var el=document.getElementById(k);if(el)el.value=fields[k];});
-  if(p.responsavel_id){var re=document.getElementById('pa-resp');if(re)re.value=p.responsavel_id;}
-  if(p.colecao_enviada_id){var ce=document.getElementById('pa-colecao');if(ce)ce.value=p.colecao_enviada_id;}
-  var dBtn=document.getElementById('delete-parceiro');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  if(p.responsavel_id){var re=$('pa-resp');if(re)re.value=p.responsavel_id;}
+  if(p.colecao_enviada_id){var ce=$('pa-colecao');if(ce)ce.value=p.colecao_enviada_id;}
+  var dBtn=$('delete-parceiro');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
   openModal('parceiro');
 }
 function saveParceiro(){
@@ -1938,7 +1886,7 @@ function saveEvento(){
 var dashPersonFilter='all';
 
 function buildPersonFilter(){
-  var el=document.getElementById('dash-person-filter');if(!el)return;
+  var el=$('dash-person-filter');if(!el)return;
   el.innerHTML='<button class="dpf-btn'+(dashPersonFilter==='all'?' active':'')+'" data-person="all">Todos</button>'+
     D.pessoas.filter(function(p){return p.tipo==='socio';}).map(function(p){
       return '<button class="dpf-btn'+(dashPersonFilter===p.id?' active':'')+'" data-person="'+p.id+'">'+ini(p.nome)+'</button>';
@@ -1987,7 +1935,7 @@ function renderDashboard(){
   var h=now.getHours();var g=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
   var pName='';
   if(dashPersonFilter!=='all'){var pp=D.pessoas.find(function(p){return p.id===dashPersonFilter;});if(pp)pName=', '+pp.nome.split(' ')[0];}
-  var gt=document.getElementById('dash-greeting');if(gt)gt.textContent=g+pName;
+  var gt=$('dash-greeting');if(gt)gt.textContent=g+pName;
 
   var myTasks=filterByPerson(D.tasks,'responsavel_pessoa_id');
   var myProd=filterByPerson(D.producoes,'responsavel_id');
@@ -2007,7 +1955,7 @@ function renderDashboard(){
   var totMes=D.costs.filter(function(c){return c.data&&c.data.startsWith(curMonth2);}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
 
   // ── TAREFAS ──────────────────────────────────────────────
-  var g0=document.getElementById('hck-tarefas');
+  var g0=$('hck-tarefas');
   if(g0)g0.innerHTML=
     hcKpi(atrasadas.length,'Atrasadas',atrasadas.length?'var(--red)':'var(--muted)')+
     hcKpi(bloqueadas.length,'Bloqueadas',bloqueadas.length?'var(--red)':'var(--muted)')+
@@ -2023,8 +1971,7 @@ function renderDashboard(){
   bloqueadas.slice(0,2).forEach(function(t){taskRows+=hcRow('var(--red)',t.titulo,t.responsavel?t.responsavel.nome.split(' ')[0]:'',' ','BLOQUEADA','red','tarefas');});
   // em andamento
   if(!atrasadas.length&&!bloqueadas.length&&!pertoPrazo.length){doing.slice(0,4).forEach(function(t){taskRows+=hcRow('var(--amber)',t.titulo,t.responsavel?t.responsavel.nome.split(' ')[0]:'',' ',(t.prioridade==='alta'?'ALTA':''),(t.prioridade==='alta'?'red':'muted'),'tarefas');});}
-  var g1=document.getElementById('hcb-tarefas');
-  if(g1)g1.innerHTML=taskRows||hcEmpty('Todas as tarefas em dia',true);
+  set('hcb-tarefas',taskRows||hcEmpty('Todas as tarefas em dia',true));
   // Por responsável
   var respMap={};
   D.tasks.filter(function(t){return t.status!=='done';}).forEach(function(t){
@@ -2041,12 +1988,12 @@ function renderDashboard(){
     var r=respMap[k];var pct=Math.round(r.total/maxT*100);
     return '<div class="hc-resp-row"><div class="hc-resp-ini">'+ini(r.nome)+'</div><span class="hc-resp-name">'+r.nome+'</span><div class="hc-resp-track"><div class="hc-resp-fill" style="width:'+pct+'%"></div></div><div class="hc-resp-tags">'+(r.blocked?'<span class="hc-tag red">'+r.blocked+'</span>':'')+'<span class="hc-tag amber">'+r.doing+'</span><span class="hc-tag muted">'+r.todo+'</span></div><span class="hc-resp-num">'+r.total+'</span></div>';
   }).join('');
-  var g2=document.getElementById('hcr-tarefas');if(g2)g2.innerHTML=respHtml;
+  var g2=$('hcr-tarefas');if(g2)g2.innerHTML=respHtml;
 
   // ── FINANCAS ─────────────────────────────────────────────
   var totVenc=contasVencidas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
   var totPend=contasPend.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
-  var g3=document.getElementById('hck-financas');
+  var g3=$('hck-financas');
   if(g3)g3.innerHTML=
     hcKpi(mo(totMes),'Gastos/mes','var(--blue)')+
     hcKpi(contasVencidas.length,'Vencidas',contasVencidas.length?'var(--red)':'var(--muted)')+
@@ -2056,16 +2003,14 @@ function renderDashboard(){
   contasVencidas.slice(0,2).forEach(function(c){finRows+=hcRow('var(--red)',c.descricao,'vencida'+(c.data_vencimento?' em '+fmtDate(c.data_vencimento):''),mo(c.valor),'VENCIDA','red','financas');});
   contasVencer5.slice(0,3).forEach(function(c){finRows+=hcRow('var(--amber)',c.descricao,'vence em '+fmtDate(c.data_vencimento),mo(c.valor),'5 dias','amber','financas');});
   if(!finRows&&contasPend.length){contasPend.slice(0,3).forEach(function(c){finRows+=hcRow('var(--amber)',c.descricao,'pendente',mo(c.valor),'PEND','amber','financas');});}
-  var g4=document.getElementById('hcb-financas');
-  if(g4)g4.innerHTML=finRows||hcEmpty('Financas em dia',true);
+  set('hcb-financas',finRows||hcEmpty('Financas em dia',true));
 
   // ── PEDIDOS ──────────────────────────────────────────────
   var pedColors={pago:'var(--green)',separacao:'var(--blue)',producao:'var(--amber)',enviado:'var(--neon)',entregue:'var(--green)',troca:'var(--purple)',cancelado:'var(--red)'};
   var trocas=myPed.filter(function(p){return p.status==='troca';}).length;
   var enviados=myPed.filter(function(p){return p.status==='enviado';}).length;
   var totRec=myPed.reduce(function(a,p){return a+parseFloat(p.valor_total||0);},0);
-  var g5=document.getElementById('hck-pedidos');
-  if(g5)g5.innerHTML=hcKpi(myPed.length,'Total')+hcKpi(enviados,'Enviados','var(--neon)')+hcKpi(trocas,'Trocas',trocas?'var(--red)':'var(--muted)')+hcKpi(mo(totRec),'Receita','var(--green)');
+  set('hck-pedidos',hcKpi(myPed.length,'Total')+hcKpi(enviados,'Enviados','var(--neon)')+hcKpi(trocas,'Trocas',trocas?'var(--red)':'var(--muted)')+hcKpi(mo(totRec),'Receita','var(--green)'));
   setCritical('hcard-pedidos',trocas>0,false);
   var semRastreio=myPed.filter(function(p){return p.status==='enviado'&&!p.codigo_rastreio;});
   var pedRows='';
@@ -2073,15 +2018,13 @@ function renderDashboard(){
   if(semRastreio.length)semRastreio.slice(0,2).forEach(function(p){pedRows+=hcRow('var(--amber)',p.numero+' '+p.cliente_nome,'enviado sem rastreio',mo(p.valor_total),'SEM RASTR','amber','pedidos');});
   myPed.filter(function(p){return p.status==='enviado'&&p.codigo_rastreio;}).slice(0,3).forEach(function(p){pedRows+=hcRow(pedColors[p.status]||'var(--muted)',p.numero+' '+p.cliente_nome,L.pedSt[p.status]+(p.codigo_rastreio?' | '+p.codigo_rastreio:''),mo(p.valor_total),'','','pedidos');});
   if(!pedRows)myPed.slice(0,4).forEach(function(p){pedRows+=hcRow(pedColors[p.status]||'var(--muted)',p.numero+' '+p.cliente_nome,L.pedSt[p.status],mo(p.valor_total),'','','pedidos');});
-  var g6=document.getElementById('hcb-pedidos');
-  if(g6)g6.innerHTML=pedRows||hcEmpty('Nenhum pedido ainda');
+  set('hcb-pedidos',pedRows||hcEmpty('Nenhum pedido ainda'));
 
   // ── PRODUCAO ─────────────────────────────────────────────
   var aprovPend=D.producoes.filter(function(p){return p.status==='aprovacao';});
   var emProd=D.producoes.filter(function(p){return p.status==='em_producao';}).length;
   var dispVenda=D.producoes.filter(function(p){return p.status==='disponivel';}).length;
-  var g7=document.getElementById('hck-producao');
-  if(g7)g7.innerHTML=hcKpi(aprovPend.length,'Aprov. pend.',aprovPend.length?'var(--red)':'var(--muted)')+hcKpi(emProd,'Em producao','var(--amber)')+hcKpi(dispVenda,'Disponivel','var(--green)');
+  set('hck-producao',hcKpi(aprovPend.length,'Aprov. pend.',aprovPend.length?'var(--red)':'var(--muted)')+hcKpi(emProd,'Em producao','var(--amber)')+hcKpi(dispVenda,'Disponivel','var(--green)'));
   setCritical('hcard-producao',aprovPend.length,false);
   var prdRows='';
   aprovPend.slice(0,3).forEach(function(p){
@@ -2090,36 +2033,33 @@ function renderDashboard(){
   });
   myProd.filter(function(p){return p.status==='em_producao';}).slice(0,3).forEach(function(p){prdRows+=hcRow('var(--amber)',p.nome,(p.colecao?p.colecao.nome:'')+(p.data_prev_fim?' | '+fmtDate(p.data_prev_fim):''),'','EM PROD','blue','producao');});
   if(dispVenda&&!prdRows)myProd.filter(function(p){return p.status==='disponivel';}).slice(0,3).forEach(function(p){prdRows+=hcRow('var(--green)',p.nome,p.colecao?p.colecao.nome:'','','DISPONIVEL','green','producao');});
-  var g8=document.getElementById('hcb-producao');if(g8)g8.innerHTML=prdRows||hcEmpty('Nenhuma producao ativa');
+  var g8=$('hcb-producao');if(g8)g8.innerHTML=prdRows||hcEmpty('Nenhuma producao ativa');
 
   // ── FORNECEDORES ─────────────────────────────────────────
   var fNaoAprov=D.suppliers.filter(function(s){return !s.aprovado&&s.status==='ativo';}).length;
   var fAtivos=D.suppliers.filter(function(s){return s.status==='ativo';}).length;
   var fGold=D.suppliers.filter(function(s){return s.classificacao==='gold';}).length;
-  var g9=document.getElementById('hck-fornecedores');
-  if(g9)g9.innerHTML=hcKpi(D.suppliers.length,'Total')+hcKpi(fAtivos,'Ativos','var(--green)')+hcKpi(fGold,'Gold','var(--neon)')+hcKpi(fNaoAprov,'Sem aprov.',fNaoAprov?'var(--amber)':'var(--muted)');
+  set('hck-fornecedores',hcKpi(D.suppliers.length,'Total')+hcKpi(fAtivos,'Ativos','var(--green)')+hcKpi(fGold,'Gold','var(--neon)')+hcKpi(fNaoAprov,'Sem aprov.',fNaoAprov?'var(--amber)':'var(--muted)'));
   setCritical('hcard-fornecedores',false,fNaoAprov>0);
   var supRows='';
   if(fNaoAprov)D.suppliers.filter(function(s){return !s.aprovado&&s.status==='ativo';}).slice(0,3).forEach(function(s){supRows+=hcRow('var(--amber)',s.nome,s.categoria,'','SEM APROV','amber','fornecedores');});
   D.suppliers.filter(function(s){return s.classificacao==='gold'&&s.aprovado;}).slice(0,3).forEach(function(s){supRows+=hcRow('var(--neon)',s.nome,s.categoria+' | '+stars(s.avaliacao),'','GOLD','neon','fornecedores');});
-  var g10=document.getElementById('hcb-fornecedores');if(g10)g10.innerHTML=supRows||hcEmpty('Nenhum alerta de fornecedor',true);
+  var g10=$('hcb-fornecedores');if(g10)g10.innerHTML=supRows||hcEmpty('Nenhum alerta de fornecedor',true);
 
   // ── ESTOQUE + PRODUTOS ──────────────────────────────────
   var estBaixo=D.estoques.filter(function(e){return e.quantidade<=e.quantidade_minima;});
   var prodSemCol=D.produtos.filter(function(p){return !p.colecao_id;}).length;
-  var g11=document.getElementById('hck-estoque');
-  if(g11)g11.innerHTML=hcKpi(D.estoques.length,'Itens')+hcKpi(estBaixo.length,'Baixo',estBaixo.length?'var(--red)':'var(--muted)')+hcKpi(D.produtos.length,'Produtos')+hcKpi(prodSemCol,'Sem colecao',prodSemCol?'var(--amber)':'var(--muted)');
+  set('hck-estoque',hcKpi(D.estoques.length,'Itens')+hcKpi(estBaixo.length,'Baixo',estBaixo.length?'var(--red)':'var(--muted)')+hcKpi(D.produtos.length,'Produtos')+hcKpi(prodSemCol,'Sem colecao',prodSemCol?'var(--amber)':'var(--muted)'));
   setCritical('hcard-estoque',estBaixo.length>0,prodSemCol>0);
   var estRows='';
   estBaixo.slice(0,4).forEach(function(e){estRows+=hcRow('var(--red)',e.nome,e.categoria,e.quantidade+' '+e.unidade,'BAIXO','red','estoque');});
   if(!estRows&&prodSemCol)D.produtos.filter(function(p){return !p.colecao_id;}).slice(0,3).forEach(function(p){estRows+=hcRow('var(--amber)',p.sku+' '+p.nome,p.categoria||'','','SEM COL','amber','produtos');});
-  var g12=document.getElementById('hcb-estoque');if(g12)g12.innerHTML=estRows||hcEmpty('Estoque e produtos ok',true);
+  var g12=$('hcb-estoque');if(g12)g12.innerHTML=estRows||hcEmpty('Estoque e produtos ok',true);
 
   // ── COLECOES ─────────────────────────────────────────────
   var colLancadas=D.colecoes.filter(function(c){return c.status==='lancada';}).length;
   var colEmProd=D.colecoes.filter(function(c){return c.status==='em_producao';}).length;
-  var g13=document.getElementById('hck-colecoes');
-  if(g13)g13.innerHTML=hcKpi(D.colecoes.length,'Total')+hcKpi(colEmProd,'Em producao','var(--amber)')+hcKpi(colLancadas,'Lancadas','var(--green)');
+  set('hck-colecoes',hcKpi(D.colecoes.length,'Total')+hcKpi(colEmProd,'Em producao','var(--amber)')+hcKpi(colLancadas,'Lancadas','var(--green)'));
   setCritical('hcard-colecoes',false,false);
   var colRows='';
   D.colecoes.filter(function(c){return c.status==='em_producao'||c.status==='lancada';}).slice(0,5).forEach(function(c){
@@ -2128,25 +2068,21 @@ function renderDashboard(){
     var tagCls=c.status==='lancada'?'green':'amber';
     colRows+=hcRow('var(--purple)',c.nome,(c.temporada||'')+(c.ano?' '+c.ano:'')+'  |  '+prods.length+' prods',(rec>0?mo(rec):''),L.colSt[c.status],tagCls,'colecoes');
   });
-  var g14=document.getElementById('hcb-colecoes');if(g14)g14.innerHTML=colRows||hcEmpty('Nenhuma colecao ativa');
+  var g14=$('hcb-colecoes');if(g14)g14.innerHTML=colRows||hcEmpty('Nenhuma colecao ativa');
 
   // ── PARCEIROS + FRETES ───────────────────────────────────
   var parcAtivos=D.parceiros.filter(function(p){return p.status==='ativo';}).length;
   var parcProsp=D.parceiros.filter(function(p){return p.status==='prospecto';}).length;
   var fretesAtivos=D.fretes.filter(function(f){return f.status==='ativo';}).length;
-  var g15=document.getElementById('hck-parceiros');
-  if(g15)g15.innerHTML=hcKpi(parcAtivos,'Parceiros ativos','var(--green)')+hcKpi(parcProsp,'Em prosp.','var(--muted)')+hcKpi(fretesAtivos,'Fretes ativos',fretesAtivos?'var(--green)':'var(--red)');
+  set('hck-parceiros',hcKpi(parcAtivos,'Parceiros ativos','var(--green)')+hcKpi(parcProsp,'Em prosp.','var(--muted)')+hcKpi(fretesAtivos,'Fretes ativos',fretesAtivos?'var(--green)':'var(--red)'));
   setCritical('hcard-parceiros',!fretesAtivos,parcProsp>0);
   var parRows='';
   if(!fretesAtivos)parRows+=hcRow('var(--red)','Nenhuma tabela de frete ativa','Configure fretes para os pedidos','','URGENTE','red','fretes');
   D.parceiros.filter(function(p){return p.status==='prospecto';}).slice(0,3).forEach(function(p){parRows+=hcRow('var(--blue)',p.nome,p.tipo||'parceiro','','PROSP','blue','parceiros');});
   D.parceiros.filter(function(p){return p.status==='ativo';}).slice(0,3).forEach(function(p){parRows+=hcRow('var(--green)',p.nome,p.tipo||'parceiro','','ATIVO','green','parceiros');});
-  var g16=document.getElementById('hcb-parceiros');if(g16)g16.innerHTML=parRows||hcEmpty('Nenhum parceiro cadastrado');
+  var g16=$('hcb-parceiros');if(g16)g16.innerHTML=parRows||hcEmpty('Nenhum parceiro cadastrado');
 }
 
-function contasVender5(){return [];}
-function alertCard(){return '';}
-function kpiS(){return '';}
 function kpi(){return '';}
 
 // ── BADGE HELPERS ──────────────────────────────────────────
@@ -2199,7 +2135,7 @@ function handleClick(e){
   var supCard=e.target.closest('[data-open-sup]');
   if(supCard)return openSupPanel(supCard.dataset.openSup);
   var addEv=e.target.closest('[data-add-evento]');
-  if(addEv){e.stopPropagation();document.getElementById('ev-colecao-id').value=addEv.dataset.addEvento;document.getElementById('ev-id').value='';document.getElementById('ev-modal-title').textContent='Novo Evento';openModal('evento');return;}
+  if(addEv){e.stopPropagation();$('ev-colecao-id').value=addEv.dataset.addEvento;$('ev-id').value='';$('ev-modal-title').textContent='Novo Evento';openModal('evento');return;}
   var del=e.target.closest('[data-del-task],[data-del-sup],[data-del-cost],[data-del-prod],[data-del-est],[data-del-col],[data-del-prd],[data-del-ped],[data-del-fre],[data-del-par],[data-del-pessoa]');
   if(del){
     if(del.dataset.delTask){e.stopPropagation();if(!confirm('Excluir tarefa?'))return;db.from('tarefas').delete().eq('id',del.dataset.delTask).then(function(){toast('Excluída');loadTasks();});}
@@ -2262,10 +2198,10 @@ document.addEventListener('DOMContentLoaded',function(){
   $('save-pedido').addEventListener('click',savePedido);
   $('save-frete').addEventListener('click',saveFrete);
   $('save-parceiro').addEventListener('click',saveParceiro);
-  document.getElementById('save-postagem').addEventListener('click',savePostagem);
-  document.getElementById('save-marketing').addEventListener('click',saveMarketing);
-  document.getElementById('save-cliente').addEventListener('click',saveCliente);
-  document.getElementById('save-evento').addEventListener('click',saveEvento);
+  $('save-postagem').addEventListener('click',savePostagem);
+  $('save-marketing').addEventListener('click',saveMarketing);
+  $('save-cliente').addEventListener('click',saveCliente);
+  $('save-evento').addEventListener('click',saveEvento);
   $('save-pessoa').addEventListener('click',savePessoa);
 
   // Conditional fields
@@ -2292,7 +2228,7 @@ document.addEventListener('DOMContentLoaded',function(){
   // Search
   $('produto-search').addEventListener('input',renderProdutos);
   $('pedido-search').addEventListener('input',renderPedidos);
-  document.getElementById('cliente-search').addEventListener('input',renderClientes);
+  $('cliente-search').addEventListener('input',renderClientes);
 
 
   // Delete buttons in modals
