@@ -850,13 +850,14 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 
 <!-- FRETE -->
 <div class="modal-bg" id="modal-frete"><div class="modal">
-  <div class="modal-title">Tabela de Frete<button class="modal-close-btn" data-close="frete">×</button></div>
+  <div class="modal-title"><span id="frete-modal-title">Tabela de Frete</span><button class="modal-close-btn" data-close="frete">×</button></div>
+  <input type="hidden" id="fr-id">
   <div class="form-group"><label class="form-label">Transportadora *</label><input class="form-input" id="fr-trans" placeholder="Correios, Jadlog..."></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="fr-tipo"><option value="fixo">Fixo</option><option value="variavel">Variável</option><option value="gratis">Grátis</option></select></div><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="fr-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Região</label><input class="form-input" id="fr-regiao" placeholder="Sul e Sudeste"></div><div class="form-group"><label class="form-label">Prazo (dias úteis)</label><input class="form-input" id="fr-prazo" type="number" placeholder="5"></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Preço fixo (R$)</label><input class="form-input" id="fr-preco" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Por kg (R$)</label><input class="form-input" id="fr-preckg" type="number" step="0.01" placeholder="0,00"></div></div>
   <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="fr-obs"></textarea></div>
-  <div class="modal-footer"><button class="btn-save" id="save-frete">Salvar Frete</button><button class="btn-close-modal" data-close="frete">Fechar</button></div>
+  <div class="modal-footer"><button class="btn-save" id="save-frete">Salvar Frete</button><button class="btn-delete-modal" id="delete-frete" style="display:none">Excluir</button><button class="btn-close-modal" data-close="frete">Fechar</button></div>
 </div></div>
 
 <!-- PARCEIRO -->
@@ -1464,7 +1465,7 @@ function loadColecoes(){
   return db.from('colecoes').select('*,responsavel:pessoas(nome)').eq('ativo',true).order('created_at',{ascending:false}).then(function(r){
     D.colecoes=r.data||[];
     var cOpts='<option value="">— Nenhuma —</option>'+D.colecoes.map(function(c){return '<option value="'+c.id+'">'+c.nome+'</option>';}).join('');
-    ['pr-colecao','prd-colecao','ped-colecao'].forEach(function(id){var el=$(id);if(el)el.innerHTML=cOpts;});
+    ['pr-colecao','prd-colecao','ped-colecao','pa-colecao','po-colecao','mk-colecao'].forEach(function(id){var el=$(id);if(el)el.innerHTML=cOpts;});
     renderColecoes();
   });
 }
@@ -1489,7 +1490,7 @@ function saveColecao(){
   var id=val('col-id');
   var payload={nome:nome,temporada:val('col-temporada')||null,ano:iNum('col-ano')||null,status:val('col-status'),data_lancamento:val('col-lancamento')||null,responsavel_id:val('col-resp')||null,descricao:val('col-desc')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('colecoes').update(payload).eq('id',id):db.from('colecoes').insert(payload);
-  q.then(function(){closeModal('colecao');resetForm('colecao');toast(id?'Atualizada!':'Criada!');loadColecoes();});
+  q.then(function(res){if(res.error){toast('Erro: '+res.error.message);return;}closeModal('colecao');resetForm('colecao');toast(id?'Atualizada!':'Criada!');loadColecoes();});
 }
 
 // ── PRODUÇÕES ──────────────────────────────────────────────
@@ -1522,7 +1523,7 @@ function saveProducao(){
   if(status==='em_criacao'&&!(ju&&fe&&vi&&ya)){toast('⚠️ Aprovação dos 4 sócios necessária para iniciar a criação.');return;}
   var payload={nome:nome,colecao_id:val('prd-colecao')||null,fornecedor_id:val('prd-fornecedor')||null,responsavel_id:val('prd-resp')||null,status:status,aprovado_ju:ju,aprovado_fe:fe,aprovado_vi:vi,aprovado_ya:ya,quantidade:iNum('prd-qtd')||null,custo_total:num('prd-custo')||null,data_inicio:val('prd-inicio')||null,data_prev_fim:val('prd-prevfim')||null,observacoes:val('prd-obs')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('producoes').update(payload).eq('id',id):db.from('producoes').insert(payload);
-  q.then(function(){closeModal('producao');resetForm('producao');toast(id?'Atualizada!':'Criada!');loadProducoes();});
+  q.then(function(res){if(res.error){toast('Erro: '+res.error.message);return;}closeModal('producao');resetForm('producao');toast(id?'Atualizada!':'Criada!');loadProducoes();});
 }
 
 // ── PEDIDOS ────────────────────────────────────────────────
@@ -1550,7 +1551,7 @@ function savePedido(){
   var id=val('ped-id');var numero=id?(D.pedidos.find(function(p){return p.id===id;})||{}).numero:nextPedidoNum();
   var payload={numero:numero,cliente_nome:cliente,cliente_cpf:val('ped-cpf')||null,cliente_email:val('ped-email')||null,cliente_fone:val('ped-fone')||null,status:val('ped-status'),canal_venda:val('ped-canal')||null,valor_total:num('ped-valor')||null,valor_frete:num('ped-frete')||0,transportadora:val('ped-transp')||null,codigo_rastreio:val('ped-rastreio')||null,colecao_id:val('ped-colecao')||null,responsavel_id:val('ped-resp')||null,observacoes:val('ped-obs')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('pedidos').update(payload).eq('id',id):db.from('pedidos').insert(payload);
-  q.then(function(){closeModal('pedido');resetForm('pedido');toast(id?'Atualizado!':'Criado!');loadPedidos();});
+  q.then(function(res){if(res.error){toast('Erro: '+res.error.message);return;}closeModal('pedido');resetForm('pedido');toast(id?'Atualizado!':'Criado!');loadPedidos();});
 }
 
 // ── FRETES ─────────────────────────────────────────────────
@@ -1563,12 +1564,32 @@ function renderFretes(){
   var tipo=F.fre.tipo;var list=tipo==='all'?D.fretes:D.fretes.filter(function(f){return f.tipo===tipo;});
   $('frete-metrics').innerHTML=metric(D.fretes.length,'Tabelas')+metric(D.fretes.filter(function(f){return f.status==='ativo';}).length,'Ativas','var(--green)');
   var el=$('frete-list');if(!list.length){el.innerHTML='<p class="empty">Nenhuma tabela</p>';return;}
-  el.innerHTML=list.map(function(f){return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+f.transportadora+'</p><div class="card-meta">'+badge(f.tipo,L.frete[f.tipo])+badge(f.status==='ativo'?'ativo':'inativo',f.status==='ativo'?'Ativo':'Inativo')+(f.regiao?catTag('📍 '+f.regiao):'')+(f.prazo_dias?'<span style="font-size:9px;color:var(--muted)">⏱ '+f.prazo_dias+' dias</span>':'')+'</div><p style="font-size:10px;color:var(--muted);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap">'+(f.preco?'<span>Fixo: '+mo(f.preco)+'</span>':'')+(f.preco_kg?'<span>Por kg: '+mo(f.preco_kg)+'</span>':'')+'</p></div><div class="card-actions"><button class="del" data-del-fre="'+f.id+'">×</button></div></div></div>';}).join('');
+  el.innerHTML=list.map(function(f){return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+f.transportadora+'</p><div class="card-meta">'+badge(f.tipo,L.frete[f.tipo])+badge(f.status==='ativo'?'ativo':'inativo',f.status==='ativo'?'Ativo':'Inativo')+(f.regiao?catTag('📍 '+f.regiao):'')+(f.prazo_dias?'<span style="font-size:9px;color:var(--muted)">⏱ '+f.prazo_dias+' dias</span>':'')+'</div><p style="font-size:10px;color:var(--muted);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap">'+(f.preco?'<span>Fixo: '+mo(f.preco)+'</span>':'')+(f.preco_kg?'<span>Por kg: '+mo(f.preco_kg)+'</span>':'')+'</p></div><div class="card-actions">'+editBtn(f.id,'frete')+'<button class="del" data-del-fre="'+f.id+'">×</button></div></div></div>';}).join('');
 }
+function openFreteEdit(id){
+  var f=D.fretes.find(function(x){return x.id===id;});if(!f)return;
+  $('frete-modal-title').textContent='Editar Frete';
+  $('fr-id').value=f.id;
+  $('fr-trans').value=f.transportadora||'';
+  $('fr-tipo').value=f.tipo||'fixo';
+  $('fr-status').value=f.status||'ativo';
+  $('fr-regiao').value=f.regiao||'';
+  $('fr-prazo').value=f.prazo_dias||'';
+  $('fr-preco').value=f.preco||'';
+  $('fr-preckg').value=f.preco_kg||'';
+  $('fr-pesomax').value=f.peso_max||'';
+  $('fr-pedmin').value=f.valor_minimo_pedido||'';
+  $('fr-obs').value=f.observacoes||'';
+  var dBtn=$('delete-frete');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=f.id;}
+  openModal('frete');
+}
+
 function saveFrete(){
   var t=val('fr-trans').trim();if(!t){toast('Informe a transportadora');return;}
-  db.from('fretes').insert({transportadora:t,tipo:val('fr-tipo'),status:val('fr-status'),regiao:val('fr-regiao')||null,prazo_dias:iNum('fr-prazo')||null,preco:num('fr-preco')||null,preco_kg:num('fr-preckg')||null,observacoes:val('fr-obs')||null})
-    .then(function(){closeModal('frete');resetForm('frete');toast('Salvo!');loadFretes();});
+  var id=val('fr-id');
+  var payload={transportadora:t,tipo:val('fr-tipo'),status:val('fr-status'),regiao:val('fr-regiao')||null,prazo_dias:iNum('fr-prazo')||null,preco:num('fr-preco')||null,preco_kg:num('fr-preckg')||null,peso_max:num('fr-pesomax')||null,valor_minimo_pedido:num('fr-pedmin')||null,observacoes:val('fr-obs')||null,updated_at:new Date().toISOString()};
+  var q=id?db.from('fretes').update(payload).eq('id',id):db.from('fretes').insert(payload);
+  q.then(function(res){if(res.error){toast('Erro: '+res.error.message);return;}closeModal('frete');resetForm('frete');toast(id?'Atualizado!':'Salvo!');loadFretes();});
 }
 
 // ── PARCEIROS ──────────────────────────────────────────────
@@ -1865,7 +1886,7 @@ function saveParceiro(){
     responsavel_pessoa_id:val('pa-resp')||null,updated_at:new Date().toISOString()
   };
   var q=id?db.from('parceiros').update(payload).eq('id',id):db.from('parceiros').insert(payload);
-  q.then(function(){closeModal('parceiro');resetForm('parceiro');toast(id?'Atualizado!':'Adicionado!');loadParceiros();});
+  q.then(function(res){if(res.error){toast('Erro: '+res.error.message);console.error(res.error);return;}closeModal('parceiro');resetForm('parceiro');toast(id?'Atualizado!':'Adicionado!');loadParceiros();});
 }
 
 // ── COLECAO EVENTOS ───────────────────────────────────────────
@@ -2127,6 +2148,7 @@ function handleClick(e){
     else if(emod==='producao')openProducaoEdit(eid);
     else if(emod==='pedido')openPedidoEdit(eid);
     else if(emod==='parceiro')openParceiroEdit(eid);
+    else if(emod==='frete')openFreteEdit(eid);
     else if(emod==='postagem')openPostagemEdit(eid);
     else if(emod==='marketing')openMarketingEdit(eid);
     else if(emod==='cliente')openClienteEdit(eid);
@@ -2246,6 +2268,7 @@ document.addEventListener('DOMContentLoaded',function(){
     {btnId:'delete-marketing', table:'acoes_marketing', hardDelete:false, reload:loadMarketing},
     {btnId:'delete-cliente',   table:'clientes',        hardDelete:false, reload:loadClientes},
     {btnId:'delete-evento',    table:'eventos_colecao', hardDelete:true,  reload:loadColecoes},
+    {btnId:'delete-frete',     table:'fretes',          hardDelete:true,  reload:loadFretes},
   ];
   deleteConfigs.forEach(function(cfg){
     var btn=document.getElementById(cfg.btnId);if(!btn)return;
