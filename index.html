@@ -161,6 +161,16 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .b-variavel,.b-media,.b-aprovacao{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
 .b-gratis,.b-equipe{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
 .b-externo{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
+.b-produto-enviado,.b-produto_enviado{background:rgba(68,170,255,.1);color:var(--blue);border-color:rgba(68,170,255,.25)}
+.b-postou{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
+.b-contato{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
+.b-encerrado{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
+.b-planejado{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
+.b-confirmado{background:rgba(68,170,255,.1);color:var(--blue);border-color:rgba(68,170,255,.25)}
+.b-postado{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
+.b-ativa{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
+.b-planejada{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
+.b-encerrada{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
 .b-ideacao{background:rgba(102,102,102,.15);color:var(--muted);border-color:var(--border)}
 .b-em_criacao{background:rgba(68,170,255,.1);color:var(--blue);border-color:rgba(68,170,255,.25)}
 .b-em_producao{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3)}
@@ -397,6 +407,29 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .fin-socio-fill{height:100%;border-radius:3px;background:var(--blue)}
 .fin-socio-val{font-size:10px;font-weight:700;min-width:70px;text-align:right}
 
+/* ══ MARKETING / CRM ═══════════════════════════════════════ */
+.tier-badge{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;border:1px solid;text-transform:uppercase;letter-spacing:.5px}
+.tier-diamante{background:rgba(68,170,255,.15);color:var(--blue);border-color:rgba(68,170,255,.3)}
+.tier-ouro{background:rgba(212,255,0,.1);color:var(--neon);border-color:var(--neon-bd)}
+.tier-prata{background:rgba(180,180,180,.1);color:#aaa;border-color:#333}
+.tier-bronze{background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.25)}
+.vip-badge{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;background:rgba(212,255,0,.1);color:var(--neon);border:1px solid var(--neon-bd)}
+.roi-positive{color:var(--green);font-weight:800}
+.roi-negative{color:var(--red);font-weight:800}
+.mkt-metric{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted)}
+.mkt-metric b{color:var(--fg);font-weight:700}
+.social-handles{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.social-pill{font-size:9px;padding:2px 7px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--muted)}
+.social-pill.ig{border-color:rgba(180,0,180,.3);color:#cc44cc}
+.social-pill.tt{border-color:rgba(255,0,80,.3);color:#ff4466}
+.social-pill.th{border-color:rgba(100,100,100,.3);color:var(--muted)}
+.social-pill.yt{border-color:rgba(255,0,0,.3);color:#ff4444}
+.evento-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid rgba(128,128,128,.07)}
+.evento-item:last-child{border:none}
+.evento-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.evento-dot.confirmado{background:var(--green)}.evento-dot.negociacao{background:var(--amber)}.evento-dot.cancelado{background:var(--red)}
+.pontos-badge{font-size:10px;font-weight:700;color:var(--purple);background:rgba(170,136,255,.1);border:1px solid rgba(170,136,255,.25);padding:2px 8px;border-radius:20px}
+
 </style>
 </head>
 <body>
@@ -479,9 +512,23 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
           <svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
           <span class="nav-label">Fretes</span>
         </div>
+        <div class="nav-section">Marketing</div>
         <div class="nav-item" data-sec="parceiros">
           <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          <span class="nav-label">Parceiros</span>
+          <span class="nav-label">Parceiros & Influenc.</span>
+        </div>
+        <div class="nav-item" data-sec="postagens">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span class="nav-label">Postagens</span>
+        </div>
+        <div class="nav-item" data-sec="marketing">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span class="nav-label">Marketing</span>
+        </div>
+        <div class="nav-section">CRM</div>
+        <div class="nav-item" data-sec="clientes">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span class="nav-label">Clientes</span>
         </div>
                 <div class="nav-section">Admin</div>
         <div class="nav-item" data-sec="pessoas">
@@ -676,6 +723,34 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
           <div id="parceiro-list"></div>
         </div>
 
+        <!-- POSTAGENS -->
+        <div class="cw" id="section-postagens">
+          <div class="section-header"><h2 class="section-title">Postagens</h2><button class="btn-add" data-modal="postagem">+ Nova postagem</button></div>
+          <div class="metrics" id="postagem-metrics"></div>
+          <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="post" data-k="status" data-v="all">Todas</button><button class="fb" data-f="post" data-k="status" data-v="planejado">Planejadas</button><button class="fb" data-f="post" data-k="status" data-v="confirmado">Confirmadas</button><button class="fb" data-f="post" data-k="status" data-v="postado">Postadas</button><button class="fb" data-f="post" data-k="status" data-v="cancelado">Canceladas</button></div>
+          <div class="filters"><span class="fl">Rede:</span><button class="fb active" data-f="post" data-k="rede" data-v="all">Todas</button><button class="fb" data-f="post" data-k="rede" data-v="instagram_reels">Reels</button><button class="fb" data-f="post" data-k="rede" data-v="instagram_feed">Feed</button><button class="fb" data-f="post" data-k="rede" data-v="instagram_stories">Stories</button><button class="fb" data-f="post" data-k="rede" data-v="tiktok">TikTok</button></div>
+          <div id="postagem-list"><p class="loading">Carregando...</p></div>
+        </div>
+
+        <!-- MARKETING -->
+        <div class="cw" id="section-marketing">
+          <div class="section-header"><h2 class="section-title">Marketing</h2><button class="btn-add" data-modal="marketing">+ Nova ação</button></div>
+          <div class="metrics" id="marketing-metrics"></div>
+          <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="mkt" data-k="status" data-v="all">Todas</button><button class="fb" data-f="mkt" data-k="status" data-v="planejada">Planejadas</button><button class="fb" data-f="mkt" data-k="status" data-v="ativa">Ativas</button><button class="fb" data-f="mkt" data-k="status" data-v="encerrada">Encerradas</button></div>
+          <div class="filters"><span class="fl">Tipo:</span><button class="fb active" data-f="mkt" data-k="tipo" data-v="all">Todos</button><button class="fb" data-f="mkt" data-k="tipo" data-v="reels">Reels</button><button class="fb" data-f="mkt" data-k="tipo" data-v="campanha_paga">Campanha paga</button><button class="fb" data-f="mkt" data-k="tipo" data-v="post_organico">Post orgânico</button><button class="fb" data-f="mkt" data-k="tipo" data-v="ads">Ads</button></div>
+          <div id="marketing-list"><p class="loading">Carregando...</p></div>
+        </div>
+
+        <!-- CLIENTES -->
+        <div class="cw" id="section-clientes">
+          <div class="section-header"><h2 class="section-title">Clientes</h2><button class="btn-add" data-modal="cliente">+ Novo cliente</button></div>
+          <div class="metrics" id="cliente-metrics"></div>
+          <div class="search-bar"><input class="search-input" id="cliente-search" placeholder="Buscar por nome, CPF, e-mail, cidade..."></div>
+          <div class="filters"><span class="fl">Tier:</span><button class="fb active" data-f="cli" data-k="tier" data-v="all">Todos</button><button class="fb" data-f="cli" data-k="tier" data-v="diamante">💎 Diamante</button><button class="fb" data-f="cli" data-k="tier" data-v="ouro">🥇 Ouro</button><button class="fb" data-f="cli" data-k="tier" data-v="prata">🥈 Prata</button><button class="fb" data-f="cli" data-k="tier" data-v="bronze">🥉 Bronze</button></div>
+          <div class="filters"><span class="fl">VIP:</span><button class="fb active" data-f="cli" data-k="vip" data-v="all">Todos</button><button class="fb" data-f="cli" data-k="vip" data-v="sim">⭐ VIP</button><button class="fb" data-f="cli" data-k="vip" data-v="nao">Regulares</button></div>
+          <div id="cliente-list"><p class="loading">Carregando...</p></div>
+        </div>
+
         <!-- PESSOAS -->
         <div class="cw" id="section-pessoas">
           <div class="section-header"><h2 class="section-title">Pessoas</h2><button class="btn-add" data-modal="pessoa">+ Nova pessoa</button></div>
@@ -838,16 +913,25 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 </div></div>
 
 <!-- PARCEIRO -->
-<div class="modal-bg" id="modal-parceiro"><div class="modal">
-  <div class="modal-title">Novo Parceiro<button class="modal-close-btn" data-close="parceiro">×</button></div>
+<div class="modal-bg" id="modal-parceiro"><div class="modal wide">
+  <div class="modal-title"><span id="par-modal-title">Novo Parceiro / Influenciador</span><button class="modal-close-btn" data-close="parceiro">×</button></div>
   <input type="hidden" id="pa-id">
-  <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="pa-nome" placeholder="Nome / empresa"></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Tipo de parceria</label><input class="form-input" id="pa-tipo" placeholder="Influencer, Loja..."></div><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="pa-status"><option value="prospecto">Prospecto</option><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="pa-nome" placeholder="Nome / @handle"></div><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="pa-tipo"><option value="influenciador">Influenciador</option><option value="embaixador">Embaixador</option><option value="loja">Loja</option><option value="imprensa">Imprensa</option><option value="outro">Outro</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="pa-status"><option value="prospecto">Prospecto</option><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div><div class="form-group"><label class="form-label">Status Collab</label><select class="form-select" id="pa-status-collab"><option value="prospecto">Prospecto</option><option value="contato">Contato feito</option><option value="produto_enviado">Produto enviado</option><option value="postou">Postou</option><option value="encerrado">Encerrado</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Nicho</label><input class="form-input" id="pa-nicho" placeholder="Moda, Festival, Lifestyle..."></div><div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="pa-cidade" placeholder="São Paulo, Rio..."></div></div>
+  <p class="form-section">Redes Sociais</p>
+  <div class="form-row"><div class="form-group"><label class="form-label">Instagram @</label><input class="form-input" id="pa-ig" placeholder="@handle"></div><div class="form-group"><label class="form-label">Seguidores IG</label><input class="form-input" id="pa-ig-seg" type="number" placeholder="50000"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">TikTok @</label><input class="form-input" id="pa-tt" placeholder="@handle"></div><div class="form-group"><label class="form-label">Seguidores TikTok</label><input class="form-input" id="pa-tt-seg" type="number" placeholder="20000"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Threads @</label><input class="form-input" id="pa-threads" placeholder="@handle"></div><div class="form-group"><label class="form-label">YouTube @</label><input class="form-input" id="pa-yt" placeholder="@handle"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Engajamento (%)</label><input class="form-input" id="pa-eng" type="number" step="0.1" placeholder="3.5"></div><div class="form-group"><label class="form-label">Cachê / Valor (R$)</label><input class="form-input" id="pa-cache" type="number" step="0.01" placeholder="0,00"></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="pa-whatsapp" placeholder="(11) 9 9999-0000"></div><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="pa-email" placeholder="contato@"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="pa-insta" placeholder="@"></div><div class="form-group"><label class="form-label">Site</label><input class="form-input" id="pa-site" placeholder="www."></div></div>
+  <p class="form-section">Colaboração</p>
+  <div class="form-row"><div class="form-group"><label class="form-label">Data de envio do produto</label><input class="form-input" id="pa-data-envio" type="date"></div><div class="form-group"><label class="form-label">Coleção enviada</label><select class="form-select" id="pa-colecao"></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Vendas geradas</label><input class="form-input" id="pa-vendas" type="number" placeholder="0" min="0"></div><div class="form-group"><label class="form-label">Código de desconto</label><input class="form-input" id="pa-cod-desc" placeholder="SLB_INFL10"></div></div>
+  <div class="form-group"><label class="form-label">Resultado / Observações</label><textarea class="form-textarea" id="pa-resultado" placeholder="Ex: Recebeu produto em 15/07, postou reels em 20/07, gerou 3 vendas, alcance de 15k..."></textarea></div>
+  <div class="form-group"><label class="form-label">Endereço de envio</label><input class="form-input" id="pa-end-envio" placeholder="Rua, número, CEP, cidade"></div>
   <div class="form-group"><label class="form-label">Responsável SLB</label><select class="form-select" id="pa-resp"></select></div>
-  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="pa-obs"></textarea></div>
-  <div class="modal-footer"><button class="btn-save" id="save-parceiro">Salvar Parceiro</button><button class="btn-delete-modal" id="delete-parceiro" style="display:none">Excluir</button><button class="btn-close-modal" data-close="parceiro">Fechar</button></div>
+  <div class="modal-footer"><button class="btn-save" id="save-parceiro">Salvar</button><button class="btn-delete-modal" id="delete-parceiro" style="display:none">Excluir</button><button class="btn-close-modal" data-close="parceiro">Fechar</button></div>
 </div></div>
 
 <!-- PESSOA -->
@@ -859,6 +943,64 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
   <div class="modal-footer"><button class="btn-save" id="save-pessoa">Salvar Pessoa</button><button class="btn-close-modal" data-close="pessoa">Fechar</button></div>
 </div></div>
 
+<!-- POSTAGEM -->
+<div class="modal-bg" id="modal-postagem"><div class="modal wide">
+  <div class="modal-title"><span id="post-modal-title">Nova Postagem</span><button class="modal-close-btn" data-close="postagem">×</button></div>
+  <input type="hidden" id="po-id">
+  <div class="form-row"><div class="form-group"><label class="form-label">Parceiro / Influenciador</label><select class="form-select" id="po-parceiro"></select></div><div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="po-colecao"></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Rede social</label><select class="form-select" id="po-rede"><option value="instagram_feed">Instagram Feed</option><option value="instagram_reels">Instagram Reels</option><option value="instagram_stories">Instagram Stories</option><option value="tiktok">TikTok</option><option value="threads">Threads</option><option value="youtube">YouTube</option></select></div><div class="form-group"><label class="form-label">Tipo de conteúdo</label><input class="form-input" id="po-tipo" placeholder="Look do dia, Review, Collab..."></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Data prevista</label><input class="form-input" id="po-data-prev" type="date"></div><div class="form-group"><label class="form-label">Data real de postagem</label><input class="form-input" id="po-data-real" type="date"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="po-status"><option value="planejado">Planejado</option><option value="confirmado">Confirmado</option><option value="postado">Postado</option><option value="cancelado">Cancelado</option></select></div><div class="form-group"><label class="form-label">Código de desconto</label><input class="form-input" id="po-cod-desc" placeholder="SLB10"></div></div>
+  <div class="form-group"><label class="form-label">Link da postagem</label><input class="form-input" id="po-link" placeholder="https://instagram.com/p/..."></div>
+  <p class="form-section">Métricas (após postagem)</p>
+  <div class="form-row3"><div class="form-group"><label class="form-label">Alcance</label><input class="form-input" id="po-alcance" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Curtidas</label><input class="form-input" id="po-curtidas" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Comentários</label><input class="form-input" id="po-coments" type="number" placeholder="0"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Cliques no link</label><input class="form-input" id="po-cliques" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Vendas geradas</label><input class="form-input" id="po-vendas" type="number" placeholder="0"></div></div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="po-obs" placeholder="Contexto, detalhes..."></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="save-postagem">Salvar</button><button class="btn-delete-modal" id="delete-postagem" style="display:none">Excluir</button><button class="btn-close-modal" data-close="postagem">Fechar</button></div>
+</div></div>
+
+<!-- MARKETING -->
+<div class="modal-bg" id="modal-marketing"><div class="modal wide">
+  <div class="modal-title"><span id="mkt-modal-title">Nova Ação de Marketing</span><button class="modal-close-btn" data-close="marketing">×</button></div>
+  <input type="hidden" id="mk-id">
+  <div class="form-group"><label class="form-label">Título *</label><input class="form-input" id="mk-titulo" placeholder="Ex: Campanha Zamna 2026, Reels com @influencer..."></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="mk-tipo"><option value="post_organico">Post orgânico</option><option value="reels">Reels</option><option value="campanha_paga">Campanha paga</option><option value="ads">Ads (Meta/Google)</option><option value="email">E-mail</option><option value="whatsapp">WhatsApp</option><option value="outro">Outro</option></select></div><div class="form-group"><label class="form-label">Plataforma</label><select class="form-select" id="mk-plat"><option value="instagram">Instagram</option><option value="tiktok">TikTok</option><option value="meta_ads">Meta Ads</option><option value="google">Google</option><option value="whatsapp">WhatsApp</option><option value="email">E-mail</option><option value="outro">Outro</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="mk-status"><option value="planejada">Planejada</option><option value="ativa">Ativa</option><option value="encerrada">Encerrada</option><option value="cancelada">Cancelada</option></select></div><div class="form-group"><label class="form-label">Coleção vinculada</label><select class="form-select" id="mk-colecao"></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Data início</label><input class="form-input" id="mk-inicio" type="date"></div><div class="form-group"><label class="form-label">Data fim</label><input class="form-input" id="mk-fim" type="date"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Investimento (R$)</label><input class="form-input" id="mk-invest" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="mk-resp"></select></div></div>
+  <div class="form-group"><label class="form-label">Público-alvo</label><input class="form-input" id="mk-publico" placeholder="Mulheres 18-35, amantes de festival..."></div>
+  <div class="form-group"><label class="form-label">Descrição / Criativo</label><textarea class="form-textarea" id="mk-desc" placeholder="Detalhes da campanha, link do criativo..."></textarea></div>
+  <p class="form-section">Resultados</p>
+  <div class="form-row3"><div class="form-group"><label class="form-label">Alcance</label><input class="form-input" id="mk-alcance" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Impressões</label><input class="form-input" id="mk-impressoes" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Cliques</label><input class="form-input" id="mk-cliques" type="number" placeholder="0"></div></div>
+  <div class="form-row3"><div class="form-group"><label class="form-label">Leads</label><input class="form-input" id="mk-leads" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Vendas</label><input class="form-input" id="mk-vendas" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Receita gerada (R$)</label><input class="form-input" id="mk-receita" type="number" step="0.01" placeholder="0,00"></div></div>
+  <div class="modal-footer"><button class="btn-save" id="save-marketing">Salvar</button><button class="btn-delete-modal" id="delete-marketing" style="display:none">Excluir</button><button class="btn-close-modal" data-close="marketing">Fechar</button></div>
+</div></div>
+
+<!-- CLIENTE -->
+<div class="modal-bg" id="modal-cliente"><div class="modal wide">
+  <div class="modal-title"><span id="cli-modal-title">Novo Cliente</span><button class="modal-close-btn" data-close="cliente">×</button></div>
+  <input type="hidden" id="cl-id">
+  <div class="form-row"><div class="form-group"><label class="form-label">Nome completo *</label><input class="form-input" id="cl-nome" placeholder="Nome do cliente"></div><div class="form-group"><label class="form-label">CPF</label><input class="form-input" id="cl-cpf" placeholder="000.000.000-00"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="cl-email" placeholder="cliente@email.com"></div><div class="form-group"><label class="form-label">Telefone / WhatsApp</label><input class="form-input" id="cl-tel" placeholder="(11) 9 9999-0000"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="cl-cidade" placeholder="São Paulo"></div><div class="form-group"><label class="form-label">Estado</label><select class="form-select" id="cl-estado"><option value="">-</option><option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>RS</option><option>SC</option><option>BA</option><option>CE</option><option>DF</option><option>GO</option><option>PE</option><option>Outro</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Aniversário</label><input class="form-input" id="cl-nasc" type="date"></div><div class="form-group"><label class="form-label">Como conheceu a SLB</label><select class="form-select" id="cl-origem"><option value="">-</option><option>Instagram</option><option>TikTok</option><option>Indicação</option><option>Evento / Festival</option><option>Loja física</option><option>Site</option><option>Outro</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Tamanho preferido</label><select class="form-select" id="cl-tam"><option value="">-</option><option>P</option><option>M</option><option>G</option><option>GG</option><option>Especial</option></select></div><div class="form-group"><label class="form-label">Estilo favorito</label><input class="form-input" id="cl-estilo" placeholder="Festival, streetwear, casual..."></div></div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px"><label class="form-check"><input type="checkbox" id="cl-vip"> ⭐ Cliente VIP</label><label class="form-check"><input type="checkbox" id="cl-optin-wp"> WhatsApp opt-in</label><label class="form-check"><input type="checkbox" id="cl-optin-email"> E-mail opt-in</label></div>
+  <div class="form-group"><label class="form-label">Observações internas</label><textarea class="form-textarea" id="cl-obs" placeholder="Preferências, histórico, notas da equipe..."></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="save-cliente">Salvar</button><button class="btn-delete-modal" id="delete-cliente" style="display:none">Excluir</button><button class="btn-close-modal" data-close="cliente">Fechar</button></div>
+</div></div>
+
+<!-- EVENTO COLECAO -->
+<div class="modal-bg" id="modal-evento"><div class="modal">
+  <div class="modal-title"><span id="ev-modal-title">Novo Evento</span><button class="modal-close-btn" data-close="evento">×</button></div>
+  <input type="hidden" id="ev-id">
+  <input type="hidden" id="ev-colecao-id">
+  <div class="form-group"><label class="form-label">Nome do evento *</label><input class="form-input" id="ev-nome" placeholder="Ex: Zamna Festival, Warung, Time Warp..."></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Data do evento</label><input class="form-input" id="ev-data" type="date"></div><div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="ev-cidade" placeholder="Tulum, Floripa..."></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="ev-tipo"><option value="festival">Festival</option><option value="balada">Balada</option><option value="popup">Pop-up</option><option value="lancamento">Lançamento</option><option value="outro">Outro</option></select></div><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="ev-status"><option value="negociacao">Em negociação</option><option value="confirmado">Confirmado</option><option value="cancelado">Cancelado</option></select></div></div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="ev-obs" placeholder="Detalhes, contato, planejamento..."></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="save-evento">Salvar Evento</button><button class="btn-delete-modal" id="delete-evento" style="display:none">Excluir</button><button class="btn-close-modal" data-close="evento">Fechar</button></div>
+</div></div>
 <div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -880,7 +1022,7 @@ var L={
   pedSt:{pago:'Pago',separacao:'Em separação',producao:'Produção',enviado:'Enviado',entregue:'Entregue',troca:'Troca',cancelado:'Cancelado'},
   colSt:{planejamento:'Planejamento',em_producao:'Em produção',lancada:'Lançada',encerrada:'Encerrada'},
   pagtoSt:{pago:'Pago',pendente:'Pendente',vencido:'Vencido'},
-  sections:{home:'Dashboard',tarefas:'Tarefas',financas:'Finanças',produtos:'Produtos',estoque:'Estoque',colecoes:'Coleções',producao:'Produção',pedidos:'Pedidos',fornecedores:'Fornecedores',fretes:'Fretes',parceiros:'Parceiros',pessoas:'Pessoas'}
+  sections:{home:'Dashboard',tarefas:'Tarefas',financas:'Finanças',produtos:'Produtos',estoque:'Estoque',colecoes:'Coleções',producao:'Produção',pedidos:'Pedidos',fornecedores:'Fornecedores',fretes:'Fretes',parceiros:'Parceiros & Influenciadores',postagens:'Postagens',marketing:'Marketing',clientes:'Clientes',pessoas:'Pessoas'}
 };
 
 var D={tasks:[],suppliers:[],costs:[],pessoas:[],estoques:[],colecoes:[],producoes:[],pedidos:[],fretes:[],parceiros:[],produtos:[]};
@@ -931,7 +1073,7 @@ function applyFilter(entity,key,value,btn){
   F[entity][key]=value;
   btn.closest('.filters').querySelectorAll('.fb').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  var renders={task:renderTasks,sup:renderSuppliers,fin:renderCosts,prod:renderProdutos,est:renderEstoque,col:renderColecoes,prd:renderProducoes,ped:renderPedidos,fre:renderFretes,par:renderParceiros,pes:renderPessoas};
+  var renders={task:renderTasks,sup:renderSuppliers,fin:renderCosts,prod:renderProdutos,est:renderEstoque,col:renderColecoes,prd:renderProducoes,ped:renderPedidos,fre:renderFretes,par:renderParceiros,pes:renderPessoas,post:renderPostagens,mkt:renderMarketing,cli:renderClientes};
   if(renders[entity])renders[entity]();
 }
 
@@ -960,7 +1102,7 @@ function loadPessoas(){
   return db.from('pessoas').select('*').eq('ativo',true).order('nome').then(function(r){
     D.pessoas=r.data||[];
     var opts='<option value="">— Nenhum —</option>'+D.pessoas.map(function(p){return '<option value="'+p.id+'">'+p.nome+(p.cargo?' · '+p.cargo:'')+'</option>';}).join('');
-    ['t-owner','t-coowner','s-resp','pa-resp','col-resp','prd-resp','ped-resp','c-pago-por'].forEach(function(id){var el=$(id);if(el)el.innerHTML=opts;});
+    ['t-owner','t-coowner','s-resp','pa-resp','col-resp','prd-resp','ped-resp','c-pago-por','mk-resp'].forEach(function(id){var el=$(id);if(el)el.innerHTML=opts;});
     var loginMap={JU:'Juliana Paulinelli',FE:'Fernando Araújo',VI:'Victor Paulinelli',YA:'Yasmin Zurdo'};
     var myP=D.pessoas.find(function(p){return p.nome===loginMap[me];});
     if(myP)['t-owner','s-resp','ped-resp','c-pago-por'].forEach(function(id){var el=$(id);if(el)el.value=myP.id;});
@@ -1386,7 +1528,7 @@ function renderColecoes(){
     var prods=D.produtos.filter(function(p){return p.colecao_id===c.id;});
     var receita=prods.reduce(function(a,p){return a+(p.preco_venda||0);},0);
     var custo=prods.reduce(function(a,p){return a+(p.custo||0);},0);
-    return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+c.nome+'</p><div class="card-meta">'+badge(c.status,L.colSt[c.status])+(c.temporada?catTag(c.temporada):'')+(c.ano?catTag(c.ano):'')+'</div><div style="display:flex;gap:12px;margin-top:6px;flex-wrap:wrap"><span style="font-size:10px;color:var(--muted)">Produtos: <b style="color:var(--fg)">'+prods.length+'</b></span><span style="font-size:10px;color:var(--muted)">Custo: <b style="color:var(--fg)">'+mo(custo)+'</b></span><span style="font-size:10px;color:var(--muted)">Receita: <b style="color:var(--green)">'+mo(receita)+'</b></span><span style="font-size:10px;color:var(--muted)">Lucro: <b style="color:'+(receita-custo>=0?'var(--green)':'var(--red)')+'">'+mo(receita-custo)+'</b></span></div>'+(c.descricao?'<p class="card-desc">'+c.descricao+'</p>':'')+'</div><div class="card-actions">'+editBtn(c.id,'colecao')+'<button class="del" data-del-col="'+c.id+'">×</button></div></div></div>';
+    return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+c.nome+'<button style="margin-left:8px;background:var(--neon-bg);border:1px solid var(--neon-bd);color:var(--neon);font-size:9px;padding:2px 8px;border-radius:4px;cursor:pointer;font-family:Montserrat,sans-serif;font-weight:700" data-add-evento="'+c.id+'">+ Evento</button></p><div class="card-meta">'+badge(c.status,L.colSt[c.status])+(c.temporada?catTag(c.temporada):'')+(c.ano?catTag(c.ano):'')+'</div><div style="display:flex;gap:12px;margin-top:6px;flex-wrap:wrap"><span style="font-size:10px;color:var(--muted)">Produtos: <b style="color:var(--fg)">'+prods.length+'</b></span><span style="font-size:10px;color:var(--muted)">Custo: <b style="color:var(--fg)">'+mo(custo)+'</b></span><span style="font-size:10px;color:var(--muted)">Receita: <b style="color:var(--green)">'+mo(receita)+'</b></span><span style="font-size:10px;color:var(--muted)">Lucro: <b style="color:'+(receita-custo>=0?'var(--green)':'var(--red)')+'">'+mo(receita-custo)+'</b></span></div>'+(c.descricao?'<p class="card-desc">'+c.descricao+'</p>':'')+'</div><div class="card-actions">'+editBtn(c.id,'colecao')+'<button class="del" data-del-col="'+c.id+'">×</button></div></div></div>';
   }).join('');
 }
 function openColecaoEdit(id){
@@ -1482,7 +1624,315 @@ function saveFrete(){
 }
 
 // ── PARCEIROS ──────────────────────────────────────────────
+
+// ── DATA STORES ────────────────────────────────────────────────
+D.postagens = [];
+D.marketing = [];
+D.clientes  = [];
+
+// ── FILTERS ────────────────────────────────────────────────────
+F.post = { status:'all', rede:'all' };
+F.mkt  = { status:'all', tipo:'all' };
+F.cli  = { tier:'all', vip:'all' };
+
+var L_POST_STATUS  = { planejado:'Planejado', confirmado:'Confirmado', postado:'Postado', cancelado:'Cancelado' };
+var L_POST_REDE    = { instagram_feed:'IG Feed', instagram_reels:'IG Reels', instagram_stories:'IG Stories', tiktok:'TikTok', threads:'Threads', youtube:'YouTube' };
+var L_MKT_TIPO     = { post_organico:'Post orgânico', reels:'Reels', campanha_paga:'Campanha paga', ads:'Ads', email:'E-mail', whatsapp:'WhatsApp', outro:'Outro' };
+var L_MKT_STATUS   = { planejada:'Planejada', ativa:'Ativa', encerrada:'Encerrada', cancelada:'Cancelada' };
+var L_COLLAB_STATUS= { prospecto:'Prospecto', contato:'Contato', produto_enviado:'Prod. enviado', postou:'Postou', encerrado:'Encerrado' };
+var L_TIER         = { bronze:'Bronze', prata:'Prata', ouro:'Ouro', diamante:'Diamante' };
+
+// ── HELPERS ────────────────────────────────────────────────────
+function fmtNum(n) { if(!n) return '0'; return n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(0)+'k':String(n); }
+function tierBadge(t) { return '<span class="tier-badge tier-'+t+'">' + (t==='diamante'?'💎':t==='ouro'?'🥇':t==='prata'?'🥈':'🥉') + ' ' + (L_TIER[t]||t) + '</span>'; }
+function calcTier(gasto) { if(gasto>=2000) return 'diamante'; if(gasto>=800) return 'ouro'; if(gasto>=300) return 'prata'; return 'bronze'; }
+function calcPontos(gasto) { return Math.floor(parseFloat(gasto||0)); }
+
+// ── POSTAGENS ─────────────────────────────────────────────────
+function loadPostagens() {
+  return db.from('postagens')
+    .select('*,parceiro:parceiros(nome,handle_ig),colecao:colecoes(nome)')
+    .eq('ativo', true).order('data_prevista', { ascending: true })
+    .then(function(r) {
+      D.postagens = r.data || [];
+      var postadas = D.postagens.filter(function(p){return p.status==='postado';}).length;
+      var badge = document.getElementById('badge-postagens');
+      if(badge){ var pend=D.postagens.filter(function(p){return p.status==='planejado'||p.status==='confirmado';}).length; badge.style.display=pend>0?'':'none'; badge.textContent=pend; }
+      renderPostagens();
+    });
+}
+function renderPostagens() {
+  var f = F.post;
+  var list = D.postagens.filter(function(p){
+    return (f.status==='all'||p.status===f.status) && (f.rede==='all'||p.rede===f.rede);
+  });
+  var totAlcance = D.postagens.filter(function(p){return p.status==='postado';}).reduce(function(a,p){return a+(p.alcance||0);},0);
+  var totVendas  = D.postagens.reduce(function(a,p){return a+(p.vendas_geradas||0);},0);
+  var postEl = document.getElementById('postagem-metrics');
+  if(postEl) postEl.innerHTML = metric(D.postagens.length,'Total') + metric(D.postagens.filter(function(p){return p.status==='postado';}).length,'Postadas','var(--green)') + metric(fmtNum(totAlcance),'Alcance total','var(--neon)') + metric(totVendas,'Vendas geradas','var(--amber)');
+  var el = document.getElementById('postagem-list');
+  if(!el) return;
+  if(!list.length){el.innerHTML='<p class="empty">Nenhuma postagem encontrada</p>';return;}
+  el.innerHTML = list.map(function(p){
+    var redeLbl = L_POST_REDE[p.rede]||p.rede||'—';
+    var statusCls = {planejado:'muted',confirmado:'blue',postado:'green',cancelado:'red'}[p.status]||'muted';
+    return '<div class="card"><div class="card-row"><div class="card-body">' +
+      '<p class="card-title">' + (p.parceiro?p.parceiro.nome:'Sem parceiro') + ' · ' + redeLbl + '</p>' +
+      '<div class="card-meta">' + badge(p.status, L_POST_STATUS[p.status]) + (p.tipo_conteudo?catTag(p.tipo_conteudo):'') + (p.colecao?catTag('🗂 '+p.colecao.nome):'') +
+      (p.data_prevista?'<span style="font-size:9px;color:var(--muted)">📅 '+fmtDate(p.data_prevista)+'</span>':'') + '</div>' +
+      (p.status==='postado'?'<div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap">' +
+        '<span class="mkt-metric">👁 <b>'+fmtNum(p.alcance)+'</b></span>' +
+        '<span class="mkt-metric">❤️ <b>'+fmtNum(p.curtidas)+'</b></span>' +
+        '<span class="mkt-metric">💬 <b>'+fmtNum(p.comentarios)+'</b></span>' +
+        '<span class="mkt-metric">🛒 <b>'+( p.vendas_geradas||0)+' vendas</b></span>' +
+      '</div>':'') +
+    '</div><div class="card-actions">' + editBtn(p.id,'postagem') + '<button class="del" data-del-post="'+p.id+'">×</button></div></div></div>';
+  }).join('');
+}
+function openPostagemEdit(id){
+  var p=D.postagens.find(function(x){return x.id===id;});if(!p)return;
+  document.getElementById('post-modal-title').textContent='Editar Postagem';
+  document.getElementById('po-id').value=p.id;
+  document.getElementById('po-rede').value=p.rede||'instagram_reels';
+  document.getElementById('po-tipo').value=p.tipo_conteudo||'';
+  document.getElementById('po-data-prev').value=p.data_prevista||'';
+  document.getElementById('po-data-real').value=p.data_real||'';
+  document.getElementById('po-status').value=p.status||'planejado';
+  document.getElementById('po-link').value=p.link_postagem||'';
+  document.getElementById('po-alcance').value=p.alcance||'';
+  document.getElementById('po-curtidas').value=p.curtidas||'';
+  document.getElementById('po-coments').value=p.comentarios||'';
+  document.getElementById('po-cliques').value=p.cliques||'';
+  document.getElementById('po-vendas').value=p.vendas_geradas||'';
+  document.getElementById('po-cod-desc').value=p.codigo_desconto||'';
+  document.getElementById('po-obs').value=p.observacoes||'';
+  if(p.parceiro_id) document.getElementById('po-parceiro').value=p.parceiro_id;
+  if(p.colecao_id)  document.getElementById('po-colecao').value=p.colecao_id;
+  var dBtn=document.getElementById('delete-postagem');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  openModal('postagem');
+}
+function savePostagem(){
+  var id = val('po-id');
+  if(!val('po-data-prev')&&!val('po-data-real')){toast('Informe pelo menos a data prevista');return;}
+  var payload = { parceiro_id:val('po-parceiro')||null, colecao_id:val('po-colecao')||null, rede:val('po-rede'), tipo_conteudo:val('po-tipo')||null, data_prevista:val('po-data-prev')||null, data_real:val('po-data-real')||null, status:val('po-status'), link_postagem:val('po-link')||null, alcance:iNum('po-alcance')||null, curtidas:iNum('po-curtidas')||null, comentarios:iNum('po-coments')||null, cliques:iNum('po-cliques')||null, vendas_geradas:iNum('po-vendas')||0, codigo_desconto:val('po-cod-desc')||null, observacoes:val('po-obs')||null, updated_at:new Date().toISOString() };
+  var q = id?db.from('postagens').update(payload).eq('id',id):db.from('postagens').insert(payload);
+  q.then(function(){closeModal('postagem');resetForm('postagem');toast(id?'Atualizada!':'Criada!');loadPostagens();});
+}
+
+// ── MARKETING ─────────────────────────────────────────────────
+function loadMarketing() {
+  return db.from('acoes_marketing').select('*,colecao:colecoes(nome),responsavel:pessoas(nome)').eq('ativo',true).order('created_at',{ascending:false})
+    .then(function(r){
+      D.marketing = r.data||[];
+      renderMarketing();
+    });
+}
+function renderMarketing(){
+  var f=F.mkt;
+  var list=D.marketing.filter(function(m){return(f.status==='all'||m.status===f.status)&&(f.tipo==='all'||m.tipo===f.tipo);});
+  var totInvest=D.marketing.reduce(function(a,m){return a+parseFloat(m.investimento||0);},0);
+  var totRec=D.marketing.reduce(function(a,m){return a+parseFloat(m.receita_gerada||0);},0);
+  var roi=totInvest>0?((totRec-totInvest)/totInvest*100).toFixed(0):0;
+  var el=document.getElementById('marketing-metrics');
+  if(el) el.innerHTML=metric(D.marketing.length,'Ações')+metric(D.marketing.filter(function(m){return m.status==='ativa';}).length,'Ativas','var(--green)')+metric(mo(totInvest),'Investido','var(--blue)')+metric(roi+'%','ROI',roi>=0?'var(--green)':'var(--red)');
+  var listEl=document.getElementById('marketing-list');if(!listEl)return;
+  if(!list.length){listEl.innerHTML='<p class="empty">Nenhuma ação encontrada</p>';return;}
+  listEl.innerHTML=list.map(function(m){
+    var roi_m=m.investimento>0&&m.receita_gerada?Math.round((m.receita_gerada-m.investimento)/m.investimento*100):null;
+    var cpc=m.investimento>0&&m.cliques?( m.investimento/m.cliques).toFixed(2):null;
+    return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+m.titulo+'</p>' +
+      '<div class="card-meta">'+badge(m.status,L_MKT_STATUS[m.status])+catTag(L_MKT_TIPO[m.tipo]||m.tipo)+(m.plataforma?catTag(m.plataforma):'')+(m.colecao?catTag('🗂 '+m.colecao.nome):'')+(m.data_inicio?'<span style="font-size:9px;color:var(--muted)">'+fmtDate(m.data_inicio)+(m.data_fim?' → '+fmtDate(m.data_fim):'')+'</span>':'')+'</div>' +
+      '<div style="display:flex;gap:10px;margin-top:5px;flex-wrap:wrap">' +
+        (m.alcance?'<span class="mkt-metric">👁 <b>'+fmtNum(m.alcance)+'</b></span>':'')+
+        (m.impressoes?'<span class="mkt-metric">📊 <b>'+fmtNum(m.impressoes)+'</b></span>':'')+
+        (m.cliques?'<span class="mkt-metric">🖱 <b>'+fmtNum(m.cliques)+'</b></span>':'')+
+        (m.leads?'<span class="mkt-metric">🎯 <b>'+m.leads+' leads</b></span>':'')+
+        (m.vendas?'<span class="mkt-metric">🛒 <b>'+m.vendas+' vendas</b></span>':'')+
+        (roi_m!==null?'<span class="'+(roi_m>=0?'roi-positive':'roi-negative')+'">ROI: '+(roi_m>=0?'+':'')+roi_m+'%</span>':'')+
+        (cpc?'<span class="mkt-metric">CPC: <b>R$ '+cpc+'</b></span>':'')+
+      '</div>' +
+    '</div><div class="card-actions">'+(m.investimento?'<span style="font-size:12px;font-weight:800;white-space:nowrap">'+mo(m.investimento)+'</span>':'')+editBtn(m.id,'marketing')+'<button class="del" data-del-mkt="'+m.id+'">×</button></div></div></div>';
+  }).join('');
+}
+function openMarketingEdit(id){
+  var m=D.marketing.find(function(x){return x.id===id;});if(!m)return;
+  document.getElementById('mkt-modal-title').textContent='Editar Ação';
+  document.getElementById('mk-id').value=m.id;
+  document.getElementById('mk-titulo').value=m.titulo;
+  document.getElementById('mk-tipo').value=m.tipo||'post_organico';
+  document.getElementById('mk-plat').value=m.plataforma||'instagram';
+  document.getElementById('mk-status').value=m.status||'planejada';
+  document.getElementById('mk-inicio').value=m.data_inicio||'';
+  document.getElementById('mk-fim').value=m.data_fim||'';
+  document.getElementById('mk-invest').value=m.investimento||'';
+  document.getElementById('mk-publico').value=m.publico_alvo||'';
+  document.getElementById('mk-desc').value=m.descricao||'';
+  document.getElementById('mk-alcance').value=m.alcance||'';
+  document.getElementById('mk-impressoes').value=m.impressoes||'';
+  document.getElementById('mk-cliques').value=m.cliques||'';
+  document.getElementById('mk-leads').value=m.leads||'';
+  document.getElementById('mk-vendas').value=m.vendas||'';
+  document.getElementById('mk-receita').value=m.receita_gerada||'';
+  if(m.colecao_id) document.getElementById('mk-colecao').value=m.colecao_id;
+  if(m.responsavel_id) document.getElementById('mk-resp').value=m.responsavel_id;
+  var dBtn=document.getElementById('delete-marketing');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  openModal('marketing');
+}
+function saveMarketing(){
+  var titulo=val('mk-titulo').trim();if(!titulo){toast('Informe o título');return;}
+  var id=val('mk-id');
+  var payload={titulo:titulo,tipo:val('mk-tipo'),plataforma:val('mk-plat'),status:val('mk-status'),data_inicio:val('mk-inicio')||null,data_fim:val('mk-fim')||null,investimento:num('mk-invest')||0,publico_alvo:val('mk-publico')||null,descricao:val('mk-desc')||null,colecao_id:val('mk-colecao')||null,responsavel_id:val('mk-resp')||null,alcance:iNum('mk-alcance')||null,impressoes:iNum('mk-impressoes')||null,cliques:iNum('mk-cliques')||null,leads:iNum('mk-leads')||null,vendas:iNum('mk-vendas')||null,receita_gerada:num('mk-receita')||null,updated_at:new Date().toISOString()};
+  var q=id?db.from('acoes_marketing').update(payload).eq('id',id):db.from('acoes_marketing').insert(payload);
+  q.then(function(){closeModal('marketing');resetForm('marketing');toast(id?'Atualizada!':'Criada!');loadMarketing();});
+}
+
+// ── CLIENTES ──────────────────────────────────────────────────
+function loadClientes() {
+  return db.from('clientes').select('*').eq('ativo',true).order('valor_total_gasto',{ascending:false})
+    .then(function(r){
+      D.clientes=r.data||[];
+      renderClientes();
+    });
+}
+function renderClientes(){
+  var f=F.cli; var q=val('cliente-search').toLowerCase();
+  var list=D.clientes.filter(function(c){
+    return (f.tier==='all'||c.tier===f.tier) &&
+           (f.vip==='all'||(f.vip==='sim'&&c.vip)||(f.vip==='nao'&&!c.vip)) &&
+           (!q||(c.nome&&c.nome.toLowerCase().includes(q))||(c.cpf&&c.cpf.includes(q))||(c.email&&c.email.toLowerCase().includes(q))||(c.cidade&&c.cidade.toLowerCase().includes(q)));
+  });
+  var vips=D.clientes.filter(function(c){return c.vip;}).length;
+  var totGasto=D.clientes.reduce(function(a,c){return a+parseFloat(c.valor_total_gasto||0);},0);
+  var el=document.getElementById('cliente-metrics');
+  if(el) el.innerHTML=metric(D.clientes.length,'Clientes')+metric(vips,'VIPs','var(--neon)')+metric(mo(totGasto),'Receita total','var(--green)')+metric(D.clientes.filter(function(c){return c.tier==='diamante'||c.tier==='ouro';}).length,'Clientes premium','var(--purple)');
+  var listEl=document.getElementById('cliente-list');if(!listEl)return;
+  if(!list.length){listEl.innerHTML='<p class="empty">Nenhum cliente encontrado</p>';return;}
+  listEl.innerHTML=list.map(function(c){
+    return '<div class="card"><div class="card-row"><div class="card-body">' +
+      '<p class="card-title">'+(c.vip?'⭐ ':'')+c.nome+'</p>' +
+      '<div class="card-meta">'+tierBadge(c.tier||'bronze')+(c.cidade?catTag('📍 '+c.cidade+(c.estado?' / '+c.estado:'')):'')+(c.tamanho_pref?catTag(c.tamanho_pref):'')+'<span class="pontos-badge">'+c.pontos+' pts</span>'+'</div>' +
+      '<div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;font-size:10px;color:var(--muted)">' +
+        (c.total_pedidos?'<span>🛒 '+c.total_pedidos+' pedidos</span>':'')+
+        (c.ultima_compra?'<span>Última compra: '+fmtDate(c.ultima_compra)+'</span>':'')+
+        (c.como_conheceu?'<span>Via: '+c.como_conheceu+'</span>':'')+
+        (c.optin_whatsapp?'<span class="tag-pill yes">📱 WA</span>':'')+
+        (c.optin_email?'<span class="tag-pill yes">✉️ Email</span>':'')+
+      '</div>' +
+    '</div><div class="card-actions" style="flex-direction:column;align-items:flex-end;gap:3px">' +
+      '<span style="font-size:14px;font-weight:800;color:var(--green)">'+mo(c.valor_total_gasto)+'</span>' +
+      '<div style="display:flex;gap:4px">'+editBtn(c.id,'cliente')+'<button class="del" data-del-cli="'+c.id+'">×</button></div>' +
+    '</div></div></div>';
+  }).join('');
+}
+function openClienteEdit(id){
+  var c=D.clientes.find(function(x){return x.id===id;});if(!c)return;
+  document.getElementById('cli-modal-title').textContent='Editar Cliente';
+  document.getElementById('cl-id').value=c.id;
+  document.getElementById('cl-nome').value=c.nome;
+  document.getElementById('cl-cpf').value=c.cpf||'';
+  document.getElementById('cl-email').value=c.email||'';
+  document.getElementById('cl-tel').value=c.telefone||'';
+  document.getElementById('cl-cidade').value=c.cidade||'';
+  document.getElementById('cl-estado').value=c.estado||'';
+  document.getElementById('cl-nasc').value=c.data_nascimento||'';
+  document.getElementById('cl-origem').value=c.canal_origem||'';
+  document.getElementById('cl-tam').value=c.tamanho_pref||'';
+  document.getElementById('cl-estilo').value=c.estilo_pref||'';
+  document.getElementById('cl-vip').checked=!!c.vip;
+  document.getElementById('cl-optin-wp').checked=!!c.optin_whatsapp;
+  document.getElementById('cl-optin-email').checked=!!c.optin_email;
+  document.getElementById('cl-obs').value=c.observacoes||'';
+  var dBtn=document.getElementById('delete-cliente');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  openModal('cliente');
+}
+function saveCliente(){
+  var nome=val('cl-nome').trim();if(!nome){toast('Informe o nome');return;}
+  var id=val('cl-id');
+  var payload={nome:nome,cpf:val('cl-cpf')||null,email:val('cl-email')||null,telefone:val('cl-tel')||null,cidade:val('cl-cidade')||null,estado:val('cl-estado')||null,data_nascimento:val('cl-nasc')||null,canal_origem:val('cl-origem')||null,tamanho_pref:val('cl-tam')||null,estilo_pref:val('cl-estilo')||null,vip:document.getElementById('cl-vip').checked,optin_whatsapp:document.getElementById('cl-optin-wp').checked,optin_email:document.getElementById('cl-optin-email').checked,observacoes:val('cl-obs')||null,updated_at:new Date().toISOString()};
+  var q=id?db.from('clientes').update(payload).eq('id',id):db.from('clientes').insert(payload);
+  q.then(function(){closeModal('cliente');resetForm('cliente');toast(id?'Atualizado!':'Cadastrado!');loadClientes();});
+}
+
+// ── PARCEIRO: updated save + render ────────────────────────────
 function loadParceiros(){
+  return db.from('parceiros').select('*,responsavel:pessoas!parceiros_responsavel_pessoa_id_fkey(nome),colecao_enviada:colecoes(nome)').order('nome')
+    .then(function(r){
+      D.parceiros=r.data||[];
+      // populate selects
+      var pOpts='<option value="">— Nenhum —</option>'+D.parceiros.map(function(p){return '<option value="'+p.id+'">'+p.nome+'</option>';}).join('');
+      var poEl=document.getElementById('po-parceiro');if(poEl)poEl.innerHTML=pOpts;
+      renderParceiros();
+    });
+}
+function renderParceiros(){
+  var st=F.par.status;var list=st==='all'?D.parceiros:D.parceiros.filter(function(p){return p.status===st;});
+  var ativos=D.parceiros.filter(function(p){return p.status==='ativo';}).length;
+  var totSeg=D.parceiros.reduce(function(a,p){return a+(p.seguidores_ig||0)+(p.seguidores_tiktok||0);},0);
+  var totVendas=D.parceiros.reduce(function(a,p){return a+(p.vendas_geradas||0);},0);
+  var el=document.getElementById('parceiro-metrics');
+  if(el) el.innerHTML=metric(D.parceiros.length,'Total')+metric(ativos,'Ativos','var(--green)')+metric(fmtNum(totSeg),'Alcance total','var(--neon)')+metric(totVendas,'Vendas geradas','var(--amber)');
+  var listEl=document.getElementById('parceiro-list');if(!listEl)return;
+  if(!list.length){listEl.innerHTML='<p class="empty">Nenhum parceiro</p>';return;}
+  listEl.innerHTML=list.map(function(p){
+    var handles='';
+    if(p.handle_ig||p.seguidores_ig) handles+='<span class="social-pill ig">IG '+(p.handle_ig?p.handle_ig:'')+(p.seguidores_ig?' '+fmtNum(p.seguidores_ig):'')+'</span>';
+    if(p.handle_tiktok||p.seguidores_tiktok) handles+='<span class="social-pill tt">TT '+(p.handle_tiktok?p.handle_tiktok:'')+(p.seguidores_tiktok?' '+fmtNum(p.seguidores_tiktok):'')+'</span>';
+    if(p.handle_threads) handles+='<span class="social-pill th">Threads '+p.handle_threads+'</span>';
+    if(p.handle_youtube) handles+='<span class="social-pill yt">YT '+p.handle_youtube+'</span>';
+    var collabSt=p.status_collab?badge(p.status_collab.replace('_','-'),L_COLLAB_STATUS[p.status_collab]||p.status_collab):'';
+    return '<div class="card"><div class="card-row"><div class="card-body">' +
+      '<p class="card-title">'+p.nome+(p.nicho?' <span style="font-size:10px;color:var(--muted);font-weight:500">· '+p.nicho+'</span>':'')+'</p>' +
+      '<div class="card-meta">'+badge(p.status,L.supSt[p.status]||p.status)+collabSt+(p.cidade?catTag('📍 '+p.cidade):'')+( p.engajamento_pct?catTag(p.engajamento_pct+'% eng.'):'')+'</div>' +
+      (handles?'<div class="social-handles">'+handles+'</div>':'')+
+      (p.resultado?'<p class="card-desc">'+p.resultado+'</p>':'')+
+    '</div><div class="card-actions">'+(p.responsavel?av(p.responsavel.nome,p.responsavel.nome):'')+editBtn(p.id,'parceiro')+'<button class="del" data-del-par="'+p.id+'">×</button></div></div></div>';
+  }).join('');
+}
+function openParceiroEdit(id){
+  var p=D.parceiros.find(function(x){return x.id===id;});if(!p)return;
+  document.getElementById('par-modal-title').textContent='Editar Parceiro';
+  var fields={
+    'pa-id':p.id,'pa-nome':p.nome,'pa-tipo':p.tipo||'influenciador','pa-status':p.status,'pa-status-collab':p.status_collab||'prospecto',
+    'pa-nicho':p.nicho||'','pa-cidade':p.cidade||'','pa-ig':p.handle_ig||'','pa-ig-seg':p.seguidores_ig||'','pa-tt':p.handle_tiktok||'','pa-tt-seg':p.seguidores_tiktok||'',
+    'pa-threads':p.handle_threads||'','pa-yt':p.handle_youtube||'','pa-eng':p.engajamento_pct||'','pa-cache':p.cache_valor||'',
+    'pa-whatsapp':p.whatsapp||'','pa-email':p.email||'','pa-data-envio':p.data_envio||'','pa-vendas':p.vendas_geradas||'',
+    'pa-cod-desc':p.codigo_desconto||'','pa-resultado':p.resultado||'','pa-end-envio':p.endereco_envio||''
+  };
+  Object.keys(fields).forEach(function(k){var el=document.getElementById(k);if(el)el.value=fields[k];});
+  if(p.responsavel_id){var re=document.getElementById('pa-resp');if(re)re.value=p.responsavel_id;}
+  if(p.colecao_enviada_id){var ce=document.getElementById('pa-colecao');if(ce)ce.value=p.colecao_enviada_id;}
+  var dBtn=document.getElementById('delete-parceiro');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  openModal('parceiro');
+}
+function saveParceiro(){
+  var nome=val('pa-nome').trim();if(!nome){toast('Informe o nome');return;}
+  var id=val('pa-id');
+  var payload={
+    nome:nome,tipo:val('pa-tipo')||null,status:val('pa-status'),status_collab:val('pa-status-collab'),
+    nicho:val('pa-nicho')||null,cidade:val('pa-cidade')||null,handle_ig:val('pa-ig')||null,seguidores_ig:iNum('pa-ig-seg')||null,
+    handle_tiktok:val('pa-tt')||null,seguidores_tiktok:iNum('pa-tt-seg')||null,handle_threads:val('pa-threads')||null,handle_youtube:val('pa-yt')||null,
+    engajamento_pct:num('pa-eng')||null,cache_valor:num('pa-cache')||null,whatsapp:val('pa-whatsapp')||null,email:val('pa-email')||null,
+    data_envio:val('pa-data-envio')||null,colecao_enviada_id:val('pa-colecao')||null,vendas_geradas:iNum('pa-vendas')||0,
+    codigo_desconto:val('pa-cod-desc')||null,resultado:val('pa-resultado')||null,endereco_envio:val('pa-end-envio')||null,
+    responsavel_pessoa_id:val('pa-resp')||null,updated_at:new Date().toISOString()
+  };
+  var q=id?db.from('parceiros').update(payload).eq('id',id):db.from('parceiros').insert(payload);
+  q.then(function(){closeModal('parceiro');resetForm('parceiro');toast(id?'Atualizado!':'Adicionado!');loadParceiros();});
+}
+
+// ── COLECAO EVENTOS ───────────────────────────────────────────
+function saveEvento(){
+  var nome=val('ev-nome').trim();if(!nome){toast('Informe o nome do evento');return;}
+  var colId=val('ev-colecao-id');if(!colId){toast('Cole\u00e7\u00e3o n\u00e3o identificada');return;}
+  var id=val('ev-id');
+  var payload={nome:nome,colecao_id:colId,data_evento:val('ev-data')||null,cidade:val('ev-cidade')||null,tipo:val('ev-tipo'),status:val('ev-status'),observacoes:val('ev-obs')||null};
+  var q=id?db.from('eventos_colecao').update(payload).eq('id',id):db.from('eventos_colecao').insert(payload);
+  q.then(function(){closeModal('evento');resetForm('evento');toast(id?'Evento atualizado!':'Evento adicionado!');loadColecoes();});
+}
+
+
+
+// (old parceiro fn replaced above)
   return db.from('parceiros').select('*,responsavel:pessoas!parceiros_responsavel_pessoa_id_fkey(nome)').order('nome').then(function(r){
     D.parceiros=r.data||[];renderParceiros();
   });
@@ -1766,10 +2216,15 @@ function handleClick(e){
     else if(emod==='producao')openProducaoEdit(eid);
     else if(emod==='pedido')openPedidoEdit(eid);
     else if(emod==='parceiro')openParceiroEdit(eid);
+    else if(emod==='postagem')openPostagemEdit(eid);
+    else if(emod==='marketing')openMarketingEdit(eid);
+    else if(emod==='cliente')openClienteEdit(eid);
     return;
   }
   var supCard=e.target.closest('[data-open-sup]');
   if(supCard)return openSupPanel(supCard.dataset.openSup);
+  var addEv=e.target.closest('[data-add-evento]');
+  if(addEv){e.stopPropagation();document.getElementById('ev-colecao-id').value=addEv.dataset.addEvento;document.getElementById('ev-id').value='';document.getElementById('ev-modal-title').textContent='Novo Evento';openModal('evento');return;}
   var del=e.target.closest('[data-del-task],[data-del-sup],[data-del-cost],[data-del-prod],[data-del-est],[data-del-col],[data-del-prd],[data-del-ped],[data-del-fre],[data-del-par],[data-del-pessoa]');
   if(del){
     if(del.dataset.delTask){e.stopPropagation();if(!confirm('Excluir tarefa?'))return;db.from('tarefas').delete().eq('id',del.dataset.delTask).then(function(){toast('Excluída');loadTasks();});}
@@ -1782,6 +2237,9 @@ function handleClick(e){
     if(del.dataset.delPed){if(!confirm('Excluir pedido?'))return;db.from('pedidos').update({ativo:false}).eq('id',del.dataset.delPed).then(function(){toast('Excluído');loadPedidos();});}
     if(del.dataset.delFre){if(!confirm('Excluir tabela?'))return;db.from('fretes').delete().eq('id',del.dataset.delFre).then(function(){toast('Excluída');loadFretes();});}
     if(del.dataset.delPar){if(!confirm('Excluir parceiro?'))return;db.from('parceiros').delete().eq('id',del.dataset.delPar).then(function(){toast('Excluído');loadParceiros();});}
+    if(del.dataset.delPost){if(!confirm('Excluir postagem?'))return;db.from('postagens').update({ativo:false}).eq('id',del.dataset.delPost).then(function(){toast('Excluída');loadPostagens();});}
+    if(del.dataset.delMkt){if(!confirm('Excluir ação?'))return;db.from('acoes_marketing').update({ativo:false}).eq('id',del.dataset.delMkt).then(function(){toast('Excluída');loadMarketing();});}
+    if(del.dataset.delCli){if(!confirm('Excluir cliente?'))return;db.from('clientes').update({ativo:false}).eq('id',del.dataset.delCli).then(function(){toast('Excluído');loadClientes();});}
     if(del.dataset.delPessoa){if(!confirm('Remover?'))return;db.from('pessoas').update({ativo:false}).eq('id',del.dataset.delPessoa).then(function(){toast('Removida');loadPessoas();});}
   }
 }
@@ -1791,6 +2249,7 @@ function init(){
   loadPessoas().then(function(){return loadColecoes();}).then(function(){return loadSuppliers();}).then(function(){
     return Promise.all([loadTasks(),loadCosts(),loadProdutos(),loadEstoque(),loadProducoes(),loadPedidos(),loadFretes(),loadParceiros()]);
   }).then(function(){buildPersonFilter();renderDashboard();});
+  Promise.all([loadPostagens(),loadMarketing(),loadClientes()]);
 }
 
 // ── DOM READY ──────────────────────────────────────────────
@@ -1828,6 +2287,10 @@ document.addEventListener('DOMContentLoaded',function(){
   $('save-pedido').addEventListener('click',savePedido);
   $('save-frete').addEventListener('click',saveFrete);
   $('save-parceiro').addEventListener('click',saveParceiro);
+  document.getElementById('save-postagem').addEventListener('click',savePostagem);
+  document.getElementById('save-marketing').addEventListener('click',saveMarketing);
+  document.getElementById('save-cliente').addEventListener('click',saveCliente);
+  document.getElementById('save-evento').addEventListener('click',saveEvento);
   $('save-pessoa').addEventListener('click',savePessoa);
 
   // Conditional fields
@@ -1854,6 +2317,7 @@ document.addEventListener('DOMContentLoaded',function(){
   // Search
   $('produto-search').addEventListener('input',renderProdutos);
   $('pedido-search').addEventListener('input',renderPedidos);
+  document.getElementById('cliente-search').addEventListener('input',renderClientes);
 
 
   // Delete buttons in modals
@@ -1866,7 +2330,11 @@ document.addEventListener('DOMContentLoaded',function(){
     {btnId:'delete-producao', table:'producoes',  hardDelete:false, reload:loadProducoes},
     {btnId:'delete-pedido',   table:'pedidos',    hardDelete:false, reload:loadPedidos},
     {btnId:'delete-parceiro', table:'parceiros',  hardDelete:true,  reload:loadParceiros},
-    {btnId:'delete-produto',  table:'produtos',   hardDelete:false, reload:loadProdutos},
+    {btnId:'delete-produto',   table:'produtos',        hardDelete:false, reload:loadProdutos},
+    {btnId:'delete-postagem',  table:'postagens',       hardDelete:false, reload:loadPostagens},
+    {btnId:'delete-marketing', table:'acoes_marketing', hardDelete:false, reload:loadMarketing},
+    {btnId:'delete-cliente',   table:'clientes',        hardDelete:false, reload:loadClientes},
+    {btnId:'delete-evento',    table:'eventos_colecao', hardDelete:true,  reload:loadColecoes},
   ];
   deleteConfigs.forEach(function(cfg){
     var btn=document.getElementById(cfg.btnId);if(!btn)return;
