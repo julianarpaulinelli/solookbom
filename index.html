@@ -429,6 +429,19 @@ input.sim-range::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:
 .scenario-box .sc-row{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid var(--border)}
 .scenario-box .sc-row:last-child{border-bottom:none}
 .sim-save-item{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.sim-mode-btn{flex:1;padding:8px 6px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s}
+.sim-mode-btn:hover{color:var(--fg);border-color:var(--muted)}
+.sim-mode-btn.active{background:var(--neon-bg);color:var(--neon);border-color:var(--neon-bd)}
+.sinv-peso-row{margin-bottom:7px}
+.sinv-peso-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.sinv-peso-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.sinv-peso-vals{font-size:10px;font-weight:800;color:var(--neon);font-family:'Montserrat Alternates',sans-serif}
+.ia-thinking{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
+.ia-dot{width:6px;height:6px;border-radius:50%;background:var(--neon);animation:iapulse 1s ease-in-out infinite}
+.ia-dot:nth-child(2){animation-delay:.2s}
+.ia-dot:nth-child(3){animation-delay:.4s}
+@keyframes iapulse{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+
 </style>
 </head>
 <body>
@@ -854,10 +867,73 @@ input.sim-range::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:
             <div>
               <div class="sim-panel">
                 <div class="sim-panel-title">🏗 Custos de <em>Lançamento</em></div>
+
+                <!-- BUDGET INPUT -->
+                <div style="background:var(--neon-bg);border:1px solid var(--neon-bd);border-radius:8px;padding:12px;margin-bottom:14px">
+                  <label class="form-label">💰 Total disponível para investir (R$)</label>
+                  <input class="form-input" type="number" id="sinv-budget-total" placeholder="Ex: 30000" oninput="sinvOnBudgetChange()" style="font-size:15px;font-weight:800;font-family:'Montserrat Alternates',sans-serif">
+                </div>
+
+                <!-- MODE TOGGLE -->
+                <div style="display:flex;gap:6px;margin-bottom:14px">
+                  <button class="sim-mode-btn active" id="sinv-mode-manual" onclick="sinvSetMode('manual')">✏️ Manual</button>
+                  <button class="sim-mode-btn" id="sinv-mode-pesos" onclick="sinvSetMode('pesos')">⚖️ Por Pesos</button>
+                  <button class="sim-mode-btn" id="sinv-mode-ia" onclick="sinvSetMode('ia')">✨ Sugestão IA</button>
+                </div>
+
+                <!-- MODE: PESOS - sliders -->
+                <div id="sinv-pesos-panel" style="display:none;margin-bottom:12px">
+                  <p style="font-size:9px;color:var(--muted);margin-bottom:10px;letter-spacing:1px">Defina o peso de cada categoria. O valor é calculado automaticamente.</p>
+                  <div id="sinv-pesos-sliders"></div>
+                  <div class="weight-total weight-ok" id="sinv-pesos-total">Total: 100% ✓</div>
+                </div>
+
+                <!-- MODE: IA - context inputs -->
+                <div id="sinv-ia-panel" style="display:none;margin-bottom:12px">
+                  <p style="font-size:9px;color:var(--muted);margin-bottom:10px;letter-spacing:1px">Responda algumas perguntas e a IA sugere a distribuição ideal.</p>
+                  <div class="form-group"><label class="form-label">Estilo / posicionamento da marca</label>
+                    <select class="form-select" id="sinv-ia-estilo">
+                      <option value="basico">Básico / acessível</option>
+                      <option value="contemporaneo" selected>Contemporâneo / mid-market</option>
+                      <option value="premium">Premium / alto padrão</option>
+                      <option value="luxo">Luxo</option>
+                    </select>
+                  </div>
+                  <div class="form-group"><label class="form-label">Canal de vendas principal</label>
+                    <select class="form-select" id="sinv-ia-canal">
+                      <option value="instagram">Instagram / social-first</option>
+                      <option value="ecommerce" selected>E-commerce próprio</option>
+                      <option value="marketplace">Marketplace (Shopee, Magalu...)</option>
+                      <option value="fisico">Loja física</option>
+                      <option value="multcanal">Multicanal</option>
+                    </select>
+                  </div>
+                  <div class="form-group"><label class="form-label">Fase atual da marca</label>
+                    <select class="form-select" id="sinv-ia-fase">
+                      <option value="zero" selected>Começando do zero</option>
+                      <option value="validando">Já validei o produto</option>
+                      <option value="escalando">Escalando vendas</option>
+                    </select>
+                  </div>
+                  <div class="form-group"><label class="form-label">Prioridade estratégica</label>
+                    <select class="form-select" id="sinv-ia-prioridade">
+                      <option value="brand">Construir marca forte</option>
+                      <option value="vendas" selected>Gerar vendas rápido</option>
+                      <option value="produto">Qualidade do produto</option>
+                    </select>
+                  </div>
+                  <button class="btn-add" style="width:100%;margin-top:4px;font-size:10px;padding:10px" onclick="sinvAskIA()" id="sinv-ia-btn">✨ Gerar sugestão com IA</button>
+                  <div id="sinv-ia-status" style="display:none;margin-top:10px"></div>
+                  <div id="sinv-ia-justificativa" style="display:none;margin-top:10px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px;font-size:11px;line-height:1.6;color:var(--muted2)"></div>
+                </div>
+
+                <!-- ITEMS LIST (shared by all modes) -->
                 <div id="sinv-launch-items"></div>
+
+                <!-- ADD ITEM (manual mode only) -->
                 <div style="display:flex;gap:6px;margin-top:10px" id="sinv-add-row">
                   <input class="form-input" id="sinv-new-label" placeholder="Nome do novo item..." style="flex:1;font-size:11px">
-                  <button class="btn-add" style="font-size:9px;padding:6px 12px;white-space:nowrap" onclick="sinvAddItem()">+ Adicionar</button>
+                  <button class="btn-sec" style="font-size:9px;padding:6px 12px;white-space:nowrap" onclick="sinvAddItem()">+ Adicionar</button>
                 </div>
               </div>
               <div class="sim-panel">
@@ -1405,18 +1481,169 @@ var sinvDefaults=[
   {l:'Embalagens',id:'embal',v:1200},
   {l:'Equipamentos / estrutura',id:'equip',v:1500},
 ];
+// pKey map matches sinvPesos keys
+
+var sinvMode='manual'; // 'manual' | 'pesos' | 'ia'
+var sinvPesos={dev:15,est:35,brand:15,ecom:10,mkt:15,embal:5,equip:5}; // default %
 
 function sinvInit(){
-  sinvItems=sinvDefaults.map(function(d){return{id:'sinv-i-'+d.id,l:d.l,v:d.v};});
+  sinvItems=sinvDefaults.map(function(d){return{id:'sinv-i-'+d.id,l:d.l,v:d.v,pKey:d.id};});
   sinvRenderItems();
+  sinvRenderPesoSliders();
+}
+
+function sinvSetMode(mode){
+  sinvMode=mode;
+  ['manual','pesos','ia'].forEach(function(m){
+    var btn=document.getElementById('sinv-mode-'+m);
+    if(btn)btn.classList.toggle('active',m===mode);
+  });
+  var pesosPanel=document.getElementById('sinv-pesos-panel');
+  var iaPanel=document.getElementById('sinv-ia-panel');
+  var addRow=document.getElementById('sinv-add-row');
+  if(pesosPanel)pesosPanel.style.display=mode==='pesos'?'block':'none';
+  if(iaPanel)iaPanel.style.display=mode==='ia'?'block':'none';
+  if(addRow)addRow.style.display=mode==='manual'?'flex':'none';
+  // lock inputs in non-manual modes
+  sinvItems.forEach(function(item){
+    var el=document.getElementById(item.id);
+    if(el)el.readOnly=(mode!=='manual');
+  });
+  if(mode==='pesos')sinvApplyPesos();
+}
+
+function sinvOnBudgetChange(){
+  if(sinvMode==='pesos')sinvApplyPesos();
+}
+
+function sinvGetBudget(){
+  var el=document.getElementById('sinv-budget-total');
+  return el?parseFloat(el.value)||0:0;
+}
+
+// ── PESOS MODE ──
+function sinvRenderPesoSliders(){
+  var el=document.getElementById('sinv-pesos-sliders');if(!el)return;
+  var keyMap={dev:'Desenvolvimento',est:'Estoque inicial',brand:'Identidade visual',ecom:'E-commerce/Site',mkt:'Marketing',embal:'Embalagens',equip:'Equipamentos'};
+  el.innerHTML=Object.keys(sinvPesos).map(function(k){
+    return '<div class="sinv-peso-row">'+
+      '<div class="sinv-peso-header">'+
+        '<span class="sinv-peso-lbl">'+(keyMap[k]||k)+'</span>'+
+        '<span class="sinv-peso-vals"><span id="sp-pct-'+k+'">'+sinvPesos[k]+'%</span> · <span id="sp-val-'+k+'">R$ 0</span></span>'+
+      '</div>'+
+      '<input type="range" class="sim-range" id="sp-sl-'+k+'" min="0" max="80" value="'+sinvPesos[k]+'" oninput="sinvPesoChange(''+k+'',this.value)">'+
+    '</div>';
+  }).join('');
+  sinvApplyPesos();
+}
+
+function sinvPesoChange(key,val){
+  sinvPesos[key]=parseInt(val);
+  sinvApplyPesos();
+}
+
+function sinvApplyPesos(){
+  var budget=sinvGetBudget();
+  var total=Object.keys(sinvPesos).reduce(function(s,k){return s+sinvPesos[k];},0);
+  // update labels
+  Object.keys(sinvPesos).forEach(function(k){
+    var pctEl=document.getElementById('sp-pct-'+k);
+    var valEl=document.getElementById('sp-val-'+k);
+    if(pctEl)pctEl.textContent=sinvPesos[k]+'%';
+    if(valEl)valEl.textContent=budget?sinvFmt(budget*(sinvPesos[k]/100)):'R$ 0';
+    // update item input
+    var item=sinvItems.find(function(i){return i.pKey===k;});
+    if(item){var inp=document.getElementById(item.id);if(inp)inp.value=budget?Math.round(budget*(sinvPesos[k]/100)):0;}
+  });
+  var totEl=document.getElementById('sinv-pesos-total');
+  if(totEl){
+    totEl.textContent='Total: '+total+'%'+(total===100?' ✓':'');
+    totEl.className='weight-total '+(total===100?'weight-ok':total>100?'weight-err':'weight-warn');
+  }
+  sinvCalc();
+}
+
+// ── IA MODE ──
+function sinvAskIA(){
+  var budget=sinvGetBudget();
+  if(!budget){toast('Informe o total disponível para investir','err');return;}
+  var estilo=document.getElementById('sinv-ia-estilo').value;
+  var canal=document.getElementById('sinv-ia-canal').value;
+  var fase=document.getElementById('sinv-ia-fase').value;
+  var prioridade=document.getElementById('sinv-ia-prioridade').value;
+
+  var status=document.getElementById('sinv-ia-status');
+  var just=document.getElementById('sinv-ia-justificativa');
+  var btn=document.getElementById('sinv-ia-btn');
+  if(status){status.style.display='block';status.innerHTML='<div class="ia-thinking"><div class="ia-dot"></div><div class="ia-dot"></div><div class="ia-dot"></div><span>Analisando o perfil da marca...</span></div>';}
+  if(just)just.style.display='none';
+  if(btn)btn.disabled=true;
+
+  var estiloMap={basico:'básico/acessível',contemporaneo:'contemporâneo/mid-market',premium:'premium/alto padrão',luxo:'luxo'};
+  var canalMap={instagram:'Instagram/social-first',ecommerce:'e-commerce próprio',marketplace:'marketplace',fisico:'loja física',multcanal:'multicanal'};
+  var faseMap={zero:'começando do zero',validando:'produto já validado',escalando:'escalando vendas'};
+  var priorMap={brand:'construir marca forte',vendas:'gerar vendas rápido',produto:'qualidade do produto'};
+
+  var prompt='Você é um especialista em finanças para marcas de moda brasileiras. '+
+    'Uma marca com o seguinte perfil precisa distribuir R$ '+budget.toLocaleString('pt-BR')+' de investimento inicial:\n'+
+    '- Posicionamento: '+estiloMap[estilo]+'\n'+
+    '- Canal principal: '+canalMap[canal]+'\n'+
+    '- Fase: '+faseMap[fase]+'\n'+
+    '- Prioridade: '+priorMap[prioridade]+'\n\n'+
+    'Sugira a distribuição ideal em EXATAMENTE estas 7 categorias (os valores devem somar R$ '+budget.toLocaleString('pt-BR')+'):\n'+
+    '1. Desenvolvimento (fichas técnicas, protótipos)\n'+
+    '2. Estoque inicial\n'+
+    '3. Identidade visual (logo, fotos)\n'+
+    '4. E-commerce/Site\n'+
+    '5. Marketing de lançamento\n'+
+    '6. Embalagens\n'+
+    '7. Equipamentos/estrutura\n\n'+
+    'Responda APENAS em JSON válido, sem markdown, sem explicações fora do JSON, no formato:\n'+
+    '{"valores":{"dev":0,"est":0,"brand":0,"ecom":0,"mkt":0,"embal":0,"equip":0},"justificativa":"texto explicando as escolhas em 3-4 frases"}';
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:1000,
+      messages:[{role:'user',content:prompt}]
+    })
+  }).then(function(r){return r.json();}).then(function(data){
+    try{
+      var text=data.content.map(function(b){return b.text||'';}).join('');
+      var clean=text.replace(/```json|```/g,'').trim();
+      var parsed=JSON.parse(clean);
+      var vals=parsed.valores;
+      // apply to items
+      sinvItems.forEach(function(item){
+        if(item.pKey&&vals[item.pKey]!==undefined){
+          var inp=document.getElementById(item.id);
+          if(inp)inp.value=vals[item.pKey];
+        }
+      });
+      sinvCalc();
+      if(status)status.style.display='none';
+      if(just){just.style.display='block';just.innerHTML='<strong style="color:var(--neon);font-size:9px;letter-spacing:2px;text-transform:uppercase">💡 Por que essa distribuição?</strong><p style="margin-top:8px">'+parsed.justificativa+'</p>';}
+      toast('Sugestão aplicada!','ok');
+    }catch(e){
+      if(status)status.innerHTML='<span style="color:var(--red);font-size:11px">Erro ao processar resposta da IA. Tente novamente.</span>';
+      console.error('IA parse error',e);
+    }
+    if(btn)btn.disabled=false;
+  }).catch(function(e){
+    if(status)status.innerHTML='<span style="color:var(--red);font-size:11px">Erro de conexão. Verifique e tente novamente.</span>';
+    if(btn)btn.disabled=false;
+  });
 }
 function sinvRenderItems(){
   var el=document.getElementById('sinv-launch-items');if(!el)return;
+  var isLocked=(sinvMode==='pesos'||sinvMode==='ia');
   el.innerHTML=sinvItems.map(function(item){
     return '<div class="invest-row">'+
       '<span class="invest-row-lbl">'+item.l+'</span>'+
-      '<input class="form-input invest-row-inp" type="number" id="'+item.id+'" value="'+item.v+'" oninput="sinvCalc()">'+
-      '<button class="invest-row-rm" onclick="sinvRemItem(''+item.id+'')">×</button>'+
+      '<input class="form-input invest-row-inp" type="number" id="'+item.id+'" value="'+(item.v||0)+'" oninput="sinvCalc()" '+(isLocked?'readonly style="color:var(--neon);font-weight:700"':'')+'>'+
+      (sinvMode==='manual'?'<button class="invest-row-rm" onclick="sinvRemItem(''+item.id+'')">×</button>':'')+
     '</div>';
   }).join('');
   sinvCalc();
@@ -1496,7 +1723,7 @@ function sinvDoSave(){
   if(!name){toast('Informe um nome','err');return;}
   var rec={id:Date.now(),name:name,obs:document.getElementById('sinv-save-obs').value,
     date:new Date().toLocaleDateString('pt-BR'),
-    items:sinvItems.map(function(i){return{id:i.id,l:i.l,v:parseFloat(document.getElementById(i.id)?document.getElementById(i.id).value:0)||0};}),
+    items:sinvItems.map(function(i){return{id:i.id,l:i.l,v:parseFloat(document.getElementById(i.id)?document.getElementById(i.id).value:0)||0,pKey:i.pKey||''};}),
     inputs:{desp:document.getElementById('sinv-desp').value,meses:document.getElementById('sinv-meses').value,
       ticket:document.getElementById('sinv-ticket').value,margem:document.getElementById('sinv-margem').value,
       vot:document.getElementById('sinv-vot').value,vre:document.getElementById('sinv-vre').value,vpe:document.getElementById('sinv-vpe').value}};
@@ -1521,7 +1748,7 @@ function sinvOpenSaved(){
 }
 function sinvLoad(id){
   var s=sinvSaved.find(function(x){return x.id===id;});if(!s)return;
-  sinvItems=s.items.map(function(i){return{id:i.id,l:i.l,v:i.v};});
+  sinvItems=s.items.map(function(i){return{id:i.id,l:i.l,v:i.v,pKey:i.pKey||''};});
   sinvRenderItems();
   ['desp','meses','ticket','margem','vot','vre','vpe'].forEach(function(k){
     var el=document.getElementById('sinv-'+k);if(el&&s.inputs[k]!==undefined)el.value=s.inputs[k];
