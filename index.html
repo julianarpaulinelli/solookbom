@@ -973,8 +973,8 @@ var L={
   sections:{home:'Dashboard',tarefas:'Tarefas',financas:'Finanças',produtos:'Produtos',estoque:'Estoque',colecoes:'Coleções',producao:'Produção',pedidos:'Pedidos',fornecedores:'Fornecedores',fretes:'Fretes',parceiros:'Parceiros & Influenciadores',postagens:'Postagens',marketing:'Marketing',clientes:'Clientes',pessoas:'Pessoas'}
 };
 
-var D={tasks:[],suppliers:[],costs:[],pessoas:[],estoques:[],colecoes:[],producoes:[],pedidos:[],fretes:[],parceiros:[],produtos:[]};
-var F={task:{status:'all',prio:'all',resp:'all'},sup:{status:'all',cls:'all',aprov:'all'},fin:{tipo:'all',pagto:'all',rec:'all'},prod:{cat:'all'},est:{cat:'all'},col:{status:'all'},prd:{status:'all'},ped:{status:'all'},fre:{tipo:'all'},par:{status:'all'},pes:{tipo:'all'}};
+var D={tasks:[],suppliers:[],costs:[],pessoas:[],estoques:[],colecoes:[],producoes:[],pedidos:[],fretes:[],parceiros:[],produtos:[],postagens:[],marketing:[],clientes:[]};
+var F={task:{status:'all',prio:'all',resp:'all'},post:{status:'all',rede:'all'},mkt:{status:'all',tipo:'all'},cli:{tier:'all',vip:'all'},sup:{status:'all',cls:'all',aprov:'all'},fin:{tipo:'all',pagto:'all',rec:'all'},prod:{cat:'all'},est:{cat:'all'},col:{status:'all'},prd:{status:'all'},ped:{status:'all'},fre:{tipo:'all'},par:{status:'all'},pes:{tipo:'all'}};
 var me=null,taskView='list',isDark=true;
 
 function $(id){return document.getElementById(id);}
@@ -1074,7 +1074,7 @@ function renderPessoas(){
 function savePessoa(){
   var nome=val('p-nome').trim();if(!nome){toast('Informe o nome');return;}
   db.from('pessoas').insert({nome:nome,cargo:val('p-cargo')||null,tipo:val('p-tipo'),whatsapp:val('p-whatsapp')||null,email:val('p-email')||null})
-    .then(function(){closeModal('pessoa');resetForm('pessoa');toast('Pessoa cadastrada!');loadPessoas();});
+    .then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[savePessoa]',res.error.message);return;}closeModal('pessoa');resetForm('pessoa');toast('Pessoa cadastrada!');loadPessoas();});
 }
 
 // ── TAREFAS ────────────────────────────────────────────────
@@ -1140,7 +1140,7 @@ function saveTask(){
   var id=val('t-id'),o=val('t-owner'),c=val('t-coowner');
   var payload={titulo:titulo,categoria:val('t-cat')||null,prioridade:val('t-prio'),status:val('t-status'),responsavel_pessoa_id:o||null,co_responsavel_pessoa_id:(c&&c!==o?c:null),prazo:val('t-prazo')||null,descricao:val('t-desc')||null,tags:val('t-tags')||null,comentarios:val('t-coment')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('tarefas').update(payload).eq('id',id):db.from('tarefas').insert(payload);
-  q.then(function(){closeModal('task');resetForm('task');toast(id?'Atualizada!':'Criada!');loadTasks();});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveTask]',res.error.message);return;}closeModal('task');resetForm('task');toast(id?'Atualizada!':'Criada!');loadTasks();});
 }
 
 // ── FORNECEDORES ────────────────────────────────────────────
@@ -1180,7 +1180,7 @@ function saveSupplier(){
   var id=val('s-id');var tf=$('s-frete').checked,tp=$('s-pedmin').checked;
   var payload={nome:nome,categoria:val('s-cat'),classificacao:val('s-class'),status:val('s-status'),aprovado:val('s-aprov')==='aprovado',aprovacao_status:val('s-aprov'),avaliacao:iNum('s-aval')||3,responsavel_pessoa_id:val('s-resp')||null,whatsapp:val('s-whatsapp')||null,email:val('s-email')||null,site:val('s-site')||null,instagram:val('s-insta')||null,cnpj:val('s-cnpj')||null,endereco:val('s-end')||null,cidade:val('s-cidade')||null,estado:val('s-estado')||null,tem_frete:tf,frete_info:tf?val('s-frete-info')||null:null,pedido_minimo:tp,pedido_minimo_valor:tp?num('s-pedmin-val')||null:null,pedido_minimo_qtd:tp?val('s-pedmin-qtd')||null:null,visita_local:$('s-visita').checked,prazo_producao:val('s-prazo')||null,forma_pagamento:val('s-pagto')||null,observacoes:val('s-obs')||null,produtos_fornecidos:val('s-produtos')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('fornecedores').update(payload).eq('id',id):db.from('fornecedores').insert(payload);
-  q.then(function(){closeModal('supplier');resetForm('supplier');toast(id?'Atualizado!':'Adicionado!');loadSuppliers();});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveSupplier]',res.error.message);return;}closeModal('supplier');resetForm('supplier');toast(id?'Atualizado!':'Adicionado!');loadSuppliers();});
 }
 
 // ── CUSTOS / FINANÇAS ──────────────────────────────────────
@@ -1398,7 +1398,7 @@ function saveCost(){
   var isRec=tipoComp==='recorrente';var isPar=tipoComp==='parcelado';
   var payload={descricao:d,categoria:val('c-cat'),valor:v,tipo:val('c-type'),data:val('c-date')||null,data_vencimento:val('c-venc')||null,status_pagto:val('c-status-pagto'),metodo_pagto:val('c-metodo')||null,pago_por_id:val('c-pago-por')||null,recorrente:isRec,recorrencia:isRec?val('c-recorrencia'):null,tipo_compromisso:tipoComp,categoria_comp:val('c-cat-comp')||null,parcela_atual:isPar?iNum('c-parcela-atual')||null:null,total_parcelas:isPar?iNum('c-total-parcelas')||null:null,notas:val('c-notas')||null};
   var q=id?db.from('custos').update(payload).eq('id',id):db.from('custos').insert(payload);
-  q.then(function(){closeModal('cost');resetForm('cost');toast(id?'Atualizado!':'Salvo!');loadCosts();});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveCost]',res.error.message);return;}closeModal('cost');resetForm('cost');toast(id?'Atualizado!':'Salvo!');loadCosts();});
 }
 
 // ── PRODUTOS ───────────────────────────────────────────────
@@ -1431,7 +1431,7 @@ function saveProduto(){
   var id=val('pr-id');var sku=id?val('pr-sku'):nextSKU();
   var payload={sku:sku,nome:nome,categoria:val('pr-cat')||null,cor:val('pr-cor')||null,tamanho:val('pr-tamanho')||null,custo:num('pr-custo')||null,preco_venda:num('pr-venda')||null,fornecedor_id:val('pr-fornecedor')||null,colecao_id:val('pr-colecao')||null,observacoes:val('pr-obs')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('produtos').update(payload).eq('id',id):db.from('produtos').insert(payload);
-  q.then(function(){closeModal('produto');resetForm('produto');toast(id?'Atualizado!':'Criado!');loadProdutos();});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveProduto]',res.error.message);return;}closeModal('produto');resetForm('produto');toast(id?'Atualizado!':'Criado!');loadProdutos();});
 }
 
 // ── ESTOQUE ────────────────────────────────────────────────
@@ -1457,7 +1457,7 @@ function saveEstoque(){
   var id=val('e-id');
   var payload={nome:nome,categoria:val('e-cat'),sku:val('e-sku')||null,quantidade:iNum('e-qtd'),unidade:val('e-un'),quantidade_minima:iNum('e-qtdmin'),localizacao:val('e-local')||null,preco_custo:num('e-custo')||null,preco_venda:num('e-venda')||null,observacoes:val('e-obs')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('estoque').update(payload).eq('id',id):db.from('estoque').insert(payload);
-  q.then(function(){closeModal('estoque');resetForm('estoque');toast(id?'Atualizado!':'Adicionado!');loadEstoque();});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveEstoque]',res.error.message);return;}closeModal('estoque');resetForm('estoque');toast(id?'Atualizado!':'Adicionado!');loadEstoque();});
 }
 
 // ── COLEÇÕES ───────────────────────────────────────────────
@@ -1594,15 +1594,6 @@ function saveFrete(){
 
 // ── PARCEIROS ──────────────────────────────────────────────
 
-// ── DATA STORES ────────────────────────────────────────────────
-D.postagens = [];
-D.marketing = [];
-D.clientes  = [];
-
-// ── FILTERS ────────────────────────────────────────────────────
-F.post = { status:'all', rede:'all' };
-F.mkt  = { status:'all', tipo:'all' };
-F.cli  = { tier:'all', vip:'all' };
 
 var L_POST_STATUS  = { planejado:'Planejado', confirmado:'Confirmado', postado:'Postado', cancelado:'Cancelado' };
 var L_POST_REDE    = { instagram_feed:'IG Feed', instagram_reels:'IG Reels', instagram_stories:'IG Stories', tiktok:'TikTok', threads:'Threads', youtube:'YouTube' };
@@ -1685,7 +1676,7 @@ function savePostagem(){
   if(!val('po-data-prev')&&!val('po-data-real')){toast('Informe pelo menos a data prevista');return;}
   var payload = { parceiro_id:val('po-parceiro')||null, colecao_id:val('po-colecao')||null, rede:val('po-rede'), tipo_conteudo:val('po-tipo')||null, data_prevista:val('po-data-prev')||null, data_real:val('po-data-real')||null, status:val('po-status'), link_postagem:val('po-link')||null, alcance:iNum('po-alcance')||null, curtidas:iNum('po-curtidas')||null, comentarios:iNum('po-coments')||null, cliques:iNum('po-cliques')||null, vendas_geradas:iNum('po-vendas')||0, codigo_desconto:val('po-cod-desc')||null, observacoes:val('po-obs')||null, updated_at:new Date().toISOString() };
   var q = id?db.from('postagens').update(payload).eq('id',id):db.from('postagens').insert(payload);
-  q.then(function(){closeModal('postagem');resetForm('postagem');toast(id?'Atualizada!':'Criada!');loadPostagens();});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[savePostagem]',res.error.message);return;}closeModal('postagem');resetForm('postagem');toast(id?'Atualizada!':'Criada!');loadPostagens();});
 }
 
 // ── MARKETING ─────────────────────────────────────────────────
@@ -1752,7 +1743,7 @@ function saveMarketing(){
   var id=val('mk-id');
   var payload={titulo:titulo,tipo:val('mk-tipo'),plataforma:val('mk-plat'),status:val('mk-status'),data_inicio:val('mk-inicio')||null,data_fim:val('mk-fim')||null,investimento:num('mk-invest')||0,publico_alvo:val('mk-publico')||null,descricao:val('mk-desc')||null,colecao_id:val('mk-colecao')||null,responsavel_id:val('mk-resp')||null,alcance:iNum('mk-alcance')||null,impressoes:iNum('mk-impressoes')||null,cliques:iNum('mk-cliques')||null,leads:iNum('mk-leads')||null,vendas:iNum('mk-vendas')||null,receita_gerada:num('mk-receita')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('acoes_marketing').update(payload).eq('id',id):db.from('acoes_marketing').insert(payload);
-  q.then(function(){closeModal('marketing');resetForm('marketing');toast(id?'Atualizada!':'Criada!');loadMarketing();});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveMarketing]',res.error.message);return;}closeModal('marketing');resetForm('marketing');toast(id?'Atualizada!':'Criada!');loadMarketing();});
 }
 
 // ── CLIENTES ──────────────────────────────────────────────────
@@ -1819,7 +1810,7 @@ function saveCliente(){
   var id=val('cl-id');
   var payload={nome:nome,cpf:val('cl-cpf')||null,email:val('cl-email')||null,telefone:val('cl-tel')||null,cidade:val('cl-cidade')||null,estado:val('cl-estado')||null,data_nascimento:val('cl-nasc')||null,canal_origem:val('cl-origem')||null,tamanho_pref:val('cl-tam')||null,estilo_pref:val('cl-estilo')||null,vip:$('cl-vip').checked,optin_whatsapp:$('cl-optin-wp').checked,optin_email:$('cl-optin-email').checked,observacoes:val('cl-obs')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('clientes').update(payload).eq('id',id):db.from('clientes').insert(payload);
-  q.then(function(){closeModal('cliente');resetForm('cliente');toast(id?'Atualizado!':'Cadastrado!');loadClientes();});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveCliente]',res.error.message);return;}closeModal('cliente');resetForm('cliente');toast(id?'Atualizado!':'Cadastrado!');loadClientes();});
 }
 
 // ── PARCEIRO: updated save + render ────────────────────────────
@@ -1896,7 +1887,7 @@ function saveEvento(){
   var id=val('ev-id');
   var payload={nome:nome,colecao_id:colId,data_evento:val('ev-data')||null,cidade:val('ev-cidade')||null,tipo:val('ev-tipo'),status:val('ev-status'),observacoes:val('ev-obs')||null};
   var q=id?db.from('eventos_colecao').update(payload).eq('id',id):db.from('eventos_colecao').insert(payload);
-  q.then(function(){closeModal('evento');resetForm('evento');toast(id?'Evento atualizado!':'Evento adicionado!');loadColecoes();});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveEvento]',res.error.message);return;}closeModal('evento');resetForm('evento');toast(id?'Evento atualizado!':'Evento adicionado!');loadColecoes();});
 }
 
 
