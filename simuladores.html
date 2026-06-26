@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLB — Simuladores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Montserrat+Alternates:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg:#0A0A0A; --surface:#141414; --card:#1E1E1E; --card2:#222;
+  --border:#2A2A2A; --border2:#333;
+  --fg:#F2F2F0; --muted:#666; --muted2:#999;
+  --neon:#D4FF00; --neon-bg:rgba(212,255,0,.08); --neon-bd:rgba(212,255,0,.25);
+  --red:#FF4444; --amber:#F5A623; --green:#44FF88; --blue:#44AAFF; --purple:#AA88FF;
+  --gold:#FFD700;
+  --radius:10px; --radius-sm:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);min-height:100vh;font-size:13px;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* ── HEADER ── */
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.header-brand{display:flex;align-items:center;gap:14px}
+.brand-logo{font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:800;letter-spacing:4px;color:var(--neon)}
+.brand-sep{width:1px;height:20px;background:var(--border)}
+.brand-title{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted2)}
+.header-back{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--border);padding:6px 12px;border-radius:5px;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:6px}
+.header-back:hover{border-color:var(--neon-bd);color:var(--neon)}
+
+/* ── TABS ── */
+.tabs-bar{display:flex;gap:0;background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px}
+.tab-btn{padding:14px 20px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s;white-space:nowrap}
+.tab-btn:hover{color:var(--fg)}
+.tab-btn.active{color:var(--neon);border-bottom-color:var(--neon)}
+
+/* ── MAIN ── */
+.main{padding:24px;max-width:1200px;margin:0 auto}
+.sim-section{display:none}
+.sim-section.active{display:block}
+
+/* ── CARDS / PANELS ── */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.panel-title{font-family:'Montserrat Alternates',sans-serif;font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--muted2);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.panel-title span{color:var(--neon)}
+
+/* ── GRID ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid3{grid-template-columns:1fr}}
+
+/* ── FORM ── */
+.form-group{margin-bottom:12px}
+.form-label{display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.form-input,.form-select{width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);font:13px 'Montserrat',sans-serif;color:var(--fg);outline:none;transition:border-color .2s}
+.form-input:focus,.form-select:focus{border-color:var(--neon-bd)}
+.form-select option{background:var(--card)}
+.form-row{display:flex;gap:10px}
+.form-row .form-group{flex:1}
+
+/* ── BUTTONS ── */
+.btn{padding:9px 18px;border:none;border-radius:5px;font:700 10px 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--neon);color:#000}
+.btn-primary:hover{opacity:.85}
+.btn-sec{background:var(--card);color:var(--fg);border:1px solid var(--border)}
+.btn-sec:hover{border-color:var(--neon-bd);color:var(--neon)}
+.btn-danger{background:rgba(255,68,68,.12);color:var(--red);border:1px solid rgba(255,68,68,.2)}
+.btn-danger:hover{background:rgba(255,68,68,.2)}
+.btn-sm{padding:6px 12px;font-size:9px}
+.btn-xs{padding:4px 8px;font-size:8px;letter-spacing:1px}
+
+/* ── RANGE SLIDER ── */
+.range-group{margin-bottom:8px}
+.range-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.range-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.range-value{font-size:11px;font-weight:800;color:var(--neon);font-family:'Montserrat Alternates',sans-serif}
+input[type=range]{width:100%;-webkit-appearance:none;height:3px;background:var(--border2);border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--neon);border-radius:50%;cursor:pointer;transition:transform .15s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
+
+/* ── SUPPLIER CARD ── */
+.sup-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;position:relative;transition:border-color .2s}
+.sup-card.selected{border-color:var(--neon-bd);background:var(--neon-bg)}
+.sup-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.sup-name{font-weight:800;font-size:13px;letter-spacing:.5px}
+.sup-cat{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.sup-check{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.sup-check.checked{background:var(--neon);border-color:var(--neon);color:#000}
+.sup-fields{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
+.sup-field{font-size:10px;color:var(--muted2)}
+.sup-field strong{color:var(--fg);font-weight:700;display:block}
+.sup-stars{color:var(--amber);font-size:11px}
+
+/* ── RESULT TABLE ── */
+.result-table{width:100%;border-collapse:collapse;font-size:11px}
+.result-table th{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border)}
+.result-table td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.result-table tr:last-child td{border-bottom:none}
+.result-table tr.winner{background:var(--neon-bg)}
+.rank-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-weight:800;font-size:10px}
+.rank-1{background:var(--gold);color:#000}
+.rank-2{background:#C0C0C0;color:#000}
+.rank-3{background:#CD7F32;color:#fff}
+.rank-n{background:var(--card);color:var(--muted)}
+.score-bar-wrap{background:var(--card);border-radius:3px;height:6px;width:120px;overflow:hidden}
+.score-bar{height:100%;border-radius:3px;transition:width .6s}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.tag-neon{background:var(--neon-bg);color:var(--neon);border:1px solid var(--neon-bd)}
+.tag-amber{background:rgba(245,166,35,.1);color:var(--amber);border:1px solid rgba(245,166,35,.2)}
+.tag-blue{background:rgba(68,170,255,.1);color:var(--blue);border:1px solid rgba(68,170,255,.2)}
+.tag-red{background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.2)}
+.tag-green{background:rgba(68,255,136,.1);color:var(--green);border:1px solid rgba(68,255,136,.2)}
+
+/* ── METRIC CARDS ── */
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.metric-val{font-family:'Montserrat Alternates',sans-serif;font-size:22px;font-weight:800;line-height:1}
+.metric-lbl{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.metric-sub{font-size:9px;color:var(--muted);margin-top:2px}
+
+/* ── INVEST BLOCO ── */
+.invest-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.invest-item:last-child{border-bottom:none}
+.invest-item-label{flex:1;font-size:11px;font-weight:600}
+.invest-item-input{width:130px}
+.invest-item-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;padding:0 4px;transition:color .2s}
+.invest-item-remove:hover{color:var(--red)}
+
+/* ── SCENARIO ── */
+.scenario-col{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center}
+.scenario-col.best{border-color:var(--neon-bd);background:var(--neon-bg)}
+.scenario-title{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px}
+.scenario-title.otimista{color:var(--green)}
+.scenario-title.realista{color:var(--amber)}
+.scenario-title.pessimista{color:var(--red)}
+.scenario-big{font-family:'Montserrat Alternates',sans-serif;font-size:28px;font-weight:800;line-height:1}
+.scenario-sub{font-size:9px;color:var(--muted);margin-top:4px;margin-bottom:12px}
+.scenario-row{display:flex;justify-content:space-between;font-size:10px;padding:4px 0;border-bottom:1px solid var(--border)}
+.scenario-row:last-child{border-bottom:none}
+.scenario-row span:last-child{font-weight:700}
+
+/* ── EMPTY / TOAST / LOADING ── */
+.empty{text-align:center;color:var(--muted);padding:32px;font-size:11px;letter-spacing:1px}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border);color:var(--fg);padding:12px 18px;border-radius:8px;font-size:11px;font-weight:600;z-index:9999;transform:translateY(60px);opacity:0;transition:all .3s;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{border-color:var(--neon-bd);color:var(--neon)}
+.toast.err{border-color:rgba(255,68,68,.4);color:var(--red)}
+.loading{display:flex;align-items:center;justify-content:center;gap:8px;padding:32px;color:var(--muted);font-size:11px}
+.spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--neon);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── ORDER SIMULATOR ── */
+.order-sup-row{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px}
+.order-sup-row-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.order-sup-name{font-weight:800;font-size:12px;flex:1}
+
+/* ── EDIT PANEL ── */
+.edit-panel{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:10px}
+.edit-panel-title{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:20px 0}
+
+/* ── CHIP SELECTOR ── */
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{padding:5px 12px;border:1px solid var(--border);border-radius:20px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;background:var(--card)}
+.chip.active{background:var(--neon-bg);border-color:var(--neon-bd);color:var(--neon)}
+.chip:hover{border-color:var(--muted)}
+
+/* ── WEIGHT TOTAL INDICATOR ── */
+.weight-total{font-size:10px;font-weight:700;text-align:right;margin-top:8px}
+.weight-total.ok{color:var(--green)}
+.weight-total.warn{color:var(--amber)}
+.weight-total.err2{color:var(--red)}
+
+/* ── SAVE/EXPORT MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.modal-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--fg)}
+
+/* ── SAVED SCENARIOS LIST ── */
+.saved-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.saved-item-info{}
+.saved-item-name{font-weight:700;font-size:12px}
+.saved-item-meta{font-size:9px;color:var(--muted);margin-top:2px}
+.saved-item-actions{display:flex;gap:6px}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-brand">
+    <div class="brand-logo">SLB</div>
+    <div class="brand-sep"></div>
+    <div class="brand-title">Simuladores</div>
+  </div>
+  <a href="https://solookbom.vercel.app" class="header-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Voltar ao SLB
+  </a>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" data-tab="fornecedores">⚖️ Comparador de Fornecedores</button>
+  <button class="tab-btn" data-tab="pedidos">📦 Simulação de Pedido</button>
+  <button class="tab-btn" data-tab="investimento">💰 Investimento Inicial</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ═══════════════════════════════ TAB 1: COMPARADOR ═════════════════════════ -->
+  <div class="sim-section active" id="tab-fornecedores">
+    <div class="grid2">
+
+      <!-- LEFT: configuração -->
+      <div>
+        <!-- Pesos -->
+        <div class="panel">
+          <div class="panel-title">⚙️ Critérios e <span>Pesos</span></div>
+          <p style="font-size:10px;color:var(--muted);margin-bottom:14px">Ajuste os pesos em tempo real. Soma deve ser 100%.</p>
+
+          <div class="range-group">
+            <div class="range-header"><span class="range-label">💲 Preço / Custo</span><span class="range-value" id="w-preco-val">35%</span></div>
+            <input type="range" id="w-preco" min="0" max="100" value="35">
+          </div>
+          <div class="range-group">
+            <div class="range-header"><span class="range-label">⭐ Qualidade</span><span class="range-value" id="w-qual-val">25%</span></div>
+            <input type="range" id="w-qual" min="0" max="100" value="25">
+          </div>
+          <div class="range-group">
+            <div class="range-header"><span class="range-label">⏱ Prazo de Entrega</span><span class="range-value" id="w-prazo-val">20%</span></div>
+            <input type="range" id="w-prazo" min="0" max="100" value="20">
+          </div>
+          <div class="range-group">
+            <div class="range-header"><span class="range-label">💳 Condições de Pagamento</span><span class="range-value" id="w-pagto-val">10%</span></div>
+            <input type="range" id="w-pagto" min="0" max="100" value="10">
+          </div>
+          <div class="range-group">
+            <div class="range-header"><span class="range-label">📦 Pedido Mínimo</span><span class="range-value" id="w-moq-val">10%</span></div>
+            <input type="range" id="w-moq" min="0" max="100" value="10">
+          </div>
+
+          <div class="weight-total ok" id="weight-total">Total: 100% ✓</div>
+        </div>
+
+        <!-- Filtro categoria -->
+        <div class="panel">
+          <div class="panel-title">🔍 Filtrar por Categoria</div>
+          <div class="chip-group" id="cat-chips">
+            <div class="chip active" data-cat="all">Todos</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: fornecedores -->
+      <div>
+        <div class="panel">
+          <div class="panel-title" style="justify-content:space-between">
+            <span>🏭 Fornecedores <span id="sup-count-label"></span></span>
+            <button class="btn btn-sec btn-sm" id="btn-compare" onclick="runComparison()">▶ Comparar Selecionados</button>
+          </div>
+          <div id="sup-loading" class="loading"><div class="spin"></div>Carregando fornecedores...</div>
+          <div id="sup-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTADO -->
+    <div id="comparison-result" style="display:none">
+      <div class="panel">
+        <div class="panel-title">🏆 Resultado da Comparação</div>
+        <div class="grid3" id="result-metrics" style="margin-bottom:20px"></div>
+        <div style="overflow-x:auto">
+          <table class="result-table" id="result-table"></table>
+        </div>
+        <div class="divider"></div>
+        <div id="result-recommendation"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ TAB 2: SIMULAÇÃO DE PEDIDO ═══════════════ -->
+  <div class="sim-section" id="tab-pedidos">
+    <div class="grid2">
+      <div>
+        <div class="panel">
+          <div class="panel-title">📋 Configurar Pedido</div>
+
+          <div class="form-group">
+            <label class="form-label">Produto / Item a pedir</label>
+            <input class="form-input" id="ped-produto" placeholder="Ex: Camiseta branca manga curta, 100% algodão">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Quantidade desejada</label>
+              <input class="form-input" type="number" id="ped-qtd" placeholder="120" min="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Prazo máximo (dias)</label>
+              <input class="form-input" type="number" id="ped-prazo-max" placeholder="30" min="1">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Orçamento máximo total (R$)</label>
+            <input class="form-input" type="number" id="ped-budget" placeholder="5000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Forma de pagamento preferida</label>
+            <select class="form-select" id="ped-pagto-pref">
+              <option value="">Sem preferência</option>
+              <option value="pix">PIX / À vista</option>
+              <option value="boleto">Boleto</option>
+              <option value="30">30 dias</option>
+              <option value="60">60 dias</option>
+              <option value="90">90+ dias</option>
+            </select>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="panel-title" style="margin-bottom:12px">Selecionar Fornecedores para cotar</div>
+          <div id="ped-sup-list"></div>
+
+          <div style="margin-top:16px">
+            <button class="btn btn-primary" onclick="runOrderSim()">▶ Simular e Comparar Pedidos</button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div id="ped-result-wrap" style="display:none">
+          <div class="panel">
+            <div class="panel-title">📊 Comparação de Pedidos</div>
+            <div id="ped-result-content"></div>
+          </div>
+        </div>
+        <div id="ped-empty" class="panel">
+          <div class="empty">Configure o pedido e selecione os fornecedores para comparar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ TAB 3: INVESTIMENTO ══════════════════════ -->
+  <div class="sim-section" id="tab-investimento">
+    <div class="grid2">
+      <!-- LEFT: inputs -->
+      <div>
+        <!-- Bloco 1: Custos de lançamento -->
+        <div class="panel">
+          <div class="panel-title">🏗 Custos de <span>Lançamento</span></div>
+          <div id="invest-items-launch"></div>
+          <button class="btn btn-sec btn-sm" style="margin-top:10px" onclick="addInvestItem('launch')">+ Adicionar item</button>
+        </div>
+
+        <!-- Bloco 2: Capital de giro -->
+        <div class="panel">
+          <div class="panel-title">🔄 Capital de <span>Giro</span></div>
+          <div class="form-group">
+            <label class="form-label">Despesas fixas mensais (R$)</label>
+            <input class="form-input" type="number" id="inv-desp-fixas" placeholder="3000" oninput="calcInvest()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Meses de reserva</label>
+            <input class="form-input" type="number" id="inv-meses-reserva" value="3" min="1" max="12" oninput="calcInvest()">
+          </div>
+        </div>
+
+        <!-- Bloco 3: Projeção de receita -->
+        <div class="panel">
+          <div class="panel-title">📈 Projeção de <span>Receita</span></div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Ticket médio (R$)</label>
+              <input class="form-input" type="number" id="inv-ticket" placeholder="180" oninput="calcInvest()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Margem bruta (%)</label>
+              <input class="form-input" type="number" id="inv-margem" placeholder="55" min="0" max="100" oninput="calcInvest()">
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <p style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Vendas mensais por cenário</p>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" style="color:var(--green)">🟢 Otimista</label>
+              <input class="form-input" type="number" id="inv-vendas-ot" placeholder="80" oninput="calcInvest()">
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="color:var(--amber)">🟡 Realista</label>
+              <input class="form-input" type="number" id="inv-vendas-re" placeholder="40" oninput="calcInvest()">
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="color:var(--red)">🔴 Pessimista</label>
+              <input class="form-input" type="number" id="inv-vendas-pe" placeholder="15" oninput="calcInvest()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: resultado -->
+      <div>
+        <!-- Total investimento -->
+        <div class="panel">
+          <div class="panel-title">💼 Investimento Total</div>
+          <div class="grid2" style="gap:10px;margin-bottom:16px">
+            <div class="metric"><div class="metric-val" id="inv-total-launch" style="color:var(--amber)">R$ 0</div><div class="metric-lbl">Lançamento</div></div>
+            <div class="metric"><div class="metric-val" id="inv-total-giro" style="color:var(--blue)">R$ 0</div><div class="metric-lbl">Capital de Giro</div></div>
+          </div>
+          <div style="background:var(--neon-bg);border:1px solid var(--neon-bd);border-radius:8px;padding:16px;text-align:center">
+            <div style="font-family:'Montserrat Alternates',sans-serif;font-size:30px;font-weight:800;color:var(--neon)" id="inv-total-geral">R$ 0</div>
+            <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);margin-top:4px">TOTAL NECESSÁRIO</div>
+          </div>
+        </div>
+
+        <!-- Cenários break-even -->
+        <div class="panel">
+          <div class="panel-title">📅 Break-Even por Cenário</div>
+          <div class="grid3" id="inv-scenarios" style="margin-bottom:0"></div>
+        </div>
+
+        <!-- Projeção 12 meses -->
+        <div class="panel">
+          <div class="panel-title">📊 Projeção 12 Meses</div>
+          <div id="inv-projection-table"></div>
+        </div>
+
+        <!-- Salvar -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="openSaveModal()">💾 Salvar Cenário</button>
+          <button class="btn btn-sec" onclick="exportInvestPDF()">📄 Exportar PDF</button>
+          <button class="btn btn-sec" onclick="openSavedModal()">📂 Cenários Salvos</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- MODAL SALVAR -->
+<div class="modal-bg" id="modal-save">
+  <div class="modal">
+    <div class="modal-title">Salvar Cenário <button class="modal-close" onclick="closeSaveModal()">×</button></div>
+    <div class="form-group">
+      <label class="form-label">Nome do cenário</label>
+      <input class="form-input" id="save-name" placeholder="Ex: Lançamento Coleção Verão 2025">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observações</label>
+      <textarea class="form-input" id="save-obs" rows="3" placeholder="Notas sobre este cenário..." style="resize:vertical"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-sec" onclick="closeSaveModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveScenario()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CENÁRIOS SALVOS -->
+<div class="modal-bg" id="modal-saved">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-title">Cenários Salvos <button class="modal-close" onclick="document.getElementById('modal-saved').classList.remove('open')">×</button></div>
+    <div id="saved-list"></div>
+  </div>
+</div>
+
+<script>
+var SB_URL='https://urajtknwzqbwihrvgjel.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyYWp0a253enFid2locnZnamVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjg0OTQsImV4cCI6MjA5NzgwNDQ5NH0.GPCqGjkceSd7hoSO4J0neD7asLwCWh1BaMD-ZYbxpZw';
+var db=supabase.createClient(SB_URL,SB_KEY);
+
+var suppliers=[];
+var selectedSups=[];
+var activeCat='all';
+var investLaunchItems=[];
+var investItemId=0;
+var savedScenarios=JSON.parse(localStorage.getItem('slb_invest_scenarios')||'[]');
+
+// ── TOAST ──
+function toast(msg,type){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+(type||'');
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},3000);
+}
+
+// ── TABS ──
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+    document.querySelectorAll('.sim-section').forEach(function(s){s.classList.remove('active')});
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ── WEIGHT SLIDERS ──
+var weightSliders=['preco','qual','prazo','pagto','moq'];
+weightSliders.forEach(function(k){
+  var el=document.getElementById('w-'+k);
+  el.addEventListener('input',function(){
+    document.getElementById('w-'+k+'-val').textContent=el.value+'%';
+    updateWeightTotal();
+    if(selectedSups.length>=2) runComparison();
+  });
+});
+function updateWeightTotal(){
+  var total=weightSliders.reduce(function(s,k){return s+parseInt(document.getElementById('w-'+k).value);},0);
+  var el=document.getElementById('weight-total');
+  el.textContent='Total: '+total+'%'+(total===100?' ✓':'');
+  el.className='weight-total '+(total===100?'ok':total>100?'err2':'warn');
+}
+updateWeightTotal();
+
+// ── LOAD SUPPLIERS ──
+function loadSuppliers(){
+  db.from('fornecedores').select('*').order('avaliacao',{ascending:false}).then(function(res){
+    document.getElementById('sup-loading').style.display='none';
+    if(res.error){toast('Erro ao carregar fornecedores: '+res.error.message,'err');return;}
+    suppliers=res.data||[];
+    buildCatChips();
+    renderSupplierList();
+    renderPedSupList();
+  });
+}
+
+function buildCatChips(){
+  var cats={};suppliers.forEach(function(s){if(s.categoria)cats[s.categoria]=1;});
+  var html='<div class="chip active" data-cat="all" onclick="filterCat(\'all\',this)">Todos ('+suppliers.length+')</div>';
+  Object.keys(cats).sort().forEach(function(c){
+    var count=suppliers.filter(function(s){return s.categoria===c;}).length;
+    html+='<div class="chip" data-cat="'+c+'" onclick="filterCat(\''+c+'\',this)">'+c+' ('+count+')</div>';
+  });
+  document.getElementById('cat-chips').innerHTML=html;
+}
+function filterCat(cat,el){
+  activeCat=cat;
+  document.querySelectorAll('#cat-chips .chip').forEach(function(c){c.classList.remove('active')});
+  el.classList.add('active');
+  renderSupplierList();
+}
+
+function renderSupplierList(){
+  var list=activeCat==='all'?suppliers:suppliers.filter(function(s){return s.categoria===activeCat;});
+  document.getElementById('sup-count-label').textContent='('+list.length+')';
+  if(!list.length){document.getElementById('sup-list').innerHTML='<p class="empty">Nenhum fornecedor nesta categoria</p>';return;}
+  document.getElementById('sup-list').innerHTML=list.map(function(s){
+    var sel=selectedSups.indexOf(s.id)>-1;
+    var stars='⭐'.repeat(Math.min(5,parseInt(s.avaliacao)||3));
+    return '<div class="sup-card'+(sel?' selected':'')+'">'+
+      '<div class="sup-card-header">'+
+        '<div><div class="sup-name">'+s.nome+'</div><div class="sup-cat">'+(s.categoria||'—')+'</div></div>'+
+        '<div class="sup-check'+(sel?' checked':'__CHECK__')+'" onclick="toggleSup('+s.id+',this)">'+
+          (sel?'✓':'')+'</div>'+
+      '</div>'+
+      '<div class="sup-fields">'+
+        '<div class="sup-field"><strong class="sup-stars">'+stars+'</strong>Qualidade</div>'+
+        '<div class="sup-field"><strong>'+(s.prazo_producao||'—')+'</strong>Prazo</div>'+
+        '<div class="sup-field"><strong>'+(s.pagamento||'—')+'</strong>Pagamento</div>'+
+        '<div class="sup-field"><strong>'+(s.status||'—')+'</strong>Status</div>'+
+      '</div>'+
+      (sel?'<div class="edit-panel"><div class="edit-panel-title">Dados para simulação</div>'+
+        '<div class="form-row">'+
+          '<div class="form-group"><label class="form-label">Preço unit. (R$)</label><input class="form-input" id="sp-preco-'+s.id+'" type="number" placeholder="25.00" oninput="debounceCompare()"></div>'+
+          '<div class="form-group"><label class="form-label">MOQ (qtd mín.)</label><input class="form-input" id="sp-moq-'+s.id+'" type="number" placeholder="50" oninput="debounceCompare()"></div>'+
+        '</div>'+
+        '<div class="form-row">'+
+          '<div class="form-group"><label class="form-label">Prazo entrega (dias)</label><input class="form-input" id="sp-prazo-'+s.id+'" type="number" placeholder="20" oninput="debounceCompare()"></div>'+
+          '<div class="form-group"><label class="form-label">Frete estimado (R$)</label><input class="form-input" id="sp-frete-'+s.id+'" type="number" placeholder="0" oninput="debounceCompare()"></div>'+
+        '</div>'+
+        '<div class="form-group"><label class="form-label">Condição pagamento</label>'+
+          '<select class="form-select" id="sp-pagto-'+s.id+'" onchange="debounceCompare()">'+
+            '<option value="0">PIX / À vista</option>'+
+            '<option value="1">30 dias</option>'+
+            '<option value="2">60 dias</option>'+
+            '<option value="3">90+ dias</option>'+
+          '</select>'+
+        '</div>'+
+      '</div>':'')+'</div>';
+  }).join('');
+}
+
+function toggleSup(id,el){
+  var idx=selectedSups.indexOf(id);
+  if(idx>-1)selectedSups.splice(idx,1);
+  else selectedSups.push(id);
+  renderSupplierList();
+  if(selectedSups.length>=2)runComparison();
+  else document.getElementById('comparison-result').style.display='none';
+}
+
+var compareTimer=null;
+function debounceCompare(){clearTimeout(compareTimer);compareTimer=setTimeout(function(){if(selectedSups.length>=2)runComparison();},400);}
+
+// ── COMPARISON ENGINE ──
+function getWeights(){
+  var w={};
+  weightSliders.forEach(function(k){w[k]=parseInt(document.getElementById('w-'+k).value)/100;});
+  return w;
+}
+function getSupData(id){
+  var s=suppliers.find(function(x){return x.id===id;})||{};
+  return{
+    id:id,nome:s.nome||'?',categoria:s.categoria||'',
+    avaliacao:parseInt(s.avaliacao)||3,
+    preco:parseFloat(document.getElementById('sp-preco-'+id)?document.getElementById('sp-preco-'+id).value:0)||0,
+    moq:parseInt(document.getElementById('sp-moq-'+id)?document.getElementById('sp-moq-'+id).value:0)||0,
+    prazo:parseInt(document.getElementById('sp-prazo-'+id)?document.getElementById('sp-prazo-'+id).value:0)||0,
+    frete:parseFloat(document.getElementById('sp-frete-'+id)?document.getElementById('sp-frete-'+id).value:0)||0,
+    pagto:parseInt(document.getElementById('sp-pagto-'+id)?document.getElementById('sp-pagto-'+id).value:0)||0,
+  };
+}
+
+function scoreSuppliers(data,w){
+  // Normalize each criterion 0–1 (higher=better)
+  var precos=data.map(function(d){return d.preco>0?d.preco:null;}).filter(Boolean);
+  var prazoArr=data.map(function(d){return d.prazo>0?d.prazo:null;}).filter(Boolean);
+  var moqArr=data.map(function(d){return d.moq>0?d.moq:null;}).filter(Boolean);
+  var minPreco=Math.min.apply(null,precos.length?precos:[1]);
+  var maxPreco=Math.max.apply(null,precos.length?precos:[1]);
+  var minPrazo=Math.min.apply(null,prazoArr.length?prazoArr:[1]);
+  var maxPrazo=Math.max.apply(null,prazoArr.length?prazoArr:[1]);
+  var minMoq=Math.min.apply(null,moqArr.length?moqArr:[1]);
+  var maxMoq=Math.max.apply(null,moqArr.length?moqArr:[1]);
+
+  return data.map(function(d){
+    // Preço: menor é melhor
+    var sPreco=d.preco>0&&maxPreco>minPreco?(maxPreco-d.preco)/(maxPreco-minPreco):d.preco>0?1:0.5;
+    // Qualidade: maior é melhor (1-5)
+    var sQual=(d.avaliacao-1)/4;
+    // Prazo: menor é melhor
+    var sPrazo=d.prazo>0&&maxPrazo>minPrazo?(maxPrazo-d.prazo)/(maxPrazo-minPrazo):d.prazo>0?1:0.5;
+    // Pagamento: maior prazo = melhor para o caixa
+    var sPagto=d.pagto/3;
+    // MOQ: menor é melhor
+    var sMoq=d.moq>0&&maxMoq>minMoq?(maxMoq-d.moq)/(maxMoq-minMoq):d.moq>0?1:0.5;
+
+    var total=sPreco*w.preco+sQual*w.qual+sPrazo*w.prazo+sPagto*w.pagto+sMoq*w.moq;
+    var custo_real=d.preco>0?(d.preco+(d.moq>0?d.frete/d.moq:d.frete)):0;
+    return Object.assign({},d,{sPreco:sPreco,sQual:sQual,sPrazo:sPrazo,sPagto:sPagto,sMoq:sMoq,score:total,custo_real:custo_real});
+  }).sort(function(a,b){return b.score-a.score;});
+}
+
+function runComparison(){
+  if(selectedSups.length<2){toast('Selecione pelo menos 2 fornecedores','err');return;}
+  var w=getWeights();
+  var total=weightSliders.reduce(function(s,k){return s+parseInt(document.getElementById('w-'+k).value);},0);
+  if(total!==100){toast('Os pesos devem somar 100%','err');return;}
+
+  var data=selectedSups.map(function(id){return getSupData(id);});
+  var scored=scoreSuppliers(data,w);
+  var winner=scored[0];
+
+  // Metrics
+  var bestPreco=scored.reduce(function(b,d){return(!b||d.preco>0&&(b.preco===0||d.preco<b.preco))?d:b;},{});
+  var bestPrazo=scored.reduce(function(b,d){return(!b||d.prazo>0&&(b.prazo===0||d.prazo<b.prazo))?d:b;},{});
+  document.getElementById('result-metrics').innerHTML=
+    '<div class="metric"><div class="metric-val" style="color:var(--neon);font-size:15px">'+winner.nome+'</div><div class="metric-lbl">🏆 Melhor Score Geral</div><div class="metric-sub">'+(winner.score*100).toFixed(0)+'pts</div></div>'+
+    '<div class="metric"><div class="metric-val" style="color:var(--amber);font-size:15px">'+(bestPreco.nome||'—')+'</div><div class="metric-lbl">💲 Melhor Preço</div><div class="metric-sub">'+(bestPreco.preco>0?'R$ '+bestPreco.preco.toFixed(2):'—')+'</div></div>'+
+    '<div class="metric"><div class="metric-val" style="color:var(--blue);font-size:15px">'+(bestPrazo.nome||'—')+'</div><div class="metric-lbl">⚡ Mais Rápido</div><div class="metric-sub">'+(bestPrazo.prazo>0?bestPrazo.prazo+'d':'—')+'</div></div>';
+
+  // Table
+  var pagtoLabel=['PIX/Vista','30d','60d','90d+'];
+  var thead='<thead><tr>'+
+    '<th>Rank</th><th>Fornecedor</th><th>Score</th>'+
+    '<th>Preço Unit.</th><th>Custo Real</th><th>MOQ</th>'+
+    '<th>Prazo</th><th>Pagamento</th><th>Qualidade</th>'+
+  '</tr></thead>';
+  var tbody='<tbody>'+scored.map(function(d,i){
+    var rankClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n';
+    var pct=(d.score*100).toFixed(0);
+    var barColor=i===0?'var(--neon)':i===1?'var(--amber)':'var(--blue)';
+    return '<tr class="'+(i===0?'winner':'')+'">'+
+      '<td><span class="rank-badge '+rankClass+'">'+(i+1)+'</span></td>'+
+      '<td><strong>'+d.nome+'</strong><br><span style="font-size:9px;color:var(--muted)">'+d.categoria+'</span></td>'+
+      '<td><div style="display:flex;align-items:center;gap:8px">'+
+        '<div class="score-bar-wrap"><div class="score-bar" style="width:'+pct+'%;background:'+barColor+'"></div></div>'+
+        '<strong style="color:'+barColor+'">'+pct+'</strong></div></td>'+
+      '<td>'+(d.preco>0?'R$ '+d.preco.toFixed(2):'<span class="tag tag-amber">preencher</span>')+'</td>'+
+      '<td>'+(d.custo_real>0?'R$ '+d.custo_real.toFixed(2):'—')+'</td>'+
+      '<td>'+(d.moq>0?d.moq+' un':'<span class="tag tag-amber">preencher</span>')+'</td>'+
+      '<td>'+(d.prazo>0?d.prazo+'d':'<span class="tag tag-amber">preencher</span>')+'</td>'+
+      '<td><span class="tag tag-blue">'+pagtoLabel[d.pagto]+'</span></td>'+
+      '<td>'+'⭐'.repeat(d.avaliacao)+'</td>'+
+    '</tr>';
+  }).join('')+'</tbody>';
+  document.getElementById('result-table').innerHTML=thead+tbody;
+
+  // Recommendation
+  var diffPct=scored.length>1?((scored[0].score-scored[1].score)*100).toFixed(0):0;
+  document.getElementById('result-recommendation').innerHTML=
+    '<div style="background:var(--neon-bg);border:1px solid var(--neon-bd);border-radius:8px;padding:16px">'+
+    '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--neon);margin-bottom:8px">💡 RECOMENDAÇÃO</div>'+
+    '<p style="font-size:12px;line-height:1.6"><strong style="color:var(--neon)">'+winner.nome+'</strong> é a melhor opção com base nos critérios selecionados, '+
+    'superando o segundo colocado por <strong>'+diffPct+' pontos</strong>. '+
+    (winner.preco>0?'Custo real por unidade: <strong>R$ '+winner.custo_real.toFixed(2)+'</strong>. ':'Insira os preços para calcular o custo real. ')+
+    (winner.prazo>0?'Prazo de entrega: <strong>'+winner.prazo+' dias</strong>.':'')+'</p>'+
+    '</div>';
+
+  document.getElementById('comparison-result').style.display='block';
+  document.getElementById('comparison-result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ── PED SUP LIST ──
+function renderPedSupList(){
+  if(!suppliers.length){document.getElementById('ped-sup-list').innerHTML='<p class="empty">Carregando...</p>';return;}
+  document.getElementById('ped-sup-list').innerHTML=suppliers.map(function(s){
+    return '<label style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:6px;cursor:pointer">'+
+      '<input type="checkbox" id="ped-sel-'+s.id+'" value="'+s.id+'" style="width:14px;height:14px;accent-color:var(--neon)">'+
+      '<span style="font-weight:700;font-size:11px">'+s.nome+'</span>'+
+      '<span style="font-size:9px;color:var(--muted);margin-left:auto">'+( s.categoria||'')+'</span>'+
+    '</label>';
+  }).join('');
+}
+
+function runOrderSim(){
+  var qtd=parseInt(document.getElementById('ped-qtd').value)||0;
+  var budget=parseFloat(document.getElementById('ped-budget').value)||0;
+  var prazoMax=parseInt(document.getElementById('ped-prazo-max').value)||999;
+  var pagPref=document.getElementById('ped-pagto-pref').value;
+  var produto=document.getElementById('ped-produto').value||'Produto';
+
+  var selIds=[];
+  suppliers.forEach(function(s){
+    var el=document.getElementById('ped-sel-'+s.id);
+    if(el&&el.checked)selIds.push(s.id);
+  });
+  if(!selIds.length){toast('Selecione ao menos um fornecedor','err');return;}
+  if(!qtd){toast('Informe a quantidade desejada','err');return;}
+
+  var results=selIds.map(function(id){
+    var s=suppliers.find(function(x){return x.id===id;})||{};
+    var prazoNum=parseInt((s.prazo_producao||'').match(/\d+/));
+    var moqVal=s.pedido_minimo_qtd||s.pedido_minimo_valor||0;
+    var warnings=[];
+    if(prazoNum&&prazoNum>prazoMax)warnings.push('⏱ Prazo '+prazoNum+'d > limite '+prazoMax+'d');
+    return{
+      id:id,nome:s.nome,cat:s.categoria,
+      avaliacao:parseInt(s.avaliacao)||3,
+      prazo:prazoNum||null,
+      pagamento:s.pagamento||'—',
+      warnings:warnings,
+      ok:warnings.length===0
+    };
+  });
+  results.sort(function(a,b){return(b.ok?1:0)-(a.ok?1:0)||(b.avaliacao-a.avaliacao);});
+
+  var html='<div style="font-size:10px;color:var(--muted);margin-bottom:12px">Pedido de <strong style="color:var(--fg)">'+qtd+' un</strong> de "'+produto+'"'+(budget>0?' | Budget: <strong style="color:var(--fg)">R$ '+budget.toFixed(2)+'</strong>':'')+'</div>';
+  results.forEach(function(r,i){
+    html+='<div class="order-sup-row" style="border-color:'+(r.ok?'var(--neon-bd)':'var(--border)')+'">'+
+      '<div class="order-sup-row-header">'+
+        '<div style="width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;background:'+(i===0?'var(--gold)':'var(--card2)')+';color:'+(i===0?'#000':'var(--muted)')+'">'+( i+1)+'</div>'+
+        '<div class="order-sup-name">'+r.nome+'</div>'+
+        '<span class="tag '+(r.ok?'tag-neon':'tag-amber')+'">'+(r.ok?'✓ Compatível':'⚠ Verificar')+'</span>'+
+      '</div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:8px;font-size:10px">'+
+        '<span>⭐ '+r.avaliacao+'.0</span>'+
+        '<span>⏱ '+(r.prazo?r.prazo+'d':'—')+'</span>'+
+        '<span>💳 '+r.pagamento+'</span>'+
+        (r.cat?'<span style="color:var(--muted)">'+r.cat+'</span>':'')+
+      '</div>'+
+      (r.warnings.length?'<div style="margin-top:8px">'+r.warnings.map(function(w){return '<div style="font-size:10px;color:var(--amber);margin-top:4px">'+w+'</div>';}).join('')+'</div>':'')+
+    '</div>';
+  });
+  document.getElementById('ped-result-content').innerHTML=html;
+  document.getElementById('ped-empty').style.display='none';
+  document.getElementById('ped-result-wrap').style.display='block';
+}
+
+// ══════════════════════════════════════════════════════════════
+// INVESTIMENTO
+// ══════════════════════════════════════════════════════════════
+var launchCategories=[
+  {label:'Desenvolvimento de produto (fichas, protótipos)',id:'dev',default:2000},
+  {label:'Estoque inicial (peças × custo médio)',id:'estoque',default:8000},
+  {label:'Identidade visual (logo, manual, fotos)',id:'branding',default:3000},
+  {label:'E-commerce / Site',id:'ecom',default:2500},
+  {label:'Marketing de lançamento',id:'mkt',default:3000},
+  {label:'Embalagens e material impresso',id:'embal',default:1200},
+  {label:'Equipamentos / estrutura',id:'equip',default:1500},
+];
+
+function initInvestItems(){
+  launchCategories.forEach(function(c){
+    investLaunchItems.push({id:'inv-'+c.id,label:c.label,value:c.default});
+  });
+  renderInvestItems();
+}
+
+function renderInvestItems(){
+  document.getElementById('invest-items-launch').innerHTML=investLaunchItems.map(function(item){
+    return '<div class="invest-item">'+
+      '<div class="invest-item-label">'+item.label+'</div>'+
+      '<input class="form-input invest-item-input" type="number" id="'+item.id+'" value="'+item.value+'" placeholder="0" oninput="calcInvest()">'+
+      '<button class="invest-item-remove" onclick="removeInvestItem(\''+item.id+'\')">×</button>'+
+    '</div>';
+  }).join('');
+  calcInvest();
+}
+
+function addInvestItem(block){
+  var label=prompt('Nome do item:');
+  if(!label)return;
+  investLaunchItems.push({id:'inv-custom-'+(investItemId++),label:label,value:0});
+  renderInvestItems();
+}
+function removeInvestItem(id){
+  investLaunchItems=investLaunchItems.filter(function(i){return i.id!==id;});
+  renderInvestItems();
+}
+
+function getInvestValues(){
+  var launch=investLaunchItems.reduce(function(s,item){
+    return s+(parseFloat(document.getElementById(item.id)?document.getElementById(item.id).value:0)||0);
+  },0);
+  var despFixas=parseFloat(document.getElementById('inv-desp-fixas').value)||0;
+  var meses=parseInt(document.getElementById('inv-meses-reserva').value)||3;
+  var giro=despFixas*meses;
+  var ticket=parseFloat(document.getElementById('inv-ticket').value)||0;
+  var margem=(parseFloat(document.getElementById('inv-margem').value)||0)/100;
+  var vendasOt=parseInt(document.getElementById('inv-vendas-ot').value)||0;
+  var vendasRe=parseInt(document.getElementById('inv-vendas-re').value)||0;
+  var vendasPe=parseInt(document.getElementById('inv-vendas-pe').value)||0;
+  return{launch,giro,total:launch+giro,ticket,margem,despFixas,vendasOt,vendasRe,vendasPe};
+}
+
+function calcBreakEven(totalInvest,lucroMensal){
+  if(lucroMensal<=0)return null;
+  return Math.ceil(totalInvest/lucroMensal);
+}
+
+function fmt(n){return'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});}
+
+function calcInvest(){
+  var v=getInvestValues();
+  document.getElementById('inv-total-launch').textContent=fmt(v.launch);
+  document.getElementById('inv-total-giro').textContent=fmt(v.giro);
+  document.getElementById('inv-total-geral').textContent=fmt(v.total);
+
+  // lucro bruto mensal por cenário
+  var receita_ot=v.ticket*v.vendasOt;
+  var receita_re=v.ticket*v.vendasRe;
+  var receita_pe=v.ticket*v.vendasPe;
+  var lucro_ot=receita_ot*v.margem-v.despFixas;
+  var lucro_re=receita_re*v.margem-v.despFixas;
+  var lucro_pe=receita_pe*v.margem-v.despFixas;
+
+  var be_ot=calcBreakEven(v.total,lucro_ot);
+  var be_re=calcBreakEven(v.total,lucro_re);
+  var be_pe=calcBreakEven(v.total,lucro_pe);
+
+  function scenarioHTML(title,vendas,receita,lucro,be,colorClass){
+    var roiClass=lucro>0?'tag-neon':lucro<0?'tag-red':'tag-amber';
+    return '<div class="scenario-col">'+
+      '<div class="scenario-title '+colorClass+'">'+title+'</div>'+
+      '<div class="scenario-big" style="color:'+(lucro>0?'var(--green)':lucro<0?'var(--red)':'var(--muted)')+'">'+
+        (be?be+'m':'∞')+'</div>'+
+      '<div class="scenario-sub">meses p/ break-even</div>'+
+      '<div class="scenario-row"><span>Vendas/mês</span><span>'+vendas+' un</span></div>'+
+      '<div class="scenario-row"><span>Receita</span><span>'+fmt(receita)+'</span></div>'+
+      '<div class="scenario-row"><span>Margem bruta</span><span>'+fmt(receita*v.margem)+'</span></div>'+
+      '<div class="scenario-row"><span>Desp. fixas</span><span>'+fmt(v.despFixas)+'</span></div>'+
+      '<div class="scenario-row"><span>Lucro líq./mês</span><span class="'+(lucro>0?'':'')+'"><span class="tag '+(lucro>0?'tag-neon':lucro<0?'tag-red':'tag-amber')+'">'+fmt(lucro)+'</span></span></div>'+
+      (v.total>0&&lucro>0?'<div class="scenario-row"><span>ROI 12m</span><span><span class="tag tag-blue">'+((lucro*12-v.total)/v.total*100).toFixed(0)+'%</span></span></div>':'')+
+    '</div>';
+  }
+  document.getElementById('inv-scenarios').innerHTML=
+    scenarioHTML('🟢 Otimista',v.vendasOt,receita_ot,lucro_ot,be_ot,'otimista')+
+    scenarioHTML('🟡 Realista',v.vendasRe,receita_re,lucro_re,be_re,'realista')+
+    scenarioHTML('🔴 Pessimista',v.vendasPe,receita_pe,lucro_pe,be_pe,'pessimista');
+
+  // Projeção 12 meses (cenário realista)
+  var rows='<table class="result-table"><thead><tr>'+
+    '<th>Mês</th><th>Receita (Realista)</th><th>Lucro Acum.</th><th>Retorno Invest.</th>'+
+    '</tr></thead><tbody>';
+  var acum=0;
+  for(var m=1;m<=12;m++){
+    acum+=lucro_re;
+    var pct=v.total>0?(acum/v.total*100).toFixed(0):0;
+    var recovered=acum>=0;
+    rows+='<tr class="'+(recovered&&acum-lucro_re<0?'winner':'')+'">'+
+      '<td>Mês '+m+'</td>'+
+      '<td>'+fmt(receita_re)+'</td>'+
+      '<td><span style="color:'+(acum>=0?'var(--green)':'var(--red)')+'">'+fmt(acum)+'</span></td>'+
+      '<td><span class="tag '+(pct>=100?'tag-neon':pct>=50?'tag-amber':'tag-red')+'">'+pct+'%</span></td>'+
+    '</tr>';
+  }
+  rows+='</tbody></table>';
+  document.getElementById('inv-projection-table').innerHTML=rows;
+}
+
+// ── SAVE/LOAD ──
+function openSaveModal(){
+  document.getElementById('save-name').value='';
+  document.getElementById('save-obs').value='';
+  document.getElementById('modal-save').classList.add('open');
+}
+function closeSaveModal(){document.getElementById('modal-save').classList.remove('open');}
+
+function saveScenario(){
+  var name=document.getElementById('save-name').value.trim();
+  if(!name){toast('Informe um nome','err');return;}
+  var v=getInvestValues();
+  var scenario={
+    id:Date.now(),name:name,
+    obs:document.getElementById('save-obs').value,
+    date:new Date().toLocaleDateString('pt-BR'),
+    data:v,
+    items:investLaunchItems.map(function(item){return{
+      id:item.id,label:item.label,
+      value:parseFloat(document.getElementById(item.id)?document.getElementById(item.id).value:0)||0
+    };}),
+    inputs:{
+      despFixas:document.getElementById('inv-desp-fixas').value,
+      mesesReserva:document.getElementById('inv-meses-reserva').value,
+      ticket:document.getElementById('inv-ticket').value,
+      margem:document.getElementById('inv-margem').value,
+      vendasOt:document.getElementById('inv-vendas-ot').value,
+      vendasRe:document.getElementById('inv-vendas-re').value,
+      vendasPe:document.getElementById('inv-vendas-pe').value,
+    }
+  };
+  savedScenarios.push(scenario);
+  localStorage.setItem('slb_invest_scenarios',JSON.stringify(savedScenarios));
+  closeSaveModal();
+  toast('Cenário salvo!','ok');
+}
+
+function openSavedModal(){
+  renderSavedList();
+  document.getElementById('modal-saved').classList.add('open');
+}
+function renderSavedList(){
+  if(!savedScenarios.length){
+    document.getElementById('saved-list').innerHTML='<p class="empty">Nenhum cenário salvo ainda</p>';return;
+  }
+  document.getElementById('saved-list').innerHTML=savedScenarios.map(function(s){
+    return '<div class="saved-item">'+
+      '<div class="saved-item-info">'+
+        '<div class="saved-item-name">'+s.name+'</div>'+
+        '<div class="saved-item-meta">'+s.date+(s.obs?' — '+s.obs:'')+'</div>'+
+        '<div class="saved-item-meta" style="margin-top:4px">Total: <strong>'+fmt(s.data.total)+'</strong> | Break-even realista: '+
+          (calcBreakEven(s.data.total,(s.data.ticket*s.data.vendasRe*s.data.margem-s.data.despFixas))||'∞')+' meses</div>'+
+      '</div>'+
+      '<div class="saved-item-actions">'+
+        '<button class="btn btn-sec btn-xs" onclick="loadScenario('+s.id+')">Carregar</button>'+
+        '<button class="btn btn-danger btn-xs" onclick="deleteScenario('+s.id+')">✕</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+function loadScenario(id){
+  var s=savedScenarios.find(function(x){return x.id===id;});
+  if(!s)return;
+  // restore items
+  investLaunchItems=s.items.map(function(i){return{id:i.id,label:i.label,value:i.value};});
+  renderInvestItems();
+  // restore inputs
+  document.getElementById('inv-desp-fixas').value=s.inputs.despFixas;
+  document.getElementById('inv-meses-reserva').value=s.inputs.mesesReserva;
+  document.getElementById('inv-ticket').value=s.inputs.ticket;
+  document.getElementById('inv-margem').value=s.inputs.margem;
+  document.getElementById('inv-vendas-ot').value=s.inputs.vendasOt;
+  document.getElementById('inv-vendas-re').value=s.inputs.vendasRe;
+  document.getElementById('inv-vendas-pe').value=s.inputs.vendasPe;
+  calcInvest();
+  document.getElementById('modal-saved').classList.remove('open');
+  // Switch to invest tab
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelectorAll('.sim-section').forEach(function(s){s.classList.remove('active')});
+  document.querySelector('[data-tab="investimento"]').classList.add('active');
+  document.getElementById('tab-investimento').classList.add('active');
+  toast('Cenário "'+s.name+'" carregado!','ok');
+}
+function deleteScenario(id){
+  if(!confirm('Excluir este cenário?'))return;
+  savedScenarios=savedScenarios.filter(function(x){return x.id!==id;});
+  localStorage.setItem('slb_invest_scenarios',JSON.stringify(savedScenarios));
+  renderSavedList();
+}
+
+function exportInvestPDF(){
+  var v=getInvestValues();
+  var lucro_re=v.ticket*v.vendasRe*v.margem-v.despFixas;
+  var be_re=calcBreakEven(v.total,lucro_re);
+  var lines=[
+    'SLB — SIMULADOR DE INVESTIMENTO INICIAL',
+    'Gerado em: '+new Date().toLocaleDateString('pt-BR'),
+    '',
+    '━━━ CUSTOS DE LANÇAMENTO ━━━',
+  ];
+  investLaunchItems.forEach(function(item){
+    var val=parseFloat(document.getElementById(item.id)?document.getElementById(item.id).value:0)||0;
+    lines.push(item.label+': '+fmt(val));
+  });
+  lines.push('');
+  lines.push('Capital de Giro: '+fmt(v.giro)+' ('+document.getElementById('inv-meses-reserva').value+'x despesas fixas)');
+  lines.push('');
+  lines.push('TOTAL NECESSÁRIO: '+fmt(v.total));
+  lines.push('');
+  lines.push('━━━ PROJEÇÃO ━━━');
+  lines.push('Ticket médio: '+fmt(v.ticket));
+  lines.push('Margem bruta: '+(v.margem*100).toFixed(0)+'%');
+  lines.push('');
+  lines.push('Cenário Otimista: '+v.vendasOt+' vendas/mês → '+fmt(v.ticket*v.vendasOt*v.margem-v.despFixas)+'/mês lucro');
+  lines.push('Cenário Realista: '+v.vendasRe+' vendas/mês → '+fmt(lucro_re)+'/mês lucro');
+  lines.push('Cenário Pessimista: '+v.vendasPe+' vendas/mês → '+fmt(v.ticket*v.vendasPe*v.margem-v.despFixas)+'/mês lucro');
+  lines.push('');
+  lines.push('Break-even (Realista): '+(be_re?be_re+' meses':'Não alcançado em 12 meses'));
+  if(be_re&&lucro_re>0)lines.push('ROI 12 meses: '+((lucro_re*12-v.total)/v.total*100).toFixed(0)+'%');
+
+  var blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='SLB_Investimento_'+new Date().toISOString().slice(0,10)+'.txt';
+  a.click();URL.revokeObjectURL(url);
+  toast('Relatório exportado!','ok');
+}
+
+// ── INIT ──
+initInvestItems();
+loadSuppliers();
+</script>
+</body>
+</html>
