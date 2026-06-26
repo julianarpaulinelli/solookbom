@@ -2873,9 +2873,10 @@ function sinvRenderPesoSliders(){
         '<span class="sinv-peso-lbl">'+(keyMap[k]||k)+'</span>'+
         '<span class="sinv-peso-vals"><span id="sp-pct-'+k+'">'+sinvPesos[k]+'%</span> · <span id="sp-val-'+k+'">R$ 0</span></span>'+
       '</div>'+
-      '<input type="range" class="sim-range" id="sp-sl-'+k+'" min="0" max="80" value="'+sinvPesos[k]+'" oninput="sinvPesoChange(''+k+'',this.value)">'+
+      '<input type="range" class="sim-range" id="sp-sl-'+k+'" min="0" max="80" value="'+sinvPesos[k]+'" data-pk="'+k+'">'+
     '</div>';
   }).join('');
+  el.querySelectorAll('[data-pk]').forEach(function(inp){inp.addEventListener('input',function(){sinvPesoChange(inp.dataset.pk,inp.value);});});
   sinvApplyPesos();
 }
 
