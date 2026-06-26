@@ -2103,7 +2103,8 @@ function updateBadge(name,count){var b=$('badge-'+name);if(!b)return;b.style.dis
 // ── RESET FORM ─────────────────────────────────────────────
 function resetForm(type){
   var modal=$('modal-'+type);if(!modal)return;
-  modal.querySelectorAll('input:not([type=checkbox]),select,textarea').forEach(function(el){if(!el.readOnly&&el.id!=='pr-sku')el.value='';});
+  modal.querySelectorAll('input:not([type=checkbox]),textarea').forEach(function(el){if(!el.readOnly&&el.id!=='pr-sku')el.value='';});
+  modal.querySelectorAll('select').forEach(function(el){if(el.options.length>0)el.selectedIndex=0;});
   modal.querySelectorAll('input[type=checkbox]').forEach(function(el){el.checked=false;});
   modal.querySelectorAll('[type=hidden]').forEach(function(el){el.value='';});
   if(type==='supplier'){$('frete-info-group').style.display='none';$('pedmin-group').style.display='none';}
