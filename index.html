@@ -1494,6 +1494,7 @@ function sinvInit(){
 
 function sinvSetMode(mode){
   sinvMode=mode;
+  console.log('[SIM] setMode', mode);
   ['manual','pesos','ia'].forEach(function(m){
     var btn=document.getElementById('sinv-mode-'+m);
     if(btn)btn.classList.toggle('active',m===mode);
@@ -1639,13 +1640,19 @@ function sinvAskIA(){
 function sinvRenderItems(){
   var el=document.getElementById('sinv-launch-items');if(!el)return;
   var isLocked=(sinvMode==='pesos'||sinvMode==='ia');
-  el.innerHTML=sinvItems.map(function(item){
-    return '<div class="invest-row">'+
-      '<span class="invest-row-lbl">'+item.l+'</span>'+
-      '<input class="form-input invest-row-inp" type="number" id="'+item.id+'" value="'+(item.v||0)+'" oninput="sinvCalc()" '+(isLocked?'readonly style="color:var(--neon);font-weight:700"':'')+'>'+
-      (sinvMode==='manual'?'<button class="invest-row-rm" onclick="sinvRemItem(''+item.id+'')">×</button>':'')+
-    '</div>';
-  }).join('');
+  var html='';
+  for(var i=0;i<sinvItems.length;i++){
+    var item=sinvItems[i];
+    var ro=isLocked?' readonly style="color:var(--neon);font-weight:700"':'';
+    var rm=sinvMode==='manual'?'<button class="invest-row-rm" data-rm="'+item.id+'">×</button>':'';
+    html+='<div class="invest-row"><span class="invest-row-lbl">'+item.l+'</span>'+
+      '<input class="form-input invest-row-inp" type="number" id="'+item.id+'" value="'+(item.v||0)+'" oninput="sinvCalc()"'+ro+'>'+
+      rm+'</div>';
+  }
+  el.innerHTML=html;
+  el.querySelectorAll('[data-rm]').forEach(function(btn){
+    btn.addEventListener('click',function(){sinvRemItem(btn.getAttribute('data-rm'));});
+  });
   sinvCalc();
 }
 function sinvAddItem(){
@@ -1860,8 +1867,11 @@ function openSection(name){
     else if(typeof simBuildUI==='function'&&simSups.length) simBuildUI();
   }
   if(name==='sim-invest'){
-    var el=$('sinv-launch-items');
-    if(el&&!el.children.length&&typeof sinvInit==='function') sinvInit();
+    if(typeof sinvInit==='function'){
+      var el=$('sinv-launch-items');
+      if(!el||!el.children.length) sinvInit();
+      else sinvRenderPesoSliders(); // re-render sliders in case of first open
+    }
   }
 }
 function openModal(type){$('modal-'+type).classList.add('open');}
