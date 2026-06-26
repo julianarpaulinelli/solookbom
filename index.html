@@ -855,7 +855,10 @@ input.sim-range::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:
               <div class="sim-panel">
                 <div class="sim-panel-title">🏗 Custos de <em>Lançamento</em></div>
                 <div id="sinv-launch-items"></div>
-                <button class="btn-sec" style="margin-top:10px;font-size:9px;padding:6px 12px" onclick="sinvAddItem()">+ Item</button>
+                <div style="display:flex;gap:6px;margin-top:10px" id="sinv-add-row">
+                  <input class="form-input" id="sinv-new-label" placeholder="Nome do novo item..." style="flex:1;font-size:11px">
+                  <button class="btn-add" style="font-size:9px;padding:6px 12px;white-space:nowrap" onclick="sinvAddItem()">+ Adicionar</button>
+                </div>
               </div>
               <div class="sim-panel">
                 <div class="sim-panel-title">🔄 Capital de <em>Giro</em></div>
@@ -1419,8 +1422,11 @@ function sinvRenderItems(){
   sinvCalc();
 }
 function sinvAddItem(){
-  var l=prompt('Nome do item:');if(!l)return;
+  var el=document.getElementById('sinv-new-label');
+  var l=el?el.value.trim():'';
+  if(!l){if(el){el.style.borderColor='var(--red)';setTimeout(function(){el.style.borderColor='';},1500);}return;}
   sinvItems.push({id:'sinv-x-'+(sinvItemIdx++),l:l,v:0});
+  if(el)el.value='';
   sinvRenderItems();
 }
 function sinvRemItem(id){sinvItems=sinvItems.filter(function(i){return i.id!==id;});sinvRenderItems();}
