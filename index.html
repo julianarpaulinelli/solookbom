@@ -2628,14 +2628,14 @@ function simLoad(){
 }
 
 function simBuildUI(){
-  // cat chips
   var cats={};simSups.forEach(function(s){if(s.categoria)cats[s.categoria]=1;});
-  var html='<div class="sim-chip active" data-cat="all" onclick="simFilterCat('all',this)">Todos ('+simSups.length+')</div>';
+  var html='<div class="sim-chip active" data-fc="all">Todos ('+simSups.length+')</div>';
   Object.keys(cats).sort().forEach(function(c){
     var n=simSups.filter(function(s){return s.categoria===c;}).length;
-    html+='<div class="sim-chip" data-cat="'+c+'" onclick="simFilterCat(''+c+'',this)">'+c+' ('+n+')</div>';
+    html+='<div class="sim-chip" data-fc="'+c+'">'+c+' ('+n+')</div>';
   });
-  var cc=document.getElementById('sim-cat-chips');if(cc)cc.innerHTML=html;
+  var cc=document.getElementById('sim-cat-chips');
+  if(cc){cc.innerHTML=html;cc.querySelectorAll('[data-fc]').forEach(function(el){el.addEventListener('click',function(){simFilterCat(el.dataset.fc,el);});});}
   simRenderList();simRenderPedSel();
 }
 
@@ -2658,7 +2658,7 @@ function simRenderList(){
       '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">'+
         '<div><div style="font-weight:800;font-size:12px">'+s.nome+'</div>'+
         '<div style="font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px">'+(s.categoria||'')+'</div></div>'+
-        '<div class="sup-sim-check'+(sel?' checked':'')+'" onclick="simToggle('+s.id+',this)">'+(sel?'✓':'')+'</div>'+
+        '<div class="sup-sim-check'+(sel?' checked':'')+'" data-ts="'+s.id+'">'+(sel?'✓':'')+'</div>'+
       '</div>'+
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;font-size:10px">'+
         '<span>'+stars+'</span><span style="color:var(--muted2)">'+(s.prazo_producao||'—')+'</span>'+
@@ -3088,8 +3088,8 @@ function sinvOpenSaved(){
       '<div><div style="font-weight:700;font-size:11px">'+s.name+'</div>'+
       '<div style="font-size:9px;color:var(--muted)">'+s.date+(s.obs?' — '+s.obs:'')+'</div></div>'+
       '<div style="display:flex;gap:6px">'+
-        '<button class="btn-sec" style="font-size:9px;padding:5px 10px" onclick="sinvLoad('+s.id+')">Carregar</button>'+
-        '<button class="btn-sec" style="font-size:9px;padding:5px 10px;color:var(--red);border-color:rgba(255,68,68,.2)" onclick="sinvDel('+s.id+')">✕</button>'+
+        '<button class="btn-sec" style="font-size:9px;padding:5px 10px" data-sl="'+s.id+'">Carregar</button>'+
+        '<button class="btn-sec" style="font-size:9px;padding:5px 10px;color:var(--red);border-color:rgba(255,68,68,.2)" data-sd="'+s.id+'">✕</button>'+
       '</div></div>';
   }).join('');
   document.getElementById('modal-sinv-saved').classList.add('open');
