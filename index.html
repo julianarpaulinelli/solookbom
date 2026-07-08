@@ -1216,7 +1216,20 @@ function openSection(name){
     }
   }
 }
-function openModal(type){$('modal-'+type).classList.add('open');}
+function openModal(type){
+  $('modal-'+type).classList.add('open');
+  if(type==='produto'){
+    setTimeout(function(){
+      custoSkuInit();
+      var varCkb=document.getElementById('pr-e-variante');
+      if(varCkb)varCkb.addEventListener('change',function(){
+        var va=document.getElementById('pr-variante-attrs');
+        if(va)va.style.display=varCkb.checked?'block':'none';
+      });
+      populatePaiSelect();
+    },50);
+  }
+}
 function closeModal(type){$('modal-'+type).classList.remove('open');}
 function closePanel(){$('sup-panel').classList.remove('open');$('overlay').classList.remove('open');}
 
