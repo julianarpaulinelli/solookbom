@@ -380,7 +380,63 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 
 /* ══════════════════════════════════════════════════════════════
    SIMULADORES
-══════════════════════════════════════════════════════════════ */</style>
+══════════════════════════════════════════════════════════════ */
+/* ══ CALCULADORA CUSTO SKU ══════════════════════════════════ */
+.custo-table{width:100%;border-collapse:collapse;margin-bottom:8px}
+.custo-table th{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:5px 6px;text-align:left;border-bottom:1px solid var(--border)}
+.custo-table td{padding:4px 4px;vertical-align:middle;border-bottom:1px solid rgba(128,128,128,.06)}
+.custo-table tr:last-child td{border:none}
+.custo-inp{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 6px;font:12px 'Montserrat',sans-serif;color:var(--fg);outline:none;transition:border-color .15s}
+.custo-inp:focus{border-color:var(--neon)}
+.custo-inp.num{text-align:right;width:80px}
+.custo-inp.val{text-align:right;width:90px}
+.custo-row-total{font-size:11px;font-weight:700;color:var(--neon);text-align:right;white-space:nowrap;min-width:60px}
+.custo-rm{background:none;border:none;cursor:pointer;color:var(--border);font-size:15px;padding:2px 4px;transition:color .15s;line-height:1}
+.custo-rm:hover{color:var(--red)}
+.custo-add-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.custo-chip{padding:4px 12px;background:var(--card);border:1px solid var(--border);border-radius:20px;font:700 9px 'Montserrat',sans-serif;letter-spacing:1px;cursor:pointer;transition:all .15s;color:var(--muted);text-transform:uppercase}
+.custo-chip:hover{border-color:var(--neon-bd);color:var(--neon)}
+.custo-resultado{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:8px}
+.custo-res-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(128,128,128,.07)}
+.custo-res-row:last-child{border:none}
+.custo-res-lbl{font-size:10px;color:var(--muted)}
+.custo-res-val{font-size:13px;font-weight:800}
+.custo-res-val.green{color:var(--green)}
+.custo-res-val.neon{color:var(--neon)}
+.custo-margem-wrap{display:flex;align-items:center;gap:10px;padding:8px 0}
+.custo-margem-lbl{font-size:10px;color:var(--muted);white-space:nowrap;min-width:80px}
+.custo-margem-slider{flex:1;accent-color:var(--neon)}
+.custo-margem-pct{font-size:14px;font-weight:800;color:var(--neon);min-width:44px;text-align:right}
+/* ══ CALENDARIO POSTAGENS ════════════════════════════════════ */
+.cal-nav{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.cal-nav-btn{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:6px 14px;cursor:pointer;color:var(--fg);font:700 10px 'Montserrat',sans-serif;letter-spacing:1px;transition:all .15s}
+.cal-nav-btn:hover{border-color:var(--neon-bd);color:var(--neon)}
+.cal-month-lbl{font-family:'Montserrat Alternates',sans-serif;font-size:14px;font-weight:800;flex:1;text-align:center;letter-spacing:1px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dow{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.cal-day{background:var(--card);border:1px solid var(--border);border-radius:8px;min-height:80px;padding:6px;position:relative;transition:border-color .2s}
+.cal-day:hover{border-color:var(--neon-bd)}
+.cal-day.today{border-color:var(--neon);border-width:2px}
+.cal-day.other-month{opacity:.35}
+.cal-day-num{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px}
+.cal-day.today .cal-day-num{color:var(--neon)}
+.cal-post-pill{font-size:8px;padding:2px 5px;border-radius:4px;margin-bottom:2px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;transition:opacity .15s}
+.cal-post-pill:hover{opacity:.75}
+.cal-post-pill.planejado{background:rgba(102,102,102,.2);color:var(--muted)}
+.cal-post-pill.confirmado{background:rgba(68,170,255,.15);color:var(--blue)}
+.cal-post-pill.postado{background:rgba(68,255,136,.15);color:var(--green)}
+.cal-post-pill.cancelado{background:rgba(255,68,68,.1);color:var(--red)}
+.cal-post-pill.ig{border-left:2px solid #cc44cc}
+.cal-post-pill.tt{border-left:2px solid #ff4466}
+.cal-post-pill.th{border-left:2px solid var(--muted)}
+.cal-post-pill.yt{border-left:2px solid #ff4444}
+.cal-more{font-size:8px;color:var(--muted);text-align:center;cursor:pointer}
+.post-view-btns{display:flex;gap:6px}
+.post-view-btn{padding:5px 12px;background:var(--card);border:1px solid var(--border);border-radius:5px;font:700 9px 'Montserrat',sans-serif;letter-spacing:1px;cursor:pointer;color:var(--muted);transition:all .15s;text-transform:uppercase}
+.post-view-btn.active{background:var(--neon);border-color:var(--neon);color:#000}
+/* ══ ESTOQUE SKU BADGE ═══════════════════════════════════════ */
+.est-sku-link{font-size:9px;padding:1px 7px;border-radius:10px;background:var(--neon-bg);color:var(--neon);border:1px solid var(--neon-bd);font-weight:700;white-space:nowrap}
+</style>
 </head>
 <body>
 <!-- LOGIN -->
@@ -566,7 +622,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
         <div class="cw" id="section-tarefas">
           <div class="section-header"><h2 class="section-title">Tarefas</h2><div class="header-actions"><button class="btn-sec" id="toggle-view-btn">📅 Cronograma</button><button class="btn-add" data-modal="task">+ Nova tarefa</button></div></div>
           <div class="metrics" id="task-metrics"></div>
-          <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="task" data-k="status" data-v="all">Todas</button><button class="fb" data-f="task" data-k="status" data-v="todo">A fazer</button><button class="fb" data-f="task" data-k="status" data-v="doing">Em andamento</button><button class="fb" data-f="task" data-k="status" data-v="done">Concluído</button><button class="fb" data-f="task" data-k="status" data-v="blocked">Bloqueado</button></div>
+          <div class="search-bar"><input class="search-input" id="task-search" placeholder="Buscar por título, categoria, responsável..."></div>
+                    <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="task" data-k="status" data-v="all">Todas</button><button class="fb" data-f="task" data-k="status" data-v="todo">A fazer</button><button class="fb" data-f="task" data-k="status" data-v="doing">Em andamento</button><button class="fb" data-f="task" data-k="status" data-v="done">Concluído</button><button class="fb" data-f="task" data-k="status" data-v="blocked">Bloqueado</button></div>
           <div class="filters"><span class="fl">Prioridade:</span><button class="fb active" data-f="task" data-k="prio" data-v="all">Todas</button><button class="fb" data-f="task" data-k="prio" data-v="alta">Alta</button><button class="fb" data-f="task" data-k="prio" data-v="media">Média</button><button class="fb" data-f="task" data-k="prio" data-v="baixa">Baixa</button></div>
           <div class="filters"><span class="fl">Responsável:</span><div id="task-resp-filters" style="display:flex;gap:5px;flex-wrap:wrap"></div></div>
           <div id="task-list"></div><div id="task-timeline" style="display:none"></div>
@@ -618,7 +675,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
         <div class="cw" id="section-estoque">
           <div class="section-header"><h2 class="section-title">Estoque</h2><button class="btn-add" data-modal="estoque">+ Novo item</button></div>
           <div class="metrics" id="estoque-metrics"></div>
-          <div class="filters"><span class="fl">Categoria:</span><button class="fb active" data-f="est" data-k="cat" data-v="all">Todos</button><button class="fb" data-f="est" data-k="cat" data-v="Tecido">Tecidos</button><button class="fb" data-f="est" data-k="cat" data-v="Aviamento">Aviamentos</button><button class="fb" data-f="est" data-k="cat" data-v="Produto acabado">Acabados</button><button class="fb" data-f="est" data-k="cat" data-v="Embalagem">Embalagem</button></div>
+          <div class="search-bar"><input class="search-input" id="estoque-search" placeholder="Buscar por nome, SKU, categoria..."></div>
+                    <div class="filters"><span class="fl">Categoria:</span><button class="fb active" data-f="est" data-k="cat" data-v="all">Todos</button><button class="fb" data-f="est" data-k="cat" data-v="Tecido">Tecidos</button><button class="fb" data-f="est" data-k="cat" data-v="Aviamento">Aviamentos</button><button class="fb" data-f="est" data-k="cat" data-v="Produto acabado">Acabados</button><button class="fb" data-f="est" data-k="cat" data-v="Embalagem">Embalagem</button></div>
           <div id="estoque-list"></div>
         </div>
 
@@ -626,7 +684,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
         <div class="cw" id="section-colecoes">
           <div class="section-header"><h2 class="section-title">Coleções</h2><button class="btn-add" data-modal="colecao">+ Nova coleção</button></div>
           <div class="metrics" id="colecao-metrics"></div>
-          <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="col" data-k="status" data-v="all">Todas</button><button class="fb" data-f="col" data-k="status" data-v="planejamento">Planejamento</button><button class="fb" data-f="col" data-k="status" data-v="em_producao">Em produção</button><button class="fb" data-f="col" data-k="status" data-v="lancada">Lançada</button><button class="fb" data-f="col" data-k="status" data-v="encerrada">Encerrada</button></div>
+          <div class="search-bar"><input class="search-input" id="colecao-search" placeholder="Buscar por nome, temporada..."></div>
+                    <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="col" data-k="status" data-v="all">Todas</button><button class="fb" data-f="col" data-k="status" data-v="planejamento">Planejamento</button><button class="fb" data-f="col" data-k="status" data-v="em_producao">Em produção</button><button class="fb" data-f="col" data-k="status" data-v="lancada">Lançada</button><button class="fb" data-f="col" data-k="status" data-v="encerrada">Encerrada</button></div>
           <div id="colecao-list"></div>
         </div>
 
@@ -634,7 +693,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
         <div class="cw" id="section-producao">
           <div class="section-header"><h2 class="section-title">Controle de Produção</h2><button class="btn-add" data-modal="producao">+ Nova produção</button></div>
           <div class="metrics" id="producao-metrics"></div>
-          <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="prd" data-k="status" data-v="all">Todas</button><button class="fb" data-f="prd" data-k="status" data-v="ideacao">Ideação</button><button class="fb" data-f="prd" data-k="status" data-v="aprovacao">Aprovação</button><button class="fb" data-f="prd" data-k="status" data-v="em_criacao">Em criação</button><button class="fb" data-f="prd" data-k="status" data-v="em_producao">Em produção</button><button class="fb" data-f="prd" data-k="status" data-v="produzido">Produzido</button><button class="fb" data-f="prd" data-k="status" data-v="recebido">Recebido</button><button class="fb" data-f="prd" data-k="status" data-v="disponivel">Disponível</button></div>
+          <div class="search-bar"><input class="search-input" id="producao-search" placeholder="Buscar por nome, coleção..."></div>
+                    <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="prd" data-k="status" data-v="all">Todas</button><button class="fb" data-f="prd" data-k="status" data-v="ideacao">Ideação</button><button class="fb" data-f="prd" data-k="status" data-v="aprovacao">Aprovação</button><button class="fb" data-f="prd" data-k="status" data-v="em_criacao">Em criação</button><button class="fb" data-f="prd" data-k="status" data-v="em_producao">Em produção</button><button class="fb" data-f="prd" data-k="status" data-v="produzido">Produzido</button><button class="fb" data-f="prd" data-k="status" data-v="recebido">Recebido</button><button class="fb" data-f="prd" data-k="status" data-v="disponivel">Disponível</button></div>
           <div id="producao-list"></div>
         </div>
 
@@ -652,7 +712,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
           <div class="section-header"><h2 class="section-title">Fornecedores</h2><button class="btn-add" data-modal="supplier">+ Novo fornecedor</button></div>
           <div class="dash-grid" id="sup-dashboard"></div>
           <div class="metrics" id="sup-metrics"></div>
-          <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="sup" data-k="status" data-v="all">Todos</button><button class="fb" data-f="sup" data-k="status" data-v="ativo">Ativos</button><button class="fb" data-f="sup" data-k="status" data-v="negociando">Negociando</button><button class="fb" data-f="sup" data-k="status" data-v="prospecto">Prospectos</button></div>
+          <div class="search-bar"><input class="search-input" id="supplier-search" placeholder="Buscar por nome, categoria, cidade..."></div>
+                    <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="sup" data-k="status" data-v="all">Todos</button><button class="fb" data-f="sup" data-k="status" data-v="ativo">Ativos</button><button class="fb" data-f="sup" data-k="status" data-v="negociando">Negociando</button><button class="fb" data-f="sup" data-k="status" data-v="prospecto">Prospectos</button></div>
           <div class="filters"><span class="fl">Classe:</span><button class="fb active" data-f="sup" data-k="cls" data-v="all">Todas</button><button class="fb" data-f="sup" data-k="cls" data-v="gold">🥇 Gold</button><button class="fb" data-f="sup" data-k="cls" data-v="silver">🥈 Silver</button><button class="fb" data-f="sup" data-k="cls" data-v="bronze">🥉 Bronze</button></div>
           <div class="filters"><span class="fl">Aprovação:</span><button class="fb active" data-f="sup" data-k="aprov" data-v="all">Todos</button><button class="fb" data-f="sup" data-k="aprov" data-v="sim">Aprovados</button><button class="fb" data-f="sup" data-k="aprov" data-v="nao">Pendentes</button></div>
           <div id="supplier-list"></div>
@@ -670,24 +731,28 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
         <div class="cw" id="section-parceiros">
           <div class="section-header"><h2 class="section-title">Parceiros</h2><button class="btn-add" data-modal="parceiro">+ Novo parceiro</button></div>
           <div class="metrics" id="parceiro-metrics"></div>
-          <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="par" data-k="status" data-v="all">Todos</button><button class="fb" data-f="par" data-k="status" data-v="ativo">Ativos</button><button class="fb" data-f="par" data-k="status" data-v="prospecto">Prospectos</button><button class="fb" data-f="par" data-k="status" data-v="inativo">Inativos</button></div>
+          <div class="search-bar"><input class="search-input" id="parceiro-search" placeholder="Buscar por nome, nicho, cidade..."></div>
+                    <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="par" data-k="status" data-v="all">Todos</button><button class="fb" data-f="par" data-k="status" data-v="ativo">Ativos</button><button class="fb" data-f="par" data-k="status" data-v="prospecto">Prospectos</button><button class="fb" data-f="par" data-k="status" data-v="inativo">Inativos</button></div>
           <div id="parceiro-list"></div>
         </div>
 
         <!-- POSTAGENS -->
         <div class="cw" id="section-postagens">
-          <div class="section-header"><h2 class="section-title">Postagens</h2><button class="btn-add" data-modal="postagem">+ Nova postagem</button></div>
+          <div class="section-header"><h2 class="section-title">Postagens</h2><div class="header-actions"><div class="post-view-btns"><button class="post-view-btn active" id="post-view-list" data-view="list">&#9776; Lista</button><button class="post-view-btn" id="post-view-cal" data-view="cal">&#128197; Calendário</button></div><button class="btn-add" data-modal="postagem">+ Nova postagem</button></div></div>
           <div class="metrics" id="postagem-metrics"></div>
-          <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="post" data-k="status" data-v="all">Todas</button><button class="fb" data-f="post" data-k="status" data-v="planejado">Planejadas</button><button class="fb" data-f="post" data-k="status" data-v="confirmado">Confirmadas</button><button class="fb" data-f="post" data-k="status" data-v="postado">Postadas</button><button class="fb" data-f="post" data-k="status" data-v="cancelado">Canceladas</button></div>
+          <div class="search-bar"><input class="search-input" id="postagem-search" placeholder="Buscar por parceiro, tipo de conteúdo..."></div>
+                    <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="post" data-k="status" data-v="all">Todas</button><button class="fb" data-f="post" data-k="status" data-v="planejado">Planejadas</button><button class="fb" data-f="post" data-k="status" data-v="confirmado">Confirmadas</button><button class="fb" data-f="post" data-k="status" data-v="postado">Postadas</button><button class="fb" data-f="post" data-k="status" data-v="cancelado">Canceladas</button></div>
           <div class="filters"><span class="fl">Rede:</span><button class="fb active" data-f="post" data-k="rede" data-v="all">Todas</button><button class="fb" data-f="post" data-k="rede" data-v="instagram_reels">Reels</button><button class="fb" data-f="post" data-k="rede" data-v="instagram_feed">Feed</button><button class="fb" data-f="post" data-k="rede" data-v="instagram_stories">Stories</button><button class="fb" data-f="post" data-k="rede" data-v="tiktok">TikTok</button></div>
           <div id="postagem-list"><p class="loading">Carregando...</p></div>
+          <div id="postagem-cal" style="display:none"><div class="cal-nav"><button class="cal-nav-btn" id="cal-prev">&lsaquo; Anterior</button><span class="cal-month-lbl" id="cal-month-lbl"></span><button class="cal-nav-btn" id="cal-next">Próximo &rsaquo;</button></div><div class="cal-grid" id="cal-grid"></div></div>
         </div>
 
         <!-- MARKETING -->
         <div class="cw" id="section-marketing">
           <div class="section-header"><h2 class="section-title">Marketing</h2><button class="btn-add" data-modal="marketing">+ Nova ação</button></div>
           <div class="metrics" id="marketing-metrics"></div>
-          <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="mkt" data-k="status" data-v="all">Todas</button><button class="fb" data-f="mkt" data-k="status" data-v="planejada">Planejadas</button><button class="fb" data-f="mkt" data-k="status" data-v="ativa">Ativas</button><button class="fb" data-f="mkt" data-k="status" data-v="encerrada">Encerradas</button></div>
+          <div class="search-bar"><input class="search-input" id="mkt-search" placeholder="Buscar por título, plataforma..."></div>
+                    <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="mkt" data-k="status" data-v="all">Todas</button><button class="fb" data-f="mkt" data-k="status" data-v="planejada">Planejadas</button><button class="fb" data-f="mkt" data-k="status" data-v="ativa">Ativas</button><button class="fb" data-f="mkt" data-k="status" data-v="encerrada">Encerradas</button></div>
           <div class="filters"><span class="fl">Tipo:</span><button class="fb active" data-f="mkt" data-k="tipo" data-v="all">Todos</button><button class="fb" data-f="mkt" data-k="tipo" data-v="reels">Reels</button><button class="fb" data-f="mkt" data-k="tipo" data-v="campanha_paga">Campanha paga</button><button class="fb" data-f="mkt" data-k="tipo" data-v="post_organico">Post orgânico</button><button class="fb" data-f="mkt" data-k="tipo" data-v="ads">Ads</button></div>
           <div id="marketing-list"><p class="loading">Carregando...</p></div>
         </div>
@@ -697,7 +762,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
           <div class="section-header"><h2 class="section-title">Clientes</h2><button class="btn-add" data-modal="cliente">+ Novo cliente</button></div>
           <div class="metrics" id="cliente-metrics"></div>
           <div class="search-bar"><input class="search-input" id="cliente-search" placeholder="Buscar por nome, CPF, e-mail, cidade..."></div>
-          <div class="filters"><span class="fl">Tier:</span><button class="fb active" data-f="cli" data-k="tier" data-v="all">Todos</button><button class="fb" data-f="cli" data-k="tier" data-v="diamante">💎 Diamante</button><button class="fb" data-f="cli" data-k="tier" data-v="ouro">🥇 Ouro</button><button class="fb" data-f="cli" data-k="tier" data-v="prata">🥈 Prata</button><button class="fb" data-f="cli" data-k="tier" data-v="bronze">🥉 Bronze</button></div>
+          <div class="search-bar"><input class="search-input" id="cli-search" placeholder="Buscar por nome, CPF, e-mail, cidade..."></div>
+                    <div class="filters"><span class="fl">Tier:</span><button class="fb active" data-f="cli" data-k="tier" data-v="all">Todos</button><button class="fb" data-f="cli" data-k="tier" data-v="diamante">💎 Diamante</button><button class="fb" data-f="cli" data-k="tier" data-v="ouro">🥇 Ouro</button><button class="fb" data-f="cli" data-k="tier" data-v="prata">🥈 Prata</button><button class="fb" data-f="cli" data-k="tier" data-v="bronze">🥉 Bronze</button></div>
           <div class="filters"><span class="fl">VIP:</span><button class="fb active" data-f="cli" data-k="vip" data-v="all">Todos</button><button class="fb" data-f="cli" data-k="vip" data-v="sim">⭐ VIP</button><button class="fb" data-f="cli" data-k="vip" data-v="nao">Regulares</button></div>
           <div id="cliente-list"><p class="loading">Carregando...</p></div>
         </div>
@@ -706,7 +772,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
         <div class="cw" id="section-pessoas">
           <div class="section-header"><h2 class="section-title">Pessoas</h2><button class="btn-add" data-modal="pessoa">+ Nova pessoa</button></div>
           <div class="filters"><span class="fl">Tipo:</span><button class="fb active" data-f="pes" data-k="tipo" data-v="all">Todas</button><button class="fb" data-f="pes" data-k="tipo" data-v="socio">Sócios</button><button class="fb" data-f="pes" data-k="tipo" data-v="equipe">Equipe</button><button class="fb" data-f="pes" data-k="tipo" data-v="externo">Externos</button></div>
-          <div id="pessoa-list"></div>
+          <div class="search-bar"><input class="search-input" id="pessoa-search" placeholder="Buscar por nome, cargo..."></div>
+                    <div id="pessoa-list"></div>
         </div>
 
         <!-- ══ SIM: COMPARADOR DE FORNECEDORES ══ -->
@@ -812,8 +879,17 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
   <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="pr-cat"><option value="">—</option><option>Camiseta</option><option>Calça</option><option>Vestido</option><option>Bermuda</option><option>Moletom</option><option>Jaqueta</option><option>Acessório</option><option>Outro</option></select></div><div class="form-group"><label class="form-label">Cor</label><input class="form-input" id="pr-cor" placeholder="Ex: Preto, Branco..."></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Tamanho</label><input class="form-input" id="pr-tamanho" placeholder="P / M / G / GG / Único"></div><div class="form-group"><label class="form-label">Fornecedor</label><select class="form-select" id="pr-fornecedor"></select></div></div>
   <div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="pr-colecao"></select></div>
-  <p class="form-section">Precificação</p>
-  <div class="form-row3"><div class="form-group"><label class="form-label">Custo (R$)</label><input class="form-input" id="pr-custo" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Preço venda (R$)</label><input class="form-input" id="pr-venda" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Margem (%)</label><input class="form-input" id="pr-margem" readonly placeholder="auto"></div></div>
+  <p class="form-section">Ficha de Custo</p>
+  <div class="custo-add-row" id="custo-chips"><span class="custo-chip" data-comp="Matéria-prima">+ Matéria-prima</span><span class="custo-chip" data-comp="Estampa/Bordado">+ Estampa</span><span class="custo-chip" data-comp="Embalagem">+ Embalagem</span><span class="custo-chip" data-comp="Aviamento">+ Aviamento</span><span class="custo-chip" data-comp="Confecção">+ Confecção</span><span class="custo-chip" data-comp="Etiqueta/Hangtag">+ Etiqueta</span><span class="custo-chip" data-comp="Envio ao cliente">+ Envio</span><span class="custo-chip" data-comp="Outro">+ Outro</span></div>
+  <table class="custo-table" id="custo-sku-table"><thead><tr><th>Componente</th><th>Descrição</th><th style="text-align:right">Qtd</th><th style="text-align:right">Valor unit.</th><th style="text-align:right">Subtotal</th><th></th></tr></thead><tbody id="custo-sku-body"></tbody><tfoot><tr><td colspan="4" style="text-align:right;font-size:10px;font-weight:700;color:var(--muted);padding:6px 4px">CUSTO TOTAL</td><td class="custo-row-total" id="custo-total-display">R$ 0,00</td><td></td></tr></tfoot></table>
+  <div class="custo-resultado">
+    <div class="custo-margem-wrap"><span class="custo-margem-lbl">Margem desejada</span><input type="range" class="custo-margem-slider" id="pr-margem-slider" min="10" max="90" value="60"><span class="custo-margem-pct" id="pr-margem-pct">60%</span></div>
+    <div class="custo-res-row"><span class="custo-res-lbl">Custo total do SKU</span><span class="custo-res-val" id="custo-res-custo">R$ 0,00</span></div>
+    <div class="custo-res-row"><span class="custo-res-lbl">&#8594; Preço de venda sugerido</span><span class="custo-res-val neon" id="custo-res-venda">R$ 0,00</span></div>
+    <div class="custo-res-row"><span class="custo-res-lbl">Lucro por peça</span><span class="custo-res-val green" id="custo-res-lucro">R$ 0,00</span></div>
+  </div>
+  <div class="form-row3" style="margin-top:12px"><div class="form-group"><label class="form-label">Custo total (R$)</label><input class="form-input" id="pr-custo" type="number" step="0.01" placeholder="calculado auto" readonly></div><div class="form-group"><label class="form-label">Preço de venda (R$)</label><input class="form-input" id="pr-venda" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Margem real (%)</label><input class="form-input" id="pr-margem" readonly placeholder="auto"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Tamanho do lote</label><input class="form-input" id="pr-lote" type="number" min="1" placeholder="1" value="1"></div><div class="form-group"><label class="form-label">Ponto de equilíbrio (qtd mín.)</label><input class="form-input" id="pr-breakeven" readonly placeholder="auto"></div></div>
   <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="pr-obs"></textarea></div>
   <div class="modal-footer"><button class="btn-save" id="save-produto">Salvar Produto</button><button class="btn-delete-modal" id="delete-produto" style="display:none">Excluir</button><button class="btn-close-modal" data-close="produto">Fechar</button></div>
 </div></div>
@@ -826,6 +902,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
   <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="e-cat"><option>Tecido</option><option>Aviamento</option><option>Produto acabado</option><option>Embalagem</option><option>Outro</option></select></div><div class="form-group"><label class="form-label">SKU</label><input class="form-input" id="e-sku" placeholder="TEC-001"></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Quantidade *</label><input class="form-input" id="e-qtd" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Unidade</label><select class="form-select" id="e-un"><option value="un">un</option><option value="m">m</option><option value="m²">m²</option><option value="kg">kg</option><option value="pç">pç</option><option value="cx">cx</option></select></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Qtd mínima</label><input class="form-input" id="e-qtdmin" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Localização</label><input class="form-input" id="e-local" placeholder="Prateleira A3"></div></div>
+  <div class="form-group"><label class="form-label">Produto vinculado (SKU)</label><select class="form-select" id="e-produto-id"><option value="">— Nenhum —</option></select><p style="font-size:9px;color:var(--muted);margin-top:4px">Vincule a um SKU para rastrear o consumo de estoque por produto.</p></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Preço custo</label><input class="form-input" id="e-custo" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Preço venda</label><input class="form-input" id="e-venda" type="number" step="0.01" placeholder="0,00"></div></div>
   <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="e-obs"></textarea></div>
   <div class="modal-footer"><button class="btn-save" id="save-estoque">Salvar Item</button><button class="btn-delete-modal" id="delete-estoque" style="display:none">Excluir</button><button class="btn-close-modal" data-close="estoque">Fechar</button></div>
@@ -877,6 +954,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
   <div class="form-row"><div class="form-group"><label class="form-label">Transportadora</label><input class="form-input" id="ped-transp" placeholder="Correios, Jadlog..."></div><div class="form-group"><label class="form-label">Código de rastreio</label><input class="form-input" id="ped-rastreio" placeholder="BR123456789BR"></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="ped-colecao"></select></div><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="ped-resp"></select></div></div>
   <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="ped-obs"></textarea></div>
+  <div class="form-group"><label class="form-label">Cliente no CRM</label><select class="form-select" id="ped-cliente-id"><option value="">— Criar/atualizar automaticamente pelo e-mail —</option></select><p style="font-size:9px;color:var(--muted);margin-top:4px">Se o e-mail já existir no CRM, o registro será atualizado ao salvar.</p></div>
   <div class="modal-footer"><button class="btn-save" id="save-pedido">Salvar Pedido</button><button class="btn-delete-modal" id="delete-pedido" style="display:none">Excluir</button><button class="btn-close-modal" data-close="pedido">Fechar</button></div>
 </div></div>
 
@@ -1132,6 +1210,7 @@ function loadTasks(){
 function renderTasks(){
   var f=F.task;
   var list=D.tasks.filter(function(t){
+  var q=($('task-search')||{value:''}).value.toLowerCase();if(q)list=list.filter(function(t){return (t.titulo&&String(t.titulo).toLowerCase().includes(q))||(t.categoria&&String(t.categoria).toLowerCase().includes(q))||(t.responsavel&&t.responsavel.nome&&t.responsavel.nome.toLowerCase().includes(q));});
     return(f.status==='all'||t.status===f.status)&&(f.prio==='all'||t.prioridade===f.prio)&&(f.resp==='all'||t.responsavel_pessoa_id===f.resp);
   });
   var doing=D.tasks.filter(function(t){return t.status==='doing';}).length;
@@ -1196,6 +1275,7 @@ function loadSuppliers(){
 function renderSuppliers(){
   var f=F.sup;
   var list=D.suppliers.filter(function(s){return(f.status==='all'||s.status===f.status)&&(f.cls==='all'||s.classificacao===f.cls)&&(f.aprov==='all'||(f.aprov==='sim'&&s.aprovado)||(f.aprov==='nao'&&!s.aprovado));});
+  var q=($('supplier-search')||{value:''}).value.toLowerCase();if(q)list=list.filter(function(s){return (s.nome&&String(s.nome).toLowerCase().includes(q))||(s.categoria&&String(s.categoria).toLowerCase().includes(q))||(s.cidade&&String(s.cidade).toLowerCase().includes(q));});
   var top5=D.suppliers.slice(0,5);
   var bycat={};D.suppliers.forEach(function(s){bycat[s.categoria]=(bycat[s.categoria]||0)+1;});
   var catKeys=Object.keys(bycat).sort(function(a,b){return bycat[b]-bycat[a];}).slice(0,5);
@@ -1390,6 +1470,7 @@ function loadCosts(){
 function renderCosts(){
   var f=F.fin;
   var list=D.costs.filter(function(c){
+  var q=($('cost-search')||{value:''}).value.toLowerCase();if(q)list=list.filter(function(c){return (c.descricao&&String(c.descricao).toLowerCase().includes(q))||(c.categoria&&String(c.categoria).toLowerCase().includes(q))||(c.categoria_comp&&String(c.categoria_comp).toLowerCase().includes(q));});
     return(f.tipo==='all'||c.tipo===f.tipo)&&(f.pagto==='all'||c.status_pagto===f.pagto)&&(f.rec==='all'||(f.rec==='sim'&&c.recorrente)||(f.rec==='nao'&&!c.recorrente));
   });
   var tot=D.costs.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
@@ -1446,6 +1527,233 @@ function saveCost(){
 }
 
 // ── PRODUTOS ───────────────────────────────────────────────
+
+// ── CALCULADORA CUSTO SKU (Item 1) ─────────────────────────────────────────
+var custoSkuItems=[];var custoSkuNextId=1;
+function custoSkuInit(){
+  var chips=document.getElementById('custo-chips');
+  if(!chips)return;
+  chips.querySelectorAll('.custo-chip').forEach(function(chip){
+    chip.addEventListener('click',function(){custoSkuAddRow(chip.dataset.comp);});
+  });
+  var slider=document.getElementById('pr-margem-slider');
+  if(slider)slider.addEventListener('input',function(){
+    document.getElementById('pr-margem-pct').textContent=slider.value+'%';
+    custoSkuRecalc();
+  });
+  var vendaInp=document.getElementById('pr-venda');
+  if(vendaInp)vendaInp.addEventListener('input',custoSkuRecalc);
+  var loteInp=document.getElementById('pr-lote');
+  if(loteInp)loteInp.addEventListener('input',custoSkuRecalc);
+  custoSkuRenderTable();
+}
+function custoSkuAddRow(comp){
+  custoSkuItems.push({id:custoSkuNextId++,componente:comp||'Outro',descricao:'',valor:0,quantidade:1});
+  custoSkuRenderTable();
+}
+function custoSkuRemRow(id){
+  custoSkuItems=custoSkuItems.filter(function(i){return i.id!==id;});
+  custoSkuRenderTable();
+}
+function custoSkuRenderTable(){
+  var tbody=document.getElementById('custo-sku-body');if(!tbody)return;
+  tbody.innerHTML=custoSkuItems.map(function(item){
+    var sub=((item.valor||0)*(item.quantidade||1)).toFixed(2).replace('.',',');
+    return '<tr>'+
+      '<td><input class="custo-inp" value="'+cEsc(item.componente)+'" data-cid="'+item.id+'" data-field="componente" placeholder="Componente"></td>'+
+      '<td><input class="custo-inp" value="'+cEsc(item.descricao)+'" data-cid="'+item.id+'" data-field="descricao" placeholder="Descricao"></td>'+
+      '<td><input class="custo-inp num" value="'+item.quantidade+'" data-cid="'+item.id+'" data-field="quantidade" type="number" step="0.001" min="0"></td>'+
+      '<td><input class="custo-inp val" value="'+item.valor+'" data-cid="'+item.id+'" data-field="valor" type="number" step="0.01" min="0"></td>'+
+      '<td class="custo-row-total">R$ '+sub+'</td>'+
+      '<td><button class="custo-rm" data-rm-cid="'+item.id+'">&times;</button></td>'+
+      '</tr>';
+  }).join('');
+  tbody.querySelectorAll('.custo-inp').forEach(function(inp){
+    inp.addEventListener('input',function(){
+      var cid=parseInt(inp.dataset.cid),field=inp.dataset.field;
+      var item=custoSkuItems.find(function(i){return i.id===cid;});
+      if(!item)return;
+      item[field]=(field==='valor'||field==='quantidade')?parseFloat(inp.value)||0:inp.value;
+      var sub=(item.valor||0)*(item.quantidade||1);
+      var row=inp.closest('tr');
+      if(row){var tc=row.querySelector('.custo-row-total');if(tc)tc.textContent='R$ '+sub.toFixed(2).replace('.',',');}
+      custoSkuRecalc();
+    });
+  });
+  tbody.querySelectorAll('[data-rm-cid]').forEach(function(btn){
+    btn.addEventListener('click',function(){custoSkuRemRow(parseInt(btn.dataset.rmCid));});
+  });
+  custoSkuRecalc();
+}
+function custoSkuRecalc(){
+  var total=custoSkuItems.reduce(function(a,i){return a+(i.valor||0)*(i.quantidade||1);},0);
+  var slider=document.getElementById('pr-margem-slider');
+  var margem=slider?parseInt(slider.value):60;
+  var venda=margem<100?total/(1-margem/100):total*2;
+  var lucro=venda-total;
+  var lote=parseInt((document.getElementById('pr-lote')||{value:1}).value)||1;
+  var be=venda>total?Math.ceil((total*lote)/(venda-total)):0;
+  var fmt=function(n){return 'R$ '+n.toFixed(2).replace('.',',');};
+  var ids={
+    'custo-total-display':fmt(total),'custo-res-custo':fmt(total),
+    'custo-res-venda':fmt(venda),'custo-res-lucro':fmt(lucro)
+  };
+  Object.keys(ids).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ids[id];});
+  var elCusto=document.getElementById('pr-custo');if(elCusto)elCusto.value=total.toFixed(2);
+  var elVenda=document.getElementById('pr-venda');
+  if(elVenda&&parseFloat(elVenda.value)===0&&total>0)elVenda.value=venda.toFixed(2);
+  var actualV=parseFloat((document.getElementById('pr-venda')||{value:0}).value)||0;
+  var realM=actualV>0&&total>0?Math.round((actualV-total)/actualV*100):0;
+  var elM=document.getElementById('pr-margem');if(elM)elM.value=realM+'%';
+  var elBE=document.getElementById('pr-breakeven');if(elBE)elBE.value=lote>0&&be>0?be+' un':'';
+  var elLucro=document.getElementById('custo-res-lucro');if(elLucro)elLucro.style.color=lucro>=0?'var(--green)':'var(--red)';
+}
+function custoSkuReset(){
+  custoSkuItems=[];custoSkuNextId=1;
+  custoSkuRenderTable();
+  var slider=document.getElementById('pr-margem-slider');if(slider)slider.value=60;
+  var pct=document.getElementById('pr-margem-pct');if(pct)pct.textContent='60%';
+}
+function custoSkuLoadForProduct(produtoId){
+  custoSkuReset();if(!produtoId)return;
+  db.from('custo_sku').select('*').eq('produto_id',produtoId).order('created_at').then(function(r){
+    if(r.error||!r.data||!r.data.length)return;
+    r.data.forEach(function(row){
+      custoSkuItems.push({id:custoSkuNextId++,componente:row.componente,descricao:row.descricao||'',valor:parseFloat(row.valor)||0,quantidade:parseFloat(row.quantidade)||1});
+    });
+    custoSkuRenderTable();
+  });
+}
+function custoSkuSaveForProduct(produtoId){
+  if(!produtoId)return Promise.resolve();
+  return db.from('custo_sku').delete().eq('produto_id',produtoId).then(function(){
+    if(!custoSkuItems.length)return Promise.resolve();
+    return db.from('custo_sku').insert(custoSkuItems.map(function(i){
+      return {produto_id:produtoId,componente:i.componente,descricao:i.descricao||null,valor:parseFloat(i.valor)||0,quantidade:parseFloat(i.quantidade)||1};
+    }));
+  });
+}
+function cEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+
+// ── ITEM 3: CRM auto-update from pedido ────────────────────────────────────
+function pedidoUpsertCliente(pedido){
+  if(!pedido.cliente_email&&!pedido.cliente_cpf)return Promise.resolve(null);
+  var searchCol=pedido.cliente_cpf?'cpf':'email';
+  var searchVal=pedido.cliente_cpf||pedido.cliente_email;
+  return db.from('clientes').select('id,total_pedidos,valor_total_gasto,primeira_compra')
+    .eq(searchCol,searchVal).limit(1)
+    .then(function(r){
+      var existing=r.data&&r.data[0];
+      var hoje=new Date().toISOString().split('T')[0];
+      var gasto=parseFloat(pedido.valor_total||0);
+      if(existing){
+        var totalPed=(existing.total_pedidos||0)+1;
+        var totalGasto=(parseFloat(existing.valor_total_gasto)||0)+gasto;
+        var tier=totalGasto>=2000?'diamante':totalGasto>=800?'ouro':totalGasto>=300?'prata':'bronze';
+        var vip=totalGasto>=500||totalPed>=3;
+        return db.from('clientes').update({
+          nome:pedido.cliente_nome||existing.nome,
+          telefone:pedido.cliente_fone||null,
+          total_pedidos:totalPed,
+          valor_total_gasto:totalGasto,
+          pontos:Math.floor(totalGasto),
+          tier:tier,vip:vip,
+          ultima_compra:hoje,
+          updated_at:new Date().toISOString()
+        }).eq('id',existing.id).then(function(){return existing.id;});
+      } else {
+        var tier2=gasto>=2000?'diamante':gasto>=800?'ouro':gasto>=300?'prata':'bronze';
+        return db.from('clientes').insert({
+          nome:pedido.cliente_nome||'Cliente',
+          cpf:pedido.cliente_cpf||null,
+          email:pedido.cliente_email||null,
+          telefone:pedido.cliente_fone||null,
+          total_pedidos:1,
+          valor_total_gasto:gasto,
+          pontos:Math.floor(gasto),
+          tier:tier2,vip:gasto>=500,
+          primeira_compra:hoje,ultima_compra:hoje,
+          updated_at:new Date().toISOString()
+        }).then(function(res){return res.data&&res.data[0]&&res.data[0].id;});
+      }
+    });
+}
+
+// ── ITEM 4: populate e-produto-id select ───────────────────────────────────
+function populateProdutoSelectEstoque(){
+  var el=document.getElementById('e-produto-id');if(!el)return;
+  el.innerHTML='<option value="">— Nenhum —</option>'+
+    D.produtos.map(function(p){return '<option value="'+p.id+'">'+p.sku+' — '+p.nome+'</option>';}).join('');
+}
+
+// ── ITEM 5: CALENDARIO POSTAGENS ────────────────────────────────────────────
+var calCurrentDate=new Date();
+var postagemView='list';
+
+function setPostagemView(view){
+  postagemView=view;
+  var listEl=document.getElementById('postagem-list');
+  var calEl=document.getElementById('postagem-cal');
+  var btnList=document.getElementById('post-view-list');
+  var btnCal=document.getElementById('post-view-cal');
+  if(view==='cal'){
+    if(listEl)listEl.style.display='none';
+    if(calEl)calEl.style.display='block';
+    if(btnList)btnList.classList.remove('active');
+    if(btnCal)btnCal.classList.add('active');
+    renderCalendario();
+  } else {
+    if(listEl)listEl.style.display='block';
+    if(calEl)calEl.style.display='none';
+    if(btnList)btnList.classList.add('active');
+    if(btnCal)btnCal.classList.remove('active');
+    renderPostagens();
+  }
+}
+
+function renderCalendario(){
+  var el=document.getElementById('cal-grid');
+  var lbl=document.getElementById('cal-month-lbl');
+  if(!el)return;
+  var y=calCurrentDate.getFullYear();
+  var m=calCurrentDate.getMonth();
+  if(lbl)lbl.textContent=new Date(y,m,1).toLocaleString('pt-BR',{month:'long',year:'numeric'}).replace(/^\w/,function(c){return c.toUpperCase();});
+  var dows=['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];
+  var html=dows.map(function(d){return '<div class="cal-dow">'+d+'</div>';}).join('');
+  var firstDay=new Date(y,m,1).getDay();
+  var daysInMonth=new Date(y,m+1,0).getDate();
+  var today=new Date().toDateString();
+  var monthStr=y+'-'+(String(m+1).padStart(2,'0'));
+  // Pad start
+  for(var i=0;i<firstDay;i++){
+    var prevD=new Date(y,m,0-firstDay+i+1);
+    html+='<div class="cal-day other-month"><div class="cal-day-num">'+prevD.getDate()+'</div></div>';
+  }
+  for(var d=1;d<=daysInMonth;d++){
+    var dateStr=monthStr+'-'+String(d).padStart(2,'0');
+    var dayDate=new Date(y,m,d);
+    var isToday=dayDate.toDateString()===today;
+    var posts=D.postagens.filter(function(p){return (p.data_prevista||p.data_real||'').startsWith(dateStr);});
+    var redeCls={instagram_feed:'ig',instagram_reels:'ig',instagram_stories:'ig',tiktok:'tt',threads:'th',youtube:'yt'};
+    var pillsHtml=posts.slice(0,3).map(function(p){
+      var rc=redeCls[p.rede]||'';
+      var nm=(p.parceiro?p.parceiro.nome:(p.tipo_conteudo||'Post'));
+      return '<div class="cal-post-pill '+p.status+' '+rc+'" title="'+nm+'">'+nm+'</div>';
+    }).join('');
+    if(posts.length>3)pillsHtml+='<div class="cal-more">+'+( posts.length-3)+' mais</div>';
+    html+='<div class="cal-day'+(isToday?' today':'')+'" data-date="'+dateStr+'">'+
+      '<div class="cal-day-num">'+d+'</div>'+pillsHtml+'</div>';
+  }
+  // Pad end
+  var total=firstDay+daysInMonth;
+  var remaining=(7-total%7)%7;
+  for(var e=1;e<=remaining;e++){
+    html+='<div class="cal-day other-month"><div class="cal-day-num">'+e+'</div></div>';
+  }
+  el.innerHTML=html;
+}
+
+
 function loadProdutos(){
   return db.from('produtos').select('*,fornecedor:fornecedores(nome),colecao:colecoes(nome)').eq('ativo',true).order('created_at',{ascending:false}).then(function(r){
     D.produtos=r.data||[];
@@ -1466,16 +1774,16 @@ function openProdutoEdit(id){
   $('prod-modal-title').textContent='Editar Produto';$('pr-id').value=p.id;$('pr-sku').value=p.sku;$('pr-nome').value=p.nome;$('pr-cat').value=p.categoria||'';$('pr-cor').value=p.cor||'';$('pr-tamanho').value=p.tamanho||'';$('pr-custo').value=p.custo||'';$('pr-venda').value=p.preco_venda||'';$('pr-obs').value=p.observacoes||'';
   if(p.fornecedor_id)$('pr-fornecedor').value=p.fornecedor_id;
   if(p.colecao_id)$('pr-colecao').value=p.colecao_id;
-  updateMargem();var dBtn=$('delete-produto');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('produto');
+  updateMargem();var dBtn=$('delete-produto');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}custoSkuLoadForProduct(p.id);openModal('produto');
 }
-function updateMargem(){var c=num('pr-custo'),v=num('pr-venda');$('pr-margem').value=v>0&&c>0?Math.round(((v-c)/v)*100)+'%':'—';}
+function updateMargem(){var c=num('pr-custo'),v=num('pr-venda');$('pr-margem').value=v>0&&c>0?Math.round(((v-c)/v)*100)+'%':'—';custoSkuRecalc();}
 function nextSKU(){if(!D.produtos.length)return 'SLB0001';var nums=D.produtos.map(function(p){return parseInt((p.sku||'SLB0000').replace('SLB',''))||0;});return 'SLB'+String(Math.max.apply(null,nums)+1).padStart(4,'0');}
 function saveProduto(){
   var nome=val('pr-nome').trim();if(!nome){toast('Informe o nome');return;}
   var id=val('pr-id');var sku=id?val('pr-sku'):nextSKU();
   var payload={sku:sku,nome:nome,categoria:val('pr-cat')||null,cor:val('pr-cor')||null,tamanho:val('pr-tamanho')||null,custo:num('pr-custo')||null,preco_venda:num('pr-venda')||null,fornecedor_id:val('pr-fornecedor')||null,colecao_id:val('pr-colecao')||null,observacoes:val('pr-obs')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('produtos').update(payload).eq('id',id):db.from('produtos').insert(payload);
-  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveProduto]',res.error.message);return;}closeModal('produto');resetForm('produto');toast(id?'Atualizado!':'Criado!');loadProdutos();});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveProduto]',res.error.message);return;}var savedId=id||(res.data&&res.data[0]&&res.data[0].id);custoSkuSaveForProduct(savedId).then(function(){closeModal('produto');resetForm('produto');toast(id?'Atualizado!':'Criado!');loadProdutos();});});
 }
 
 // ── ESTOQUE ────────────────────────────────────────────────
@@ -1494,12 +1802,12 @@ function renderEstoque(){
 }
 function openEstoqueEdit(id){
   var e=D.estoques.find(function(x){return x.id===id;});if(!e)return;
-  $('est-modal-title').textContent='Editar Item';$('e-id').value=e.id;$('e-nome').value=e.nome;$('e-cat').value=e.categoria||'';$('e-sku').value=e.sku||'';$('e-qtd').value=e.quantidade||0;$('e-un').value=e.unidade||'un';$('e-qtdmin').value=e.quantidade_minima||0;$('e-local').value=e.localizacao||'';$('e-custo').value=e.preco_custo||'';$('e-venda').value=e.preco_venda||'';$('e-obs').value=e.observacoes||'';var dBtn=$('delete-estoque');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('estoque');
+  $('est-modal-title').textContent='Editar Item';$('e-id').value=e.id;$('e-nome').value=e.nome;$('e-cat').value=e.categoria||'';$('e-sku').value=e.sku||'';$('e-qtd').value=e.quantidade||0;$('e-un').value=e.unidade||'un';$('e-qtdmin').value=e.quantidade_minima||0;$('e-local').value=e.localizacao||'';$('e-custo').value=e.preco_custo||'';$('e-venda').value=e.preco_venda||'';$('e-obs').value=e.observacoes||'';var dBtn=$('delete-estoque');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}var epe=document.getElementById('e-produto-id');if(epe&&e.produto_id)epe.value=e.produto_id;var dBtn=$('delete-estoque');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=e.id;}openModal('estoque');
 }
 function saveEstoque(){
   var nome=val('e-nome').trim();if(!nome){toast('Informe o nome');return;}
   var id=val('e-id');
-  var payload={nome:nome,categoria:val('e-cat'),sku:val('e-sku')||null,quantidade:iNum('e-qtd'),unidade:val('e-un'),quantidade_minima:iNum('e-qtdmin'),localizacao:val('e-local')||null,preco_custo:num('e-custo')||null,preco_venda:num('e-venda')||null,observacoes:val('e-obs')||null,updated_at:new Date().toISOString()};
+  var payload={nome:nome,categoria:val('e-cat'),sku:val('e-sku')||null,quantidade:iNum('e-qtd'),unidade:val('e-un'),quantidade_minima:iNum('e-qtdmin'),localizacao:val('e-local')||null,preco_custo:num('e-custo')||null,preco_venda:num('e-venda')||null,produto_id:val('e-produto-id')||null,observacoes:val('e-obs')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('estoque').update(payload).eq('id',id):db.from('estoque').insert(payload);
   q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveEstoque]',res.error.message);return;}closeModal('estoque');resetForm('estoque');toast(id?'Atualizado!':'Adicionado!');loadEstoque();});
 }
@@ -1734,6 +2042,7 @@ function loadMarketing() {
 function renderMarketing(){
   var f=F.mkt;
   var list=D.marketing.filter(function(m){return(f.status==='all'||m.status===f.status)&&(f.tipo==='all'||m.tipo===f.tipo);});
+  var q=($('mkt-search')||{value:''}).value.toLowerCase();if(q)list=list.filter(function(m){return (m.titulo&&String(m.titulo).toLowerCase().includes(q))||(m.plataforma&&String(m.plataforma).toLowerCase().includes(q))||(m.tipo&&String(m.tipo).toLowerCase().includes(q));});
   var totInvest=D.marketing.reduce(function(a,m){return a+parseFloat(m.investimento||0);},0);
   var totRec=D.marketing.reduce(function(a,m){return a+parseFloat(m.receita_gerada||0);},0);
   var roi=totInvest>0?((totRec-totInvest)/totInvest*100).toFixed(0):0;
@@ -2152,7 +2461,8 @@ function resetForm(type){
   modal.querySelectorAll('input[type=checkbox]').forEach(function(el){el.checked=false;});
   modal.querySelectorAll('[type=hidden]').forEach(function(el){el.value='';});
   if(type==='supplier'){$('frete-info-group').style.display='none';$('pedmin-group').style.display='none';}
-  if(type==='cost'){$('recorrencia-group').style.display='none';$('parcela-group').style.display='none';} var dBtnReset=document.getElementById('delete-'+type);if(dBtnReset){dBtnReset.style.display='none';delete dBtnReset.dataset.deleteId;}
+  if(type==='cost'){$('recorrencia-group').style.display='none';$('parcela-group').style.display='none';}
+  if(type==='produto'){custoSkuReset();} var dBtnReset=document.getElementById('delete-'+type);if(dBtnReset){dBtnReset.style.display='none';delete dBtnReset.dataset.deleteId;}
   // reset title
   var titles={task:'Nova Tarefa',supplier:'Novo Fornecedor',cost:'Novo Lançamento',produto:'Novo Produto',estoque:'Novo Item de Estoque',colecao:'Nova Coleção',producao:'Nova Produção',pedido:'Novo Pedido',parceiro:'Novo Parceiro'};
   var tEl=$(type.replace('supplier','sup').replace('produto','prod').replace('estoque','est').replace('colecao','col').replace('producao','prd').replace('pedido','ped').replace('parceiro','pa')+'-modal-title')||$('task-modal-title');
@@ -2286,7 +2596,26 @@ document.addEventListener('DOMContentLoaded',function(){
   // Search
   $('produto-search').addEventListener('input',renderProdutos);
   $('pedido-search').addEventListener('input',renderPedidos);
+  $('task-search')&&$('task-search').addEventListener('input',renderTasks);
+  $('cost-search')&&$('cost-search').addEventListener('input',renderCosts);
+  $('estoque-search')&&$('estoque-search').addEventListener('input',renderEstoque);
+  $('colecao-search')&&$('colecao-search').addEventListener('input',renderColecoes);
+  $('producao-search')&&$('producao-search').addEventListener('input',renderProducoes);
+  $('supplier-search')&&$('supplier-search').addEventListener('input',renderSuppliers);
+  $('parceiro-search')&&$('parceiro-search').addEventListener('input',renderParceiros);
+  $('postagem-search')&&$('postagem-search').addEventListener('input',renderPostagens);
+  $('mkt-search')&&$('mkt-search').addEventListener('input',renderMarketing);
+  $('pessoa-search')&&$('pessoa-search').addEventListener('input',renderPessoas);
   $('cliente-search').addEventListener('input',renderClientes);
+  // Calendar nav
+  var calPrev=document.getElementById('cal-prev');
+  var calNext=document.getElementById('cal-next');
+  if(calPrev)calPrev.addEventListener('click',function(){calCurrentDate.setMonth(calCurrentDate.getMonth()-1);renderCalendario();});
+  if(calNext)calNext.addEventListener('click',function(){calCurrentDate.setMonth(calCurrentDate.getMonth()+1);renderCalendario();});
+  // View toggle
+  document.querySelectorAll('.post-view-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){setPostagemView(btn.dataset.view);});
+  });
 
 
   // Delete buttons in modals
