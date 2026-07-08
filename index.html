@@ -436,6 +436,44 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 .post-view-btn.active{background:var(--neon);border-color:var(--neon);color:#000}
 /* ══ ESTOQUE SKU BADGE ═══════════════════════════════════════ */
 .est-sku-link{font-size:9px;padding:1px 7px;border-radius:10px;background:var(--neon-bg);color:var(--neon);border:1px solid var(--neon-bd);font-weight:700;white-space:nowrap}
+
+/* ══ EXPORT / METAS / VARIANTES ═════════════════════════════ */
+.export-btn{padding:6px 12px;background:var(--card);border:1px solid var(--border);border-radius:5px;font:700 9px 'Montserrat',sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:var(--muted);transition:all .2s;white-space:nowrap}
+.export-btn:hover{border-color:var(--green);color:var(--green)}
+.meta-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px}
+.meta-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.meta-title{font-size:13px;font-weight:700;flex:1}
+.meta-progress-wrap{display:flex;align-items:center;gap:10px}
+.meta-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.meta-fill{height:100%;border-radius:4px;transition:width .5s;background:var(--neon)}
+.meta-fill.done{background:var(--green)}
+.meta-fill.warn{background:var(--amber)}
+.meta-pct{font-size:12px;font-weight:800;min-width:40px;text-align:right}
+.meta-vals{font-size:10px;color:var(--muted);margin-top:4px}
+.meta-edit-val{width:120px;padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:4px;font:12px 'Montserrat',sans-serif;color:var(--fg);outline:none}
+.meta-edit-val:focus{border-color:var(--neon)}
+.meta-update-btn{padding:4px 10px;background:var(--neon);color:#000;border:none;border-radius:4px;font:700 9px 'Montserrat',sans-serif;letter-spacing:1px;cursor:pointer}
+.foto-badge{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;border:1px solid;white-space:nowrap}
+.foto-badge.sem_amostra{background:var(--card);color:var(--muted);border-color:var(--border)}
+.foto-badge.amostra_enviada{background:rgba(68,170,255,.1);color:var(--blue);border-color:rgba(68,170,255,.25)}
+.foto-badge.em_fotografia{background:rgba(170,136,255,.12);color:var(--purple);border-color:rgba(170,136,255,.3)}
+.foto-badge.foto_aprovada{background:rgba(68,255,136,.1);color:var(--green);border-color:rgba(68,255,136,.25)}
+.foto-badge.foto_reprovada{background:rgba(255,68,68,.1);color:var(--red);border-color:rgba(255,68,68,.25)}
+.variante-group{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px}
+.variante-pai{background:var(--card);border-bottom:1px solid var(--border);padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.variante-pai:hover{background:var(--bg)}
+.variante-toggle{font-size:11px;color:var(--muted);transition:transform .2s}
+.variante-toggle.open{transform:rotate(90deg)}
+.variante-filhos{padding:6px 0 4px 24px}
+.variante-filho{display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:11px;border-bottom:1px solid rgba(128,128,128,.06)}
+.variante-filho:last-child{border:none}
+.variante-atrib{font-size:9px;padding:1px 7px;border-radius:10px;background:var(--bg);border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.audit-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(128,128,128,.07);font-size:11px}
+.audit-row:last-child{border:none}
+.audit-time{font-size:9px;color:var(--muted);white-space:nowrap;min-width:120px}
+.audit-user{font-weight:700;color:var(--neon);white-space:nowrap;min-width:60px}
+.audit-mod{font-size:9px;padding:1px 7px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.audit-desc{flex:1;color:var(--muted2)}
 </style>
 </head>
 <body>
@@ -537,6 +575,14 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
           <span class="nav-label">Clientes</span>
         </div>
                 <div class="nav-section">Admin</div>
+        <div class="nav-item" data-sec="metas">
+          <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          <span class="nav-label">Metas &amp; OKRs</span>
+        </div>
+        <div class="nav-item" data-sec="log">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span class="nav-label">Log de Acessos</span>
+        </div>
         <div class="nav-item" data-sec="pessoas">
           <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
           <span class="nav-label">Pessoas</span>
@@ -631,7 +677,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 
         <!-- FINANÇAS -->
         <div class="cw" id="section-financas">
-          <div class="section-header"><h2 class="section-title">Finanças</h2><button class="btn-add" data-modal="cost">+ Novo lançamento</button></div>
+          <div class="section-header"><h2 class="section-title">Finanças</h2><div class="header-actions"><button class="export-btn" onclick="exportFinancas()">&#8595; CSV</button><button class="btn-add" data-modal="cost">+ Novo lançamento</button></div></div>
 
           <!-- DASHBOARD EXECUTIVO FINANCEIRO -->
           <div class="fin-dash">
@@ -664,7 +710,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 
         <!-- PRODUTOS -->
         <div class="cw" id="section-produtos">
-          <div class="section-header"><h2 class="section-title">Produtos</h2><button class="btn-add" data-modal="produto">+ Novo produto</button></div>
+          <div class="section-header"><h2 class="section-title">Produtos</h2><div class="header-actions"><button class="export-btn" onclick="exportProdutos()">&#8595; CSV</button><button class="btn-add" data-modal="produto">+ Novo produto</button></div></div>
           <div class="metrics" id="produto-metrics"></div>
           <div class="search-bar"><input class="search-input" id="produto-search" placeholder="Buscar por nome, SKU, categoria, cor..."></div>
           <div class="filters"><span class="fl">Categoria:</span><button class="fb active" data-f="prod" data-k="cat" data-v="all">Todas</button><button class="fb" data-f="prod" data-k="cat" data-v="Camiseta">Camisetas</button><button class="fb" data-f="prod" data-k="cat" data-v="Calça">Calças</button><button class="fb" data-f="prod" data-k="cat" data-v="Vestido">Vestidos</button><button class="fb" data-f="prod" data-k="cat" data-v="Acessório">Acessórios</button></div>
@@ -673,7 +719,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 
         <!-- ESTOQUE -->
         <div class="cw" id="section-estoque">
-          <div class="section-header"><h2 class="section-title">Estoque</h2><button class="btn-add" data-modal="estoque">+ Novo item</button></div>
+          <div class="section-header"><h2 class="section-title">Estoque</h2><div class="header-actions"><button class="export-btn" onclick="exportEstoque()">&#8595; CSV</button><button class="btn-add" data-modal="estoque">+ Novo item</button></div></div>
           <div class="metrics" id="estoque-metrics"></div>
           <div class="search-bar"><input class="search-input" id="estoque-search" placeholder="Buscar por nome, SKU, categoria..."></div>
                     <div class="filters"><span class="fl">Categoria:</span><button class="fb active" data-f="est" data-k="cat" data-v="all">Todos</button><button class="fb" data-f="est" data-k="cat" data-v="Tecido">Tecidos</button><button class="fb" data-f="est" data-k="cat" data-v="Aviamento">Aviamentos</button><button class="fb" data-f="est" data-k="cat" data-v="Produto acabado">Acabados</button><button class="fb" data-f="est" data-k="cat" data-v="Embalagem">Embalagem</button></div>
@@ -682,7 +728,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 
         <!-- COLEÇÕES -->
         <div class="cw" id="section-colecoes">
-          <div class="section-header"><h2 class="section-title">Coleções</h2><button class="btn-add" data-modal="colecao">+ Nova coleção</button></div>
+          <div class="section-header"><h2 class="section-title">Coleções</h2><div class="header-actions"><button class="export-btn" onclick="exportColecoes()">&#8595; CSV</button><button class="btn-add" data-modal="colecao">+ Nova coleção</button></div></div>
           <div class="metrics" id="colecao-metrics"></div>
           <div class="search-bar"><input class="search-input" id="colecao-search" placeholder="Buscar por nome, temporada..."></div>
                     <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="col" data-k="status" data-v="all">Todas</button><button class="fb" data-f="col" data-k="status" data-v="planejamento">Planejamento</button><button class="fb" data-f="col" data-k="status" data-v="em_producao">Em produção</button><button class="fb" data-f="col" data-k="status" data-v="lancada">Lançada</button><button class="fb" data-f="col" data-k="status" data-v="encerrada">Encerrada</button></div>
@@ -709,7 +755,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 
         <!-- FORNECEDORES -->
         <div class="cw" id="section-fornecedores">
-          <div class="section-header"><h2 class="section-title">Fornecedores</h2><button class="btn-add" data-modal="supplier">+ Novo fornecedor</button></div>
+          <div class="section-header"><h2 class="section-title">Fornecedores</h2><div class="header-actions"><button class="export-btn" onclick="exportFornecedores()">&#8595; CSV</button><button class="btn-add" data-modal="supplier">+ Novo fornecedor</button></div></div>
           <div class="dash-grid" id="sup-dashboard"></div>
           <div class="metrics" id="sup-metrics"></div>
           <div class="search-bar"><input class="search-input" id="supplier-search" placeholder="Buscar por nome, categoria, cidade..."></div>
@@ -729,7 +775,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 
         <!-- PARCEIROS -->
         <div class="cw" id="section-parceiros">
-          <div class="section-header"><h2 class="section-title">Parceiros</h2><button class="btn-add" data-modal="parceiro">+ Novo parceiro</button></div>
+          <div class="section-header"><h2 class="section-title">Parceiros</h2><div class="header-actions"><button class="export-btn" onclick="exportParceiros()">&#8595; CSV</button><button class="btn-add" data-modal="parceiro">+ Novo parceiro</button></div></div>
           <div class="metrics" id="parceiro-metrics"></div>
           <div class="search-bar"><input class="search-input" id="parceiro-search" placeholder="Buscar por nome, nicho, cidade..."></div>
                     <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="par" data-k="status" data-v="all">Todos</button><button class="fb" data-f="par" data-k="status" data-v="ativo">Ativos</button><button class="fb" data-f="par" data-k="status" data-v="prospecto">Prospectos</button><button class="fb" data-f="par" data-k="status" data-v="inativo">Inativos</button></div>
@@ -749,7 +795,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 
         <!-- MARKETING -->
         <div class="cw" id="section-marketing">
-          <div class="section-header"><h2 class="section-title">Marketing</h2><button class="btn-add" data-modal="marketing">+ Nova ação</button></div>
+          <div class="section-header"><h2 class="section-title">Marketing</h2><div class="header-actions"><button class="export-btn" onclick="exportMarketing()">&#8595; CSV</button><button class="btn-add" data-modal="marketing">+ Nova ação</button></div></div>
           <div class="metrics" id="marketing-metrics"></div>
           <div class="search-bar"><input class="search-input" id="mkt-search" placeholder="Buscar por título, plataforma..."></div>
                     <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="mkt" data-k="status" data-v="all">Todas</button><button class="fb" data-f="mkt" data-k="status" data-v="planejada">Planejadas</button><button class="fb" data-f="mkt" data-k="status" data-v="ativa">Ativas</button><button class="fb" data-f="mkt" data-k="status" data-v="encerrada">Encerradas</button></div>
@@ -759,13 +805,30 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
 
         <!-- CLIENTES -->
         <div class="cw" id="section-clientes">
-          <div class="section-header"><h2 class="section-title">Clientes</h2><button class="btn-add" data-modal="cliente">+ Novo cliente</button></div>
+          <div class="section-header"><h2 class="section-title">Clientes</h2><div class="header-actions"><button class="export-btn" onclick="exportClientes()">&#8595; CSV</button><button class="btn-add" data-modal="cliente">+ Novo cliente</button></div></div>
           <div class="metrics" id="cliente-metrics"></div>
           <div class="search-bar"><input class="search-input" id="cliente-search" placeholder="Buscar por nome, CPF, e-mail, cidade..."></div>
           <div class="search-bar"><input class="search-input" id="cli-search" placeholder="Buscar por nome, CPF, e-mail, cidade..."></div>
                     <div class="filters"><span class="fl">Tier:</span><button class="fb active" data-f="cli" data-k="tier" data-v="all">Todos</button><button class="fb" data-f="cli" data-k="tier" data-v="diamante">💎 Diamante</button><button class="fb" data-f="cli" data-k="tier" data-v="ouro">🥇 Ouro</button><button class="fb" data-f="cli" data-k="tier" data-v="prata">🥈 Prata</button><button class="fb" data-f="cli" data-k="tier" data-v="bronze">🥉 Bronze</button></div>
           <div class="filters"><span class="fl">VIP:</span><button class="fb active" data-f="cli" data-k="vip" data-v="all">Todos</button><button class="fb" data-f="cli" data-k="vip" data-v="sim">⭐ VIP</button><button class="fb" data-f="cli" data-k="vip" data-v="nao">Regulares</button></div>
           <div id="cliente-list"><p class="loading">Carregando...</p></div>
+        </div>
+
+        <!-- METAS -->
+        <div class="cw" id="section-metas">
+          <div class="section-header"><h2 class="section-title">Metas &amp; OKRs</h2><div class="header-actions"><button class="export-btn" onclick="exportMetas()">&#8595; CSV</button><button class="btn-add" data-modal="meta">+ Nova meta</button></div></div>
+          <div class="metrics" id="meta-metrics"></div>
+          <div class="filters"><span class="fl">Categoria:</span><button class="fb active" data-f="meta" data-k="cat" data-v="all">Todas</button><button class="fb" data-f="meta" data-k="cat" data-v="financeiro">Financeiro</button><button class="fb" data-f="meta" data-k="cat" data-v="vendas">Vendas</button><button class="fb" data-f="meta" data-k="cat" data-v="marketing">Marketing</button><button class="fb" data-f="meta" data-k="cat" data-v="producao">Produção</button></div>
+          <div class="filters"><span class="fl">Período:</span><button class="fb active" data-f="meta" data-k="periodo" data-v="all">Todos</button><button class="fb" data-f="meta" data-k="periodo" data-v="mensal">Mensal</button><button class="fb" data-f="meta" data-k="periodo" data-v="trimestral">Trimestral</button><button class="fb" data-f="meta" data-k="periodo" data-v="anual">Anual</button></div>
+          <div id="meta-list"><p class="loading">Carregando...</p></div>
+        </div>
+
+        <!-- LOG DE AUDITORIA -->
+        <div class="cw" id="section-log">
+          <div class="section-header"><h2 class="section-title">Log de Acessos</h2></div>
+          <div class="metrics" id="log-metrics"></div>
+          <div class="filters"><span class="fl">Módulo:</span><button class="fb active" data-f="log" data-k="modulo" data-v="all">Todos</button><button class="fb" data-f="log" data-k="modulo" data-v="pedidos">Pedidos</button><button class="fb" data-f="log" data-k="modulo" data-v="produtos">Produtos</button><button class="fb" data-f="log" data-k="modulo" data-v="financas">Finanças</button><button class="fb" data-f="log" data-k="modulo" data-v="clientes">Clientes</button></div>
+          <div id="log-list"><p class="loading">Carregando...</p></div>
         </div>
 
         <!-- PESSOAS -->
@@ -876,6 +939,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
   <div class="modal-title"><span id="prod-modal-title">Novo Produto</span><button class="modal-close-btn" data-close="produto">×</button></div>
   <input type="hidden" id="pr-id">
   <div class="form-row"><div class="form-group"><label class="form-label">SKU (automático)</label><input class="form-input" id="pr-sku" readonly placeholder="SLB0001"></div><div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="pr-nome" placeholder="Nome do produto"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Produto pai (para variantes)</label><select class="form-select" id="pr-pai-id"><option value="">— Produto independente —</option></select></div><div class="form-group" style="display:flex;align-items:flex-end;gap:8px;padding-bottom:11px"><label class="form-check"><input type="checkbox" id="pr-e-variante"> Este produto é uma variante</label></div></div>
+  <div id="pr-variante-attrs" style="display:none"><div class="form-row"><div class="form-group"><label class="form-label">Cor</label><input class="form-input" id="pr-atrib-cor" placeholder="Preta, Branca, Bege..."></div><div class="form-group"><label class="form-label">Tamanho</label><select class="form-select" id="pr-atrib-tam"><option value="">—</option><option>PP</option><option>P</option><option>M</option><option>G</option><option>GG</option><option>XGG</option><option>Especial</option></select></div></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="pr-cat"><option value="">—</option><option>Camiseta</option><option>Calça</option><option>Vestido</option><option>Bermuda</option><option>Moletom</option><option>Jaqueta</option><option>Acessório</option><option>Outro</option></select></div><div class="form-group"><label class="form-label">Cor</label><input class="form-input" id="pr-cor" placeholder="Ex: Preto, Branco..."></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Tamanho</label><input class="form-input" id="pr-tamanho" placeholder="P / M / G / GG / Único"></div><div class="form-group"><label class="form-label">Fornecedor</label><select class="form-select" id="pr-fornecedor"></select></div></div>
   <div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="pr-colecao"></select></div>
@@ -938,6 +1003,9 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
     <label class="form-check"><input type="checkbox" id="aprov-ya"> Yasmin Zurdo</label>
   </div>
   <p style="font-size:9px;color:var(--muted);margin-top:6px">⚠️ Avança para "Em criação" somente após aprovação dos 4 sócios.</p>
+  <p class="form-section">Fotografia / Amostras</p>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status da foto</label><select class="form-select" id="prd-status-foto"><option value="sem_amostra">Sem amostra</option><option value="amostra_enviada">Amostra enviada</option><option value="em_fotografia">Em fotografia</option><option value="foto_aprovada">&#9989; Foto aprovada</option><option value="foto_reprovada">&#10060; Foto reprovada</option></select></div><div class="form-group"><label class="form-label">Data da fotografia</label><input class="form-input" id="prd-data-foto" type="date"></div></div>
+  <div class="form-group"><label class="form-label">Link das fotos</label><input class="form-input" id="prd-link-foto" placeholder="Drive, Dropbox, Google Photos..."></div>
   <div class="modal-footer"><button class="btn-save" id="save-producao">Salvar Produção</button><button class="btn-delete-modal" id="delete-producao" style="display:none">Excluir</button><button class="btn-close-modal" data-close="producao">Fechar</button></div>
 </div></div>
 
@@ -1059,6 +1127,18 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--fg);mi
   <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="ev-obs" placeholder="Detalhes, contato, planejamento..."></textarea></div>
   <div class="modal-footer"><button class="btn-save" id="save-evento">Salvar Evento</button><button class="btn-delete-modal" id="delete-evento" style="display:none">Excluir</button><button class="btn-close-modal" data-close="evento">Fechar</button></div>
 </div></div>
+<!-- META -->
+<div class="modal-bg" id="modal-meta"><div class="modal">
+  <div class="modal-title"><span id="meta-modal-title">Nova Meta</span><button class="modal-close-btn" data-close="meta">×</button></div>
+  <input type="hidden" id="me-id">
+  <div class="form-group"><label class="form-label">Título *</label><input class="form-input" id="me-titulo" placeholder="Ex: Faturamento mensal de R$ 10k"></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="me-cat"><option value="financeiro">Financeiro</option><option value="vendas">Vendas</option><option value="marketing">Marketing</option><option value="producao">Produção</option><option value="operacional">Operacional</option><option value="outro">Outro</option></select></div><div class="form-group"><label class="form-label">Tipo de métrica</label><select class="form-select" id="me-tipo"><option value="moeda">Moeda (R$)</option><option value="numero">Número</option><option value="percentual">Percentual (%)</option><option value="booleano">Sim/Não</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Valor da meta</label><input class="form-input" id="me-meta" type="number" step="0.01" placeholder="10000"></div><div class="form-group"><label class="form-label">Valor atual</label><input class="form-input" id="me-atual" type="number" step="0.01" placeholder="0"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Período</label><select class="form-select" id="me-periodo"><option value="mensal">Mensal</option><option value="trimestral">Trimestral</option><option value="semestral">Semestral</option><option value="anual">Anual</option></select></div><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="me-resp"></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Inicio</label><input class="form-input" id="me-inicio" type="date"></div><div class="form-group"><label class="form-label">Prazo</label><input class="form-input" id="me-fim" type="date"></div></div>
+  <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="me-desc" placeholder="Contexto e estratégia para atingir essa meta..."></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="save-meta">Salvar</button><button class="btn-delete-modal" id="delete-meta" style="display:none">Excluir</button><button class="btn-close-modal" data-close="meta">Fechar</button></div>
+</div></div>
 <div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1173,7 +1253,7 @@ function loadPessoas(){
   return db.from('pessoas').select('*').eq('ativo',true).order('nome').then(function(r){
     D.pessoas=r.data||[];
     var opts='<option value="">— Nenhum —</option>'+D.pessoas.map(function(p){return '<option value="'+p.id+'">'+p.nome+(p.cargo?' · '+p.cargo:'')+'</option>';}).join('');
-    ['t-owner','t-coowner','s-resp','pa-resp','col-resp','prd-resp','ped-resp','c-pago-por','mk-resp'].forEach(function(id){var el=$(id);if(el)el.innerHTML=opts;});
+    ['t-owner','t-coowner','s-resp','pa-resp','col-resp','prd-resp','ped-resp','c-pago-por','mk-resp','me-resp'].forEach(function(id){var el=$(id);if(el)el.innerHTML=opts;});
     var loginMap={JU:'Juliana Paulinelli',FE:'Fernando Araújo',VI:'Victor Paulinelli',YA:'Yasmin Zurdo'};
     var myP=D.pessoas.find(function(p){return p.nome===loginMap[me];});
     if(myP)['t-owner','s-resp','ped-resp','c-pago-por'].forEach(function(id){var el=$(id);if(el)el.value=myP.id;});
@@ -1762,19 +1842,251 @@ function loadProdutos(){
     renderProdutos();
   });
 }
-function renderProdutos(){
-  var f=F.prod;var q=val('produto-search').toLowerCase();
-  var list=D.produtos.filter(function(p){return(f.cat==='all'||p.categoria===f.cat)&&(!q||p.nome.toLowerCase().includes(q)||(p.sku&&p.sku.toLowerCase().includes(q))||(p.categoria&&p.categoria.toLowerCase().includes(q))||(p.cor&&p.cor.toLowerCase().includes(q)));});
-  $('produto-metrics').innerHTML=metric(D.produtos.length,'Produtos');
-  var el=$('produto-list');if(!list.length){el.innerHTML='<p class="empty">Nenhum produto</p>';return;}
-  el.innerHTML=list.map(function(p){var mg=p.custo&&p.preco_venda?Math.round(((p.preco_venda-p.custo)/p.preco_venda)*100):null;return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title"><span class="sku-tag">'+p.sku+'</span> '+p.nome+'</p><div class="card-meta">'+(p.categoria?catTag(p.categoria):'')+(p.cor?catTag(p.cor):'')+(p.tamanho?catTag(p.tamanho):'')+(p.fornecedor?catTag('📦 '+p.fornecedor.nome):'')+(p.colecao?catTag('🗂 '+p.colecao.nome):'')+'</div>'+(p.custo||p.preco_venda?'<p style="font-size:10px;color:var(--muted);margin-top:3px">'+(p.custo?'Custo: '+mo(p.custo):'')+(p.custo&&p.preco_venda?' · ':'')+(p.preco_venda?'Venda: '+mo(p.preco_venda):'')+(mg!==null?' · Margem: '+mg+'%':'')+'</p>':'')+'</div><div class="card-actions">'+editBtn(p.id,'produto')+'<button class="del" data-del-prod="'+p.id+'">×</button></div></div></div>';}).join('');
+
+// ── ITEM 6: EXPORT CSV ─────────────────────────────────────────────────────
+function csvDownload(filename, rows) {
+  if (!rows.length) { toast('Sem dados para exportar'); return; }
+  var cols = Object.keys(rows[0]);
+  var lines = [cols.join(';')].concat(rows.map(function(r) {
+    return cols.map(function(c) {
+      var v = r[c] == null ? '' : String(r[c]);
+      return v.includes(';') || v.includes('"') || v.includes('\n') ? '"' + v.replace(/"/g, '""') + '"' : v;
+    }).join(';');
+  }));
+  var blob = new Blob(['\ufeff' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+  toast('Exportado!');
+  auditLog('export', 'exportacao', null, filename);
 }
+function exportTarefas()    { csvDownload('SLB_Tarefas_'    +today()+'.csv', D.tasks.map(function(t){return{titulo:t.titulo,status:t.status,prioridade:t.prioridade,responsavel:t.responsavel?t.responsavel.nome:'',prazo:t.prazo||''};})); }
+function exportFinancas()   { csvDownload('SLB_Financas_'   +today()+'.csv', D.costs.map(function(c){return{descricao:c.descricao,categoria:c.categoria,valor:c.valor,tipo:c.tipo,status:c.status_pagto,vencimento:c.data_vencimento||''};})); }
+function exportProdutos()   { csvDownload('SLB_Produtos_'   +today()+'.csv', D.produtos.map(function(p){return{sku:p.sku,nome:p.nome,categoria:p.categoria,cor:p.cor,tamanho:p.tamanho,custo:p.custo,preco_venda:p.preco_venda};})); }
+function exportEstoque()    { csvDownload('SLB_Estoque_'    +today()+'.csv', D.estoques.map(function(e){return{nome:e.nome,sku:e.sku||'',categoria:e.categoria,quantidade:e.quantidade,unidade:e.unidade,minimo:e.quantidade_minima};})); }
+function exportColecoes()   { csvDownload('SLB_Colecoes_'   +today()+'.csv', D.colecoes.map(function(c){return{nome:c.nome,temporada:c.temporada||'',ano:c.ano||'',status:c.status};})); }
+function exportProducao()   { csvDownload('SLB_Producao_'   +today()+'.csv', D.producoes.map(function(p){return{nome:p.nome,status:p.status,colecao:p.colecao?p.colecao.nome:'',quantidade:p.quantidade||'',custo:p.custo_total||''};})); }
+function exportPedidos()    { csvDownload('SLB_Pedidos_'    +today()+'.csv', D.pedidos.map(function(p){return{numero:p.numero,cliente:p.cliente_nome,status:p.status,valor:p.valor_total,rastreio:p.codigo_rastreio||''};})); }
+function exportFornecedores(){ csvDownload('SLB_Fornecedores_'+today()+'.csv', D.suppliers.map(function(s){return{nome:s.nome,categoria:s.categoria,status:s.status,classificacao:s.classificacao,cidade:s.cidade||''};})); }
+function exportParceiros()  { csvDownload('SLB_Parceiros_'  +today()+'.csv', D.parceiros.map(function(p){return{nome:p.nome,nicho:p.nicho||'',status:p.status,seguidores_ig:p.seguidores_ig||0,vendas:p.vendas_geradas||0};})); }
+function exportClientes()   { csvDownload('SLB_Clientes_'   +today()+'.csv', D.clientes.map(function(c){return{nome:c.nome,email:c.email||'',cidade:c.cidade||'',tier:c.tier,pedidos:c.total_pedidos,gasto:c.valor_total_gasto,vip:c.vip?'sim':'nao'};})); }
+function exportMarketing()  { csvDownload('SLB_Marketing_'  +today()+'.csv', D.marketing.map(function(m){return{titulo:m.titulo,tipo:m.tipo,status:m.status,investimento:m.investimento||0,alcance:m.alcance||0,vendas:m.vendas||0};})); }
+function exportMetas()      { csvDownload('SLB_Metas_'      +today()+'.csv', D.metas.map(function(m){return{titulo:m.titulo,categoria:m.categoria,meta:m.valor_meta,atual:m.valor_atual,periodo:m.periodo,status:m.status};})); }
+function today()            { return new Date().toISOString().split('T')[0].replace(/-/g,''); }
+
+// ── ITEM 7: FOTOGRAFIA em Producao ─────────────────────────────────────────
+// Wired into saveProducao and openProducaoEdit (patched below in JS patches)
+
+// ── ITEM 8: METAS / OKRs ───────────────────────────────────────────────────
+D.metas = [];
+F.meta  = { cat: 'all', periodo: 'all' };
+
+function loadMetas() {
+  return db.from('metas').select('*,responsavel:pessoas(nome)').eq('ativo', true)
+    .order('created_at', { ascending: false })
+    .then(function(r) { D.metas = r.data || []; renderMetas(); });
+}
+
+function renderMetas() {
+  var f = F.meta;
+  var list = D.metas.filter(function(m) {
+    return (f.cat === 'all' || m.categoria === f.cat) &&
+           (f.periodo === 'all' || m.periodo === f.periodo);
+  });
+  var concluidas = D.metas.filter(function(m){ return m.status==='concluida'; }).length;
+  var el = $('meta-metrics');
+  if(el) el.innerHTML = metric(D.metas.length,'Total') + metric(concluidas,'Conclu\u00eddas','var(--green)') +
+    metric(D.metas.filter(function(m){return m.status==='ativa';}).length,'Ativas','var(--neon)');
+  var listEl = $('meta-list'); if(!listEl) return;
+  if(!list.length){ listEl.innerHTML='<p class="empty">Nenhuma meta cadastrada</p>'; return; }
+  listEl.innerHTML = list.map(function(m) {
+    var pct = m.valor_meta > 0 ? Math.min(Math.round(m.valor_atual / m.valor_meta * 100), 100) : 0;
+    var fillCls = pct >= 100 ? 'done' : pct >= 70 ? '' : pct >= 40 ? 'warn' : 'warn';
+    var fmtVal = m.tipo === 'moeda' ? mo(m.valor_atual || 0) + ' / ' + mo(m.valor_meta || 0) :
+                 m.tipo === 'percentual' ? (m.valor_atual||0) + '% / ' + (m.valor_meta||0) + '%' :
+                 (m.valor_atual||0) + ' / ' + (m.valor_meta||0);
+    return '<div class="meta-card">' +
+      '<div class="meta-header">' +
+        badge(m.status, m.status==='concluida'?'Conclu\u00edda':m.status==='cancelada'?'Cancelada':'Ativa') +
+        catTag(m.categoria) + catTag(m.periodo) +
+        '<span class="meta-title">' + m.titulo + '</span>' +
+        (m.responsavel ? av(m.responsavel.nome, m.responsavel.nome) : '') +
+        editBtn(m.id, 'meta') +
+        '<button class="del" data-del-meta="' + m.id + '">\u00d7</button>' +
+      '</div>' +
+      '<div class="meta-progress-wrap">' +
+        '<div class="meta-track"><div class="meta-fill ' + fillCls + '" style="width:' + pct + '%"></div></div>' +
+        '<span class="meta-pct" style="color:' + (pct>=100?'var(--green)':pct>=70?'var(--neon)':'var(--amber)') + '">' + pct + '%</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-top:6px">' +
+        '<span class="meta-vals">' + fmtVal + '</span>' +
+        '<input class="meta-edit-val" type="number" placeholder="Atualizar valor" id="meta-val-' + m.id + '">' +
+        '<button class="meta-update-btn" data-meta-upd="' + m.id + '">OK</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  // Wire update buttons
+  listEl.querySelectorAll('[data-meta-upd]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var mid = btn.dataset.metaUpd;
+      var inp = document.getElementById('meta-val-' + mid);
+      var val = parseFloat(inp.value);
+      if(isNaN(val)) return;
+      var meta = D.metas.find(function(m){ return m.id===mid; });
+      var newStatus = meta && val >= meta.valor_meta ? 'concluida' : 'ativa';
+      db.from('metas').update({ valor_atual: val, status: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', mid).then(function() { toast('Atualizado!'); loadMetas(); auditLog('update','metas',mid,'Valor atualizado: '+val); });
+    });
+  });
+}
+
+function openMetaEdit(id) {
+  var m = D.metas.find(function(x){ return x.id===id; }); if(!m) return;
+  $('meta-modal-title').textContent = 'Editar Meta';
+  $('me-id').value = m.id;
+  $('me-titulo').value = m.titulo;
+  $('me-cat').value = m.categoria || 'financeiro';
+  $('me-tipo').value = m.tipo || 'moeda';
+  $('me-meta').value = m.valor_meta || '';
+  $('me-atual').value = m.valor_atual || '';
+  $('me-periodo').value = m.periodo || 'mensal';
+  $('me-inicio').value = m.data_inicio || '';
+  $('me-fim').value = m.data_fim || '';
+  $('me-desc').value = m.descricao || '';
+  if(m.responsavel_id) $('me-resp').value = m.responsavel_id;
+  var dBtn = $('delete-meta'); if(dBtn){ dBtn.style.display='inline-flex'; dBtn.dataset.deleteId=id; }
+  openModal('meta');
+}
+
+function saveMeta() {
+  var titulo = val('me-titulo').trim(); if(!titulo){ toast('Informe o t\u00edtulo'); return; }
+  var id = val('me-id');
+  var payload = { titulo:titulo, categoria:val('me-cat'), tipo:val('me-tipo'), valor_meta:num('me-meta')||0, valor_atual:num('me-atual')||0, periodo:val('me-periodo'), data_inicio:val('me-inicio')||null, data_fim:val('me-fim')||null, responsavel_id:val('me-resp')||null, descricao:val('me-desc')||null, updated_at:new Date().toISOString() };
+  var q = id ? db.from('metas').update(payload).eq('id',id) : db.from('metas').insert(payload);
+  q.then(function(res){ if(res&&res.error){ toast('Erro: '+res.error.message); return; }
+    closeModal('meta'); resetForm('meta'); toast(id?'Atualizada!':'Criada!'); loadMetas();
+    auditLog(id?'update':'create','metas',id||'novo',titulo);
+  });
+}
+
+// ── ITEM 9: AUDIT LOG ──────────────────────────────────────────────────────
+D.auditLog = [];
+F.log = { modulo: 'all' };
+
+function auditLog(acao, modulo, registroId, descricao) {
+  if(!me) return;
+  db.from('audit_log').insert({ usuario:me, acao:acao, modulo:modulo||null, registro_id:registroId?String(registroId):null, descricao:descricao||null })
+    .then(function(){});
+}
+
+function loadAuditLog() {
+  return db.from('audit_log').select('*').order('created_at', { ascending: false }).limit(200)
+    .then(function(r) { D.auditLog = r.data || []; renderAuditLog(); });
+}
+
+function renderAuditLog() {
+  var f = F.log;
+  var list = D.auditLog.filter(function(l) {
+    return f.modulo === 'all' || l.modulo === f.modulo;
+  });
+  var el = $('log-metrics');
+  if(el) el.innerHTML = metric(D.auditLog.length,'Total registros') + metric(new Set(D.auditLog.map(function(l){return l.usuario;})).size,'Usu\u00e1rios') + metric(D.auditLog.filter(function(l){return l.acao==='create';}).length,'Criações');
+  var listEl = $('log-list'); if(!listEl) return;
+  if(!list.length){ listEl.innerHTML='<p class="empty">Sem registros de atividade</p>'; return; }
+  listEl.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px">' +
+    list.map(function(l) {
+      var dt = new Date(l.created_at).toLocaleString('pt-BR');
+      var acaoCls = { create:'var(--green)', update:'var(--blue)', delete:'var(--red)', export:'var(--neon)', login:'var(--amber)' };
+      return '<div class="audit-row">' +
+        '<span class="audit-time">' + dt + '</span>' +
+        '<span class="audit-user">' + (l.usuario||'—') + '</span>' +
+        '<span class="audit-mod">' + (l.modulo||'geral') + '</span>' +
+        '<span style="font-size:9px;padding:1px 6px;border-radius:10px;background:rgba(0,0,0,.2);color:' + (acaoCls[l.acao]||'var(--muted)') + ';font-weight:700;white-space:nowrap">' + (l.acao||'ação') + '</span>' +
+        '<span class="audit-desc">' + (l.descricao||'') + '</span>' +
+      '</div>';
+    }).join('') + '</div>';
+}
+
+// ── ITEM 10: VARIANTES ─────────────────────────────────────────────────────
+function populatePaiSelect() {
+  var el = $('pr-pai-id'); if(!el) return;
+  el.innerHTML = '<option value="">— Produto independente —</option>' +
+    D.produtos.filter(function(p){ return !p.e_variante; }).map(function(p){
+      return '<option value="' + p.id + '">' + p.sku + ' — ' + p.nome + '</option>';
+    }).join('');
+}
+
+function renderProdutos() {
+  var f = F.prod;
+  var q = ($('produto-search')||{value:''}).value.toLowerCase();
+  var all = D.produtos.filter(function(p){
+    return (f.cat==='all'||p.categoria===f.cat) &&
+      (!q||(p.nome&&p.nome.toLowerCase().includes(q))||(p.sku&&p.sku.toLowerCase().includes(q))||(p.categoria&&p.categoria.toLowerCase().includes(q))||(p.cor&&p.cor.toLowerCase().includes(q)));
+  });
+  // Group: pais first, then show variantes under them
+  var pais    = all.filter(function(p){ return !p.e_variante; });
+  var variMap = {};
+  D.produtos.filter(function(p){ return p.e_variante && p.produto_pai_id; }).forEach(function(p){
+    if(!variMap[p.produto_pai_id]) variMap[p.produto_pai_id] = [];
+    variMap[p.produto_pai_id].push(p);
+  });
+  $('produto-metrics').innerHTML = metric(D.produtos.length,'Produtos') + metric(pais.length,'SKUs principais','var(--neon)') + metric(D.produtos.filter(function(p){return p.e_variante;}).length,'Variantes','var(--muted)');
+  var el = $('produto-list'); if(!el) return;
+  if(!all.length){ el.innerHTML='<p class="empty">Nenhum produto</p>'; return; }
+  el.innerHTML = pais.map(function(p){
+    var mg = p.custo&&p.preco_venda ? Math.round(((p.preco_venda-p.custo)/p.preco_venda)*100) : null;
+    var vars = variMap[p.id] || [];
+    var cardHtml = '<div class="card' + (vars.length?' variante-group':'') + '">' +
+      '<div class="card-row' + (vars.length?' variante-pai':'') + '">' +
+        '<div class="card-body">' +
+          '<p class="card-title"><span class="sku-tag">' + (p.sku||'—') + '</span> ' + p.nome +
+            (vars.length ? ' <span style="font-size:9px;color:var(--muted)">(' + vars.length + ' variantes)</span>' : '') +
+          '</p>' +
+          '<div class="card-meta">' +
+            (p.colecao ? badge('gold','\ud83d\uddbc ' + p.colecao.nome) : '') +
+            (p.categoria ? catTag(p.categoria) : '') +
+            (p.cor ? catTag(p.cor) : '') +
+          '</div>' +
+          (p.custo_total>0 ? '<div class="custo-card-total">Custo: '+mo(p.custo_total)+(mg?' \u2192 Margem: '+mg+'%':'')+'</div>' : '') +
+        '</div>' +
+        '<div class="card-actions">' +
+          (p.preco_venda ? '<span style="font-size:14px;font-weight:800;color:var(--green)">' + mo(p.preco_venda) + '</span>' : '') +
+          editBtn(p.id,'produto') +
+          '<button class="del" data-del-prod="' + p.id + '">\u00d7</button>' +
+        '</div>' +
+      '</div>' +
+      (vars.length ? '<div class="variante-filhos">' + vars.map(function(v){
+        return '<div class="variante-filho">' +
+          '<span class="sku-tag" style="font-size:9px">' + (v.sku||'—') + '</span>' +
+          (v.atributo_cor ? '<span class="variante-atrib">' + v.atributo_cor + '</span>' : '') +
+          (v.atributo_tam ? '<span class="variante-atrib">' + v.atributo_tam + '</span>' : '') +
+          '<span style="flex:1;font-size:11px;color:var(--muted2)">' + v.nome + '</span>' +
+          (v.preco_venda ? '<span style="font-size:11px;font-weight:700;color:var(--green)">' + mo(v.preco_venda) + '</span>' : '') +
+          editBtn(v.id,'produto') +
+          '<button class="del" data-del-prod="' + v.id + '">\u00d7</button>' +
+        '</div>';
+      }).join('') + '</div>' : '') +
+    '</div>';
+    return cardHtml;
+  }).join('');
+}
+
+
+// old renderProdutos replaced
+
 function openProdutoEdit(id){
   var p=D.produtos.find(function(x){return x.id===id;});if(!p)return;
   $('prod-modal-title').textContent='Editar Produto';$('pr-id').value=p.id;$('pr-sku').value=p.sku;$('pr-nome').value=p.nome;$('pr-cat').value=p.categoria||'';$('pr-cor').value=p.cor||'';$('pr-tamanho').value=p.tamanho||'';$('pr-custo').value=p.custo||'';$('pr-venda').value=p.preco_venda||'';$('pr-obs').value=p.observacoes||'';
   if(p.fornecedor_id)$('pr-fornecedor').value=p.fornecedor_id;
   if(p.colecao_id)$('pr-colecao').value=p.colecao_id;
-  updateMargem();var dBtn=$('delete-produto');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}custoSkuLoadForProduct(p.id);openModal('produto');
+  updateMargem();var dBtn=$('delete-produto');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}custoSkuLoadForProduct(p.id);
+  populatePaiSelect();
+  var paiEl=$('pr-pai-id');if(paiEl&&p.produto_pai_id)paiEl.value=p.produto_pai_id;
+  var varCk=document.getElementById('pr-e-variante');if(varCk)varCk.checked=!!p.e_variante;
+  var varAttrs=document.getElementById('pr-variante-attrs');if(varAttrs)varAttrs.style.display=p.e_variante?'block':'none';
+  if(p.atributo_cor){var acEl=$('pr-atrib-cor');if(acEl)acEl.value=p.atributo_cor;}
+  if(p.atributo_tam){var atEl=$('pr-atrib-tam');if(atEl)atEl.value=p.atributo_tam;}
+  openModal('produto');
 }
 function updateMargem(){var c=num('pr-custo'),v=num('pr-venda');$('pr-margem').value=v>0&&c>0?Math.round(((v-c)/v)*100)+'%':'—';custoSkuRecalc();}
 function nextSKU(){if(!D.produtos.length)return 'SLB0001';var nums=D.produtos.map(function(p){return parseInt((p.sku||'SLB0000').replace('SLB',''))||0;});return 'SLB'+String(Math.max.apply(null,nums)+1).padStart(4,'0');}
@@ -1783,7 +2095,7 @@ function saveProduto(){
   var id=val('pr-id');var sku=id?val('pr-sku'):nextSKU();
   var payload={sku:sku,nome:nome,categoria:val('pr-cat')||null,cor:val('pr-cor')||null,tamanho:val('pr-tamanho')||null,custo:num('pr-custo')||null,preco_venda:num('pr-venda')||null,fornecedor_id:val('pr-fornecedor')||null,colecao_id:val('pr-colecao')||null,observacoes:val('pr-obs')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('produtos').update(payload).eq('id',id):db.from('produtos').insert(payload);
-  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveProduto]',res.error.message);return;}var savedId=id||(res.data&&res.data[0]&&res.data[0].id);custoSkuSaveForProduct(savedId).then(function(){closeModal('produto');resetForm('produto');toast(id?'Atualizado!':'Criado!');loadProdutos();});});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveProduto]',res.error.message);return;}var savedId=id||(res.data&&res.data[0]&&res.data[0].id);custoSkuSaveForProduct(savedId).then(function(){closeModal('produto');resetForm('produto');toast(id?'Atualizado!':'Criado!');auditLog(id?'update':'create','produtos',id,val('pr-sku')+' '+val('pr-nome'));loadProdutos();});});
 }
 
 // ── ESTOQUE ────────────────────────────────────────────────
@@ -1866,14 +2178,18 @@ function openProducaoEdit(id){
   var p=D.producoes.find(function(x){return x.id===id;});if(!p)return;
   $('prd-modal-title').textContent='Editar Produção';$('prd-id').value=p.id;$('prd-nome').value=p.nome;$('prd-status').value=p.status;$('prd-qtd').value=p.quantidade||'';$('prd-custo').value=p.custo_total||'';$('prd-inicio').value=p.data_inicio||'';$('prd-prevfim').value=p.data_prev_fim||'';$('prd-obs').value=p.observacoes||'';
   if(p.colecao_id)$('prd-colecao').value=p.colecao_id;if(p.fornecedor_id)$('prd-fornecedor').value=p.fornecedor_id;if(p.responsavel_id)$('prd-resp').value=p.responsavel_id;
-  $('aprov-ju').checked=!!p.aprovado_ju;$('aprov-fe').checked=!!p.aprovado_fe;$('aprov-vi').checked=!!p.aprovado_vi;$('aprov-ya').checked=!!p.aprovado_ya;var dBtn=$('delete-producao');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('producao');
+  $('aprov-ju').checked=!!p.aprovado_ju;$('aprov-fe').checked=!!p.aprovado_fe;$('aprov-vi').checked=!!p.aprovado_vi;$('aprov-ya').checked=!!p.aprovado_ya;var dBtn=$('delete-producao');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}var sf=$('prd-status-foto');if(sf)sf.value=p.status_foto||'sem_amostra';
+  $('prd-data-foto').value=p.data_foto||'';
+  $('prd-link-foto').value=p.link_foto||'';
+  var dBtn=$('delete-producao');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=p.id;}
+  openModal('producao');
 }
 function saveProducao(){
   var nome=val('prd-nome').trim();if(!nome){toast('Informe o nome');return;}
   var id=val('prd-id');var ju=$('aprov-ju').checked,fe=$('aprov-fe').checked,vi=$('aprov-vi').checked,ya=$('aprov-ya').checked;
   var status=val('prd-status');
   if(status==='em_criacao'&&!(ju&&fe&&vi&&ya)){toast('⚠️ Aprovação dos 4 sócios necessária para iniciar a criação.');return;}
-  var payload={nome:nome,colecao_id:val('prd-colecao')||null,fornecedor_id:val('prd-fornecedor')||null,responsavel_id:val('prd-resp')||null,status:status,aprovado_ju:ju,aprovado_fe:fe,aprovado_vi:vi,aprovado_ya:ya,quantidade:iNum('prd-qtd')||null,custo_total:num('prd-custo')||null,data_inicio:val('prd-inicio')||null,data_prev_fim:val('prd-prevfim')||null,observacoes:val('prd-obs')||null,updated_at:new Date().toISOString()};
+  var payload={nome:nome,colecao_id:val('prd-colecao')||null,fornecedor_id:val('prd-fornecedor')||null,responsavel_id:val('prd-resp')||null,status:status,aprovado_ju:ju,aprovado_fe:fe,aprovado_vi:vi,aprovado_ya:ya,quantidade:iNum('prd-qtd')||null,custo_total:num('prd-custo')||null,data_inicio:val('prd-inicio')||null,data_prev_fim:val('prd-prevfim')||null,observacoes:val('prd-obs')||null,status_foto:val('prd-status-foto')||'sem_amostra',data_foto:val('prd-data-foto')||null,link_foto:val('prd-link-foto')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('producoes').update(payload).eq('id',id):db.from('producoes').insert(payload);
   q.then(function(res){if(res.error){toast('Erro: '+res.error.message);return;}closeModal('producao');resetForm('producao');toast(id?'Atualizada!':'Criada!');loadProducoes();});
 }
@@ -1903,7 +2219,7 @@ function savePedido(){
   var id=val('ped-id');var numero=id?(D.pedidos.find(function(p){return p.id===id;})||{}).numero:nextPedidoNum();
   var payload={numero:numero,cliente_nome:cliente,cliente_cpf:val('ped-cpf')||null,cliente_email:val('ped-email')||null,cliente_fone:val('ped-fone')||null,status:val('ped-status'),canal_venda:val('ped-canal')||null,valor_total:num('ped-valor')||null,valor_frete:num('ped-frete')||0,transportadora:val('ped-transp')||null,codigo_rastreio:val('ped-rastreio')||null,colecao_id:val('ped-colecao')||null,responsavel_id:val('ped-resp')||null,observacoes:val('ped-obs')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('pedidos').update(payload).eq('id',id):db.from('pedidos').insert(payload);
-  q.then(function(res){if(res.error){toast('Erro: '+res.error.message);return;}closeModal('pedido');resetForm('pedido');toast(id?'Atualizado!':'Criado!');loadPedidos();});
+  q.then(function(res){if(res.error){toast('Erro: '+res.error.message);return;}closeModal('pedido');resetForm('pedido');toast(id?'Atualizado!':'Criado!');auditLog(id?'update':'create','pedidos',id,val('ped-cliente'));loadPedidos();});
 }
 
 // ── FRETES ─────────────────────────────────────────────────
@@ -2498,6 +2814,7 @@ function handleClick(e){
     else if(emod==='postagem')openPostagemEdit(eid);
     else if(emod==='marketing')openMarketingEdit(eid);
     else if(emod==='cliente')openClienteEdit(eid);
+    else if(emod==='meta')openMetaEdit(eid);
     return;
   }
   var supCard=e.target.closest('[data-open-sup]');
@@ -2519,6 +2836,8 @@ function handleClick(e){
     if(del.dataset.delPost){if(!confirm('Excluir postagem?'))return;db.from('postagens').update({ativo:false}).eq('id',del.dataset.delPost).then(function(){toast('Excluída');loadPostagens();});}
     if(del.dataset.delMkt){if(!confirm('Excluir ação?'))return;db.from('acoes_marketing').update({ativo:false}).eq('id',del.dataset.delMkt).then(function(){toast('Excluída');loadMarketing();});}
     if(del.dataset.delCli){if(!confirm('Excluir cliente?'))return;db.from('clientes').update({ativo:false}).eq('id',del.dataset.delCli).then(function(){toast('Excluído');loadClientes();});}
+    if(del.dataset.delMeta){if(!confirm('Excluir meta?'))return;db.from('metas').update({ativo:false}).eq('id',del.dataset.delMeta).then(function(){toast('Excluída');loadMetas();});}
+    if(del.dataset.delProd){if(!confirm('Excluir produto?'))return;db.from('produtos').update({ativo:false}).eq('id',del.dataset.delProd).then(function(){toast('Excluído');loadProdutos();});}
     if(del.dataset.delPessoa){if(!confirm('Remover?'))return;db.from('pessoas').update({ativo:false}).eq('id',del.dataset.delPessoa).then(function(){toast('Removida');loadPessoas();});}
   }
 }
@@ -2566,6 +2885,7 @@ document.addEventListener('DOMContentLoaded',function(){
   $('save-pedido').addEventListener('click',savePedido);
   $('save-frete').addEventListener('click',saveFrete);
   $('save-parceiro').addEventListener('click',saveParceiro);
+  $('save-meta')&&$('save-meta').addEventListener('click',saveMeta);
   $('save-postagem').addEventListener('click',savePostagem);
   $('save-marketing').addEventListener('click',saveMarketing);
   $('save-cliente').addEventListener('click',saveCliente);
@@ -2633,6 +2953,7 @@ document.addEventListener('DOMContentLoaded',function(){
     {btnId:'delete-marketing', table:'acoes_marketing', hardDelete:false, reload:loadMarketing},
     {btnId:'delete-cliente',   table:'clientes',        hardDelete:false, reload:loadClientes},
     {btnId:'delete-evento',    table:'eventos_colecao', hardDelete:true,  reload:loadColecoes},
+    {btnId:'delete-meta',      table:'metas',           hardDelete:false, reload:loadMetas},
     {btnId:'delete-frete',     table:'fretes',          hardDelete:true,  reload:loadFretes},
   ];
   deleteConfigs.forEach(function(cfg){
