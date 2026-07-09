@@ -737,6 +737,13 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 /* ── FIN PANEL ───────────────────────────────────────────── */
 .fin-panel{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:16px;margin-bottom:12px;overflow:hidden}
 .fin-panel-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+
+/* ── RESP CHIPS ──────────────────────────────────────────── */
+.resp-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.resp-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);font:500 11px 'Inter',sans-serif;color:var(--muted);background:var(--card);cursor:pointer;transition:all .15s;user-select:none}
+.resp-chip:hover{border-color:var(--border2);color:var(--fg)}
+.resp-chip input{accent-color:var(--blue);width:13px;height:13px;cursor:pointer}
+.resp-chip:has(input:checked){background:var(--blue-bg);border-color:var(--blue-bd);color:var(--blue);font-weight:600}
 </style>
 </head>
 <body>
@@ -1294,7 +1301,12 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <input type="hidden" id="prd-id">
   <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="prd-nome" placeholder="Ex: Camiseta Preta P/M/G - Coleção Zamna"></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="prd-colecao"></select></div><div class="form-group"><label class="form-label">Fornecedor</label><select class="form-select" id="prd-fornecedor"></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="prd-status"><option value="ideacao">Ideação</option><option value="aprovacao">Aguardando aprovação</option><option value="em_criacao">Em criação</option><option value="em_producao">Em produção</option><option value="produzido">Produzido</option><option value="recebido">Recebido</option><option value="disponivel">Disponível para venda</option></select></div><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="prd-resp"></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="prd-status"><option value="ideacao">Ideação</option><option value="aprovacao">Aguardando aprovação</option><option value="em_criacao">Em criação</option><option value="em_producao">Em produção</option><option value="produzido">Produzido</option><option value="recebido">Recebido</option><option value="disponivel">Disponível para venda</option></select></div><div class="form-group"><label class="form-label">Responsável</label>
+    <div class="resp-chips" id="prd-resp-chips">
+      <label class="resp-chip"><input type="checkbox" value="all" id="prd-resp-all" onchange="prdRespToggleAll(this)"> Todos</label>
+    </div>
+    <input type="hidden" id="prd-resp">
+  </div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Quantidade</label><input class="form-input" id="prd-qtd" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Custo total (R$)</label><input class="form-input" id="prd-custo" type="number" step="0.01" placeholder="0,00"></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Data início</label><input class="form-input" id="prd-inicio" type="date"></div><div class="form-group"><label class="form-label">Previsão fim</label><input class="form-input" id="prd-prevfim" type="date"></div></div>
   <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="prd-obs"></textarea></div>
@@ -1569,7 +1581,14 @@ function loadPessoas(){
   return db.from('pessoas').select('*').eq('ativo',true).order('nome').then(function(r){
     D.pessoas=r.data||[];
     var opts='<option value="">— Nenhum —</option>'+D.pessoas.map(function(p){return '<option value="'+p.id+'">'+p.nome+(p.cargo?' · '+p.cargo:'')+'</option>';}).join('');
-    ['t-owner','t-coowner','s-resp','pa-resp','col-resp','prd-resp','ped-resp','c-pago-por','mk-resp','me-resp'].forEach(function(id){var el=$(id);if(el)el.innerHTML=opts;});
+    ['t-owner','t-coowner','s-resp','pa-resp','col-resp','ped-resp','c-pago-por','mk-resp','me-resp'].forEach(function(id){var el=$(id);if(el)el.innerHTML=opts;});
+    // chips de responsável na produção
+    var chipsEl=$('prd-resp-chips');
+    if(chipsEl){
+      var socios=D.pessoas.filter(function(p){return p.tipo==='socio'||p.cargo;});
+      chipsEl.innerHTML='<label class="resp-chip"><input type="checkbox" value="all" id="prd-resp-all" onchange="prdRespToggleAll(this)"> Todos</label>'+
+        socios.map(function(p){return '<label class="resp-chip"><input type="checkbox" class="prd-resp-ck" value="'+p.id+'" onchange="prdRespSync()"> '+p.nome.split(' ')[0]+'</label>';}).join('');
+    }
     var loginMap={JU:'Juliana Paulinelli',FE:'Fernando Araújo',VI:'Victor Paulinelli',YA:'Yasmin Zurdo'};
     var myP=D.pessoas.find(function(p){return p.nome===loginMap[me];});
     if(myP)['t-owner','s-resp','ped-resp','c-pago-por'].forEach(function(id){var el=$(id);if(el)el.value=myP.id;});
@@ -1584,6 +1603,19 @@ function loadPessoas(){
     renderPessoas();
   });
 }
+function prdRespToggleAll(cb){
+  var cks=document.querySelectorAll('.prd-resp-ck');
+  cks.forEach(function(c){c.checked=cb.checked;});
+  prdRespSync();
+}
+function prdRespSync(){
+  var cks=document.querySelectorAll('.prd-resp-ck:checked');
+  var vals=Array.from(cks).map(function(c){return c.value;});
+  var allCk=$('prd-resp-all');
+  if(allCk)allCk.checked=(cks.length===document.querySelectorAll('.prd-resp-ck').length);
+  $('prd-resp').value=vals.join(',');
+}
+
 function renderPessoas(){
   var tipo=F.pes.tipo;var list=tipo==='all'?D.pessoas:D.pessoas.filter(function(p){return p.tipo===tipo;});
   var el=$('pessoa-list');if(!list.length){el.innerHTML='<p class="empty">Nenhuma pessoa</p>';return;}
@@ -1665,7 +1697,10 @@ function saveTask(){
 // ── FORNECEDORES ────────────────────────────────────────────
 function loadSuppliers(){
   return db.from('fornecedores').select('*,responsavel:pessoas!fornecedores_responsavel_pessoa_id_fkey(nome)').order('avaliacao',{ascending:false}).then(function(r){
-    D.suppliers=r.data||[];renderSuppliers();
+    D.suppliers=r.data||[];
+    var fOpts='<option value="">— Nenhum —</option>'+D.suppliers.map(function(s){return '<option value="'+s.id+'">'+s.nome+'</option>';}).join('');
+    ['prd-fornecedor','ped-fornecedor'].forEach(function(id){var el=$(id);if(el)el.innerHTML=fOpts;});
+    renderSuppliers();
   });
 }
 function renderSuppliers(){
@@ -2600,7 +2635,7 @@ function saveProducao(){
   var id=val('prd-id');var ju=$('aprov-ju').checked,fe=$('aprov-fe').checked,vi=$('aprov-vi').checked,ya=$('aprov-ya').checked;
   var status=val('prd-status');
   if(status==='em_criacao'&&!(ju&&fe&&vi&&ya)){toast('⚠️ Aprovação dos 4 sócios necessária para iniciar a criação.');return;}
-  var payload={nome:nome,colecao_id:val('prd-colecao')||null,fornecedor_id:val('prd-fornecedor')||null,responsavel_id:val('prd-resp')||null,status:status,aprovado_ju:ju,aprovado_fe:fe,aprovado_vi:vi,aprovado_ya:ya,quantidade:iNum('prd-qtd')||null,custo_total:num('prd-custo')||null,data_inicio:val('prd-inicio')||null,data_prev_fim:val('prd-prevfim')||null,observacoes:val('prd-obs')||null,status_foto:val('prd-status-foto')||'sem_amostra',data_foto:val('prd-data-foto')||null,link_foto:val('prd-link-foto')||null,updated_at:new Date().toISOString()};
+  var payload={nome:nome,colecao_id:val('prd-colecao')||null,fornecedor_id:val('prd-fornecedor')||null,responsavel_ids:$('prd-resp').value||null,responsavel_id:$('prd-resp').value.split(',')[0]||null,status:status,aprovado_ju:ju,aprovado_fe:fe,aprovado_vi:vi,aprovado_ya:ya,quantidade:iNum('prd-qtd')||null,custo_total:num('prd-custo')||null,data_inicio:val('prd-inicio')||null,data_prev_fim:val('prd-prevfim')||null,observacoes:val('prd-obs')||null,status_foto:val('prd-status-foto')||'sem_amostra',data_foto:val('prd-data-foto')||null,link_foto:val('prd-link-foto')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('producoes').update(payload).eq('id',id):db.from('producoes').insert(payload);
   q.then(function(res){if(res.error){toast('Erro: '+res.error.message);return;}closeModal('producao');resetForm('producao');toast(id?'Atualizada!':'Criada!');loadProducoes();});
 }
