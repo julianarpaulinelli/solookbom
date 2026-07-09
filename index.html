@@ -690,6 +690,41 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .fin-kpi-val{font-size:20px;font-weight:700;line-height:1;margin-bottom:3px}
 .fin-kpi-lbl{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:600}
 .fin-kpi-delta{font-size:9px;margin-top:4px;font-weight:600}
+
+/* ── SAÚDE FINANCEIRA ────────────────────────────────────── */
+.fin-saude{border-radius:12px;border:1px solid var(--border);padding:20px 24px;margin-bottom:16px;background:var(--card)}
+.fin-saude-ok{border-color:rgba(39,192,138,.3);background:rgba(39,192,138,.04)}
+.fin-saude-danger{border-color:rgba(224,82,82,.35);background:rgba(224,82,82,.05)}
+.fin-saude-row{display:flex;align-items:center;gap:0;flex-wrap:wrap}
+.fin-saude-bloco{display:flex;flex-direction:column;gap:4px;padding:0 24px;flex:1;min-width:120px}
+.fin-saude-bloco:first-child{padding-left:0}
+.fin-saude-resultado{border-left:1px solid var(--border);margin-left:8px}
+.fin-saude-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+.fin-saude-val{font-size:26px;font-weight:700;line-height:1.1}
+.fin-saude-lucro{font-size:28px}
+.fin-saude-sep{font-size:22px;color:var(--muted2);padding:0 4px;align-self:center;margin-top:12px}
+.fin-saude-op{font-size:20px;color:var(--muted2)}
+.fin-saude-status{display:flex;flex-direction:column;justify-content:center;gap:4px;padding-left:24px;border-left:1px solid var(--border);margin-left:8px;min-width:200px}
+.fin-saude-icon{font-size:20px}
+.fin-saude-msg{font-size:11px;color:var(--muted);font-weight:500;line-height:1.4}
+
+/* ── CARDS DE AÇÃO ───────────────────────────────────────── */
+.fin-acao-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.fin-acao-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;align-items:flex-start;gap:12px;transition:border-color .15s}
+.fin-acao-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+.fin-acao-body{flex:1;min-width:0}
+.fin-acao-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:4px}
+.fin-acao-val{font-size:18px;font-weight:700;color:var(--fg);line-height:1.1;margin-bottom:3px}
+.fin-acao-sub{font-size:10px;color:var(--muted2)}
+
+/* ── GRÁFICO MENSAL ──────────────────────────────────────── */
+.fin-month-chart-wrap{display:flex;align-items:flex-end;gap:6px;height:80px;padding-top:8px}
+
+@media(max-width:900px){
+  .fin-acao-grid{grid-template-columns:repeat(2,1fr)}
+  .fin-saude-bloco{min-width:80px;padding:0 12px}
+  .fin-saude-status{padding-left:12px;min-width:140px}
+}
 </style>
 </head>
 <body>
@@ -902,24 +937,27 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             </div>
           </div>
 
-          <!-- BLOCO 1: KPIs PRINCIPAIS -->
-          <div class="fin-dash-grid" id="fin-kpis"></div>
+          <!-- ZONA 1: SAÚDE FINANCEIRA -->
+          <div id="fin-saude"></div>
 
-          <!-- BLOCO 2: ALERTAS (compactos, só aparecem se houver) -->
+          <!-- ZONA 2: 4 CARDS DE AÇÃO -->
+          <div class="fin-acao-grid" id="fin-acao"></div>
+
+          <!-- ZONA 3: ALERTAS URGENTES -->
           <div class="fin-alerts" id="fin-alerts"></div>
 
-          <!-- BLOCO 3: ANÁLISES LADO A LADO -->
+          <!-- ZONA 4: ANÁLISES -->
           <div class="fin-section-label">Análise do período</div>
           <div class="fin-two-col" style="margin-bottom:12px">
             <div class="fin-panel"><p class="fin-panel-title">Gastos por categoria</p><div id="fin-cat-chart"></div></div>
-            <div class="fin-panel"><p class="fin-panel-title">Evolução últimos 6 meses</p><div style="display:flex;align-items:flex-end;gap:4px;height:70px" id="fin-month-chart"></div></div>
+            <div class="fin-panel"><p class="fin-panel-title">Evolução últimos 6 meses</p><div class="fin-month-chart-wrap" id="fin-month-chart"></div></div>
           </div>
           <div class="fin-two-col" style="margin-bottom:12px">
             <div class="fin-panel"><p class="fin-panel-title">Despesa vs Investimento</p><div id="fin-tipo-chart"></div></div>
             <div class="fin-panel"><p class="fin-panel-title">Divisão por sócio (mês atual)</p><div id="fin-socio-chart"></div></div>
           </div>
 
-          <!-- BLOCO 4: COMPROMISSOS FUTUROS -->
+          <!-- ZONA 5: COMPROMISSOS -->
           <div class="fin-section-label">Compromissos futuros — próximos 90 dias</div>
           <div class="fin-two-col" style="margin-bottom:12px">
             <div class="fin-panel"><p class="fin-panel-title">Assinaturas &amp; recorrentes ativas</p><div id="fin-recorrentes"></div></div>
@@ -927,7 +965,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           </div>
           <div class="fin-panel" style="margin-bottom:20px"><p class="fin-panel-title">Timeline de saídas previstas — próximos 3 meses</p><div id="fin-timeline"></div></div>
 
-          <!-- BLOCO 5: TODOS OS LANÇAMENTOS -->
+          <!-- ZONA 6: LANÇAMENTOS -->
           <div class="fin-section-label">Todos os lançamentos</div>
           <div class="metrics" id="cost-metrics"></div>
           <div class="filters"><span class="fl">Tipo:</span><button class="fb active" data-f="fin" data-k="tipo" data-v="all">Todos</button><button class="fb" data-f="fin" data-k="tipo" data-v="investimento">Investimentos</button><button class="fb" data-f="fin" data-k="tipo" data-v="despesa">Despesas</button></div>
@@ -1636,8 +1674,6 @@ function renderFinDashboard(){
   var now=new Date();
   var todayStr=now.toISOString().split('T')[0];
   var in7=new Date(now);in7.setDate(in7.getDate()+7);var in7Str=in7.toISOString().split('T')[0];
-  var in30=new Date(now);in30.setDate(in30.getDate()+30);var in30Str=in30.toISOString().split('T')[0];
-  var in60=new Date(now);in60.setDate(in60.getDate()+60);var in60Str=in60.toISOString().split('T')[0];
   var in90=new Date(now);in90.setDate(in90.getDate()+90);var in90Str=in90.toISOString().split('T')[0];
   var curMonth=now.getFullYear()+'-'+(String(now.getMonth()+1).padStart(2,'0'));
   var prevMonth=new Date(now);prevMonth.setMonth(prevMonth.getMonth()-1);
@@ -1657,39 +1693,100 @@ function renderFinDashboard(){
       c.tipo_compromisso==='recorrente'||c.tipo_compromisso==='parcelado'
     );
   }).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
-
-  // ── KPIs ──────────────────────────────────────────────────
+  var recorrentes=allCosts.filter(function(c){return c.tipo_compromisso==='recorrente'||c.recorrente;});
   var deltaMes=totPrevMes>0?Math.round((totMes-totPrevMes)/totPrevMes*100):0;
   var deltaSign=deltaMes>0?'+':'';
-  var el=$('fin-kpis');
-  if(el)el.innerHTML=
-    finKpi(mo(totAll),'Total investido','var(--blue)','')+
-    finKpi(mo(totMes),'Gastos este mes','var(--amber)',(deltaMes!==0?deltaSign+deltaMes+'% vs mes anterior':''),deltaMes>0?'var(--red)':'var(--green)')+
-    finKpi(mo(totRec),'Receita (pedidos)','var(--green)','')+
-    finKpi(mo(lucro),'Lucro estimado',lucro>=0?'var(--green)':'var(--red)','')+
-    finKpi(mo(comprometido90),'Comprometido 90d','var(--purple)','')+
-    finKpi(vencidas.length,'Contas vencidas',vencidas.length?'var(--red)':'var(--muted)',vencidas.length?mo(vencidas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0))+' em atraso':'')+
-    finKpi(vencer7.length,'Vencem em 7 dias',vencer7.length?'var(--amber)':'var(--muted)',vencer7.length?mo(vencer7.reduce(function(a,c){return a+parseFloat(c.valor||0);},0)):'')+
-    finKpi(D.costs.filter(function(c){return c.tipo_compromisso==='recorrente';}).length,'Assinaturas ativas','var(--blue)','');
 
-  // ── ALERTAS ───────────────────────────────────────────────
+  // ── ZONA 1: SAÚDE FINANCEIRA ──────────────────────────────
+  var saudeEl=$('fin-saude');
+  if(saudeEl){
+    var saudeCls=lucro>=0?'ok':'danger';
+    var saudeIcon=lucro>=0?'&#9989;':'&#9888;&#65039;';
+    var saudeMsg=lucro>=0
+      ?'Resultado positivo — receita supera os gastos'
+      :'Gastos superam a receita em '+mo(Math.abs(lucro));
+    var lucroColor=lucro>=0?'var(--green)':'var(--red)';
+    saudeEl.innerHTML=
+      '<div class="fin-saude fin-saude-'+saudeCls+'">'+
+        '<div class="fin-saude-row">'+
+          '<div class="fin-saude-bloco">'+
+            '<span class="fin-saude-lbl">Receita</span>'+
+            '<span class="fin-saude-val" style="color:var(--green)">'+mo(totRec)+'</span>'+
+          '</div>'+
+          '<div class="fin-saude-sep">'+
+            '<span class="fin-saude-op">−</span>'+
+          '</div>'+
+          '<div class="fin-saude-bloco">'+
+            '<span class="fin-saude-lbl">Gastos totais</span>'+
+            '<span class="fin-saude-val" style="color:var(--amber)">'+mo(totAll)+'</span>'+
+          '</div>'+
+          '<div class="fin-saude-sep">'+
+            '<span class="fin-saude-op">=</span>'+
+          '</div>'+
+          '<div class="fin-saude-bloco fin-saude-resultado">'+
+            '<span class="fin-saude-lbl">Resultado</span>'+
+            '<span class="fin-saude-val fin-saude-lucro" style="color:'+lucroColor+'">'+mo(lucro)+'</span>'+
+          '</div>'+
+          '<div class="fin-saude-status">'+
+            '<span class="fin-saude-icon">'+saudeIcon+'</span>'+
+            '<span class="fin-saude-msg">'+saudeMsg+'</span>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+  }
+
+  // ── ZONA 2: 4 CARDS DE AÇÃO ───────────────────────────────
+  var acaoEl=$('fin-acao');
+  if(acaoEl){
+    var vencidasVal=vencidas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+    var vencer7Val=vencer7.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+    acaoEl.innerHTML=
+      finAcaoCard(
+        vencidas.length?'&#128198;':'&#9989;',
+        'Contas vencidas',
+        vencidas.length?String(vencidas.length)+' conta'+(vencidas.length>1?'s':''):'Nenhuma',
+        vencidas.length?mo(vencidasVal):'Em dia',
+        vencidas.length?'danger':'ok'
+      )+
+      finAcaoCard(
+        vencer7.length?'&#9203;':'&#9989;',
+        'Vencem em 7 dias',
+        vencer7.length?String(vencer7.length)+' conta'+(vencer7.length>1?'s':''):'Nenhuma',
+        vencer7.length?mo(vencer7Val):'Em dia',
+        vencer7.length?'warn':'ok'
+      )+
+      finAcaoCard(
+        '&#128197;',
+        'Comprometido 90d',
+        mo(comprometido90),
+        comprometido90>0?'a vencer':'sem compromissos',
+        comprometido90>0?'warn':'ok'
+      )+
+      finAcaoCard(
+        '&#128260;',
+        'Recorrentes ativas',
+        String(recorrentes.length),
+        recorrentes.length?mo(recorrentes.reduce(function(a,c){return a+parseFloat(c.valor||0);},0))+'/ciclo':'nenhuma cadastrada',
+        recorrentes.length?'info':'ok'
+      );
+  }
+
+  // ── ZONA 3: ALERTAS ───────────────────────────────────────
   var alerts=[];
-  if(vencidas.length)alerts.push({cls:'red',icon:'&#128198;',title:vencidas.length+' conta(s) vencida(s)',sub:'Total: '+mo(vencidas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0)),val:mo(vencidas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0))});
-  if(vencer7.length)alerts.push({cls:'amber',icon:'&#9203;',title:vencer7.length+' conta(s) vencem em 7 dias',sub:vencer7.map(function(c){return c.descricao;}).slice(0,2).join(', ')+(vencer7.length>2?' +'+( vencer7.length-2):''),val:mo(vencer7.reduce(function(a,c){return a+parseFloat(c.valor||0);},0))});
-  if(totMes>totPrevMes&&totPrevMes>0)alerts.push({cls:'amber',icon:'&#128200;',title:'Gastos '+deltaSign+deltaMes+'% vs mes anterior',sub:'Mes atual: '+mo(totMes)+' | Anterior: '+mo(totPrevMes),val:''});
-  if(lucro<0)alerts.push({cls:'red',icon:'&#9888;&#65039;',title:'Gastos superaram a receita',sub:'Prejuizo estimado: '+mo(Math.abs(lucro)),val:mo(lucro)});
-  else if(lucro>0)alerts.push({cls:'green',icon:'&#129395;',title:'Lucro positivo este ciclo',sub:'Receita: '+mo(totRec)+' | Gastos: '+mo(totAll),val:mo(lucro)});
+  if(vencidas.length)alerts.push({cls:'red',icon:'&#128198;',title:vencidas.length+' conta(s) vencida(s) — ação necessária',sub:'Total em atraso: '+mo(vencidas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0)),val:mo(vencidas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0))});
+  if(vencer7.length)alerts.push({cls:'amber',icon:'&#9203;',title:vencer7.length+' conta(s) vencem nos próximos 7 dias',sub:vencer7.map(function(c){return c.descricao;}).slice(0,2).join(', ')+(vencer7.length>2?' +more':''),val:mo(vencer7.reduce(function(a,c){return a+parseFloat(c.valor||0);},0))});
+  if(totMes>totPrevMes&&totPrevMes>0)alerts.push({cls:'amber',icon:'&#128200;',title:'Gastos '+deltaSign+deltaMes+'% acima do mês anterior',sub:'Mês atual: '+mo(totMes)+' | Anterior: '+mo(totPrevMes),val:''});
   var alertEl=$('fin-alerts');
-  if(alertEl)alertEl.innerHTML=alerts.map(function(a){
+  if(alertEl)alertEl.innerHTML=alerts.length?alerts.map(function(a){
     return '<div class="fin-alert '+a.cls+'"><span class="fin-alert-icon">'+a.icon+'</span><div class="fin-alert-body"><p class="fin-alert-title">'+a.title+'</p><p class="fin-alert-sub">'+a.sub+'</p></div>'+(a.val?'<span class="fin-alert-val">'+a.val+'</span>':'')+' </div>';
-  }).join('');
+  }).join(''):'';
 
   // ── CATEGORIAS ────────────────────────────────────────────
   var byCat={};
   allCosts.forEach(function(c){byCat[c.categoria||'Outro']=(byCat[c.categoria||'Outro']||0)+parseFloat(c.valor||0);});
   var catKeys=Object.keys(byCat).sort(function(a,b){return byCat[b]-byCat[a];}).slice(0,7);
   var maxCat=byCat[catKeys[0]]||1;
-  var colors=['var(--neon)','var(--blue)','var(--amber)','var(--green)','var(--purple)','var(--red)','var(--muted)'];
+  var colors=['var(--blue)','var(--green)','var(--amber)','var(--purple)','var(--red)','var(--muted)','var(--muted2)'];
   var catEl=$('fin-cat-chart');
   if(catEl)catEl.innerHTML=catKeys.map(function(k,i){
     return '<div class="fin-bar-row"><span class="fin-bar-label">'+k+'</span><div class="fin-bar-track"><div class="fin-bar-fill" style="width:'+Math.round(byCat[k]/maxCat*100)+'%;background:'+colors[i]+'"></div></div><span class="fin-bar-val">'+mo(byCat[k])+'</span></div>';
@@ -1709,7 +1806,7 @@ function renderFinDashboard(){
   if(monthEl)monthEl.innerHTML=months.map(function(m){
     var pct=Math.max(Math.round(m.tot/maxM*100),2);
     var isCur=m.key===curMonth;
-    return '<div class="fin-month-bar-wrap"><div style="height:'+pct+'%;width:100%;background:'+(isCur?'var(--neon)':'var(--border)') +';border-radius:3px 3px 0 0"></div><span style="font-size:8px;color:'+(isCur?'var(--neon)':'var(--muted)')+'">'+m.lbl+'</span></div>';
+    return '<div class="fin-month-bar-wrap" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:80px;gap:4px"><div style="width:100%;height:'+pct+'%;background:'+(isCur?'var(--blue)':'var(--border)')+';border-radius:3px 3px 0 0;min-height:3px"></div><span style="font-size:8px;color:'+(isCur?'var(--blue)':'var(--muted)')+'">'+m.lbl+'</span></div>';
   }).join('');
 
   // ── TIPO: DESPESA VS INVESTIMENTO ─────────────────────────
@@ -1726,7 +1823,6 @@ function renderFinDashboard(){
     '</div>';
 
   // ── POR SOCIO ─────────────────────────────────────────────
-  var socioNames=['Juliana Paulinelli','Fernando Araujo','Victor Paulinelli','Yasmin Zurdo'];
   var costsDoMes=allCosts.filter(function(c){return c.data&&c.data.startsWith(curMonth);});
   var totMesSocio=costsDoMes.reduce(function(a,c){return a+parseFloat(c.valor||0);},0)||1;
   var socioEl=$('fin-socio-chart');
@@ -1737,7 +1833,6 @@ function renderFinDashboard(){
   }).join('')+'<div style="font-size:9px;color:var(--muted);margin-top:8px">Divisao igualitaria: '+mo(totMesSocio/4)+'/socio</div>';
 
   // ── RECORRENTES ───────────────────────────────────────────
-  var recorrentes=allCosts.filter(function(c){return c.tipo_compromisso==='recorrente'||c.recorrente;});
   var recEl=$('fin-recorrentes');
   if(recEl)recEl.innerHTML=recorrentes.length?recorrentes.slice(0,8).map(function(c){
     var nextLabel=c.recorrencia==='mensal'?'mensal':c.recorrencia==='trimestral'?'trimestral':'anual';
@@ -1761,13 +1856,11 @@ function renderFinDashboard(){
     var md=new Date(now);md.setMonth(md.getMonth()+mi);
     var mKey=md.getFullYear()+'-'+(String(md.getMonth()+1).padStart(2,'0'));
     var mLabel=md.toLocaleString('pt-BR',{month:'long',year:'numeric'});
-    // Items: costs with vencimento in this month + recorrentes + parcelas
     var items=[];
     allCosts.forEach(function(c){
       if(c.data_vencimento&&c.data_vencimento.startsWith(mKey)&&c.status_pagto!=='pago'){
         items.push({name:c.descricao,val:parseFloat(c.valor||0),tipo:c.tipo_compromisso||'unico'});
       } else if((c.tipo_compromisso==='recorrente'||c.recorrente)&&c.status_pagto==='pago'&&mi>0){
-        // project recorrente into future months
         items.push({name:c.descricao+' (recorrente)',val:parseFloat(c.valor||0),tipo:'recorrente'});
       }
     });
@@ -1780,10 +1873,24 @@ function renderFinDashboard(){
   timelineEl.innerHTML=tlHtml;
 }
 
+
 function finKpi(val,lbl,color,sub,subColor){
   return '<div class="fin-kpi"><div class="fin-kpi-accent" style="background:'+color+'"></div><div class="fin-kpi-val" style="color:'+color+'">'+val+'</div><div class="fin-kpi-lbl">'+lbl+'</div>'+(sub?'<div class="fin-kpi-delta" style="color:'+(subColor||'var(--muted)')+'">'+sub+'</div>':'')+'</div>';
 }
 
+
+function finAcaoCard(icon,lbl,val,sub,cls){
+  var clsMap={danger:'border-color:rgba(224,82,82,.4);background:rgba(224,82,82,.06)',warn:'border-color:rgba(230,162,46,.4);background:rgba(230,162,46,.06)',ok:'border-color:var(--border)',info:'border-color:rgba(45,107,228,.3);background:rgba(45,107,228,.06)'};
+  var iconClsMap={danger:'color:var(--red)',warn:'color:var(--amber)',ok:'color:var(--green)',info:'color:var(--blue)'};
+  return '<div class="fin-acao-card" style="'+(clsMap[cls]||clsMap.ok)+'">'+
+    '<div class="fin-acao-icon" style="'+(iconClsMap[cls]||'')+'">'+icon+'</div>'+
+    '<div class="fin-acao-body">'+
+      '<div class="fin-acao-lbl">'+lbl+'</div>'+
+      '<div class="fin-acao-val" style="'+(iconClsMap[cls]||'color:var(--fg)')+'">'+val+'</div>'+
+      '<div class="fin-acao-sub">'+sub+'</div>'+
+    '</div>'+
+  '</div>';
+}
 
 function loadCosts(){
   return db.from('custos').select('*,pago_por:pessoas!custos_pago_por_id_fkey(nome)').order('created_at',{ascending:false}).then(function(r){
