@@ -976,9 +976,9 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
         <div class="cw" id="section-tarefas">
           <div class="section-header"><h2 class="section-title">Tarefas</h2><div class="header-actions">
   <div class="view-toggle">
-    <button class="view-toggle-btn active" id="view-lista-btn" onclick="setTaskView('lista')">☰ Lista</button>
-    <button class="view-toggle-btn" id="view-kanban-btn" onclick="setTaskView('kanban')">⊞ Kanban</button>
-    <button class="view-toggle-btn" id="view-timeline-btn" onclick="setTaskView('timeline')">📅 Cronograma</button>
+    <button class="view-toggle-btn active" id="view-lista-btn" data-view="lista">☰ Lista</button>
+    <button class="view-toggle-btn" id="view-kanban-btn" data-view="kanban">⊞ Kanban</button>
+    <button class="view-toggle-btn" id="view-timeline-btn" data-view="timeline">📅 Cronograma</button>
   </div>
   <button class="btn-add" data-modal="task">+ Nova tarefa</button>
 </div></div>
@@ -3383,6 +3383,8 @@ function handleClick(e){
   if(fb&&fb.dataset.f)return applyFilter(fb.dataset.f,fb.dataset.k,fb.dataset.v,fb);
   var sec=e.target.closest('[data-sec]');
   if(sec&&sec.dataset.sec){e.preventDefault();return openSection(sec.dataset.sec);}
+  var viewBtn=e.target.closest('[data-view]');
+  if(viewBtn&&viewBtn.dataset.view){setTaskView(viewBtn.dataset.view);return;}
   var addBtn=e.target.closest('[data-modal]');
   if(addBtn&&addBtn.dataset.modal){resetForm(addBtn.dataset.modal);openModal(addBtn.dataset.modal);return;}
   // close buttons in modal header and footer
