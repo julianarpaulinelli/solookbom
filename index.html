@@ -1721,8 +1721,8 @@ function renderKanban(list){
   var cols=[
     {id:'todo',   label:'A Fazer',      color:'var(--muted)',  icon:'○'},
     {id:'doing',  label:'Em Andamento', color:'var(--amber)',  icon:'◑'},
-    {id:'done',   label:'Concluído',    color:'var(--green)',  icon:'●'},
-    {id:'blocked',label:'Bloqueado',    color:'var(--red)',    icon:'✕'}
+    {id:'blocked',label:'Bloqueado',    color:'var(--red)',    icon:'✕'},
+    {id:'done',   label:'Concluído',    color:'var(--green)',  icon:'●'}
   ];
   var el=$('task-kanban');
   el.innerHTML='<div class="kanban-board">'+cols.map(function(col){
