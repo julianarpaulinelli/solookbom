@@ -725,6 +725,18 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   .fin-saude-bloco{min-width:80px;padding:0 12px}
   .fin-saude-status{padding-left:12px;min-width:140px}
 }
+
+/* ── FILTROS DE DATA ─────────────────────────────────────── */
+.fin-date-filters{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:14px 16px}
+.fin-date-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:220px}
+.fin-date-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.fin-date-row{display:flex;align-items:center;gap:6px}
+.fin-date-input{padding:6px 10px;background:var(--card2);border:1px solid var(--border);border-radius:6px;color:var(--fg);font:12px 'Inter',sans-serif;outline:none;transition:border-color .2s;flex:1;min-width:0}
+.fin-date-input:focus{border-color:var(--blue)}
+.fin-date-input::-webkit-calendar-picker-indicator{filter:invert(.5)}
+.fin-date-sep{font-size:10px;color:var(--muted2);flex-shrink:0}
+.fin-date-clear{background:none;border:none;cursor:pointer;color:var(--muted2);font-size:13px;padding:4px;border-radius:4px;transition:color .15s;flex-shrink:0}
+.fin-date-clear:hover{color:var(--red)}
 </style>
 </head>
 <body>
@@ -967,6 +979,29 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
           <!-- ZONA 6: LANÇAMENTOS -->
           <div class="fin-section-label">Todos os lançamentos</div>
+
+          <!-- FILTROS DE DATA -->
+          <div class="fin-date-filters">
+            <div class="fin-date-group">
+              <label class="fin-date-lbl">Período do lançamento</label>
+              <div class="fin-date-row">
+                <input type="date" id="cost-data-ini" class="fin-date-input" placeholder="De" onchange="renderCosts()">
+                <span class="fin-date-sep">até</span>
+                <input type="date" id="cost-data-fim" class="fin-date-input" placeholder="Até" onchange="renderCosts()">
+                <button class="fin-date-clear" onclick="document.getElementById('cost-data-ini').value='';document.getElementById('cost-data-fim').value='';renderCosts()">✕</button>
+              </div>
+            </div>
+            <div class="fin-date-group">
+              <label class="fin-date-lbl">Data de vencimento</label>
+              <div class="fin-date-row">
+                <input type="date" id="cost-venc-ini" class="fin-date-input" placeholder="De" onchange="renderCosts()">
+                <span class="fin-date-sep">até</span>
+                <input type="date" id="cost-venc-fim" class="fin-date-input" placeholder="Até" onchange="renderCosts()">
+                <button class="fin-date-clear" onclick="document.getElementById('cost-venc-ini').value='';document.getElementById('cost-venc-fim').value='';renderCosts()">✕</button>
+              </div>
+            </div>
+          </div>
+
           <div class="metrics" id="cost-metrics"></div>
           <div class="filters"><span class="fl">Tipo:</span><button class="fb active" data-f="fin" data-k="tipo" data-v="all">Todos</button><button class="fb" data-f="fin" data-k="tipo" data-v="investimento">Investimentos</button><button class="fb" data-f="fin" data-k="tipo" data-v="despesa">Despesas</button></div>
           <div class="filters"><span class="fl">Pagamento:</span><button class="fb active" data-f="fin" data-k="pagto" data-v="all">Todos</button><button class="fb" data-f="fin" data-k="pagto" data-v="pago">Pagos</button><button class="fb" data-f="fin" data-k="pagto" data-v="pendente">Pendentes</button><button class="fb" data-f="fin" data-k="pagto" data-v="vencido">Vencidos</button></div>
@@ -1899,22 +1934,48 @@ function loadCosts(){
 }
 function renderCosts(){
   var f=F.fin;
+  var q=($('cost-search')||{value:''}).value.toLowerCase();
+  var dataIni=($('cost-data-ini')||{value:''}).value;
+  var dataFim=($('cost-data-fim')||{value:''}).value;
+  var vencIni=($('cost-venc-ini')||{value:''}).value;
+  var vencFim=($('cost-venc-fim')||{value:''}).value;
+
   var list=D.costs.filter(function(c){
-  var q=($('cost-search')||{value:''}).value.toLowerCase();if(q)list=list.filter(function(c){return (c.descricao&&String(c.descricao).toLowerCase().includes(q))||(c.categoria&&String(c.categoria).toLowerCase().includes(q))||(c.categoria_comp&&String(c.categoria_comp).toLowerCase().includes(q));});
-    return(f.tipo==='all'||c.tipo===f.tipo)&&(f.pagto==='all'||c.status_pagto===f.pagto)&&(f.rec==='all'||(f.rec==='sim'&&c.recorrente)||(f.rec==='nao'&&!c.recorrente));
+    // filtros de botão
+    if(f.tipo!=='all'&&c.tipo!==f.tipo)return false;
+    if(f.pagto!=='all'&&c.status_pagto!==f.pagto)return false;
+    if(f.rec==='sim'&&!c.recorrente)return false;
+    if(f.rec==='nao'&&c.recorrente)return false;
+    // busca texto
+    if(q){
+      var match=(c.descricao&&c.descricao.toLowerCase().includes(q))||
+                (c.categoria&&c.categoria.toLowerCase().includes(q))||
+                (c.metodo_pagto&&c.metodo_pagto.toLowerCase().includes(q));
+      if(!match)return false;
+    }
+    // filtro período lançamento
+    if(dataIni&&c.data&&c.data<dataIni)return false;
+    if(dataFim&&c.data&&c.data>dataFim)return false;
+    // filtro data vencimento
+    if(vencIni&&c.data_vencimento&&c.data_vencimento<vencIni)return false;
+    if(vencFim&&c.data_vencimento&&c.data_vencimento>vencFim)return false;
+    return true;
   });
-  var tot=D.costs.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
-  var inv=D.costs.filter(function(c){return c.tipo==='investimento';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
-  var desp=D.costs.filter(function(c){return c.tipo==='despesa';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
-  var pend=D.costs.filter(function(c){return c.status_pagto==='pendente'||c.status_pagto==='vencido';}).length;
+
+  var tot=list.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var inv=list.filter(function(c){return c.tipo==='investimento';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var desp=list.filter(function(c){return c.tipo==='despesa';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var pend=list.filter(function(c){return c.status_pagto==='pendente'||c.status_pagto==='vencido';}).length;
   $('cost-metrics').innerHTML=metric(mo(tot),'Total')+metric(mo(inv),'Investimentos','var(--blue)')+metric(mo(desp),'Despesas','var(--muted)')+metric(pend,'Pendentes',pend>0?'var(--red)':'var(--green)');
   renderFinDashboard();
-  var el=$('cost-list');if(!list.length){el.innerHTML='<p class="empty">Nenhum lançamento</p>';return;}
+  var el=$('cost-list');
+  if(!list.length){el.innerHTML='<p class="empty">Nenhum lançamento encontrado</p>';return;}
   el.innerHTML=list.map(function(c){
     return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+c.descricao+(c.recorrente?'<span class="badge b-recorrente" style="margin-left:6px">🔄 Recorrente</span>':'')+'</p><div class="card-meta">'+badge(c.tipo,c.tipo)+badge(c.status_pagto||'pago',L.pagtoSt[c.status_pagto||'pago'])+(c.metodo_pagto?catTag(c.metodo_pagto):'')+(c.categoria?catTag(c.categoria):'')+(c.data?'<span style="font-size:9px;color:var(--muted)">'+fmtDate(c.data)+'</span>':'')+(c.data_vencimento?'<span style="font-size:9px;color:var(--red)">Vence: '+fmtDate(c.data_vencimento)+'</span>':'')+(c.pago_por?'<span style="font-size:9px;color:var(--muted)">👤 '+c.pago_por.nome+'</span>':'')+'</div></div><div class="card-actions"><span style="font-size:13px;font-weight:800;white-space:nowrap">'+mo(c.valor)+'</span>'+editBtn(c.id,'cost')+'<button class="del" data-del-cost="'+c.id+'">×</button></div></div></div>';
   }).join('');
   renderFinMensal();
 }
+
 function renderFinMensal(){
   // divisão mensal por sócio
   var sociosNomes=['Juliana Paulinelli','Fernando Araújo','Victor Paulinelli','Yasmin Zurdo'];
