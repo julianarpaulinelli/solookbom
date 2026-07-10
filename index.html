@@ -1161,9 +1161,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             <div class="fin-kpi"><div class="fin-kpi-accent" style="background:var(--blue)"></div><div class="fin-kpi-val" style="color:var(--blue)" id="sim-total">R$ 0,00</div><div class="fin-kpi-lbl">Total a investir</div></div>
             <div class="fin-kpi"><div class="fin-kpi-accent" style="background:var(--green)"></div><div class="fin-kpi-val" style="color:var(--green)" id="sim-unit">R$ 0,00</div><div class="fin-kpi-lbl">Custo por unidade</div></div>
             <div class="fin-kpi"><div class="fin-kpi-accent" style="background:var(--amber)"></div><div class="fin-kpi-val" style="color:var(--amber)" id="sim-count">0</div><div class="fin-kpi-lbl">Itens cotados</div></div>
-            <div class="fin-kpi"><div class="fin-kpi-accent" style="background:var(--muted2)"></div><div class="fin-kpi-val" id="sim-qty">—</div><div class="fin-kpi-lbl">Menor lote</div></div>
           </div>
-          <p class="sim-unit-note" id="sim-unit-note"></p>
 
           <!-- TABELA -->
           <div class="sim-table-wrap">
@@ -1190,6 +1188,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             <div class="sim-save-group">
               <input type="text" class="sim-name-inp" id="sim-name" placeholder="Nome da simulação (ex: Coleção Inverno 2026)">
               <button class="btn-add" id="sim-save-btn">&#128190; Salvar simulação</button>
+              <button class="btn-sec" id="sim-cancel-edit-btn" style="display:none;border-color:var(--amber);color:var(--amber)">✕ Cancelar edição</button>
             </div>
           </div>
 
@@ -3888,24 +3887,34 @@ function simSave(){
   if(!name){toast('Dê um nome para a simulação','err');$('sim-name').focus();return;}
   var t=simTotals();
   var hist=simLoadHistory();
-  var sim={
-    id: Date.now(),
-    name: name,
-    date: new Date().toISOString(),
-    user: me||'',
-    rows: simRows.map(function(r){return Object.assign({},r);}),
-    total: t.total,
-    unitCost: t.unitCost,
-    minQtd: t.minQtd
-  };
-  hist.unshift(sim);
-  simSaveHistory(hist);
-  toast('Simulação "'+name+'" salva!');
+  if(simEditingId){
+    // Atualizar existente
+    var idx=hist.findIndex(function(s){return s.id===simEditingId;});
+    if(idx!==-1){
+      hist[idx]={id:simEditingId,name:name,date:new Date().toISOString(),user:me||'',
+        rows:simRows.map(function(r){return Object.assign({},r);}),
+        total:t.total,unitCost:t.unitCost,minQtd:t.minQtd};
+      simSaveHistory(hist);
+      toast('Simulação "'+name+'" atualizada!');
+    }
+    simEditingId=null;
+  } else {
+    // Nova simulação
+    var sim={id:Date.now(),name:name,date:new Date().toISOString(),user:me||'',
+      rows:simRows.map(function(r){return Object.assign({},r);}),
+      total:t.total,unitCost:t.unitCost,minQtd:t.minQtd};
+    hist.unshift(sim);
+    simSaveHistory(hist);
+    toast('Simulação "'+name+'" salva!');
+  }
   $('sim-name').value='';
+  simUpdateEditingUI();
   simRenderHistory();
 }
 
-// ── CARREGAR SIMULAÇÃO ────────────────────────────────────
+// ── CARREGAR / EDITAR SIMULAÇÃO ──────────────────────────
+var simEditingId = null;
+
 function simLoad(id){
   var hist=simLoadHistory();
   var sim=hist.find(function(s){return s.id===id;});
@@ -3914,11 +3923,41 @@ function simLoad(id){
   simRows=sim.rows.map(function(r){return Object.assign({},r);});
   simNextId=simRows.reduce(function(mx,r){return Math.max(mx,r.id||0);},0)+1;
   $('sim-name').value=sim.name+' (cópia)';
+  simEditingId=null;
   simRender();
+  simUpdateEditingUI();
   toast('Simulação "'+sim.name+'" carregada!');
-  // Scroll para o topo da seção
-  var sec=$('section-simulador');
-  if(sec)sec.scrollTop=0;
+  var sec=$('section-simulador');if(sec)sec.scrollTop=0;
+}
+
+function simEdit(id){
+  var hist=simLoadHistory();
+  var sim=hist.find(function(s){return s.id===id;});
+  if(!sim)return;
+  if(simRows.length&&!confirm('Isso vai substituir os itens atuais. Continuar?'))return;
+  simRows=sim.rows.map(function(r){return Object.assign({},r);});
+  simNextId=simRows.reduce(function(mx,r){return Math.max(mx,r.id||0);},0)+1;
+  $('sim-name').value=sim.name;
+  simEditingId=id;
+  simRender();
+  simUpdateEditingUI();
+  toast('Editando "'+sim.name+'" — salve para atualizar.');
+  var sec=$('section-simulador');if(sec)sec.scrollTop=0;
+}
+
+function simUpdateEditingUI(){
+  var saveBtn=$('sim-save-btn');
+  var nameInp=$('sim-name');
+  var cancelBtn=$('sim-cancel-edit-btn');
+  if(simEditingId){
+    if(saveBtn){saveBtn.textContent='💾 Atualizar simulação';saveBtn.style.background='var(--amber)';}
+    if(nameInp){nameInp.style.borderColor='var(--amber)';}
+    if(cancelBtn)cancelBtn.style.display='inline-flex';
+  } else {
+    if(saveBtn){saveBtn.textContent='💾 Salvar simulação';saveBtn.style.background='';}
+    if(nameInp){nameInp.style.borderColor='';}
+    if(cancelBtn)cancelBtn.style.display='none';
+  }
 }
 
 // ── EXCLUIR SIMULAÇÃO ─────────────────────────────────────
@@ -3953,14 +3992,13 @@ function simRenderHistory(){
           '<div class="sim-hist-meta">'+dateStr+' · por '+userName+' · '+s.rows.length+' item'+(s.rows.length!==1?'s':'')+'</div>'+
         '</div>'+
         '<div class="sim-hist-actions">'+
-          '<button class="btn-sec" data-sim-load="'+s.id+'" style="font-size:10px;padding:4px 10px">Carregar</button>'+
+          '<button class="btn-sec" data-sim-edit="'+s.id+'" style="font-size:10px;padding:4px 10px">✏ Editar</button>'+
           '<button class="sim-del" data-sim-del="'+s.id+'">×</button>'+
         '</div>'+
       '</div>'+
       '<div class="sim-hist-kpis">'+
         '<div class="sim-hist-kpi"><span class="sim-hist-kpi-lbl">Total</span><span class="sim-hist-kpi-val" style="color:var(--blue)">'+simFmt(s.total)+'</span></div>'+
         '<div class="sim-hist-kpi"><span class="sim-hist-kpi-lbl">Por unidade</span><span class="sim-hist-kpi-val" style="color:var(--green)">'+simFmt(s.unitCost)+'</span></div>'+
-        '<div class="sim-hist-kpi"><span class="sim-hist-kpi-lbl">Lote</span><span class="sim-hist-kpi-val">'+s.minQtd+' un</span></div>'+
         '<div class="sim-hist-kpi"><span class="sim-hist-kpi-lbl">Itens</span><span class="sim-hist-kpi-val">'+s.rows.length+'</span></div>'+
       '</div>'+
       '<div class="sim-hist-items">'+
@@ -3996,9 +4034,6 @@ function simUpdateSummary(){
   el=$('sim-total');if(el)el.textContent=simFmt(t.total);
   el=$('sim-unit');if(el)el.textContent=t.unitCost>0?simFmt(t.unitCost):'R$ 0,00';
   el=$('sim-count');if(el)el.textContent=simRows.length;
-  el=$('sim-qty');if(el)el.textContent=t.minQtd>0?t.minQtd+' un':'—';
-  var note=$('sim-unit-note');
-  if(note)note.textContent=t.minQtd>0&&simRows.length>1?'Custo unitário baseado em '+t.minQtd+' unidades (menor lote) sobre total de '+simFmt(t.total)+'.':'';
 }
 
 // ── RENDER TABELA ─────────────────────────────────────────
@@ -4009,9 +4044,6 @@ function simRender(){
   $('sim-total').textContent=simFmt(t.total);
   $('sim-unit').textContent=t.unitCost>0?simFmt(t.unitCost):'R$ 0,00';
   $('sim-count').textContent=simRows.length;
-  $('sim-qty').textContent=t.minQtd>0?t.minQtd+' un':'—';
-  var note=$('sim-unit-note');
-  if(note){note.textContent=t.minQtd>0&&simRows.length>1?'Custo unitário baseado em '+t.minQtd+' unidades (menor lote) sobre total de '+simFmt(t.total)+'.':'';}
   if(!simRows.length){
     tbody.innerHTML='<tr><td colspan="9" class="sim-empty">Nenhum item. Clique em "+ Adicionar item".</td></tr>';
     return;
@@ -4079,6 +4111,17 @@ function initSimulador(){
   }
   if(exportBtn&&!exportBtn._simInit){exportBtn._simInit=true;exportBtn.addEventListener('click',simExportCSV);}
   if(saveBtn&&!saveBtn._simInit){saveBtn._simInit=true;saveBtn.addEventListener('click',simSave);}
+  var cancelEditBtn=$('sim-cancel-edit-btn');
+  if(cancelEditBtn&&!cancelEditBtn._simInit){
+    cancelEditBtn._simInit=true;
+    cancelEditBtn.addEventListener('click',function(){
+      simEditingId=null;
+      simRows=[];simNextId=1;
+      $('sim-name').value='';
+      simUpdateEditingUI();
+      simRender();
+    });
+  }
 
   // Enter no campo nome salva
   var nameInp=$('sim-name');
@@ -4118,6 +4161,8 @@ function initSimulador(){
   if(histEl&&!histEl._simInit){
     histEl._simInit=true;
     histEl.addEventListener('click',function(e){
+      var editBtn=e.target.closest('[data-sim-edit]');
+      if(editBtn){simEdit(parseInt(editBtn.dataset.simEdit));return;}
       var loadBtn=e.target.closest('[data-sim-load]');
       if(loadBtn){simLoad(parseInt(loadBtn.dataset.simLoad));return;}
       var delBtn=e.target.closest('[data-sim-del]');
