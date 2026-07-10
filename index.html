@@ -4092,11 +4092,13 @@ function simCalc(r){
   return {qtd:qtd,valor:valor,unit:unit,parcVal:parcVal,parcelas:parcelas};
 }
 function simTotals(){
-  var total=0;var qtds=[];
-  simRows.forEach(function(r){var c=simCalc(r);total+=c.valor;if(c.qtd>0)qtds.push(c.qtd);});
-  var minQtd=qtds.length?Math.min.apply(null,qtds):0;
-  var unitCost=minQtd>0?total/minQtd:0;
-  return {total:total,unitCost:unitCost,minQtd:minQtd};
+  var total=0;var unitCost=0;
+  simRows.forEach(function(r){
+    var c=simCalc(r);
+    total+=c.valor;
+    if(c.unit>0)unitCost+=c.unit;
+  });
+  return {total:total,unitCost:unitCost};
 }
 function simEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
 
@@ -4121,7 +4123,7 @@ function simSave(){
     if(idx!==-1){
       hist[idx]={id:simEditingId,name:name,date:new Date().toISOString(),user:me||'',
         rows:simRows.map(function(r){return Object.assign({},r);}),
-        total:t.total,unitCost:t.unitCost,minQtd:t.minQtd};
+        total:t.total,unitCost:t.unitCost};
       simSaveHistory(hist);
       toast('Simulação "'+name+'" atualizada!');
     }
@@ -4130,7 +4132,7 @@ function simSave(){
     // Nova simulação
     var sim={id:Date.now(),name:name,date:new Date().toISOString(),user:me||'',
       rows:simRows.map(function(r){return Object.assign({},r);}),
-      total:t.total,unitCost:t.unitCost,minQtd:t.minQtd};
+      total:t.total,unitCost:t.unitCost};
     hist.unshift(sim);
     simSaveHistory(hist);
     toast('Simulação "'+name+'" salva!');
@@ -4318,7 +4320,7 @@ function simExportCSV(){
   var t=simTotals();
   csvRows.push([]);
   csvRows.push(['TOTAL','','',''+t.total.toFixed(2),'','','','']);
-  csvRows.push(['CUSTO/UNIDADE','('+t.minQtd+' un)','',''+t.unitCost.toFixed(2),'','','','']);
+  csvRows.push(['CUSTO/UNIDADE (soma unitários)','','',''+t.unitCost.toFixed(2),'','','','']);
   var csv='\uFEFF'+csvRows.map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'""')+'"';}).join(';');}).join('\r\n');
   var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   var url=URL.createObjectURL(blob);
