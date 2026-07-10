@@ -1863,7 +1863,7 @@ function showWelcomeAlerts(){
 function loadPessoas(){
   return db.from('pessoas').select('*').eq('ativo',true).order('nome').then(function(r){
     D.pessoas=r.data||[];
-    var opts='<option value="">— Nenhum —</option>'+D.pessoas.map(function(p){return '<option value="'+p.id+'">'+p.nome+(p.cargo?' · '+p.cargo:'')+'</option>';}).join('');
+    var opts='<option value="">— Nenhum —</option>'+D.pessoas.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(p){return '<option value="'+p.id+'">'+p.nome+(p.cargo?' · '+p.cargo:'')+'</option>';}).join('');
     ['t-owner','t-coowner','s-resp','pa-resp','col-resp','ped-resp','c-pago-por','mk-resp','me-resp'].forEach(function(id){var el=$(id);if(el)el.innerHTML=opts;});
     // chips de responsável na produção
     var chipsEl=$('prd-resp-chips');
@@ -2112,7 +2112,7 @@ function saveTask(){
 function loadSuppliers(){
   return db.from('fornecedores').select('*,responsavel:pessoas!fornecedores_responsavel_pessoa_id_fkey(nome)').order('avaliacao',{ascending:false}).then(function(r){
     D.suppliers=r.data||[];
-    var fOpts='<option value="">— Nenhum —</option>'+D.suppliers.map(function(s){return '<option value="'+s.id+'">'+s.nome+'</option>';}).join('');
+    var fOpts='<option value="">— Nenhum —</option>'+D.suppliers.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(s){return '<option value="'+s.id+'">'+s.nome+'</option>';}).join('');
     ['prd-fornecedor','ped-fornecedor'].forEach(function(id){var el=$(id);if(el)el.innerHTML=fOpts;});
     renderSuppliers();
   });
@@ -2623,7 +2623,7 @@ function pedidoUpsertCliente(pedido){
 function populateProdutoSelectEstoque(){
   var el=document.getElementById('e-produto-id');if(!el)return;
   el.innerHTML='<option value="">— Nenhum —</option>'+
-    D.produtos.map(function(p){return '<option value="'+p.id+'">'+p.sku+' — '+p.nome+'</option>';}).join('');
+    D.produtos.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(p){return '<option value="'+p.id+'">'+p.sku+' — '+p.nome+'</option>';}).join('');
 }
 
 // ── ITEM 5: CALENDARIO POSTAGENS ────────────────────────────────────────────
@@ -2697,7 +2697,7 @@ function renderCalendario(){
 function loadProdutos(){
   return db.from('produtos').select('*,fornecedor:fornecedores(nome),colecao:colecoes(nome)').eq('ativo',true).order('created_at',{ascending:false}).then(function(r){
     D.produtos=r.data||[];
-    var fOpts='<option value="">— Nenhum —</option>'+D.suppliers.map(function(s){return '<option value="'+s.id+'">'+s.nome+'</option>';}).join('');
+    var fOpts='<option value="">— Nenhum —</option>'+D.suppliers.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(s){return '<option value="'+s.id+'">'+s.nome+'</option>';}).join('');
     var pr=$('pr-fornecedor');if(pr)pr.innerHTML=fOpts;
     renderProdutos();
   });
@@ -2988,7 +2988,7 @@ function saveEstoque(){
 function loadColecoes(){
   return db.from('colecoes').select('*,responsavel:pessoas(nome)').eq('ativo',true).order('created_at',{ascending:false}).then(function(r){
     D.colecoes=r.data||[];
-    var cOpts='<option value="">— Nenhuma —</option>'+D.colecoes.map(function(c){return '<option value="'+c.id+'">'+c.nome+'</option>';}).join('');
+    var cOpts='<option value="">— Nenhuma —</option>'+D.colecoes.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(c){return '<option value="'+c.id+'">'+c.nome+'</option>';}).join('');
     ['pr-colecao','prd-colecao','ped-colecao','pa-colecao','po-colecao','mk-colecao'].forEach(function(id){var el=$(id);if(el)el.innerHTML=cOpts;});
     renderColecoes();
   });
@@ -3348,7 +3348,7 @@ function loadParceiros(){
     .then(function(r){
       D.parceiros=r.data||[];
       // populate selects
-      var pOpts='<option value="">— Nenhum —</option>'+D.parceiros.map(function(p){return '<option value="'+p.id+'">'+p.nome+'</option>';}).join('');
+      var pOpts='<option value="">— Nenhum —</option>'+D.parceiros.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(p){return '<option value="'+p.id+'">'+p.nome+'</option>';}).join('');
       var poEl=$('po-parceiro');if(poEl)poEl.innerHTML=pOpts;
       renderParceiros();
     });
@@ -4022,7 +4022,7 @@ function simFornecedorField(r){
   var fId = r.fornecedor_id || '';
   var fNome = r.fornecedor || '';
   var opts = '<option value="">— Selecione —</option>' +
-    D.suppliers.map(function(s){
+    D.suppliers.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(s){
       return '<option value="'+s.id+'"'+(s.id==fId?' selected':'')+'>'+simEsc(s.nome)+'</option>';
     }).join('') +
     '<option value="outro"'+(fId==='outro'?' selected':'')+'>✏ Outro (digitar)</option>';
