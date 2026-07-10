@@ -906,6 +906,11 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .dash-alerta-icon{font-size:14px;flex-shrink:0}
 .dash-alerta-txt{flex:1;font-size:11px;color:var(--fg);line-height:1.3}
 .dash-alerta-seta{font-size:14px;color:var(--muted2);flex-shrink:0}
+
+/* ── DASHBOARD TAREFAS PRIO ──────────────────────────────── */
+.dash-prio-titulo{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.dash-prio-total{background:var(--card2);color:var(--fg);font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px}
+.dash-item-resp{font-size:9px;font-weight:700;color:var(--blue);background:var(--blue-bg);border:1px solid var(--blue-bd);border-radius:3px;padding:0 5px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -3663,28 +3668,32 @@ function renderDashboard(){
   var bloqueadas=myTasks.filter(function(t){return t.status==='blocked';});
   var doing=myTasks.filter(function(t){return t.status==='doing';});
   var todo=myTasks.filter(function(t){return t.status==='todo';});
+  var totalAberto=myTasks.filter(function(t){return t.status!=='done';}).length;
   var prioEl=$('hcb-tarefas-prio');
   if(prioEl){
     prioEl.innerHTML=
+      '<div class="dash-prio-titulo">Tarefas em aberto <span class="dash-prio-total">'+totalAberto+'</span></div>'+
       '<div class="dash-prio-row">'+
         '<span class="dash-prio-badge red">🔴 Alta</span><span class="dash-prio-num">'+alta.length+'</span>'+
-        '<span class="dash-prio-bar-wrap"><div class="dash-prio-bar" style="width:'+(alta.length?Math.min(alta.length/myTasks.length*100,100):0)+'%;background:var(--red)"></div></span>'+
+        '<span class="dash-prio-bar-wrap"><div class="dash-prio-bar" style="width:'+(alta.length?Math.min(alta.length/Math.max(totalAberto,1)*100,100):0)+'%;background:var(--red)"></div></span>'+
       '</div>'+
       '<div class="dash-prio-row">'+
         '<span class="dash-prio-badge amber">🟡 Média</span><span class="dash-prio-num">'+media.length+'</span>'+
-        '<span class="dash-prio-bar-wrap"><div class="dash-prio-bar" style="width:'+(media.length?Math.min(media.length/myTasks.length*100,100):0)+'%;background:var(--amber)"></div></span>'+
+        '<span class="dash-prio-bar-wrap"><div class="dash-prio-bar" style="width:'+(media.length?Math.min(media.length/Math.max(totalAberto,1)*100,100):0)+'%;background:var(--amber)"></div></span>'+
       '</div>'+
       '<div class="dash-prio-row">'+
         '<span class="dash-prio-badge green">🟢 Baixa</span><span class="dash-prio-num">'+baixa.length+'</span>'+
-        '<span class="dash-prio-bar-wrap"><div class="dash-prio-bar" style="width:'+(baixa.length?Math.min(baixa.length/myTasks.length*100,100):0)+'%;background:var(--green)"></div></span>'+
+        '<span class="dash-prio-bar-wrap"><div class="dash-prio-bar" style="width:'+(baixa.length?Math.min(baixa.length/Math.max(totalAberto,1)*100,100):0)+'%;background:var(--green)"></div></span>'+
       '</div>';
   }
-  // Lista compacta de tarefas urgentes
+  // Lista compacta de tarefas urgentes com responsável
   var taskRows='';
+  function taskResp(t){return t.responsavel?'<span class="dash-item-resp">'+ini(t.responsavel.nome)+'</span>':'';}
   atrasadas.slice(0,2).forEach(function(t){taskRows+=
     '<div class="dash-item-row">'+
       '<span class="dash-item-dot" style="background:var(--red)"></span>'+
       '<span class="dash-item-text">'+t.titulo+'</span>'+
+      taskResp(t)+
       '<span class="dash-item-tag red">atrasada</span>'+
     '</div>';
   });
@@ -3692,6 +3701,7 @@ function renderDashboard(){
     '<div class="dash-item-row">'+
       '<span class="dash-item-dot" style="background:var(--red)"></span>'+
       '<span class="dash-item-text">'+t.titulo+'</span>'+
+      taskResp(t)+
       '<span class="dash-item-tag red">bloqueada</span>'+
     '</div>';
   });
@@ -3699,6 +3709,7 @@ function renderDashboard(){
     '<div class="dash-item-row">'+
       '<span class="dash-item-dot" style="background:var(--amber)"></span>'+
       '<span class="dash-item-text">'+t.titulo+'</span>'+
+      taskResp(t)+
       '<span class="dash-item-tag amber">'+(t.status==='doing'?'andamento':'a fazer')+'</span>'+
     '</div>';
   });
