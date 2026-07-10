@@ -852,6 +852,10 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .sim-td-forn{min-width:140px;max-width:180px}
 .sim-forn-sel{width:100%;background:var(--card2);border:none;outline:none;font-size:11px;color:var(--fg);font-family:'Inter',sans-serif;cursor:pointer;padding:2px 0;border-radius:3px}
 .sim-forn-inp{margin-top:4px;font-size:11px !important}
+
+/* ── FRETE SIM LINK ──────────────────────────────────────── */
+.frete-sim-link{font-size:10px;font-weight:600;color:var(--blue);text-decoration:none;margin-left:10px;padding:2px 8px;border:1px solid var(--blue-bd);border-radius:4px;background:var(--blue-bg);transition:all .15s}
+.frete-sim-link:hover{background:var(--blue);color:#fff}
 </style>
 </head>
 <body>
@@ -1532,14 +1536,77 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
 <!-- FRETE -->
 <div class="modal-bg" id="modal-frete"><div class="modal">
-  <div class="modal-title"><span id="frete-modal-title">Tabela de Frete</span><button class="modal-close-btn" data-close="frete">×</button></div>
+  <div class="modal-title"><span id="frete-modal-title">Nova Tabela de Frete</span><button class="modal-close-btn" data-close="frete">×</button></div>
   <input type="hidden" id="fr-id">
-  <div class="form-group"><label class="form-label">Transportadora *</label><input class="form-input" id="fr-trans" placeholder="Correios, Jadlog..."></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="fr-tipo"><option value="fixo">Fixo</option><option value="variavel">Variável</option><option value="gratis">Grátis</option></select></div><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="fr-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Região</label><input class="form-input" id="fr-regiao" placeholder="Sul e Sudeste"></div><div class="form-group"><label class="form-label">Prazo (dias úteis)</label><input class="form-input" id="fr-prazo" type="number" placeholder="5"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Preço fixo (R$)</label><input class="form-input" id="fr-preco" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Por kg (R$)</label><input class="form-input" id="fr-preckg" type="number" step="0.01" placeholder="0,00"></div></div>
-  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="fr-obs"></textarea></div>
-  <div class="modal-footer"><button class="btn-save" id="save-frete">Salvar Frete</button><button class="btn-delete-modal" id="delete-frete" style="display:none">Excluir</button><button class="btn-close-modal" data-close="frete">Fechar</button></div>
+
+  <div class="form-group"><label class="form-label">Transportadora *</label><input class="form-input" id="fr-trans" placeholder="Correios PAC, Loggi, Mandaê..."></div>
+
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Modalidade</label>
+      <select class="form-select" id="fr-tipo">
+        <option value="fixo">Fixo</option>
+        <option value="variavel">Variável (por peso)</option>
+        <option value="gratis">Grátis</option>
+        <option value="pac">Correios — PAC</option>
+        <option value="sedex">Correios — SEDEX</option>
+        <option value="mini_envios">Correios — Mini Envios</option>
+        <option value="loggi">Loggi</option>
+        <option value="mandae">Mandaê</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="fr-status">
+        <option value="ativo">Ativo</option>
+        <option value="inativo">Inativo</option>
+      </select>
+    </div>
+  </div>
+
+  <p class="form-section">Acordo comercial</p>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Tem acordo de preços fechado?</label>
+      <select class="form-select" id="fr-acordo">
+        <option value="nao">Não — tabela balcão</option>
+        <option value="negociando">Em negociação</option>
+        <option value="sim">Sim — acordo fechado</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Status da negociação</label>
+      <select class="form-select" id="fr-neg-status">
+        <option value="">— Sem negociação —</option>
+        <option value="prospeccao">Prospecção</option>
+        <option value="contato_feito">Contato feito</option>
+        <option value="proposta_recebida">Proposta recebida</option>
+        <option value="em_analise">Em análise</option>
+        <option value="fechado">Fechado ✓</option>
+        <option value="cancelado">Cancelado</option>
+      </select>
+    </div>
+  </div>
+
+  <p class="form-section">Cobertura e preços</p>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Região / Cobertura</label><input class="form-input" id="fr-regiao" placeholder="Todo Brasil, Sul/Sudeste..."></div>
+    <div class="form-group"><label class="form-label">Prazo (dias úteis)</label><input class="form-input" id="fr-prazo" type="number" placeholder="5"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Preço fixo (R$)</label><input class="form-input" id="fr-preco" type="number" step="0.01" placeholder="0,00"></div>
+    <div class="form-group"><label class="form-label">Por kg (R$)</label><input class="form-input" id="fr-preckg" type="number" step="0.01" placeholder="0,00"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Peso máx. (kg)</label><input class="form-input" id="fr-pesomax" type="number" step="0.1" placeholder="30"></div>
+    <div class="form-group"><label class="form-label">Pedido mínimo (R$)</label><input class="form-input" id="fr-pedmin" type="number" step="0.01" placeholder="0,00"></div>
+  </div>
+
+  <p class="form-section">Links e observações</p>
+  <div class="form-group"><label class="form-label">Link do simulador oficial</label><input class="form-input" id="fr-link-sim" placeholder="https://..."></div>
+  <div class="form-group"><label class="form-label">Observações / condições negociadas</label><textarea class="form-textarea" id="fr-obs" placeholder="Descontos negociados, condições especiais..."></textarea></div>
+
+  <div class="modal-footer">
+    <button class="btn-save" id="save-frete">Salvar</button>
+    <button class="btn-delete-modal" id="delete-frete" style="display:none">Excluir</button>
+    <button class="btn-close-modal" data-close="frete">Fechar</button>
+  </div>
 </div></div>
 
 <!-- PARCEIRO -->
@@ -3090,23 +3157,64 @@ function loadFretes(){
 }
 function renderFretes(){
   var tipo=F.fre.tipo;var list=tipo==='all'?D.fretes:D.fretes.filter(function(f){return f.tipo===tipo;});
-  $('frete-metrics').innerHTML=metric(D.fretes.length,'Tabelas')+metric(D.fretes.filter(function(f){return f.status==='ativo';}).length,'Ativas','var(--green)');
-  var el=$('frete-list');if(!list.length){el.innerHTML='<p class="empty">Nenhuma tabela</p>';return;}
-  el.innerHTML=list.map(function(f){return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+f.transportadora+'</p><div class="card-meta">'+badge(f.tipo,L.frete[f.tipo])+badge(f.status==='ativo'?'ativo':'inativo',f.status==='ativo'?'Ativo':'Inativo')+(f.regiao?catTag('📍 '+f.regiao):'')+(f.prazo_dias?'<span style="font-size:9px;color:var(--muted)">⏱ '+f.prazo_dias+' dias</span>':'')+'</div><p style="font-size:10px;color:var(--muted);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap">'+(f.preco?'<span>Fixo: '+mo(f.preco)+'</span>':'')+(f.preco_kg?'<span>Por kg: '+mo(f.preco_kg)+'</span>':'')+'</p></div><div class="card-actions">'+editBtn(f.id,'frete')+'<button class="del" data-del-fre="'+f.id+'">×</button></div></div></div>';}).join('');
+  var comAcordo=D.fretes.filter(function(f){return f.acordo==='sim';}).length;
+  var emNeg=D.fretes.filter(function(f){return f.acordo==='negociando';}).length;
+  $('frete-metrics').innerHTML=
+    metric(D.fretes.length,'Tabelas')+
+    metric(D.fretes.filter(function(f){return f.status==='ativo';}).length,'Ativas','var(--green)')+
+    metric(comAcordo,'Com acordo','var(--blue)')+
+    metric(emNeg,'Em negociação','var(--amber)');
+  var el=$('frete-list');if(!list.length){el.innerHTML='<p class="empty">Nenhuma tabela cadastrada</p>';return;}
+  var acordoLabel={nao:'Sem acordo',negociando:'Em negociação',sim:'Acordo fechado'};
+  var acordoCls={nao:'gray',negociando:'gold',sim:'green'};
+  var negLabel={prospeccao:'Prospecção',contato_feito:'Contato feito',proposta_recebida:'Proposta recebida',em_analise:'Em análise',fechado:'Fechado ✓',cancelado:'Cancelado'};
+  var tipoLabel={fixo:'Fixo',variavel:'Variável',gratis:'Grátis',pac:'PAC',sedex:'SEDEX',mini_envios:'Mini Envios',loggi:'Loggi',mandae:'Mandaê'};
+  var simLinks={
+    pac:'https://www2.correios.com.br/sistemas/precosPrazos/',
+    sedex:'https://www2.correios.com.br/sistemas/precosPrazos/',
+    mini_envios:'https://www2.correios.com.br/sistemas/precosPrazos/',
+    loggi:'https://www.loggi.com/calculadora-frete/',
+    mandae:'https://www.mandae.com.br/cotacao/'
+  };
+  el.innerHTML=list.map(function(f){
+    var linkSim=f.link_simulador||(simLinks[f.tipo]||'');
+    return '<div class="card"><div class="card-row"><div class="card-body">'+
+      '<p class="card-title">'+f.transportadora+
+        (linkSim?'<a href="'+linkSim+'" target="_blank" class="frete-sim-link" title="Abrir simulador oficial" onclick="event.stopPropagation()">🔗 Simular</a>':'')+'</p>'+
+      '<div class="card-meta">'+
+        badge(f.status==='ativo'?'ativo':'inativo',f.status==='ativo'?'Ativo':'Inativo')+
+        (f.tipo?'<span class="cat-tag">'+( tipoLabel[f.tipo]||f.tipo)+'</span>':'')+
+        '<span class="badge badge-'+acordoCls[f.acordo||'nao']+'">'+( acordoLabel[f.acordo||'nao'])+'</span>'+
+        (f.neg_status?catTag(negLabel[f.neg_status]||f.neg_status):'')+
+        (f.regiao?catTag('📍 '+f.regiao):'')+
+        (f.prazo_dias?'<span style="font-size:9px;color:var(--muted)">⏱ '+f.prazo_dias+' dias</span>':'')+
+      '</div>'+
+      '<div style="display:flex;gap:10px;margin-top:5px;flex-wrap:wrap;font-size:10px;color:var(--muted)">'+
+        (f.preco?'<span>Fixo: '+mo(f.preco)+'</span>':'')+
+        (f.preco_kg?'<span>Por kg: '+mo(f.preco_kg)+'</span>':'')+
+        (f.peso_max?'<span>Até '+f.peso_max+'kg</span>':'')+
+        (f.valor_minimo_pedido?'<span>Ped. mín: '+mo(f.valor_minimo_pedido)+'</span>':'')+
+      '</div>'+
+      (f.observacoes?'<p class="card-desc">'+f.observacoes+'</p>':'')+
+    '</div><div class="card-actions">'+editBtn(f.id,'frete')+'<button class="del" data-del-fre="'+f.id+'">×</button></div></div></div>';
+  }).join('');
 }
 function openFreteEdit(id){
   var f=D.fretes.find(function(x){return x.id===id;});if(!f)return;
-  $('frete-modal-title').textContent='Editar Frete';
+  $('frete-modal-title').textContent='Editar Tabela de Frete';
   $('fr-id').value=f.id;
   $('fr-trans').value=f.transportadora||'';
   $('fr-tipo').value=f.tipo||'fixo';
   $('fr-status').value=f.status||'ativo';
+  $('fr-acordo').value=f.acordo||'nao';
+  $('fr-neg-status').value=f.neg_status||'';
   $('fr-regiao').value=f.regiao||'';
   $('fr-prazo').value=f.prazo_dias||'';
   $('fr-preco').value=f.preco||'';
   $('fr-preckg').value=f.preco_kg||'';
   $('fr-pesomax').value=f.peso_max||'';
   $('fr-pedmin').value=f.valor_minimo_pedido||'';
+  $('fr-link-sim').value=f.link_simulador||'';
   $('fr-obs').value=f.observacoes||'';
   var dBtn=$('delete-frete');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=f.id;}
   openModal('frete');
@@ -3115,7 +3223,7 @@ function openFreteEdit(id){
 function saveFrete(){
   var t=val('fr-trans').trim();if(!t){toast('Informe a transportadora');return;}
   var id=val('fr-id');
-  var payload={transportadora:t,tipo:val('fr-tipo'),status:val('fr-status'),regiao:val('fr-regiao')||null,prazo_dias:iNum('fr-prazo')||null,preco:num('fr-preco')||null,preco_kg:num('fr-preckg')||null,peso_max:num('fr-pesomax')||null,valor_minimo_pedido:num('fr-pedmin')||null,observacoes:val('fr-obs')||null,updated_at:new Date().toISOString()};
+  var payload={transportadora:t,tipo:val('fr-tipo'),status:val('fr-status'),acordo:val('fr-acordo')||'nao',neg_status:val('fr-neg-status')||null,regiao:val('fr-regiao')||null,prazo_dias:iNum('fr-prazo')||null,preco:num('fr-preco')||null,preco_kg:num('fr-preckg')||null,peso_max:num('fr-pesomax')||null,valor_minimo_pedido:num('fr-pedmin')||null,link_simulador:val('fr-link-sim')||null,observacoes:val('fr-obs')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('fretes').update(payload).eq('id',id):db.from('fretes').insert(payload);
   q.then(function(res){if(res.error){toast('Erro: '+res.error.message);return;}closeModal('frete');resetForm('frete');toast(id?'Atualizado!':'Salvo!');loadFretes();});
 }
