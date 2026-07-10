@@ -856,6 +856,56 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 /* ── FRETE SIM LINK ──────────────────────────────────────── */
 .frete-sim-link{font-size:10px;font-weight:600;color:var(--blue);text-decoration:none;margin-left:10px;padding:2px 8px;border:1px solid var(--blue-bd);border-radius:4px;background:var(--blue-bg);transition:all .15s}
 .frete-sim-link:hover{background:var(--blue);color:#fff}
+
+/* ── DASHBOARD NOVO ──────────────────────────────────────── */
+.home-cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:16px}
+@media(max-width:900px){.home-cards-grid{grid-template-columns:1fr}}
+
+/* Prioridade de tarefas */
+.dash-prio-row{display:flex;align-items:center;gap:8px;padding:4px 0}
+.dash-prio-badge{font-size:10px;font-weight:600;min-width:62px}
+.dash-prio-num{font-size:13px;font-weight:700;color:var(--fg);min-width:18px;text-align:right}
+.dash-prio-bar-wrap{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.dash-prio-bar{height:100%;border-radius:3px;transition:width .5s}
+
+/* Itens de lista compacta */
+.dash-item-row{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--border)}
+.dash-item-row:last-child{border-bottom:none}
+.dash-item-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dash-item-text{flex:1;font-size:11px;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dash-item-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;white-space:nowrap;flex-shrink:0}
+.dash-item-tag.red{background:rgba(224,82,82,.1);color:var(--red)}
+.dash-item-tag.amber{background:rgba(230,162,46,.1);color:var(--amber)}
+.dash-item-tag.green{background:rgba(39,192,138,.1);color:var(--green)}
+
+/* Finanças KPIs */
+.dash-fin-kpi{display:flex;flex-direction:column;gap:2px}
+.dash-fin-val{font-size:16px;font-weight:700;color:var(--fg)}
+.dash-fin-val.red{color:var(--red)}
+.dash-fin-val.green{color:var(--green)}
+.dash-fin-val.amber{color:var(--amber)}
+.dash-fin-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+#hck-financas{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:8px 0}
+
+/* Produção */
+.dash-prd-group{margin-bottom:10px}
+.dash-prd-status-row{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.dash-prd-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dash-prd-status-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;flex:1}
+.dash-prd-count{font-size:11px;font-weight:700;color:var(--fg);background:var(--card2);padding:1px 7px;border-radius:10px}
+.dash-prd-item{font-size:11px;color:var(--fg);padding:2px 0 2px 13px;display:flex;align-items:center;gap:6px}
+.dash-prd-col{font-size:9px;color:var(--muted);font-weight:600}
+.dash-prd-qtd{font-size:9px;color:var(--muted);margin-left:auto}
+
+/* Alertas gerais */
+.dash-alerta-row{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;cursor:pointer;transition:all .15s;margin-bottom:4px;border:1px solid transparent}
+.dash-alerta-row:hover{background:var(--card2)}
+.dash-alerta-row.dash-alerta-danger{background:rgba(224,82,82,.06);border-color:rgba(224,82,82,.2)}
+.dash-alerta-row.dash-alerta-warn{background:rgba(230,162,46,.06);border-color:rgba(230,162,46,.2)}
+.dash-alerta-row.dash-alerta-info{background:rgba(45,107,228,.05);border-color:rgba(45,107,228,.15)}
+.dash-alerta-icon{font-size:14px;flex-shrink:0}
+.dash-alerta-txt{flex:1;font-size:11px;color:var(--fg);line-height:1.3}
+.dash-alerta-seta{font-size:14px;color:var(--muted2);flex-shrink:0}
 </style>
 </head>
 <body>
@@ -1030,38 +1080,52 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             <div class="dash-person-filter" id="dash-person-filter"><button class="dpf-btn active" data-person="all">Todos</button></div>
           </div>
           <div class="home-cards-grid">
+
+            <!-- CARD TAREFAS -->
             <div class="home-cat-card" id="hcard-tarefas">
-              <div class="hcc-header" data-sec="tarefas"><div class="hcc-icon-wrap" style="background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><span class="hcc-title">Tarefas</span><span class="hcc-link">Ver tudo &#8250;</span></div>
-              <div class="hcc-kpis" id="hck-tarefas"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-tarefas"></div><div class="hcc-resp" id="hcr-tarefas"></div>
+              <div class="hcc-header" data-sec="tarefas">
+                <div class="hcc-icon-wrap" style="background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+                <span class="hcc-title">Tarefas</span>
+                <span class="hcc-link">Ver tudo &#8250;</span>
+              </div>
+              <div id="hcb-tarefas-prio"></div>
+              <div class="hcc-divider"></div>
+              <div class="hcc-body" id="hcb-tarefas"></div>
             </div>
+
+            <!-- CARD FINANCAS -->
             <div class="home-cat-card" id="hcard-financas">
-              <div class="hcc-header" data-sec="financas"><div class="hcc-icon-wrap" style="background:rgba(68,170,255,.1);border-color:rgba(68,170,255,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><span class="hcc-title">Financas</span><span class="hcc-link">Ver tudo &#8250;</span></div>
-              <div class="hcc-kpis" id="hck-financas"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-financas"></div>
+              <div class="hcc-header" data-sec="financas">
+                <div class="hcc-icon-wrap" style="background:rgba(45,107,228,.1);border-color:rgba(45,107,228,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                <span class="hcc-title">Finanças</span>
+                <span class="hcc-link">Ver tudo &#8250;</span>
+              </div>
+              <div id="hck-financas"></div>
+              <div class="hcc-divider"></div>
+              <div class="hcc-body" id="hcb-financas"></div>
             </div>
-            <div class="home-cat-card" id="hcard-pedidos">
-              <div class="hcc-header" data-sec="pedidos"><div class="hcc-icon-wrap" style="background:rgba(212,255,0,.08);border-color:rgba(212,255,0,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div><span class="hcc-title">Pedidos</span><span class="hcc-link">Ver tudo &#8250;</span></div>
-              <div class="hcc-kpis" id="hck-pedidos"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-pedidos"></div>
-            </div>
+
+            <!-- CARD PRODUCAO -->
             <div class="home-cat-card" id="hcard-producao">
-              <div class="hcc-header" data-sec="producao"><div class="hcc-icon-wrap" style="background:rgba(170,136,255,.1);border-color:rgba(170,136,255,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div><span class="hcc-title">Producao</span><span class="hcc-link">Ver tudo &#8250;</span></div>
-              <div class="hcc-kpis" id="hck-producao"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-producao"></div>
+              <div class="hcc-header" data-sec="producao">
+                <div class="hcc-icon-wrap" style="background:rgba(139,124,246,.1);border-color:rgba(139,124,246,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
+                <span class="hcc-title">Produção</span>
+                <span class="hcc-link">Ver tudo &#8250;</span>
+              </div>
+              <div id="hck-producao"></div>
+              <div class="hcc-divider"></div>
+              <div class="hcc-body" id="hcb-producao"></div>
             </div>
-            <div class="home-cat-card" id="hcard-fornecedores">
-              <div class="hcc-header" data-sec="fornecedores"><div class="hcc-icon-wrap" style="background:rgba(68,255,136,.08);border-color:rgba(68,255,136,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><span class="hcc-title">Fornecedores</span><span class="hcc-link">Ver tudo &#8250;</span></div>
-              <div class="hcc-kpis" id="hck-fornecedores"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-fornecedores"></div>
+
+            <!-- CARD ALERTAS GERAIS -->
+            <div class="home-cat-card" id="hcard-alertas">
+              <div class="hcc-header">
+                <div class="hcc-icon-wrap" style="background:rgba(224,82,82,.1);border-color:rgba(224,82,82,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                <span class="hcc-title">Alertas</span>
+              </div>
+              <div class="hcc-body" id="hcb-alertas"></div>
             </div>
-            <div class="home-cat-card" id="hcard-estoque">
-              <div class="hcc-header" data-sec="estoque"><div class="hcc-icon-wrap" style="background:rgba(68,170,255,.08);border-color:rgba(68,170,255,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div><span class="hcc-title">Estoque &amp; Produtos</span><span class="hcc-link">Ver tudo &#8250;</span></div>
-              <div class="hcc-kpis" id="hck-estoque"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-estoque"></div>
-            </div>
-            <div class="home-cat-card" id="hcard-colecoes">
-              <div class="hcc-header" data-sec="colecoes"><div class="hcc-icon-wrap" style="background:rgba(170,136,255,.08);border-color:rgba(170,136,255,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="hcc-title">Colecoes</span><span class="hcc-link">Ver tudo &#8250;</span></div>
-              <div class="hcc-kpis" id="hck-colecoes"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-colecoes"></div>
-            </div>
-            <div class="home-cat-card" id="hcard-parceiros">
-              <div class="hcc-header" data-sec="parceiros"><div class="hcc-icon-wrap" style="background:rgba(68,255,136,.06);border-color:rgba(68,255,136,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="hcc-title">Parceiros &amp; Fretes</span><span class="hcc-link">Ver tudo &#8250;</span></div>
-              <div class="hcc-kpis" id="hck-parceiros"></div><div class="hcc-divider"></div><div class="hcc-body" id="hcb-parceiros"></div>
-            </div>
+
           </div>
         </div>
         <!-- TAREFAS -->
@@ -3580,6 +3644,8 @@ function renderDashboard(){
   var todayStr=now.toISOString().split('T')[0];
   var in2=new Date(now);in2.setDate(in2.getDate()+2);var in2Str=in2.toISOString().split('T')[0];
   var in5=new Date(now);in5.setDate(in5.getDate()+5);var in5Str=in5.toISOString().split('T')[0];
+  var in30=new Date(now);in30.setDate(in30.getDate()+30);var in30Str=in30.toISOString().split('T')[0];
+  var in90=new Date(now);in90.setDate(in90.getDate()+90);var in90Str=in90.toISOString().split('T')[0];
   var curMonth=now.getFullYear()+'-'+(String(now.getMonth()+1).padStart(2,'0'));
   var h=now.getHours();var g=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
   var pName='';
@@ -3587,149 +3653,187 @@ function renderDashboard(){
   var gt=$('dash-greeting');if(gt)gt.textContent=g+pName;
 
   var myTasks=filterByPerson(D.tasks,'responsavel_pessoa_id');
-  var myProd=filterByPerson(D.producoes,'responsavel_id');
-  var myPed=filterByPerson(D.pedidos,'responsavel_id');
 
-  // Pre-compute flags
-  var hoje=todayStr;
-  var atrasadas=myTasks.filter(function(t){return t.prazo&&t.prazo<hoje&&t.status!=='done';});
+  // ── CARD TAREFAS ──────────────────────────────────────────
+  // Por prioridade
+  var alta=myTasks.filter(function(t){return t.prioridade==='alta'&&t.status!=='done';});
+  var media=myTasks.filter(function(t){return t.prioridade==='media'&&t.status!=='done';});
+  var baixa=myTasks.filter(function(t){return t.prioridade==='baixa'&&t.status!=='done';});
+  var atrasadas=myTasks.filter(function(t){return t.prazo&&t.prazo<todayStr&&t.status!=='done';});
   var bloqueadas=myTasks.filter(function(t){return t.status==='blocked';});
-  var pertoPrazo=myTasks.filter(function(t){return t.prazo&&t.prazo>=hoje&&t.prazo<=in2Str&&t.status!=='done';});
   var doing=myTasks.filter(function(t){return t.status==='doing';});
   var todo=myTasks.filter(function(t){return t.status==='todo';});
-  var curMonth2=curMonth;
-  var contasVencidas=D.costs.filter(function(c){return c.status_pagto==='vencido';});
-  var contasPend=D.costs.filter(function(c){return c.status_pagto==='pendente';});
-  var contasVencer5=D.costs.filter(function(c){return c.data_vencimento&&c.data_vencimento>=hoje&&c.data_vencimento<=in5Str&&c.status_pagto!=='pago';});
-  var totMes=D.costs.filter(function(c){return c.data&&c.data.startsWith(curMonth2);}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
-
-  // ── TAREFAS ──────────────────────────────────────────────
-  var g0=$('hck-tarefas');
-  if(g0)g0.innerHTML=
-    hcKpi(atrasadas.length,'Atrasadas',atrasadas.length?'var(--red)':'var(--muted)')+
-    hcKpi(bloqueadas.length,'Bloqueadas',bloqueadas.length?'var(--red)':'var(--muted)')+
-    hcKpi(doing.length,'Andamento','var(--amber)')+
-    hcKpi(todo.length,'A fazer','var(--muted)');
-  setCritical('hcard-tarefas',atrasadas.length||bloqueadas.length,pertoPrazo.length);
+  var prioEl=$('hcb-tarefas-prio');
+  if(prioEl){
+    prioEl.innerHTML=
+      '<div class="dash-prio-row">'+
+        '<span class="dash-prio-badge red">🔴 Alta</span><span class="dash-prio-num">'+alta.length+'</span>'+
+        '<span class="dash-prio-bar-wrap"><div class="dash-prio-bar" style="width:'+(alta.length?Math.min(alta.length/myTasks.length*100,100):0)+'%;background:var(--red)"></div></span>'+
+      '</div>'+
+      '<div class="dash-prio-row">'+
+        '<span class="dash-prio-badge amber">🟡 Média</span><span class="dash-prio-num">'+media.length+'</span>'+
+        '<span class="dash-prio-bar-wrap"><div class="dash-prio-bar" style="width:'+(media.length?Math.min(media.length/myTasks.length*100,100):0)+'%;background:var(--amber)"></div></span>'+
+      '</div>'+
+      '<div class="dash-prio-row">'+
+        '<span class="dash-prio-badge green">🟢 Baixa</span><span class="dash-prio-num">'+baixa.length+'</span>'+
+        '<span class="dash-prio-bar-wrap"><div class="dash-prio-bar" style="width:'+(baixa.length?Math.min(baixa.length/myTasks.length*100,100):0)+'%;background:var(--green)"></div></span>'+
+      '</div>';
+  }
+  // Lista compacta de tarefas urgentes
   var taskRows='';
-  // atrasadas primeiro
-  atrasadas.slice(0,3).forEach(function(t){taskRows+=hcRow('var(--red)',t.titulo,(t.responsavel?t.responsavel.nome.split(' ')[0]:'')+(t.prazo?' | '+fmtDate(t.prazo):''),'','ATRASADA','red','tarefas');});
-  // vencendo em breve
-  pertoPrazo.slice(0,2).forEach(function(t){taskRows+=hcRow('var(--amber)',t.titulo,(t.responsavel?t.responsavel.nome.split(' ')[0]:'')+(t.prazo?' | '+fmtDate(t.prazo):''),'','2 dias','amber','tarefas');});
-  // bloqueadas
-  bloqueadas.slice(0,2).forEach(function(t){taskRows+=hcRow('var(--red)',t.titulo,t.responsavel?t.responsavel.nome.split(' ')[0]:'',' ','BLOQUEADA','red','tarefas');});
-  // em andamento
-  if(!atrasadas.length&&!bloqueadas.length&&!pertoPrazo.length){doing.slice(0,4).forEach(function(t){taskRows+=hcRow('var(--amber)',t.titulo,t.responsavel?t.responsavel.nome.split(' ')[0]:'',' ',(t.prioridade==='alta'?'ALTA':''),(t.prioridade==='alta'?'red':'muted'),'tarefas');});}
-  set('hcb-tarefas',taskRows||hcEmpty('Todas as tarefas em dia',true));
-  // Por responsável
-  var respMap={};
-  D.tasks.filter(function(t){return t.status!=='done';}).forEach(function(t){
-    var rid=t.responsavel_pessoa_id||'none';
-    var rn=t.responsavel?t.responsavel.nome.split(' ')[0]:'Sem resp.';
-    if(!respMap[rid])respMap[rid]={nome:rn,doing:0,todo:0,blocked:0,total:0};
-    respMap[rid].total++;
-    if(t.status==='doing')respMap[rid].doing++;
-    else if(t.status==='blocked')respMap[rid].blocked++;
-    else respMap[rid].todo++;
+  atrasadas.slice(0,2).forEach(function(t){taskRows+=
+    '<div class="dash-item-row">'+
+      '<span class="dash-item-dot" style="background:var(--red)"></span>'+
+      '<span class="dash-item-text">'+t.titulo+'</span>'+
+      '<span class="dash-item-tag red">atrasada</span>'+
+    '</div>';
   });
-  var maxT=Math.max.apply(null,Object.values(respMap).map(function(r){return r.total;}).concat([1]));
-  var respHtml=Object.keys(respMap).sort(function(a,b){return respMap[b].total-respMap[a].total;}).map(function(k){
-    var r=respMap[k];var pct=Math.round(r.total/maxT*100);
-    return '<div class="hc-resp-row"><div class="hc-resp-ini">'+ini(r.nome)+'</div><span class="hc-resp-name">'+r.nome+'</span><div class="hc-resp-track"><div class="hc-resp-fill" style="width:'+pct+'%"></div></div><div class="hc-resp-tags">'+(r.blocked?'<span class="hc-tag red">'+r.blocked+'</span>':'')+'<span class="hc-tag amber">'+r.doing+'</span><span class="hc-tag muted">'+r.todo+'</span></div><span class="hc-resp-num">'+r.total+'</span></div>';
-  }).join('');
-  var g2=$('hcr-tarefas');if(g2)g2.innerHTML=respHtml;
+  bloqueadas.slice(0,2).forEach(function(t){taskRows+=
+    '<div class="dash-item-row">'+
+      '<span class="dash-item-dot" style="background:var(--red)"></span>'+
+      '<span class="dash-item-text">'+t.titulo+'</span>'+
+      '<span class="dash-item-tag red">bloqueada</span>'+
+    '</div>';
+  });
+  alta.filter(function(t){return t.status!=='blocked'&&!(t.prazo&&t.prazo<todayStr);}).slice(0,3).forEach(function(t){taskRows+=
+    '<div class="dash-item-row">'+
+      '<span class="dash-item-dot" style="background:var(--amber)"></span>'+
+      '<span class="dash-item-text">'+t.titulo+'</span>'+
+      '<span class="dash-item-tag amber">'+(t.status==='doing'?'andamento':'a fazer')+'</span>'+
+    '</div>';
+  });
+  set('hcb-tarefas',taskRows||'<p class="hc-empty good">Sem tarefas urgentes ✓</p>');
 
-  // ── FINANCAS ─────────────────────────────────────────────
-  var totVenc=contasVencidas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
-  var totPend=contasPend.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
-  var g3=$('hck-financas');
-  if(g3)g3.innerHTML=
-    hcKpi(mo(totMes),'Gastos/mes','var(--blue)')+
-    hcKpi(contasVencidas.length,'Vencidas',contasVencidas.length?'var(--red)':'var(--muted)')+
-    hcKpi(contasVender5.length,'Vencem em 5d',contasVencer5.length?'var(--amber)':'var(--muted)');
-  setCritical('hcard-financas',contasVencidas.length,contasVencer5.length);
+  // ── CARD FINANCAS ─────────────────────────────────────────
+  var allCosts=D.costs;
+  var totMes=allCosts.filter(function(c){return c.data&&c.data.startsWith(curMonth);}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var vencidas=allCosts.filter(function(c){return c.status_pagto==='vencido';});
+  var vencer2=allCosts.filter(function(c){return c.data_vencimento&&c.data_vencimento>todayStr&&c.data_vencimento<=in2Str&&c.status_pagto!=='pago';});
+  var vencer30=allCosts.filter(function(c){return c.data_vencimento&&c.data_vencimento>todayStr&&c.data_vencimento<=in30Str&&c.status_pagto!=='pago';});
+  var totVenc=vencidas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var totVencer2=vencer2.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var totRec=D.pedidos.reduce(function(a,p){return a+parseFloat(p.valor_total||0);},0);
+  var lucro=totRec-allCosts.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  // Parcelas futuras agrupadas por mês
+  var parcelasFuturas=allCosts.filter(function(c){return c.tipo_compromisso==='parcelado'&&c.data_vencimento&&c.data_vencimento>todayStr&&c.data_vencimento<=in90Str;});
+  var totParcelas90=parcelasFuturas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  // Previsão de gastos do mês (já gastos + a vencer no mês)
+  var aVencerMes=allCosts.filter(function(c){return c.data_vencimento&&c.data_vencimento.startsWith(curMonth)&&c.status_pagto!=='pago';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var prevGasto=totMes+aVencerMes;
+  var finKpis=$('hck-financas');
+  if(finKpis){
+    finKpis.innerHTML=
+      '<div class="dash-fin-kpi">'+
+        '<div class="dash-fin-val '+(lucro<0?'red':'green')+'">'+mo(lucro)+'</div>'+
+        '<div class="dash-fin-lbl">Resultado</div>'+
+      '</div>'+
+      '<div class="dash-fin-kpi">'+
+        '<div class="dash-fin-val">'+mo(totMes)+'</div>'+
+        '<div class="dash-fin-lbl">Gastos do mês</div>'+
+      '</div>'+
+      '<div class="dash-fin-kpi">'+
+        '<div class="dash-fin-val amber">'+mo(prevGasto)+'</div>'+
+        '<div class="dash-fin-lbl">Previsão mês</div>'+
+      '</div>'+
+      '<div class="dash-fin-kpi">'+
+        '<div class="dash-fin-val '+(totParcelas90>0?'amber':'')+'">'+mo(totParcelas90)+'</div>'+
+        '<div class="dash-fin-lbl">Parcelas / 90d</div>'+
+      '</div>';
+  }
   var finRows='';
-  contasVencidas.slice(0,2).forEach(function(c){finRows+=hcRow('var(--red)',c.descricao,'vencida'+(c.data_vencimento?' em '+fmtDate(c.data_vencimento):''),mo(c.valor),'VENCIDA','red','financas');});
-  contasVencer5.slice(0,3).forEach(function(c){finRows+=hcRow('var(--amber)',c.descricao,'vence em '+fmtDate(c.data_vencimento),mo(c.valor),'5 dias','amber','financas');});
-  if(!finRows&&contasPend.length){contasPend.slice(0,3).forEach(function(c){finRows+=hcRow('var(--amber)',c.descricao,'pendente',mo(c.valor),'PEND','amber','financas');});}
-  set('hcb-financas',finRows||hcEmpty('Financas em dia',true));
-
-  // ── PEDIDOS ──────────────────────────────────────────────
-  var pedColors={pago:'var(--green)',separacao:'var(--blue)',producao:'var(--amber)',enviado:'var(--neon)',entregue:'var(--green)',troca:'var(--purple)',cancelado:'var(--red)'};
-  var trocas=myPed.filter(function(p){return p.status==='troca';}).length;
-  var enviados=myPed.filter(function(p){return p.status==='enviado';}).length;
-  var totRec=myPed.reduce(function(a,p){return a+parseFloat(p.valor_total||0);},0);
-  set('hck-pedidos',hcKpi(myPed.length,'Total')+hcKpi(enviados,'Enviados','var(--neon)')+hcKpi(trocas,'Trocas',trocas?'var(--red)':'var(--muted)')+hcKpi(mo(totRec),'Receita','var(--green)'));
-  setCritical('hcard-pedidos',trocas>0,false);
-  var semRastreio=myPed.filter(function(p){return p.status==='enviado'&&!p.codigo_rastreio;});
-  var pedRows='';
-  if(trocas)myPed.filter(function(p){return p.status==='troca';}).slice(0,2).forEach(function(p){pedRows+=hcRow('var(--purple)',p.numero+' '+p.cliente_nome,'em troca',mo(p.valor_total),'TROCA','amber','pedidos');});
-  if(semRastreio.length)semRastreio.slice(0,2).forEach(function(p){pedRows+=hcRow('var(--amber)',p.numero+' '+p.cliente_nome,'enviado sem rastreio',mo(p.valor_total),'SEM RASTR','amber','pedidos');});
-  myPed.filter(function(p){return p.status==='enviado'&&p.codigo_rastreio;}).slice(0,3).forEach(function(p){pedRows+=hcRow(pedColors[p.status]||'var(--muted)',p.numero+' '+p.cliente_nome,L.pedSt[p.status]+(p.codigo_rastreio?' | '+p.codigo_rastreio:''),mo(p.valor_total),'','','pedidos');});
-  if(!pedRows)myPed.slice(0,4).forEach(function(p){pedRows+=hcRow(pedColors[p.status]||'var(--muted)',p.numero+' '+p.cliente_nome,L.pedSt[p.status],mo(p.valor_total),'','','pedidos');});
-  set('hcb-pedidos',pedRows||hcEmpty('Nenhum pedido ainda'));
-
-  // ── PRODUCAO ─────────────────────────────────────────────
-  var aprovPend=D.producoes.filter(function(p){return p.status==='aprovacao';});
-  var emProd=D.producoes.filter(function(p){return p.status==='em_producao';}).length;
-  var dispVenda=D.producoes.filter(function(p){return p.status==='disponivel';}).length;
-  set('hck-producao',hcKpi(aprovPend.length,'Aprov. pend.',aprovPend.length?'var(--red)':'var(--muted)')+hcKpi(emProd,'Em producao','var(--amber)')+hcKpi(dispVenda,'Disponivel','var(--green)'));
-  setCritical('hcard-producao',aprovPend.length,false);
-  var prdRows='';
-  aprovPend.slice(0,3).forEach(function(p){
-    var chips='<span class="aprov-chip-mini '+(p.aprovado_ju?'ok':'nok')+'">JU</span><span class="aprov-chip-mini '+(p.aprovado_fe?'ok':'nok')+'">FE</span><span class="aprov-chip-mini '+(p.aprovado_vi?'ok':'nok')+'">VI</span><span class="aprov-chip-mini '+(p.aprovado_ya?'ok':'nok')+'">YA</span>';
-    prdRows+='<div class="hc-row" data-sec="producao"><div class="hc-dot" style="background:var(--purple)"></div><div class="hc-text"><p class="hc-name">'+p.nome+'</p><p class="hc-sub" style="display:flex;gap:3px;margin-top:2px">'+chips+'</p></div><span class="hc-tag red">APROVACAO</span></div>';
+  if(vencidas.length)finRows+=
+    '<div class="dash-item-row">'+
+      '<span class="dash-item-dot" style="background:var(--red)"></span>'+
+      '<span class="dash-item-text">'+vencidas.length+' conta(s) vencida(s)</span>'+
+      '<span class="dash-item-tag red">'+mo(totVenc)+'</span>'+
+    '</div>';
+  if(vencer2.length)finRows+=
+    '<div class="dash-item-row">'+
+      '<span class="dash-item-dot" style="background:var(--amber)"></span>'+
+      '<span class="dash-item-text">'+vencer2.length+' vence(m) em 2 dias</span>'+
+      '<span class="dash-item-tag amber">'+mo(totVencer2)+'</span>'+
+    '</div>';
+  vencer2.slice(0,2).forEach(function(c){finRows+=
+    '<div class="dash-item-row" style="padding-left:12px">'+
+      '<span class="dash-item-dot" style="background:var(--border2)"></span>'+
+      '<span class="dash-item-text" style="font-size:10px">'+c.descricao+'</span>'+
+      '<span class="dash-item-tag amber">'+mo(c.valor)+'</span>'+
+    '</div>';
   });
-  myProd.filter(function(p){return p.status==='em_producao';}).slice(0,3).forEach(function(p){prdRows+=hcRow('var(--amber)',p.nome,(p.colecao?p.colecao.nome:'')+(p.data_prev_fim?' | '+fmtDate(p.data_prev_fim):''),'','EM PROD','blue','producao');});
-  if(dispVenda&&!prdRows)myProd.filter(function(p){return p.status==='disponivel';}).slice(0,3).forEach(function(p){prdRows+=hcRow('var(--green)',p.nome,p.colecao?p.colecao.nome:'','','DISPONIVEL','green','producao');});
-  var g8=$('hcb-producao');if(g8)g8.innerHTML=prdRows||hcEmpty('Nenhuma producao ativa');
+  if(!finRows)finRows='<p class="hc-empty good">Financeiro em dia ✓</p>';
+  set('hcb-financas',finRows);
 
-  // ── FORNECEDORES ─────────────────────────────────────────
-  var fNaoAprov=D.suppliers.filter(function(s){return !s.aprovado&&s.status==='ativo';}).length;
-  var fAtivos=D.suppliers.filter(function(s){return s.status==='ativo';}).length;
-  var fGold=D.suppliers.filter(function(s){return s.classificacao==='gold';}).length;
-  set('hck-fornecedores',hcKpi(D.suppliers.length,'Total')+hcKpi(fAtivos,'Ativos','var(--green)')+hcKpi(fGold,'Gold','var(--neon)')+hcKpi(fNaoAprov,'Sem aprov.',fNaoAprov?'var(--amber)':'var(--muted)'));
-  setCritical('hcard-fornecedores',false,fNaoAprov>0);
-  var supRows='';
-  if(fNaoAprov)D.suppliers.filter(function(s){return !s.aprovado&&s.status==='ativo';}).slice(0,3).forEach(function(s){supRows+=hcRow('var(--amber)',s.nome,s.categoria,'','SEM APROV','amber','fornecedores');});
-  D.suppliers.filter(function(s){return s.classificacao==='gold'&&s.aprovado;}).slice(0,3).forEach(function(s){supRows+=hcRow('var(--neon)',s.nome,s.categoria+' | '+stars(s.avaliacao),'','GOLD','neon','fornecedores');});
-  var g10=$('hcb-fornecedores');if(g10)g10.innerHTML=supRows||hcEmpty('Nenhum alerta de fornecedor',true);
+  // ── CARD PRODUCAO ─────────────────────────────────────────
+  var stColors={ideacao:'var(--muted)',aprovacao:'var(--purple)',em_criacao:'var(--blue)',em_producao:'var(--amber)',produzido:'var(--green)',recebido:'var(--green)',disponivel:'var(--green)'};
+  var stOrder=['aprovacao','em_producao','em_criacao','produzido','disponivel','recebido','ideacao'];
+  var prdByStatus={};
+  D.producoes.forEach(function(p){
+    if(!prdByStatus[p.status])prdByStatus[p.status]=[];
+    prdByStatus[p.status].push(p);
+  });
+  var prdKpiHtml='';
+  stOrder.forEach(function(st){
+    var items=prdByStatus[st];
+    if(!items||!items.length)return;
+    prdKpiHtml+='<div class="dash-prd-group">'+
+      '<div class="dash-prd-status-row">'+
+        '<span class="dash-prd-dot" style="background:'+(stColors[st]||'var(--muted)')+'"></span>'+
+        '<span class="dash-prd-status-lbl">'+L.prdSt[st]+'</span>'+
+        '<span class="dash-prd-count">'+items.length+'</span>'+
+      '</div>'+
+      items.slice(0,3).map(function(p){
+        return '<div class="dash-prd-item">'+
+          (p.colecao?'<span class="dash-prd-col">'+p.colecao.nome+'</span> · ':'')+
+          '<span>'+p.nome+'</span>'+
+          (p.quantidade?'<span class="dash-prd-qtd">'+p.quantidade+' pç</span>':'')+
+        '</div>';
+      }).join('')+
+      (items.length>3?'<div class="dash-prd-item" style="color:var(--muted2)">+mais '+(items.length-3)+'</div>':'')+
+    '</div>';
+  });
+  set('hck-producao',prdKpiHtml||'<p class="hc-empty">Nenhuma produção ativa</p>');
+  set('hcb-producao','');
 
-  // ── ESTOQUE + PRODUTOS ──────────────────────────────────
+  // ── CARD ALERTAS GERAIS ───────────────────────────────────
+  var alertas=[];
+  // Estoque baixo
   var estBaixo=D.estoques.filter(function(e){return e.quantidade<=e.quantidade_minima;});
-  var prodSemCol=D.produtos.filter(function(p){return !p.colecao_id;}).length;
-  set('hck-estoque',hcKpi(D.estoques.length,'Itens')+hcKpi(estBaixo.length,'Baixo',estBaixo.length?'var(--red)':'var(--muted)')+hcKpi(D.produtos.length,'Produtos')+hcKpi(prodSemCol,'Sem colecao',prodSemCol?'var(--amber)':'var(--muted)'));
-  setCritical('hcard-estoque',estBaixo.length>0,prodSemCol>0);
-  var estRows='';
-  estBaixo.slice(0,4).forEach(function(e){estRows+=hcRow('var(--red)',e.nome,e.categoria,e.quantidade+' '+e.unidade,'BAIXO','red','estoque');});
-  if(!estRows&&prodSemCol)D.produtos.filter(function(p){return !p.colecao_id;}).slice(0,3).forEach(function(p){estRows+=hcRow('var(--amber)',p.sku+' '+p.nome,p.categoria||'','','SEM COL','amber','produtos');});
-  var g12=$('hcb-estoque');if(g12)g12.innerHTML=estRows||hcEmpty('Estoque e produtos ok',true);
+  if(estBaixo.length)alertas.push({icon:'📦',mod:'estoque',txt:estBaixo.length+' item(ns) com estoque baixo',cls:'warn'});
+  // Fornecedores sem aprovação
+  var fNaoAprov=D.suppliers.filter(function(s){return !s.aprovado&&s.status==='ativo';});
+  if(fNaoAprov.length)alertas.push({icon:'🏭',mod:'fornecedores',txt:fNaoAprov.length+' fornecedor(es) sem aprovação',cls:'warn'});
+  // Pedidos em troca
+  var trocas=D.pedidos.filter(function(p){return p.status==='troca';});
+  if(trocas.length)alertas.push({icon:'↩️',mod:'pedidos',txt:trocas.length+' pedido(s) em troca/devolução',cls:'danger'});
+  // Pedidos enviados sem rastreio
+  var semRastreio=D.pedidos.filter(function(p){return p.status==='enviado'&&!p.codigo_rastreio;});
+  if(semRastreio.length)alertas.push({icon:'📮',mod:'pedidos',txt:semRastreio.length+' pedido(s) sem código de rastreio',cls:'warn'});
+  // Produções aguardando aprovação
+  var aprovPend=D.producoes.filter(function(p){return p.status==='aprovacao';});
+  if(aprovPend.length)alertas.push({icon:'⏳',mod:'producao',txt:aprovPend.length+' produção(ões) aguardando aprovação',cls:'warn'});
+  // Fretes sem acordo
+  var freAtivos=D.fretes.filter(function(f){return f.status==='ativo';});
+  if(!freAtivos.length)alertas.push({icon:'🚚',mod:'fretes',txt:'Nenhuma tabela de frete ativa configurada',cls:'danger'});
+  // Coleções sem produtos
+  var colSemProd=D.colecoes.filter(function(c){return !D.produtos.find(function(p){return p.colecao_id===c.id;});});
+  if(colSemProd.length)alertas.push({icon:'🗂',mod:'colecoes',txt:colSemProd.length+' coleção(ões) sem produtos',cls:'info'});
+  // Tarefas atrasadas
+  if(atrasadas.length)alertas.push({icon:'⚠️',mod:'tarefas',txt:atrasadas.length+' tarefa(s) com prazo vencido',cls:'danger'});
 
-  // ── COLECOES ─────────────────────────────────────────────
-  var colLancadas=D.colecoes.filter(function(c){return c.status==='lancada';}).length;
-  var colEmProd=D.colecoes.filter(function(c){return c.status==='em_producao';}).length;
-  set('hck-colecoes',hcKpi(D.colecoes.length,'Total')+hcKpi(colEmProd,'Em producao','var(--amber)')+hcKpi(colLancadas,'Lancadas','var(--green)'));
-  setCritical('hcard-colecoes',false,false);
-  var colRows='';
-  D.colecoes.filter(function(c){return c.status==='em_producao'||c.status==='lancada';}).slice(0,5).forEach(function(c){
-    var prods=D.produtos.filter(function(p){return p.colecao_id===c.id;});
-    var rec=prods.reduce(function(a,p){return a+(p.preco_venda||0);},0);
-    var tagCls=c.status==='lancada'?'green':'amber';
-    colRows+=hcRow('var(--purple)',c.nome,(c.temporada||'')+(c.ano?' '+c.ano:'')+'  |  '+prods.length+' prods',(rec>0?mo(rec):''),L.colSt[c.status],tagCls,'colecoes');
-  });
-  var g14=$('hcb-colecoes');if(g14)g14.innerHTML=colRows||hcEmpty('Nenhuma colecao ativa');
-
-  // ── PARCEIROS + FRETES ───────────────────────────────────
-  var parcAtivos=D.parceiros.filter(function(p){return p.status==='ativo';}).length;
-  var parcProsp=D.parceiros.filter(function(p){return p.status==='prospecto';}).length;
-  var fretesAtivos=D.fretes.filter(function(f){return f.status==='ativo';}).length;
-  set('hck-parceiros',hcKpi(parcAtivos,'Parceiros ativos','var(--green)')+hcKpi(parcProsp,'Em prosp.','var(--muted)')+hcKpi(fretesAtivos,'Fretes ativos',fretesAtivos?'var(--green)':'var(--red)'));
-  setCritical('hcard-parceiros',!fretesAtivos,parcProsp>0);
-  var parRows='';
-  if(!fretesAtivos)parRows+=hcRow('var(--red)','Nenhuma tabela de frete ativa','Configure fretes para os pedidos','','URGENTE','red','fretes');
-  D.parceiros.filter(function(p){return p.status==='prospecto';}).slice(0,3).forEach(function(p){parRows+=hcRow('var(--blue)',p.nome,p.tipo||'parceiro','','PROSP','blue','parceiros');});
-  D.parceiros.filter(function(p){return p.status==='ativo';}).slice(0,3).forEach(function(p){parRows+=hcRow('var(--green)',p.nome,p.tipo||'parceiro','','ATIVO','green','parceiros');});
-  var g16=$('hcb-parceiros');if(g16)g16.innerHTML=parRows||hcEmpty('Nenhum parceiro cadastrado');
+  var alertEl=$('hcb-alertas');
+  if(alertEl){
+    if(!alertas.length){
+      alertEl.innerHTML='<p class="hc-empty good" style="padding:12px 0">Tudo em ordem — sem alertas ✓</p>';
+    } else {
+      alertEl.innerHTML=alertas.map(function(a){
+        return '<div class="dash-alerta-row dash-alerta-'+a.cls+'" data-sec="'+a.mod+'">'+
+          '<span class="dash-alerta-icon">'+a.icon+'</span>'+
+          '<span class="dash-alerta-txt">'+a.txt+'</span>'+
+          '<span class="dash-alerta-seta">›</span>'+
+        '</div>';
+      }).join('');
+    }
+  }
 }
 
 function kpi(){return '';}
