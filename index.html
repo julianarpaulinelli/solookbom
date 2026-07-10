@@ -790,6 +790,20 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .kanban-drop-zone{min-height:80px;border-radius:7px;transition:background .15s,border .15s;padding:4px;display:flex;flex-direction:column;gap:8px}
 .kanban-drop-zone.kanban-drag-over{background:var(--blue-bg);outline:2px dashed var(--blue);outline-offset:-2px}
 .kanban-drop-zone.kanban-drag-over .kanban-empty{color:var(--blue)}
+
+/* ── WELCOME ALERTS ──────────────────────────────────────── */
+.welcome-alert-block{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:9px;border:1px solid;margin-bottom:8px}
+.welcome-alert-block.danger{background:rgba(224,82,82,.07);border-color:rgba(224,82,82,.3)}
+.welcome-alert-block.warn{background:rgba(230,162,46,.07);border-color:rgba(230,162,46,.3)}
+.welcome-alert-block.info{background:rgba(45,107,228,.07);border-color:rgba(45,107,228,.25)}
+.welcome-alert-block.neutral{background:var(--card);border-color:var(--border)}
+.welcome-alert-block.blocked{background:rgba(224,82,82,.04);border-color:rgba(224,82,82,.2)}
+.welcome-alert-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.welcome-alert-body{flex:1}
+.welcome-alert-title{font-size:12px;font-weight:700;color:var(--fg);margin-bottom:6px}
+.welcome-alert-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:3px}
+.welcome-alert-list li{font-size:11px;color:var(--muted);padding-left:8px;border-left:2px solid var(--border)}
+.welcome-alert-list li b{color:var(--fg)}
 </style>
 </head>
 <body>
@@ -811,6 +825,20 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 </div>
 
 <!-- APP -->
+<!-- MODAL ALERTAS PÓS-LOGIN -->
+<div class="modal-bg" id="modal-welcome">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title">
+      <span id="welcome-title">Olá! 👋</span>
+      <button class="modal-close-btn" data-close="welcome">×</button>
+    </div>
+    <div id="welcome-body"></div>
+    <div class="modal-footer">
+      <button class="btn-save" data-close="welcome">Entendido, vamos lá!</button>
+    </div>
+  </div>
+</div>
+
 <div id="app-screen">
   <div class="app-layout">
 
@@ -1627,6 +1655,100 @@ function showApp(){
   var name=names[me]||me;
   $('logged-label').textContent=name;$('topbar-user').textContent=name.toUpperCase();
   init();
+  // Mostrar alertas após carregar dados
+  setTimeout(showWelcomeAlerts, 2000);
+}
+
+function showWelcomeAlerts(){
+  var loginMap={JU:'Juliana Paulinelli',FE:'Fernando Araújo',VI:'Victor Paulinelli',YA:'Yasmin Zurdo'};
+  var myName=loginMap[me]||'';
+  var names={JU:'Juliana',FE:'Fernando',VI:'Victor',YA:'Yasmin'};
+  var firstName=names[me]||me;
+
+  // Filtrar tarefas do usuário logado
+  var minhas=D.tasks.filter(function(t){
+    var resp=t.responsavel&&t.responsavel.nome;
+    var coresp=t.coresponsavel&&t.coresponsavel.nome;
+    return (resp&&resp===myName)||(coresp&&coresp===myName);
+  });
+
+  var todo=minhas.filter(function(t){return t.status==='todo';});
+  var doing=minhas.filter(function(t){return t.status==='doing';});
+  var blocked=minhas.filter(function(t){return t.status==='blocked';});
+  var vencidas=minhas.filter(function(t){
+    var today=new Date().toISOString().split('T')[0];
+    return t.prazo&&t.prazo<today&&t.status!=='done';
+  });
+  var hoje=minhas.filter(function(t){
+    var today=new Date().toISOString().split('T')[0];
+    return t.prazo&&t.prazo===today&&t.status!=='done';
+  });
+
+  // Só mostrar se há algo a reportar
+  if(!todo.length&&!doing.length&&!blocked.length&&!vencidas.length&&!hoje.length)return;
+
+  var html='<div style="margin-bottom:12px;font-size:13px;color:var(--muted)">Aqui está um resumo das suas atividades:</div>';
+
+  // Vencidas — urgente
+  if(vencidas.length){
+    html+='<div class="welcome-alert-block danger">'+
+      '<div class="welcome-alert-icon">🚨</div>'+
+      '<div class="welcome-alert-body">'+
+        '<div class="welcome-alert-title">'+vencidas.length+' tarefa'+(vencidas.length>1?'s':'')+' vencida'+(vencidas.length>1?'s':'')+' — ação imediata</div>'+
+        '<ul class="welcome-alert-list">'+vencidas.slice(0,3).map(function(t){
+          return '<li><b>'+t.titulo+'</b> — prazo: '+fmtDate(t.prazo)+'</li>';
+        }).join('')+(vencidas.length>3?'<li>+mais '+(vencidas.length-3)+'...</li>':'')+'</ul>'+
+      '</div>'+
+    '</div>';
+  }
+
+  // Vencem hoje
+  if(hoje.length){
+    html+='<div class="welcome-alert-block warn">'+
+      '<div class="welcome-alert-icon">⏰</div>'+
+      '<div class="welcome-alert-body">'+
+        '<div class="welcome-alert-title">'+hoje.length+' tarefa'+(hoje.length>1?'s':'')+' vence'+(hoje.length>1?'m':'')+' hoje</div>'+
+        '<ul class="welcome-alert-list">'+hoje.map(function(t){return '<li><b>'+t.titulo+'</b></li>';}).join('')+'</ul>'+
+      '</div>'+
+    '</div>';
+  }
+
+  // Em andamento
+  if(doing.length){
+    html+='<div class="welcome-alert-block info">'+
+      '<div class="welcome-alert-icon">◑</div>'+
+      '<div class="welcome-alert-body">'+
+        '<div class="welcome-alert-title">'+doing.length+' tarefa'+(doing.length>1?'s':'')+' em andamento</div>'+
+        '<ul class="welcome-alert-list">'+doing.slice(0,3).map(function(t){return '<li>'+t.titulo+(t.prazo?' — prazo: '+fmtDate(t.prazo):'')+'</li>';}).join('')+(doing.length>3?'<li>+mais '+(doing.length-3)+'...</li>':'')+'</ul>'+
+      '</div>'+
+    '</div>';
+  }
+
+  // A fazer
+  if(todo.length){
+    html+='<div class="welcome-alert-block neutral">'+
+      '<div class="welcome-alert-icon">○</div>'+
+      '<div class="welcome-alert-body">'+
+        '<div class="welcome-alert-title">'+todo.length+' tarefa'+(todo.length>1?'s':'')+' a fazer</div>'+
+        '<ul class="welcome-alert-list">'+todo.slice(0,3).map(function(t){return '<li>'+t.titulo+(t.prazo?' — prazo: '+fmtDate(t.prazo):'')+'</li>';}).join('')+(todo.length>3?'<li>+mais '+(todo.length-3)+'...</li>':'')+'</ul>'+
+      '</div>'+
+    '</div>';
+  }
+
+  // Bloqueadas
+  if(blocked.length){
+    html+='<div class="welcome-alert-block blocked">'+
+      '<div class="welcome-alert-icon">✕</div>'+
+      '<div class="welcome-alert-body">'+
+        '<div class="welcome-alert-title">'+blocked.length+' tarefa'+(blocked.length>1?'s':'')+' bloqueada'+(blocked.length>1?'s':'')+' — requer atenção</div>'+
+        '<ul class="welcome-alert-list">'+blocked.slice(0,3).map(function(t){return '<li>'+t.titulo+'</li>';}).join('')+'</ul>'+
+      '</div>'+
+    '</div>';
+  }
+
+  $('welcome-title').textContent='Olá, '+firstName+'! 👋';
+  $('welcome-body').innerHTML=html;
+  $('modal-welcome').classList.add('open');
 }
 
 // ── PESSOAS ────────────────────────────────────────────────
