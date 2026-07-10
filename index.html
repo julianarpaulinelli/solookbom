@@ -825,6 +825,28 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .sim-del{background:none;border:none;cursor:pointer;color:var(--muted2);font-size:18px;line-height:1;padding:2px 5px;border-radius:4px;transition:color .15s}
 .sim-del:hover{color:var(--red)}
 .sim-empty{text-align:center;color:var(--muted2);font-size:12px;padding:32px 0}
+
+/* ── SIMULADOR SAVE / HISTÓRICO ──────────────────────────── */
+.sim-actions-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:14px;border-top:1px solid var(--border)}
+.sim-save-group{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.sim-name-inp{flex:1;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:7px;color:var(--fg);font:13px 'Inter',sans-serif;outline:none;transition:border-color .2s;min-width:0}
+.sim-name-inp:focus{border-color:var(--blue)}
+.sim-name-inp::placeholder{color:var(--muted2)}
+.sim-hist-section{margin-top:28px}
+.sim-hist-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.sim-hist-count{font-size:11px;color:var(--muted);font-weight:500}
+.sim-hist-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;transition:border-color .15s}
+.sim-hist-card:hover{border-color:var(--border2)}
+.sim-hist-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.sim-hist-name{font-size:13px;font-weight:700;color:var(--fg);margin-bottom:3px}
+.sim-hist-meta{font-size:10px;color:var(--muted)}
+.sim-hist-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.sim-hist-kpis{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px;padding:10px 12px;background:var(--surface);border-radius:7px;border:1px solid var(--border)}
+.sim-hist-kpi{display:flex;flex-direction:column;gap:2px}
+.sim-hist-kpi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.sim-hist-kpi-val{font-size:14px;font-weight:700;color:var(--fg)}
+.sim-hist-items{display:flex;flex-wrap:wrap;gap:5px}
+.sim-hist-item-tag{font-size:10px;padding:2px 8px;border-radius:4px;background:var(--card2);color:var(--muted);border:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -1163,7 +1185,22 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             </table>
           </div>
 
-          <button class="btn-sec" id="sim-add-btn" style="margin-top:12px">+ Adicionar item</button>
+          <div class="sim-actions-bar">
+            <button class="btn-sec" id="sim-add-btn">+ Adicionar item</button>
+            <div class="sim-save-group">
+              <input type="text" class="sim-name-inp" id="sim-name" placeholder="Nome da simulação (ex: Coleção Inverno 2026)">
+              <button class="btn-add" id="sim-save-btn">&#128190; Salvar simulação</button>
+            </div>
+          </div>
+
+          <!-- HISTÓRICO -->
+          <div class="sim-hist-section">
+            <div class="sim-hist-header">
+              <span class="fin-section-label" style="margin:0">Histórico de simulações</span>
+              <span class="sim-hist-count" id="sim-hist-count">0 salvas</span>
+            </div>
+            <div id="sim-hist-list"></div>
+          </div>
         </div>
 
         <!-- PRODUTOS -->
@@ -3805,103 +3842,183 @@ document.addEventListener('DOMContentLoaded',function(){
   if(saved){me=saved;showApp();}
 });
 
+
 // ── SIMULADOR DE INVESTIMENTO ──────────────────────────────
 var simRows = [];
 var simNextId = 1;
 var SIM_PGTO = ['À vista','Pix','Boleto 30d','Boleto 60d','Parcelado (cartão)','Parcelado (boleto)','Transferência','Outro'];
+var SIM_STORAGE_KEY = 'slb_simulacoes';
 
 function simFmt(n){
   return 'R$ ' + Number(n).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
-
 function simParseNum(s){
   var v=parseFloat(String(s||'').replace(/[^\d.,-]/g,'').replace(',','.'));
   return isNaN(v)?0:v;
 }
-
 function simCalc(r){
   var qtd=simParseNum(r.qtd);
   var valor=simParseNum(r.valor);
   var parcelas=Math.max(1,parseInt(r.parcelas)||1);
   var unit=qtd>0?valor/qtd:0;
-  var parcVal=parcelas>1?valor/parcelas:0;
+  var parcVal=parcelas>1&&r.pgto&&r.pgto.indexOf('Parcelado')!==-1?valor/parcelas:0;
   return {qtd:qtd,valor:valor,unit:unit,parcVal:parcVal,parcelas:parcelas};
 }
-
 function simTotals(){
-  var total=0; var qtds=[];
-  simRows.forEach(function(r){
-    var c=simCalc(r);
-    total+=c.valor;
-    if(c.qtd>0)qtds.push(c.qtd);
-  });
+  var total=0;var qtds=[];
+  simRows.forEach(function(r){var c=simCalc(r);total+=c.valor;if(c.qtd>0)qtds.push(c.qtd);});
   var minQtd=qtds.length?Math.min.apply(null,qtds):0;
   var unitCost=minQtd>0?total/minQtd:0;
   return {total:total,unitCost:unitCost,minQtd:minQtd};
 }
+function simEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
 
+// ── STORAGE ───────────────────────────────────────────────
+function simLoadHistory(){
+  try{return JSON.parse(localStorage.getItem(SIM_STORAGE_KEY)||'[]');}catch(e){return[];}
+}
+function simSaveHistory(hist){
+  try{localStorage.setItem(SIM_STORAGE_KEY,JSON.stringify(hist));}catch(e){toast('Erro ao salvar','err');}
+}
+
+// ── SALVAR SIMULAÇÃO ──────────────────────────────────────
+function simSave(){
+  if(!simRows.length){toast('Adicione itens antes de salvar','err');return;}
+  var name=($('sim-name')||{value:''}).value.trim();
+  if(!name){toast('Dê um nome para a simulação','err');$('sim-name').focus();return;}
+  var t=simTotals();
+  var hist=simLoadHistory();
+  var sim={
+    id: Date.now(),
+    name: name,
+    date: new Date().toISOString(),
+    user: me||'',
+    rows: simRows.map(function(r){return Object.assign({},r);}),
+    total: t.total,
+    unitCost: t.unitCost,
+    minQtd: t.minQtd
+  };
+  hist.unshift(sim);
+  simSaveHistory(hist);
+  toast('Simulação "'+name+'" salva!');
+  $('sim-name').value='';
+  simRenderHistory();
+}
+
+// ── CARREGAR SIMULAÇÃO ────────────────────────────────────
+function simLoad(id){
+  var hist=simLoadHistory();
+  var sim=hist.find(function(s){return s.id===id;});
+  if(!sim)return;
+  if(simRows.length&&!confirm('Isso vai substituir os itens atuais. Continuar?'))return;
+  simRows=sim.rows.map(function(r){return Object.assign({},r);});
+  simNextId=simRows.reduce(function(mx,r){return Math.max(mx,r.id||0);},0)+1;
+  $('sim-name').value=sim.name+' (cópia)';
+  simRender();
+  toast('Simulação "'+sim.name+'" carregada!');
+  // Scroll para o topo da seção
+  var sec=$('section-simulador');
+  if(sec)sec.scrollTop=0;
+}
+
+// ── EXCLUIR SIMULAÇÃO ─────────────────────────────────────
+function simDeleteHist(id){
+  if(!confirm('Excluir esta simulação do histórico?'))return;
+  var hist=simLoadHistory().filter(function(s){return s.id!==id;});
+  simSaveHistory(hist);
+  simRenderHistory();
+  toast('Simulação excluída');
+}
+
+// ── RENDER HISTÓRICO ──────────────────────────────────────
+function simRenderHistory(){
+  var hist=simLoadHistory();
+  var countEl=$('sim-hist-count');
+  if(countEl)countEl.textContent=hist.length+' salva'+(hist.length!==1?'s':'');
+  var el=$('sim-hist-list');
+  if(!el)return;
+  if(!hist.length){
+    el.innerHTML='<p class="sim-empty" style="padding:20px 0">Nenhuma simulação salva ainda.</p>';
+    return;
+  }
+  var names={JU:'Juliana',FE:'Fernando',VI:'Victor',YA:'Yasmin'};
+  el.innerHTML=hist.map(function(s){
+    var d=new Date(s.date);
+    var dateStr=d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    var userName=names[s.user]||s.user||'—';
+    return '<div class="sim-hist-card">'+
+      '<div class="sim-hist-card-top">'+
+        '<div>'+
+          '<div class="sim-hist-name">'+simEsc(s.name)+'</div>'+
+          '<div class="sim-hist-meta">'+dateStr+' · por '+userName+' · '+s.rows.length+' item'+(s.rows.length!==1?'s':'')+'</div>'+
+        '</div>'+
+        '<div class="sim-hist-actions">'+
+          '<button class="btn-sec" data-sim-load="'+s.id+'" style="font-size:10px;padding:4px 10px">Carregar</button>'+
+          '<button class="sim-del" data-sim-del="'+s.id+'">×</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="sim-hist-kpis">'+
+        '<div class="sim-hist-kpi"><span class="sim-hist-kpi-lbl">Total</span><span class="sim-hist-kpi-val" style="color:var(--blue)">'+simFmt(s.total)+'</span></div>'+
+        '<div class="sim-hist-kpi"><span class="sim-hist-kpi-lbl">Por unidade</span><span class="sim-hist-kpi-val" style="color:var(--green)">'+simFmt(s.unitCost)+'</span></div>'+
+        '<div class="sim-hist-kpi"><span class="sim-hist-kpi-lbl">Lote</span><span class="sim-hist-kpi-val">'+s.minQtd+' un</span></div>'+
+        '<div class="sim-hist-kpi"><span class="sim-hist-kpi-lbl">Itens</span><span class="sim-hist-kpi-val">'+s.rows.length+'</span></div>'+
+      '</div>'+
+      '<div class="sim-hist-items">'+
+        s.rows.slice(0,3).map(function(r){
+          var c=simCalc(r);
+          return '<span class="sim-hist-item-tag">'+(r.fornecedor?r.fornecedor+' · ':'')+r.item+(c.valor>0?' — '+simFmt(c.valor):'')+'</span>';
+        }).join('')+
+        (s.rows.length>3?'<span class="sim-hist-item-tag" style="opacity:.6">+mais '+(s.rows.length-3)+'...</span>':'')+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+// ── RENDER TABELA ─────────────────────────────────────────
 function simRender(){
   var tbody=$('sim-tbody');
   if(!tbody)return;
   var t=simTotals();
-
-  // Summary
   $('sim-total').textContent=simFmt(t.total);
   $('sim-unit').textContent=t.unitCost>0?simFmt(t.unitCost):'R$ 0,00';
   $('sim-count').textContent=simRows.length;
   $('sim-qty').textContent=t.minQtd>0?t.minQtd+' un':'—';
   var note=$('sim-unit-note');
-  if(note){
-    note.textContent=t.minQtd>0&&simRows.length>1
-      ?'Custo unitário baseado em '+t.minQtd+' unidades (menor lote) sobre total de '+simFmt(t.total)+'.'
-      :'';
-  }
-
-  // Rows
+  if(note){note.textContent=t.minQtd>0&&simRows.length>1?'Custo unitário baseado em '+t.minQtd+' unidades (menor lote) sobre total de '+simFmt(t.total)+'.':'';}
   if(!simRows.length){
     tbody.innerHTML='<tr><td colspan="9" class="sim-empty">Nenhum item. Clique em "+ Adicionar item".</td></tr>';
     return;
   }
-
   tbody.innerHTML=simRows.map(function(r){
     var c=simCalc(r);
     var isPar=r.pgto&&r.pgto.indexOf('Parcelado')!==-1;
     return '<tr data-sid="'+r.id+'">'+
       '<td><input class="sim-inp" type="text" placeholder="Ex: Tiggas" value="'+simEsc(r.fornecedor)+'" data-sf="fornecedor"></td>'+
-      '<td><input class="sim-inp" type="text" placeholder="Ex: Sacola zip personalizada" value="'+simEsc(r.item)+'" data-sf="item"></td>'+
+      '<td><input class="sim-inp" type="text" placeholder="Ex: Sacola zip" value="'+simEsc(r.item)+'" data-sf="item"></td>'+
       '<td><input class="sim-inp num" type="number" min="1" placeholder="100" value="'+simEsc(r.qtd)+'" data-sf="qtd"></td>'+
       '<td><input class="sim-inp num" type="number" min="0" step="0.01" placeholder="0,00" value="'+simEsc(r.valor)+'" data-sf="valor"></td>'+
       '<td class="num sim-calc">'+(c.unit>0?simFmt(c.unit):'—')+'</td>'+
       '<td><select class="sim-sel" data-sf="pgto">'+SIM_PGTO.map(function(p){return '<option'+(p===r.pgto?' selected':'')+'>'+p+'</option>';}).join('')+'</select></td>'+
-      '<td><input class="sim-inp num" type="number" min="1" max="48" placeholder="1" value="'+simEsc(r.parcelas)+'" data-sf="parcelas" style="opacity:'+(isPar?'1':'.4')+'"></td>'+
+      '<td><input class="sim-inp num" type="number" min="1" max="48" placeholder="1" value="'+simEsc(r.parcelas)+'" data-sf="parcelas" style="opacity:'+(isPar?'1':'.35')+'"></td>'+
       '<td class="num sim-calc">'+(isPar&&c.parcVal>0?simFmt(c.parcVal):'—')+'</td>'+
       '<td><button class="sim-del" data-sdel="'+r.id+'">×</button></td>'+
     '</tr>';
   }).join('');
 }
 
-function simEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
-
-function simAddRow(){
-  simRows.push({id:simNextId++,fornecedor:'',item:'',qtd:'',valor:'',pgto:'À vista',parcelas:'1'});
-  simRender();
-  // focar no primeiro campo da última linha
-  var tbody=$('sim-tbody');
-  if(tbody){var inputs=tbody.querySelectorAll('.sim-inp');if(inputs.length)inputs[inputs.length-7].focus();}
-}
-
 function simExportCSV(){
-  var rows=[['Fornecedor','Item','Qtd','Valor Total','Unitário','Pagamento','Parcelas','Valor/Parcela']];
+  if(!simRows.length){toast('Nenhum item para exportar','err');return;}
+  var csvRows=[['Fornecedor','Item','Qtd','Valor Total','Unitário','Pagamento','Parcelas','Valor/Parcela']];
   simRows.forEach(function(r){
     var c=simCalc(r);
     var isPar=r.pgto&&r.pgto.indexOf('Parcelado')!==-1;
-    rows.push([r.fornecedor,r.item,c.qtd,c.valor.toFixed(2),c.unit.toFixed(2),r.pgto,isPar?c.parcelas:1,isPar?c.parcVal.toFixed(2):c.valor.toFixed(2)]);
+    csvRows.push([r.fornecedor,r.item,c.qtd,c.valor.toFixed(2),c.unit.toFixed(2),r.pgto,isPar?c.parcelas:1,isPar?c.parcVal.toFixed(2):c.valor.toFixed(2)]);
   });
   var t=simTotals();
-  rows.push([]);
-  rows.push(['TOTAL','','',''+t.total.toFixed(2),'','','','']);
-  rows.push(['CUSTO/UNIDADE','('+t.minQtd+' un)','',''+t.unitCost.toFixed(2),'','','','']);
-  var csv='\uFEFF'+rows.map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'""')+'"';}).join(';');}).join('\r\n');
+  csvRows.push([]);
+  csvRows.push(['TOTAL','','',''+t.total.toFixed(2),'','','','']);
+  csvRows.push(['CUSTO/UNIDADE','('+t.minQtd+' un)','',''+t.unitCost.toFixed(2),'','','','']);
+  var csv='\uFEFF'+csvRows.map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'""')+'"';}).join(';');}).join('\r\n');
   var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');a.href=url;a.download='simulador_slb.csv';a.click();
@@ -3909,27 +4026,40 @@ function simExportCSV(){
   toast('CSV exportado!');
 }
 
-// Inicializar listeners quando a seção abre
+// ── INIT ──────────────────────────────────────────────────
 function initSimulador(){
   var addBtn=$('sim-add-btn');
   var clearBtn=$('sim-clear-btn');
   var exportBtn=$('sim-export-btn');
+  var saveBtn=$('sim-save-btn');
+
   if(addBtn&&!addBtn._simInit){
     addBtn._simInit=true;
-    addBtn.addEventListener('click',simAddRow);
+    addBtn.addEventListener('click',function(){
+      simRows.push({id:simNextId++,fornecedor:'',item:'',qtd:'',valor:'',pgto:'À vista',parcelas:'1'});
+      simRender();
+      var tbody=$('sim-tbody');
+      if(tbody){var inputs=tbody.querySelectorAll('.sim-inp');if(inputs.length)inputs[inputs.length-7].focus();}
+    });
   }
   if(clearBtn&&!clearBtn._simInit){
     clearBtn._simInit=true;
     clearBtn.addEventListener('click',function(){
       if(!simRows.length)return;
-      if(!confirm('Limpar todos os itens?'))return;
-      simRows=[];simNextId=1;simRender();
+      if(!confirm('Limpar todos os itens da simulação atual?'))return;
+      simRows=[];simNextId=1;$('sim-name').value='';simRender();
     });
   }
-  if(exportBtn&&!exportBtn._simInit){
-    exportBtn._simInit=true;
-    exportBtn.addEventListener('click',simExportCSV);
+  if(exportBtn&&!exportBtn._simInit){exportBtn._simInit=true;exportBtn.addEventListener('click',simExportCSV);}
+  if(saveBtn&&!saveBtn._simInit){saveBtn._simInit=true;saveBtn.addEventListener('click',simSave);}
+
+  // Enter no campo nome salva
+  var nameInp=$('sim-name');
+  if(nameInp&&!nameInp._simInit){
+    nameInp._simInit=true;
+    nameInp.addEventListener('keydown',function(e){if(e.key==='Enter')simSave();});
   }
+
   var tbody=$('sim-tbody');
   if(tbody&&!tbody._simInit){
     tbody._simInit=true;
@@ -3938,9 +4068,7 @@ function initSimulador(){
       var id=parseInt(tr.dataset.sid);
       var r=simRows.find(function(x){return x.id===id;});if(!r)return;
       var f=e.target.dataset.sf;if(f)r[f]=e.target.value;
-      var focused=e.target;
       simRender();
-      // restaurar foco
       var same=tbody.querySelector('tr[data-sid="'+id+'"] [data-sf="'+f+'"]');
       if(same)same.focus();
     });
@@ -3956,8 +4084,23 @@ function initSimulador(){
       if(btn){simRows=simRows.filter(function(r){return r.id!==parseInt(btn.dataset.sdel);});simRender();}
     });
   }
-  if(!simRows.length)simRender();
+
+  // Histórico: carregar e excluir
+  var histEl=$('sim-hist-list');
+  if(histEl&&!histEl._simInit){
+    histEl._simInit=true;
+    histEl.addEventListener('click',function(e){
+      var loadBtn=e.target.closest('[data-sim-load]');
+      if(loadBtn){simLoad(parseInt(loadBtn.dataset.simLoad));return;}
+      var delBtn=e.target.closest('[data-sim-del]');
+      if(delBtn){simDeleteHist(parseInt(delBtn.dataset.simDel));}
+    });
+  }
+
+  simRender();
+  simRenderHistory();
 }
+
 
 })();
 </script>
