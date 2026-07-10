@@ -804,6 +804,27 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .welcome-alert-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:3px}
 .welcome-alert-list li{font-size:11px;color:var(--muted);padding-left:8px;border-left:2px solid var(--border)}
 .welcome-alert-list li b{color:var(--fg)}
+
+/* ── SIMULADOR ───────────────────────────────────────────── */
+.sim-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:10px}
+.sim-unit-note{font-size:11px;color:var(--muted);margin-bottom:16px}
+.sim-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:9px}
+.sim-table{width:100%;border-collapse:collapse;font-size:12px;min-width:700px}
+.sim-table thead th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:10px 10px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left;white-space:nowrap}
+.sim-table thead th.num{text-align:right}
+.sim-table tbody tr{border-bottom:1px solid var(--border)}
+.sim-table tbody tr:last-child{border-bottom:none}
+.sim-table tbody tr:hover{background:var(--card)}
+.sim-table td{padding:6px 8px;vertical-align:middle}
+.sim-table td.num{text-align:right}
+.sim-table td.sim-calc{color:var(--muted);font-size:11px;text-align:right;white-space:nowrap}
+.sim-inp{width:100%;background:transparent;border:none;outline:none;font-size:12px;color:var(--fg);font-family:'Inter',sans-serif;padding:2px 0;min-width:0}
+.sim-inp:focus{background:var(--blue-bg);border-radius:3px;padding:2px 4px}
+.sim-inp.num{text-align:right}
+.sim-sel{width:100%;background:var(--card);border:none;outline:none;font-size:12px;color:var(--fg);font-family:'Inter',sans-serif;cursor:pointer;padding:2px 0}
+.sim-del{background:none;border:none;cursor:pointer;color:var(--muted2);font-size:18px;line-height:1;padding:2px 5px;border-radius:4px;transition:color .15s}
+.sim-del:hover{color:var(--red)}
+.sim-empty{text-align:center;color:var(--muted2);font-size:12px;padding:32px 0}
 </style>
 </head>
 <body>
@@ -863,6 +884,10 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
         <div class="nav-item" data-sec="financas">
           <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           <span class="nav-label">Finanças</span>
+        </div>
+        <div class="nav-item" data-sec="simulador">
+          <svg viewBox="0 0 24 24"><path d="M9 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-3"/><path d="M9 15h3l8.5-8.5a1.5 1.5 0 0 0-3-3L9 12v3"/><line x1="16" y1="5" x2="19" y2="8"/></svg>
+          <span class="nav-label">Simulador</span>
         </div>
 
         <div class="nav-section">Produtos</div>
@@ -1098,6 +1123,48 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           <div id="fin-mensal" style="margin-top:20px"></div>
         </div>
 
+
+        <!-- SIMULADOR -->
+        <div class="cw" id="section-simulador">
+          <div class="section-header">
+            <h2 class="section-title">Simulador de Investimento</h2>
+            <div class="header-actions">
+              <button class="btn-sec" id="sim-clear-btn">Limpar tudo</button>
+              <button class="export-btn" id="sim-export-btn">&#8595; Exportar CSV</button>
+            </div>
+          </div>
+
+          <!-- RESUMO -->
+          <div class="sim-summary" id="sim-summary">
+            <div class="fin-kpi"><div class="fin-kpi-accent" style="background:var(--blue)"></div><div class="fin-kpi-val" style="color:var(--blue)" id="sim-total">R$ 0,00</div><div class="fin-kpi-lbl">Total a investir</div></div>
+            <div class="fin-kpi"><div class="fin-kpi-accent" style="background:var(--green)"></div><div class="fin-kpi-val" style="color:var(--green)" id="sim-unit">R$ 0,00</div><div class="fin-kpi-lbl">Custo por unidade</div></div>
+            <div class="fin-kpi"><div class="fin-kpi-accent" style="background:var(--amber)"></div><div class="fin-kpi-val" style="color:var(--amber)" id="sim-count">0</div><div class="fin-kpi-lbl">Itens cotados</div></div>
+            <div class="fin-kpi"><div class="fin-kpi-accent" style="background:var(--muted2)"></div><div class="fin-kpi-val" id="sim-qty">—</div><div class="fin-kpi-lbl">Menor lote</div></div>
+          </div>
+          <p class="sim-unit-note" id="sim-unit-note"></p>
+
+          <!-- TABELA -->
+          <div class="sim-table-wrap">
+            <table class="sim-table" id="sim-table">
+              <thead>
+                <tr>
+                  <th>Fornecedor</th>
+                  <th>Item / descrição</th>
+                  <th class="num">Qtd</th>
+                  <th class="num">Valor total</th>
+                  <th class="num">Unitário</th>
+                  <th>Pagamento</th>
+                  <th class="num">Parcelas</th>
+                  <th class="num">Valor/parc.</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="sim-tbody"></tbody>
+            </table>
+          </div>
+
+          <button class="btn-sec" id="sim-add-btn" style="margin-top:12px">+ Adicionar item</button>
+        </div>
 
         <!-- PRODUTOS -->
         <div class="cw" id="section-produtos">
@@ -1592,7 +1659,7 @@ function setTheme(dark){
 // ── NAVIGATION ─────────────────────────────────────────────
 function openSection(name){
   document.querySelectorAll('.cw').forEach(function(s){s.classList.remove('visible');});
-  var el=$('section-'+name);if(el)el.classList.add('visible');if(name==='financas'&&D.costs.length)renderFinDashboard();
+  var el=$('section-'+name);if(el)el.classList.add('visible');if(name==='financas'&&D.costs.length)renderFinDashboard();if(name==='simulador')initSimulador();
   document.querySelectorAll('.nav-item').forEach(function(n){
     n.classList.toggle('active',n.dataset.sec===name);
   });
@@ -3737,6 +3804,161 @@ document.addEventListener('DOMContentLoaded',function(){
   var saved=sessionStorage.getItem('slb_user');
   if(saved){me=saved;showApp();}
 });
+
+// ── SIMULADOR DE INVESTIMENTO ──────────────────────────────
+var simRows = [];
+var simNextId = 1;
+var SIM_PGTO = ['À vista','Pix','Boleto 30d','Boleto 60d','Parcelado (cartão)','Parcelado (boleto)','Transferência','Outro'];
+
+function simFmt(n){
+  return 'R$ ' + Number(n).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+function simParseNum(s){
+  var v=parseFloat(String(s||'').replace(/[^\d.,-]/g,'').replace(',','.'));
+  return isNaN(v)?0:v;
+}
+
+function simCalc(r){
+  var qtd=simParseNum(r.qtd);
+  var valor=simParseNum(r.valor);
+  var parcelas=Math.max(1,parseInt(r.parcelas)||1);
+  var unit=qtd>0?valor/qtd:0;
+  var parcVal=parcelas>1?valor/parcelas:0;
+  return {qtd:qtd,valor:valor,unit:unit,parcVal:parcVal,parcelas:parcelas};
+}
+
+function simTotals(){
+  var total=0; var qtds=[];
+  simRows.forEach(function(r){
+    var c=simCalc(r);
+    total+=c.valor;
+    if(c.qtd>0)qtds.push(c.qtd);
+  });
+  var minQtd=qtds.length?Math.min.apply(null,qtds):0;
+  var unitCost=minQtd>0?total/minQtd:0;
+  return {total:total,unitCost:unitCost,minQtd:minQtd};
+}
+
+function simRender(){
+  var tbody=$('sim-tbody');
+  if(!tbody)return;
+  var t=simTotals();
+
+  // Summary
+  $('sim-total').textContent=simFmt(t.total);
+  $('sim-unit').textContent=t.unitCost>0?simFmt(t.unitCost):'R$ 0,00';
+  $('sim-count').textContent=simRows.length;
+  $('sim-qty').textContent=t.minQtd>0?t.minQtd+' un':'—';
+  var note=$('sim-unit-note');
+  if(note){
+    note.textContent=t.minQtd>0&&simRows.length>1
+      ?'Custo unitário baseado em '+t.minQtd+' unidades (menor lote) sobre total de '+simFmt(t.total)+'.'
+      :'';
+  }
+
+  // Rows
+  if(!simRows.length){
+    tbody.innerHTML='<tr><td colspan="9" class="sim-empty">Nenhum item. Clique em "+ Adicionar item".</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML=simRows.map(function(r){
+    var c=simCalc(r);
+    var isPar=r.pgto&&r.pgto.indexOf('Parcelado')!==-1;
+    return '<tr data-sid="'+r.id+'">'+
+      '<td><input class="sim-inp" type="text" placeholder="Ex: Tiggas" value="'+simEsc(r.fornecedor)+'" data-sf="fornecedor"></td>'+
+      '<td><input class="sim-inp" type="text" placeholder="Ex: Sacola zip personalizada" value="'+simEsc(r.item)+'" data-sf="item"></td>'+
+      '<td><input class="sim-inp num" type="number" min="1" placeholder="100" value="'+simEsc(r.qtd)+'" data-sf="qtd"></td>'+
+      '<td><input class="sim-inp num" type="number" min="0" step="0.01" placeholder="0,00" value="'+simEsc(r.valor)+'" data-sf="valor"></td>'+
+      '<td class="num sim-calc">'+(c.unit>0?simFmt(c.unit):'—')+'</td>'+
+      '<td><select class="sim-sel" data-sf="pgto">'+SIM_PGTO.map(function(p){return '<option'+(p===r.pgto?' selected':'')+'>'+p+'</option>';}).join('')+'</select></td>'+
+      '<td><input class="sim-inp num" type="number" min="1" max="48" placeholder="1" value="'+simEsc(r.parcelas)+'" data-sf="parcelas" style="opacity:'+(isPar?'1':'.4')+'"></td>'+
+      '<td class="num sim-calc">'+(isPar&&c.parcVal>0?simFmt(c.parcVal):'—')+'</td>'+
+      '<td><button class="sim-del" data-sdel="'+r.id+'">×</button></td>'+
+    '</tr>';
+  }).join('');
+}
+
+function simEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+
+function simAddRow(){
+  simRows.push({id:simNextId++,fornecedor:'',item:'',qtd:'',valor:'',pgto:'À vista',parcelas:'1'});
+  simRender();
+  // focar no primeiro campo da última linha
+  var tbody=$('sim-tbody');
+  if(tbody){var inputs=tbody.querySelectorAll('.sim-inp');if(inputs.length)inputs[inputs.length-7].focus();}
+}
+
+function simExportCSV(){
+  var rows=[['Fornecedor','Item','Qtd','Valor Total','Unitário','Pagamento','Parcelas','Valor/Parcela']];
+  simRows.forEach(function(r){
+    var c=simCalc(r);
+    var isPar=r.pgto&&r.pgto.indexOf('Parcelado')!==-1;
+    rows.push([r.fornecedor,r.item,c.qtd,c.valor.toFixed(2),c.unit.toFixed(2),r.pgto,isPar?c.parcelas:1,isPar?c.parcVal.toFixed(2):c.valor.toFixed(2)]);
+  });
+  var t=simTotals();
+  rows.push([]);
+  rows.push(['TOTAL','','',''+t.total.toFixed(2),'','','','']);
+  rows.push(['CUSTO/UNIDADE','('+t.minQtd+' un)','',''+t.unitCost.toFixed(2),'','','','']);
+  var csv='\uFEFF'+rows.map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'""')+'"';}).join(';');}).join('\r\n');
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='simulador_slb.csv';a.click();
+  URL.revokeObjectURL(url);
+  toast('CSV exportado!');
+}
+
+// Inicializar listeners quando a seção abre
+function initSimulador(){
+  var addBtn=$('sim-add-btn');
+  var clearBtn=$('sim-clear-btn');
+  var exportBtn=$('sim-export-btn');
+  if(addBtn&&!addBtn._simInit){
+    addBtn._simInit=true;
+    addBtn.addEventListener('click',simAddRow);
+  }
+  if(clearBtn&&!clearBtn._simInit){
+    clearBtn._simInit=true;
+    clearBtn.addEventListener('click',function(){
+      if(!simRows.length)return;
+      if(!confirm('Limpar todos os itens?'))return;
+      simRows=[];simNextId=1;simRender();
+    });
+  }
+  if(exportBtn&&!exportBtn._simInit){
+    exportBtn._simInit=true;
+    exportBtn.addEventListener('click',simExportCSV);
+  }
+  var tbody=$('sim-tbody');
+  if(tbody&&!tbody._simInit){
+    tbody._simInit=true;
+    tbody.addEventListener('input',function(e){
+      var tr=e.target.closest('tr[data-sid]');if(!tr)return;
+      var id=parseInt(tr.dataset.sid);
+      var r=simRows.find(function(x){return x.id===id;});if(!r)return;
+      var f=e.target.dataset.sf;if(f)r[f]=e.target.value;
+      var focused=e.target;
+      simRender();
+      // restaurar foco
+      var same=tbody.querySelector('tr[data-sid="'+id+'"] [data-sf="'+f+'"]');
+      if(same)same.focus();
+    });
+    tbody.addEventListener('change',function(e){
+      var tr=e.target.closest('tr[data-sid]');if(!tr)return;
+      var id=parseInt(tr.dataset.sid);
+      var r=simRows.find(function(x){return x.id===id;});if(!r)return;
+      var f=e.target.dataset.sf;if(f)r[f]=e.target.value;
+      simRender();
+    });
+    tbody.addEventListener('click',function(e){
+      var btn=e.target.closest('[data-sdel]');
+      if(btn){simRows=simRows.filter(function(r){return r.id!==parseInt(btn.dataset.sdel);});simRender();}
+    });
+  }
+  if(!simRows.length)simRender();
+}
+
 })();
 </script>
 </body>
