@@ -3974,6 +3974,33 @@ function simRenderHistory(){
   }).join('');
 }
 
+// ── UPDATE PARCIAL (sem recriar DOM) ─────────────────────
+function simUpdateRowCalc(id, tr){
+  var r=simRows.find(function(x){return x.id===id;});
+  if(!r||!tr)return;
+  var c=simCalc(r);
+  var isPar=r.pgto&&r.pgto.indexOf('Parcelado')!==-1;
+  // unitário
+  var cells=tr.querySelectorAll('.sim-calc');
+  if(cells[0])cells[0].textContent=c.unit>0?simFmt(c.unit):'—';
+  // valor por parcela
+  if(cells[1])cells[1].textContent=(isPar&&c.parcVal>0)?simFmt(c.parcVal):'—';
+  // opacidade do campo parcelas
+  var parInp=tr.querySelector('[data-sf="parcelas"]');
+  if(parInp)parInp.style.opacity=isPar?'1':'0.35';
+}
+
+function simUpdateSummary(){
+  var t=simTotals();
+  var el;
+  el=$('sim-total');if(el)el.textContent=simFmt(t.total);
+  el=$('sim-unit');if(el)el.textContent=t.unitCost>0?simFmt(t.unitCost):'R$ 0,00';
+  el=$('sim-count');if(el)el.textContent=simRows.length;
+  el=$('sim-qty');if(el)el.textContent=t.minQtd>0?t.minQtd+' un':'—';
+  var note=$('sim-unit-note');
+  if(note)note.textContent=t.minQtd>0&&simRows.length>1?'Custo unitário baseado em '+t.minQtd+' unidades (menor lote) sobre total de '+simFmt(t.total)+'.':'';
+}
+
 // ── RENDER TABELA ─────────────────────────────────────────
 function simRender(){
   var tbody=$('sim-tbody');
@@ -4068,16 +4095,17 @@ function initSimulador(){
       var id=parseInt(tr.dataset.sid);
       var r=simRows.find(function(x){return x.id===id;});if(!r)return;
       var f=e.target.dataset.sf;if(f)r[f]=e.target.value;
-      simRender();
-      var same=tbody.querySelector('tr[data-sid="'+id+'"] [data-sf="'+f+'"]');
-      if(same)same.focus();
+      // Atualizar só os campos calculados da linha, sem recriar o HTML
+      simUpdateRowCalc(id,tr);
+      simUpdateSummary();
     });
     tbody.addEventListener('change',function(e){
       var tr=e.target.closest('tr[data-sid]');if(!tr)return;
       var id=parseInt(tr.dataset.sid);
       var r=simRows.find(function(x){return x.id===id;});if(!r)return;
       var f=e.target.dataset.sf;if(f)r[f]=e.target.value;
-      simRender();
+      simUpdateRowCalc(id,tr);
+      simUpdateSummary();
     });
     tbody.addEventListener('click',function(e){
       var btn=e.target.closest('[data-sdel]');
