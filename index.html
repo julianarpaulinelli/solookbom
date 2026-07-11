@@ -944,7 +944,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .gantt-name-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .gantt-name-text{font-size:11px;font-weight:500;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gantt-bars-wrap{position:relative;flex:1}
-.gantt-grid-bg{position:absolute;top:0;left:0;bottom:0;right:0;display:flex}
+.gantt-grid-bg{position:absolute;top:0;left:0;bottom:0;right:0;display:flex;pointer-events:none}
 .gantt-row{position:absolute;left:0;right:0;border-bottom:1px solid var(--border)}
 .gantt-bar{position:absolute;border-radius:4px;display:flex;align-items:center;padding:0 6px;transition:opacity .2s;cursor:pointer}
 .gantt-bar:hover{opacity:.8;transform:scaleY(1.05)}
@@ -991,6 +991,15 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 /* ── MF CONFIRMAR ────────────────────────────────────────── */
 .mf-confirm{display:block;width:calc(100% - 8px);margin:6px 4px 2px;padding:7px;background:var(--blue);color:#fff;border:none;border-radius:6px;font:600 11px 'Inter',sans-serif;cursor:pointer;transition:background .15s;letter-spacing:.3px}
 .mf-confirm:hover{background:#1d55c8}
+
+/* ── GANTT GRADE ─────────────────────────────────────────── */
+.gantt-col-day{width:var(--gantt-col-w,28px);flex-shrink:0;position:relative;border-right:1px solid rgba(255,255,255,.05)}
+.gantt-col-day.is-today{background:rgba(45,107,228,.08);border-right:1px solid rgba(45,107,228,.3)}
+.gantt-col-day.is-weekend{background:rgba(255,255,255,.015)}
+.gantt-col-day.is-week-start{border-right:1px solid var(--border)}
+.gantt-col-day-num{position:absolute;top:3px;left:0;right:0;text-align:center;font-size:8px;color:var(--muted2);pointer-events:none}
+.gantt-col-day.is-today .gantt-col-day-num{color:var(--blue);font-weight:700}
+.gantt-col-day.is-sun .gantt-col-day-num{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -1263,9 +1272,9 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
         <div class="cw" id="section-tarefas">
           <div class="section-header"><h2 class="section-title">Tarefas</h2><div class="header-actions">
   <div class="view-toggle">
-    <button class="view-toggle-btn active" id="view-lista-btn" data-view="lista">☰ Lista</button>
-    <button class="view-toggle-btn" id="view-kanban-btn" data-view="kanban">⊞ Kanban</button>
+    <button class="view-toggle-btn active" id="view-kanban-btn" data-view="kanban">⊞ Kanban</button>
     <button class="view-toggle-btn" id="view-timeline-btn" data-view="timeline">📅 Cronograma</button>
+    <button class="view-toggle-btn" id="view-lista-btn" data-view="lista">☰ Lista</button>
   </div>
   <button class="btn-add" data-modal="task">+ Nova tarefa</button>
 </div></div>
@@ -2011,7 +2020,7 @@ var L={
 
 var D={tasks:[],suppliers:[],costs:[],pessoas:[],estoques:[],colecoes:[],producoes:[],pedidos:[],fretes:[],parceiros:[],produtos:[],postagens:[],marketing:[],clientes:[]};
 var F={task:{status:'all',prio:'all',resp:'all'},post:{status:'all',rede:'all'},mkt:{status:'all',tipo:'all'},cli:{tier:'all',vip:'all'},sup:{status:'all',cls:'all',aprov:'all'},fin:{tipo:'all',pagto:'all',rec:'all'},prod:{cat:'all'},est:{cat:'all'},col:{status:'all'},prd:{status:'all'},ped:{status:'all'},fre:{tipo:'all'},par:{status:'all'},pes:{tipo:'all'}};
-var me=null,taskView='lista',isDark=true;
+var me=null,taskView='kanban',isDark=true;
 
 function $(id){return document.getElementById(id);}
   function set(id,html){var e=document.getElementById(id);if(e)e.innerHTML=html;}
@@ -2042,7 +2051,7 @@ function setTheme(dark){
 // ── NAVIGATION ─────────────────────────────────────────────
 function openSection(name){
   document.querySelectorAll('.cw').forEach(function(s){s.classList.remove('visible');});
-  var el=$('section-'+name);if(el)el.classList.add('visible');if(name==='financas'&&D.costs.length)renderFinDashboard();if(name==='simulador')initSimulador();
+  var el=$('section-'+name);if(el)el.classList.add('visible');if(name==='financas'&&D.costs.length)renderFinDashboard();if(name==='simulador')initSimulador();if(name==='tarefas'){setTaskView(taskView);}
   document.querySelectorAll('.nav-item').forEach(function(n){
     n.classList.toggle('active',n.dataset.sec===name);
   });
@@ -2654,11 +2663,9 @@ function renderTimeline(list){
   days.forEach(function(day,i){
     var isToday=i===todayIdx;
     var isSun=day.getDay()===0;var isSat=day.getDay()===6;
-    var isSunStart=isSun&&i>0;
-    var bg=isToday?'rgba(45,107,228,.1)':(isSat||isSun)?'rgba(255,255,255,.015)':'transparent';
-    var bRight=isSunStart?'2px solid var(--border2)':isToday?'1px solid rgba(45,107,228,.4)':'1px solid var(--border)';
-    html+='<div style="width:'+COL_W+'px;flex-shrink:0;background:'+bg+';border-right:'+bRight+';position:relative">'+
-      '<span style="position:absolute;top:3px;left:0;right:0;text-align:center;font-size:8px;color:'+(isToday?'var(--blue)':isSun?'var(--muted)':'var(--muted2)')+';">'+(isToday?'<b>'+day.getDate()+'</b>':day.getDate())+'</span>'+
+    var cls='gantt-col-day'+(isToday?' is-today':'')+(isSun?' is-sun is-week-start':(isSat?' is-weekend':''));
+    html+='<div class="'+cls+'" style="width:'+COL_W+'px">'+
+      '<span class="gantt-col-day-num">'+(isToday?'<b>'+day.getDate()+'</b>':day.getDate())+'</span>'+
     '</div>';
   });
   html+='</div>';
