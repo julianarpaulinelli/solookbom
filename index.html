@@ -968,6 +968,21 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .nav-group-header.open .nav-group-label{color:var(--muted)}
 .nav-group-items{overflow:hidden;transition:none}
 .nav-group-items .nav-item{padding-left:24px}
+
+/* ── GANTT MULTI-FILTERS ─────────────────────────────────── */
+.gantt-filters{display:flex;gap:8px;flex-wrap:wrap;padding:10px 0 12px}
+.mf-wrap{position:relative}
+.mf-trigger{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--card);border:1px solid var(--border);border-radius:7px;cursor:pointer;transition:all .15s;user-select:none;min-width:110px}
+.mf-trigger:hover{border-color:var(--border2)}
+.mf-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.mf-val{font-size:11px;font-weight:600;color:var(--fg);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px}
+.mf-arrow{font-size:9px;color:var(--muted2);flex-shrink:0;transition:transform .2s}
+.mf-dropdown{display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:170px;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:200;padding:6px}
+.mf-dropdown.open{display:block}
+.mf-opt{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;font-size:12px;color:var(--fg);transition:background .1s;white-space:nowrap}
+.mf-opt:hover{background:var(--card)}
+.mf-opt input{accent-color:var(--blue);width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.mf-opt:has(input:checked){color:var(--blue);font-weight:600}
 </style>
 </head>
 <body>
@@ -1248,9 +1263,75 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 </div></div>
           <div class="metrics" id="task-metrics"></div>
           <div class="search-bar"><input class="search-input" id="task-search" placeholder="Buscar por título, categoria, responsável..."></div>
-                    <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="task" data-k="status" data-v="all">Todas</button><button class="fb" data-f="task" data-k="status" data-v="todo">A fazer</button><button class="fb" data-f="task" data-k="status" data-v="doing">Em andamento</button><button class="fb" data-f="task" data-k="status" data-v="done">Concluído</button><button class="fb" data-f="task" data-k="status" data-v="blocked">Bloqueado</button></div>
-          <div class="filters"><span class="fl">Prioridade:</span><button class="fb active" data-f="task" data-k="prio" data-v="all">Todas</button><button class="fb" data-f="task" data-k="prio" data-v="alta">Alta</button><button class="fb" data-f="task" data-k="prio" data-v="media">Média</button><button class="fb" data-f="task" data-k="prio" data-v="baixa">Baixa</button></div>
-          <div class="filters"><span class="fl">Responsável:</span><div id="task-resp-filters" style="display:flex;gap:5px;flex-wrap:wrap"></div></div>
+
+          <!-- Filtros Lista/Kanban -->
+          <div id="task-filters-simple">
+            <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="task" data-k="status" data-v="all">Todas</button><button class="fb" data-f="task" data-k="status" data-v="todo">A fazer</button><button class="fb" data-f="task" data-k="status" data-v="doing">Em andamento</button><button class="fb" data-f="task" data-k="status" data-v="done">Concluído</button><button class="fb" data-f="task" data-k="status" data-v="blocked">Bloqueado</button></div>
+            <div class="filters"><span class="fl">Prioridade:</span><button class="fb active" data-f="task" data-k="prio" data-v="all">Todas</button><button class="fb" data-f="task" data-k="prio" data-v="alta">Alta</button><button class="fb" data-f="task" data-k="prio" data-v="media">Média</button><button class="fb" data-f="task" data-k="prio" data-v="baixa">Baixa</button></div>
+            <div class="filters"><span class="fl">Responsável:</span><div id="task-resp-filters" style="display:flex;gap:5px;flex-wrap:wrap"></div></div>
+          </div>
+
+          <!-- Filtros Cronograma (multi-select) -->
+          <div id="task-filters-gantt" style="display:none">
+            <div class="gantt-filters">
+              <!-- Status -->
+              <div class="mf-wrap">
+                <div class="mf-trigger" data-mf="gf-status">
+                  <span class="mf-label">Status</span>
+                  <span class="mf-val" id="gf-status-val">Todos</span>
+                  <span class="mf-arrow">▾</span>
+                </div>
+                <div class="mf-dropdown" id="gf-status-dd">
+                  <label class="mf-opt"><input type="checkbox" value="all" checked> Todos</label>
+                  <label class="mf-opt"><input type="checkbox" value="todo"> A Fazer</label>
+                  <label class="mf-opt"><input type="checkbox" value="doing"> Em Andamento</label>
+                  <label class="mf-opt"><input type="checkbox" value="blocked"> Bloqueado</label>
+                  <label class="mf-opt"><input type="checkbox" value="done"> Concluído</label>
+                </div>
+              </div>
+              <!-- Prioridade -->
+              <div class="mf-wrap">
+                <div class="mf-trigger" data-mf="gf-prio">
+                  <span class="mf-label">Prioridade</span>
+                  <span class="mf-val" id="gf-prio-val">Todas</span>
+                  <span class="mf-arrow">▾</span>
+                </div>
+                <div class="mf-dropdown" id="gf-prio-dd">
+                  <label class="mf-opt"><input type="checkbox" value="all" checked> Todas</label>
+                  <label class="mf-opt"><input type="checkbox" value="alta"> Alta</label>
+                  <label class="mf-opt"><input type="checkbox" value="media"> Média</label>
+                  <label class="mf-opt"><input type="checkbox" value="baixa"> Baixa</label>
+                </div>
+              </div>
+              <!-- Período -->
+              <div class="mf-wrap">
+                <div class="mf-trigger" data-mf="gf-periodo">
+                  <span class="mf-label">Período</span>
+                  <span class="mf-val" id="gf-periodo-val">Todos</span>
+                  <span class="mf-arrow">▾</span>
+                </div>
+                <div class="mf-dropdown" id="gf-periodo-dd">
+                  <label class="mf-opt"><input type="checkbox" value="all" checked> Todos</label>
+                  <label class="mf-opt"><input type="checkbox" value="atrasado"> Atrasados</label>
+                  <label class="mf-opt"><input type="checkbox" value="hoje"> Vencem hoje</label>
+                  <label class="mf-opt"><input type="checkbox" value="7d"> Próximos 7 dias</label>
+                  <label class="mf-opt"><input type="checkbox" value="30d"> Próximos 30 dias</label>
+                  <label class="mf-opt"><input type="checkbox" value="semdata"> Sem data</label>
+                </div>
+              </div>
+              <!-- Responsável -->
+              <div class="mf-wrap">
+                <div class="mf-trigger" data-mf="gf-resp">
+                  <span class="mf-label">Responsável</span>
+                  <span class="mf-val" id="gf-resp-val">Todos</span>
+                  <span class="mf-arrow">▾</span>
+                </div>
+                <div class="mf-dropdown" id="gf-resp-dd">
+                  <label class="mf-opt"><input type="checkbox" value="all" checked> Todos</label>
+                </div>
+              </div>
+            </div>
+          </div>
           <div id="task-list"></div><div id="task-kanban" style="display:none"></div><div id="task-timeline" style="display:none"></div>
         </div>
 
@@ -2167,13 +2248,125 @@ function loadTasks(){
     renderTasks();
   });
 }
+// ── GANTT MULTI-FILTERS ───────────────────────────────────
+function getGanttFilter(id){
+  var dd=document.getElementById(id+'-dd');
+  if(!dd)return {all:true};
+  var checks=dd.querySelectorAll('input[type="checkbox"]');
+  var allCk=dd.querySelector('input[value="all"]');
+  if(allCk&&allCk.checked)return {all:true};
+  var result={all:false};
+  checks.forEach(function(c){if(c.value!=='all'&&c.checked)result[c.value]=true;});
+  return result;
+}
+
+function updateGanttFilterLabel(id,labels){
+  var dd=document.getElementById(id+'-dd');
+  var valEl=document.getElementById(id+'-val');
+  if(!dd||!valEl)return;
+  var allCk=dd.querySelector('input[value="all"]');
+  if(allCk&&allCk.checked){valEl.textContent='Todos';return;}
+  var checked=Array.from(dd.querySelectorAll('input:checked')).filter(function(c){return c.value!=='all';});
+  if(!checked.length){valEl.textContent='Todos';}
+  else if(checked.length===1){valEl.textContent=labels[checked[0].value]||checked[0].value;}
+  else{valEl.textContent=checked.length+' selecionados';}
+}
+
+function initGanttFilters(){
+  var LABELS={
+    'gf-status':{todo:'A Fazer',doing:'Em Andamento',blocked:'Bloqueado',done:'Concluído'},
+    'gf-prio':{alta:'Alta',media:'Média',baixa:'Baixa'},
+    'gf-periodo':{atrasado:'Atrasados',hoje:'Hoje','7d':'7 dias','30d':'30 dias',semdata:'Sem data'},
+    'gf-resp':{}
+  };
+
+  // Popular responsáveis
+  var respDd=document.getElementById('gf-resp-dd');
+  if(respDd&&D.pessoas.length){
+    var extra=D.pessoas.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(p){
+      LABELS['gf-resp'][String(p.id)]=p.nome.split(' ')[0];
+      return '<label class="mf-opt"><input type="checkbox" value="'+p.id+'"> '+p.nome.split(' ')[0]+'</label>';
+    }).join('');
+    respDd.innerHTML='<label class="mf-opt"><input type="checkbox" value="all" checked> Todos</label>'+extra;
+  }
+
+  ['gf-status','gf-prio','gf-periodo','gf-resp'].forEach(function(id){
+    var trigger=document.querySelector('[data-mf="'+id+'"]');
+    var dd=document.getElementById(id+'-dd');
+    if(!trigger||!dd)return;
+
+    // Toggle dropdown
+    trigger.addEventListener('click',function(e){
+      e.stopPropagation();
+      var isOpen=dd.classList.contains('open');
+      document.querySelectorAll('.mf-dropdown.open').forEach(function(d){d.classList.remove('open');});
+      if(!isOpen)dd.classList.add('open');
+    });
+
+    // Handle checks
+    dd.addEventListener('change',function(e){
+      var ck=e.target;
+      if(ck.value==='all'){
+        dd.querySelectorAll('input').forEach(function(c){c.checked=ck.checked;});
+        if(!ck.checked)ck.checked=true; // "Todos" não pode ser desmarcado sozinho
+      } else {
+        var allCk=dd.querySelector('input[value="all"]');
+        var others=Array.from(dd.querySelectorAll('input')).filter(function(c){return c.value!=='all';});
+        var anyChecked=others.some(function(c){return c.checked;});
+        if(allCk){
+          allCk.checked=!anyChecked;
+          if(!anyChecked)allCk.checked=true; // forçar Todos se nenhum marcado
+        }
+      }
+      updateGanttFilterLabel(id,LABELS[id]);
+      renderTasks();
+    });
+
+    updateGanttFilterLabel(id,LABELS[id]);
+  });
+
+  // Fechar dropdowns ao clicar fora
+  if(!document._mfClose){
+    document._mfClose=true;
+    document.addEventListener('click',function(){
+      document.querySelectorAll('.mf-dropdown.open').forEach(function(d){d.classList.remove('open');});
+    });
+  }
+}
+
 function renderTasks(){
   var f=F.task;
   var q=($('task-search')||{value:''}).value.toLowerCase();
+  // Ler filtros do cronograma se estiver nessa view
+  var gfStatus=getGanttFilter('gf-status');
+  var gfPrio=getGanttFilter('gf-prio');
+  var gfPeriodo=getGanttFilter('gf-periodo');
+  var gfResp=getGanttFilter('gf-resp');
+  var now2=new Date();var todayS=now2.toISOString().split('T')[0];
+  var in7S=new Date(now2);in7S.setDate(in7S.getDate()+7);in7S=in7S.toISOString().split('T')[0];
+  var in30S=new Date(now2);in30S.setDate(in30S.getDate()+30);in30S=in30S.toISOString().split('T')[0];
+
   var list=D.tasks.filter(function(t){
-    if(f.status!=='all'&&t.status!==f.status)return false;
-    if(f.prio!=='all'&&t.prioridade!==f.prio)return false;
-    if(f.resp!=='all'&&t.responsavel_pessoa_id!==f.resp)return false;
+    if(taskView!=='timeline'){
+      if(f.status!=='all'&&t.status!==f.status)return false;
+      if(f.prio!=='all'&&t.prioridade!==f.prio)return false;
+      if(f.resp!=='all'&&t.responsavel_pessoa_id!==f.resp)return false;
+    } else {
+      // Filtros multi-select do cronograma
+      if(!gfStatus.all&&!gfStatus[t.status])return false;
+      if(!gfPrio.all&&!gfPrio[t.prioridade||'media'])return false;
+      if(!gfResp.all&&!gfResp[String(t.responsavel_pessoa_id)])return false;
+      if(!gfPeriodo.all){
+        var prazo=t.prazo;
+        var pass=false;
+        if(gfPeriodo.atrasado&&prazo&&prazo<todayS)pass=true;
+        if(gfPeriodo.hoje&&prazo&&prazo===todayS)pass=true;
+        if(gfPeriodo['7d']&&prazo&&prazo>todayS&&prazo<=in7S)pass=true;
+        if(gfPeriodo['30d']&&prazo&&prazo>todayS&&prazo<=in30S)pass=true;
+        if(gfPeriodo.semdata&&!prazo)pass=true;
+        if(!pass)return false;
+      }
+    }
     if(q){
       var match=(t.titulo&&t.titulo.toLowerCase().includes(q))||
                 (t.categoria&&t.categoria.toLowerCase().includes(q))||
@@ -2311,6 +2504,11 @@ function setTaskView(view){
     var btn=$('view-'+v+'-btn');
     if(btn)btn.classList.toggle('active',v===view);
   });
+  var simple=$('task-filters-simple');
+  var gantt=$('task-filters-gantt');
+  if(simple)simple.style.display=view==='timeline'?'none':'';
+  if(gantt)gantt.style.display=view==='timeline'?'':'none';
+  if(view==='timeline')initGanttFilters();
   renderTasks();
 }
 
