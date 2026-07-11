@@ -2318,6 +2318,14 @@ function renderTimeline(list){
   var el=$('task-timeline');
   if(!list.length){el.innerHTML='<p class="empty">Nenhuma tarefa</p>';return;}
 
+  // Ordenar por prazo: com prazo primeiro (mais próximo → mais distante), sem prazo no fim
+  list=list.slice().sort(function(a,b){
+    if(!a.prazo&&!b.prazo)return 0;
+    if(!a.prazo)return 1;
+    if(!b.prazo)return -1;
+    return a.prazo.localeCompare(b.prazo);
+  });
+
   var now=new Date();
   // Determinar intervalo de datas: do inicio mais antigo ao prazo mais tardio
   var datas=list.filter(function(t){return t.prazo||t.data_inicio;});
