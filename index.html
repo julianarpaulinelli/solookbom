@@ -924,6 +924,40 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .sim-diluir-lbl:has(input:checked){background:var(--blue-bg);border-color:var(--blue-bd);color:var(--blue)}
 .sim-diluir-lbl input{accent-color:var(--blue);width:12px;height:12px;cursor:pointer}
 .sim-calc.sim-diluido{color:var(--blue);font-weight:700}
+
+/* ── GANTT ───────────────────────────────────────────────── */
+.gantt-wrap{font-size:12px;user-select:none}
+.gantt-scroll-wrap{overflow-x:auto;overflow-y:hidden;border:1px solid var(--border);border-radius:9px}
+.gantt-inner{display:flex;flex-direction:column}
+
+/* Header */
+.gantt-header{display:flex;flex-direction:column;position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:2px solid var(--border)}
+.gantt-corner{flex-shrink:0;padding:0 12px;height:28px;display:flex;align-items:center;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-right:1px solid var(--border);background:var(--surface)}
+.gantt-months{display:flex;height:28px;border-bottom:1px solid var(--border)}
+.gantt-month-cell{display:flex;align-items:center;padding:0 8px;font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--muted);border-right:1px solid var(--border);white-space:nowrap;overflow:hidden;flex-shrink:0}
+.gantt-header{flex-direction:row;align-items:stretch;flex-wrap:wrap}
+
+/* Body */
+.gantt-body{display:flex;position:relative}
+.gantt-names{flex-shrink:0;position:sticky;left:0;z-index:5;border-right:2px solid var(--border);background:var(--surface)}
+.gantt-name-row{display:flex;align-items:center;gap:8px;padding:0 10px;border-bottom:1px solid var(--border)}
+.gantt-name-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.gantt-name-text{font-size:11px;font-weight:500;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gantt-bars-wrap{position:relative;flex:1}
+.gantt-grid-bg{position:absolute;top:0;left:0;bottom:0;right:0;display:flex}
+.gantt-row{position:absolute;left:0;right:0;border-bottom:1px solid var(--border)}
+.gantt-bar{position:absolute;border-radius:4px;display:flex;align-items:center;padding:0 6px;transition:opacity .2s;cursor:pointer}
+.gantt-bar:hover{opacity:.8;transform:scaleY(1.05)}
+.gantt-bar[data-done="1"]{opacity:.6}
+.gantt-bar[data-done="1"] .gantt-bar-label{text-decoration:line-through}
+.gantt-bar-label{font-size:9px;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Legenda */
+.gantt-legend{display:flex;gap:16px;padding:10px 12px;border-top:1px solid var(--border);background:var(--surface);flex-wrap:wrap}
+.gantt-legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.gantt-legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* Altura do gantt-bars-wrap calculada no JS */
 </style>
 </head>
 <body>
@@ -2225,33 +2259,166 @@ function setTaskView(view){
 }
 
 function renderTimeline(list){
-  $('task-list').innerHTML='';
   var el=$('task-timeline');
-  var withDate=list.filter(function(t){return t.prazo;}).sort(function(a,b){return a.prazo.localeCompare(b.prazo);});
-  var noDate=list.filter(function(t){return !t.prazo;});
   if(!list.length){el.innerHTML='<p class="empty">Nenhuma tarefa</p>';return;}
-  var byMonth={};
-  withDate.forEach(function(t){
-    var d=new Date(t.prazo+'T12:00:00');
-    var key=d.getFullYear()+'-'+(d.getMonth()+1);
-    var label=d.toLocaleString('pt-BR',{month:'long',year:'numeric'});
-    if(!byMonth[key])byMonth[key]={label:label,items:[]};
-    byMonth[key].items.push(t);
+
+  var now=new Date();
+  // Determinar intervalo de datas: do inicio mais antigo ao prazo mais tardio
+  var datas=list.filter(function(t){return t.prazo||t.data_inicio;});
+  var allDates=[];
+  datas.forEach(function(t){
+    if(t.data_inicio)allDates.push(new Date(t.data_inicio+'T12:00:00'));
+    if(t.prazo)allDates.push(new Date(t.prazo+'T12:00:00'));
   });
-  var html='<div class="timeline">';
-  Object.keys(byMonth).sort().forEach(function(k){
-    var g=byMonth[k];
-    html+='<div class="tl-month"><p class="tl-month-label">'+g.label.toUpperCase()+'</p>';
-    g.items.forEach(function(t){html+='<div class="tl-item"><div class="tl-dot '+t.status+'"></div><div class="tl-info"><p class="tl-name">'+t.titulo+'</p><div class="tl-meta">'+badge(t.status,L.status[t.status])+(t.responsavel?'<span>'+t.responsavel.nome+'</span>':'')+'</div></div><span class="tl-date">'+fmtDate(t.prazo)+'</span></div>';});
+  if(!allDates.length){el.innerHTML='<p class="empty">Nenhuma tarefa com data definida</p>';return;}
+
+  // Range: 2 semanas antes do início mais antigo até 2 semanas após o prazo mais tardio
+  var minD=new Date(Math.min.apply(null,allDates));
+  var maxD=new Date(Math.max.apply(null,allDates));
+  minD.setDate(minD.getDate()-3);
+  maxD.setDate(maxD.getDate()+7);
+  // Sempre incluir hoje
+  if(now<minD)minD=new Date(now);minD.setDate(minD.getDate()-3);
+  if(now>maxD)maxD=new Date(now);maxD.setDate(maxD.getDate()+7);
+
+  // Gerar array de dias
+  var days=[];var d=new Date(minD);d.setHours(0,0,0,0);
+  var maxD2=new Date(maxD);maxD2.setHours(0,0,0,0);
+  while(d<=maxD2){days.push(new Date(d));d.setDate(d.getDate()+1);}
+  var totalDays=days.length;
+  var COL_W=28; // px por dia
+  var LEFT_W=200; // px coluna de nomes
+  var ROW_H=34; // px por linha
+  var HEADER_H=50;
+
+  // Agrupar dias por mês para o header
+  var months=[];var lastM=-1;
+  days.forEach(function(day,i){
+    var m=day.getMonth();var y=day.getFullYear();
+    if(m!==lastM){months.push({label:day.toLocaleString('pt-BR',{month:'short',year:'numeric'}),start:i,count:0});lastM=m;}
+    months[months.length-1].count++;
+  });
+
+  // Cores por status
+  var stBar={todo:'#4A6380',doing:'#E6A22E',done:'#27C08A',blocked:'#E05252'};
+  var stBg={todo:'rgba(74,99,128,.15)',doing:'rgba(230,162,46,.15)',done:'rgba(39,192,138,.15)',blocked:'rgba(224,82,82,.15)'};
+
+  // Calcular largura total
+  var totalW=LEFT_W+totalDays*COL_W;
+
+  // Construir SVG-like com HTML/CSS
+  var todayIdx=days.findIndex(function(d){return d.toDateString()===now.toDateString();});
+
+  var html='<div class="gantt-wrap">';
+  html+='<div class="gantt-scroll-wrap" style="overflow-x:auto">';
+  html+='<div class="gantt-inner" style="min-width:'+totalW+'px">';
+
+  // ── HEADER ──────────────────────────────────────────────
+  html+='<div class="gantt-header">';
+  // Canto top-left
+  html+='<div class="gantt-corner" style="width:'+LEFT_W+'px">Tarefa</div>';
+  // Header de meses
+  html+='<div class="gantt-months" style="width:'+(totalDays*COL_W)+'px">';
+  months.forEach(function(m){
+    html+='<div class="gantt-month-cell" style="width:'+(m.count*COL_W)+'px">'+m.label.toUpperCase()+'</div>';
+  });
+  html+='</div>';
+  // Header de dias
+  html+='<div class="gantt-days" style="width:'+(totalDays*COL_W)+'px;margin-left:0">';
+  // (posicionado pelo CSS abaixo)
+  html+='</div>';
+  html+='</div>'; // gantt-header
+
+  // ── GRID ──────────────────────────────────────────────
+  html+='<div class="gantt-body">';
+
+  // Coluna de nomes (sticky)
+  html+='<div class="gantt-names" style="width:'+LEFT_W+'px">';
+  list.forEach(function(t,i){
+    var rowColor=i%2===0?'var(--card)':'var(--surface)';
+    html+='<div class="gantt-name-row" style="height:'+ROW_H+'px;background:'+rowColor+'">'+
+      '<span class="gantt-name-dot" style="background:'+(stBar[t.status]||'var(--muted)')+'"></span>'+
+      '<span class="gantt-name-text" title="'+t.titulo+'">'+t.titulo+'</span>'+
+    '</div>';
+  });
+  html+='</div>';
+
+  // Grid de barras
+  html+='<div class="gantt-bars-wrap" style="width:'+(totalDays*COL_W)+'px">';
+
+  // Linhas de fundo + marcadores de dia
+  html+='<div class="gantt-grid-bg" style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex">';
+  days.forEach(function(day,i){
+    var isToday=i===todayIdx;
+    var isSun=day.getDay()===0;var isSat=day.getDay()===6;
+    var bg=isToday?'rgba(45,107,228,.12)':(isSat||isSun)?'rgba(255,255,255,.02)':'transparent';
+    var border=isToday?'1px solid rgba(45,107,228,.5)':'1px solid var(--border)';
+    html+='<div style="width:'+COL_W+'px;flex-shrink:0;background:'+bg+';border-right:'+border+';position:relative">'+
+      '<span style="position:absolute;top:2px;left:0;right:0;text-align:center;font-size:8px;color:'+(isToday?'var(--blue)':'var(--muted2)')+';">'+(isToday?'<b>'+day.getDate()+'</b>':day.getDate())+'</span>'+
+    '</div>';
+  });
+  html+='</div>';
+
+  // Barras das tarefas
+  list.forEach(function(t,i){
+    var rowTop=i*ROW_H;
+    var rowColor=i%2===0?'var(--card)':'var(--surface)';
+    html+='<div class="gantt-row" style="top:'+rowTop+'px;height:'+ROW_H+'px;background:'+rowColor+'">';
+
+    // Calcular posição da barra
+    var startDate=t.data_inicio?new Date(t.data_inicio+'T12:00:00'):null;
+    var endDate=t.prazo?new Date(t.prazo+'T12:00:00'):null;
+
+    if(!startDate&&endDate){startDate=new Date(endDate);startDate.setDate(startDate.getDate()-3);}
+    if(!endDate&&startDate){endDate=new Date(startDate);endDate.setDate(endDate.getDate()+3);}
+    if(startDate&&endDate){
+      var startIdx=days.findIndex(function(d){return d.toDateString()===startDate.toDateString();});
+      var endIdx=days.findIndex(function(d){return d.toDateString()===endDate.toDateString();});
+      if(startIdx===-1)startIdx=0;
+      if(endIdx===-1)endIdx=totalDays-1;
+      var barLeft=startIdx*COL_W+2;
+      var barW=Math.max((endIdx-startIdx+1)*COL_W-4, COL_W-4);
+      var barColor=stBar[t.status]||'var(--muted)';
+      var barBg=stBg[t.status]||'var(--card2)';
+      var resp=t.responsavel?t.responsavel.nome.split(' ')[0]:'';
+      var coResp=t.coresponsavel?', '+t.coresponsavel.nome.split(' ')[0]:'';
+      var barLabel=resp+coResp;
+      var isDone=t.status==='done';
+      html+='<div class="gantt-bar" style="left:'+barLeft+'px;width:'+barW+'px;top:'+(ROW_H/2-9)+'px;height:18px;background:'+barBg+';border:1px solid '+barColor+';border-left:3px solid '+barColor+'"'+
+        (isDone?' data-done="1"':'')+'>'+
+        '<span class="gantt-bar-label">'+barLabel+'</span>'+
+      '</div>';
+    }
     html+='</div>';
   });
-  if(noDate.length){
-    html+='<div class="tl-month"><p class="tl-month-label">SEM DATA DEFINIDA</p>';
-    noDate.forEach(function(t){html+='<div class="tl-item"><div class="tl-dot '+t.status+'"></div><div class="tl-info"><p class="tl-name">'+t.titulo+'</p></div><span class="tl-no-date">sem prazo</span></div>';});
-    html+='</div>';
-  }
-  el.innerHTML=html+'</div>';
+  html+='</div>'; // gantt-bars-wrap
+  html+='</div>'; // gantt-body
+
+  // ── LEGENDA ──────────────────────────────────────────────
+  html+='<div class="gantt-legend">';
+  [{st:'todo',l:'A Fazer'},{st:'doing',l:'Em Andamento'},{st:'blocked',l:'Bloqueado'},{st:'done',l:'Concluído'}].forEach(function(x){
+    html+='<span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:'+stBar[x.st]+'"></span>'+x.l+'</span>';
+  });
+  html+='</div>';
+
+  html+='</div>'; // gantt-inner
+  html+='</div>'; // gantt-scroll-wrap
+  html+='</div>'; // gantt-wrap
+  el.innerHTML=html;
+
+  // Ajustar altura do gantt-bars-wrap
+  var barsWrap=el.querySelector('.gantt-bars-wrap');
+  if(barsWrap)barsWrap.style.height=(list.length*ROW_H)+'px';
+  var namesWrap=el.querySelector('.gantt-names');
+  if(namesWrap)namesWrap.style.height=(list.length*ROW_H)+'px';
+
+  // Scroll para hoje
+  setTimeout(function(){
+    var sw=el.querySelector('.gantt-scroll-wrap');
+    if(sw&&todayIdx>0)sw.scrollLeft=Math.max(0,(todayIdx-3)*COL_W);
+  },50);
 }
+
 function openTaskEdit(id){
   var t=D.tasks.find(function(x){return x.id===id;});if(!t)return;
   $('task-modal-title').textContent='Editar Tarefa';$('t-id').value=t.id;$('t-title').value=t.titulo;$('t-cat').value=t.categoria||'';$('t-prio').value=t.prioridade||'media';$('t-status').value=t.status;$('t-prazo').value=t.prazo||'';$('t-desc').value=t.descricao||'';$('t-tags').value=t.tags||'';$('t-coment').value=t.comentarios||'';
