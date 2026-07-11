@@ -983,6 +983,14 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .mf-opt:hover{background:var(--card)}
 .mf-opt input{accent-color:var(--blue);width:14px;height:14px;cursor:pointer;flex-shrink:0}
 .mf-opt:has(input:checked){color:var(--blue);font-weight:600}
+
+/* ── GANTT SEMANAS ───────────────────────────────────────── */
+.gantt-header-row{display:flex}
+.gantt-week-cell{display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--muted);border-right:2px solid var(--border2);white-space:nowrap;overflow:hidden;padding:0 4px;flex-shrink:0;background:var(--surface)}
+
+/* ── MF CONFIRMAR ────────────────────────────────────────── */
+.mf-confirm{display:block;width:calc(100% - 8px);margin:6px 4px 2px;padding:7px;background:var(--blue);color:#fff;border:none;border-radius:6px;font:600 11px 'Inter',sans-serif;cursor:pointer;transition:background .15s;letter-spacing:.3px}
+.mf-confirm:hover{background:#1d55c8}
 </style>
 </head>
 <body>
@@ -1287,6 +1295,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
                   <label class="mf-opt"><input type="checkbox" value="doing"> Em Andamento</label>
                   <label class="mf-opt"><input type="checkbox" value="blocked"> Bloqueado</label>
                   <label class="mf-opt"><input type="checkbox" value="done"> Concluído</label>
+                  <button class="mf-confirm" data-mf-close="gf-status">Confirmar ✓</button>
                 </div>
               </div>
               <!-- Prioridade -->
@@ -1301,6 +1310,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
                   <label class="mf-opt"><input type="checkbox" value="alta"> Alta</label>
                   <label class="mf-opt"><input type="checkbox" value="media"> Média</label>
                   <label class="mf-opt"><input type="checkbox" value="baixa"> Baixa</label>
+                  <button class="mf-confirm" data-mf-close="gf-prio">Confirmar ✓</button>
                 </div>
               </div>
               <!-- Período -->
@@ -1317,6 +1327,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
                   <label class="mf-opt"><input type="checkbox" value="7d"> Próximos 7 dias</label>
                   <label class="mf-opt"><input type="checkbox" value="30d"> Próximos 30 dias</label>
                   <label class="mf-opt"><input type="checkbox" value="semdata"> Sem data</label>
+                  <button class="mf-confirm" data-mf-close="gf-periodo">Confirmar ✓</button>
                 </div>
               </div>
               <!-- Responsável -->
@@ -1328,6 +1339,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
                 </div>
                 <div class="mf-dropdown" id="gf-resp-dd">
                   <label class="mf-opt"><input type="checkbox" value="all" checked> Todos</label>
+                  <button class="mf-confirm" data-mf-close="gf-resp">Confirmar ✓</button>
                 </div>
               </div>
             </div>
@@ -2287,7 +2299,7 @@ function initGanttFilters(){
       LABELS['gf-resp'][String(p.id)]=p.nome.split(' ')[0];
       return '<label class="mf-opt"><input type="checkbox" value="'+p.id+'"> '+p.nome.split(' ')[0]+'</label>';
     }).join('');
-    respDd.innerHTML='<label class="mf-opt"><input type="checkbox" value="all" checked> Todos</label>'+extra;
+    respDd.innerHTML='<label class="mf-opt"><input type="checkbox" value="all" checked> Todos</label>'+extra+'<button class="mf-confirm" data-mf-close="gf-resp">Confirmar ✓</button>';
   }
 
   ['gf-status','gf-prio','gf-periodo','gf-resp'].forEach(function(id){
@@ -2295,7 +2307,7 @@ function initGanttFilters(){
     var dd=document.getElementById(id+'-dd');
     if(!trigger||!dd)return;
 
-    // Toggle dropdown
+    // Toggle dropdown — abre ao clicar no trigger
     trigger.addEventListener('click',function(e){
       e.stopPropagation();
       var isOpen=dd.classList.contains('open');
@@ -2303,33 +2315,42 @@ function initGanttFilters(){
       if(!isOpen)dd.classList.add('open');
     });
 
-    // Handle checks
+    // Handle checks — SEM fechar o dropdown
     dd.addEventListener('change',function(e){
       var ck=e.target;
+      if(ck.type!=='checkbox')return;
       if(ck.value==='all'){
-        dd.querySelectorAll('input').forEach(function(c){c.checked=ck.checked;});
-        if(!ck.checked)ck.checked=true; // "Todos" não pode ser desmarcado sozinho
+        dd.querySelectorAll('input[type="checkbox"]').forEach(function(c){c.checked=ck.checked;});
+        if(!ck.checked)ck.checked=true;
       } else {
         var allCk=dd.querySelector('input[value="all"]');
-        var others=Array.from(dd.querySelectorAll('input')).filter(function(c){return c.value!=='all';});
+        var others=Array.from(dd.querySelectorAll('input[type="checkbox"]')).filter(function(c){return c.value!=='all';});
         var anyChecked=others.some(function(c){return c.checked;});
-        if(allCk){
-          allCk.checked=!anyChecked;
-          if(!anyChecked)allCk.checked=true; // forçar Todos se nenhum marcado
-        }
+        if(allCk){allCk.checked=!anyChecked;if(!anyChecked)allCk.checked=true;}
       }
       updateGanttFilterLabel(id,LABELS[id]);
-      renderTasks();
+      // NÃO chama renderTasks() aqui — só ao Confirmar
+    });
+
+    // Botão Confirmar — fecha e aplica
+    dd.addEventListener('click',function(e){
+      var btn=e.target.closest('.mf-confirm');
+      if(btn){
+        dd.classList.remove('open');
+        renderTasks();
+      }
     });
 
     updateGanttFilterLabel(id,LABELS[id]);
   });
 
-  // Fechar dropdowns ao clicar fora
+  // Fechar ao clicar fora (sem aplicar — usuário deve clicar Confirmar)
   if(!document._mfClose){
     document._mfClose=true;
-    document.addEventListener('click',function(){
-      document.querySelectorAll('.mf-dropdown.open').forEach(function(d){d.classList.remove('open');});
+    document.addEventListener('click',function(e){
+      if(!e.target.closest('.mf-wrap')){
+        document.querySelectorAll('.mf-dropdown.open').forEach(function(d){d.classList.remove('open');});
+      }
     });
   }
 }
@@ -2576,20 +2597,40 @@ function renderTimeline(list){
   html+='<div class="gantt-inner" style="min-width:'+totalW+'px">';
 
   // ── HEADER ──────────────────────────────────────────────
-  html+='<div class="gantt-header">';
-  // Canto top-left
-  html+='<div class="gantt-corner" style="width:'+LEFT_W+'px">Tarefa</div>';
-  // Header de meses
-  html+='<div class="gantt-months" style="width:'+(totalDays*COL_W)+'px">';
+  // Calcular semanas (Dom → Sáb)
+  var weeks=[];
+  days.forEach(function(day,i){
+    if(day.getDay()===0||i===0){
+      // início de semana
+      var endIdx=Math.min(i+6,days.length-1);
+      var startD=days[i];var endD=days[endIdx];
+      var lbl=startD.getDate()+'/'+String(startD.getMonth()+1).padStart(2,'0')+
+              ' – '+endD.getDate()+'/'+String(endD.getMonth()+1).padStart(2,'0');
+      weeks.push({label:lbl,start:i,count:0});
+    }
+    if(weeks.length)weeks[weeks.length-1].count++;
+  });
+
+  html+='<div class="gantt-header-wrap" style="display:flex;flex-direction:column;position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:2px solid var(--border)">';
+  // Linha 1: canto + meses
+  html+='<div class="gantt-header-row">';
+  html+='<div class="gantt-corner" style="width:'+LEFT_W+'px;height:24px;border-bottom:1px solid var(--border)">Tarefa</div>';
+  html+='<div style="display:flex;width:'+(totalDays*COL_W)+'px;height:24px;border-bottom:1px solid var(--border)">';
   months.forEach(function(m){
-    html+='<div class="gantt-month-cell" style="width:'+(m.count*COL_W)+'px">'+m.label.toUpperCase()+'</div>';
+    html+='<div class="gantt-month-cell" style="width:'+(m.count*COL_W)+'px;height:24px">'+m.label.toUpperCase()+'</div>';
   });
   html+='</div>';
-  // Header de dias
-  html+='<div class="gantt-days" style="width:'+(totalDays*COL_W)+'px;margin-left:0">';
-  // (posicionado pelo CSS abaixo)
   html+='</div>';
-  html+='</div>'; // gantt-header
+  // Linha 2: espaço + semanas
+  html+='<div class="gantt-header-row">';
+  html+='<div style="width:'+LEFT_W+'px;height:22px;background:var(--surface);border-right:2px solid var(--border);border-bottom:1px solid var(--border)"></div>';
+  html+='<div style="display:flex;width:'+(totalDays*COL_W)+'px;height:22px;border-bottom:1px solid var(--border)">';
+  weeks.forEach(function(w){
+    html+='<div class="gantt-week-cell" style="width:'+(w.count*COL_W)+'px">'+w.label+'</div>';
+  });
+  html+='</div>';
+  html+='</div>';
+  html+='</div>'; // gantt-header-wrap
 
   // ── GRID ──────────────────────────────────────────────
   html+='<div class="gantt-body">';
@@ -2613,10 +2654,11 @@ function renderTimeline(list){
   days.forEach(function(day,i){
     var isToday=i===todayIdx;
     var isSun=day.getDay()===0;var isSat=day.getDay()===6;
-    var bg=isToday?'rgba(45,107,228,.12)':(isSat||isSun)?'rgba(255,255,255,.02)':'transparent';
-    var border=isToday?'1px solid rgba(45,107,228,.5)':'1px solid var(--border)';
-    html+='<div style="width:'+COL_W+'px;flex-shrink:0;background:'+bg+';border-right:'+border+';position:relative">'+
-      '<span style="position:absolute;top:2px;left:0;right:0;text-align:center;font-size:8px;color:'+(isToday?'var(--blue)':'var(--muted2)')+';">'+(isToday?'<b>'+day.getDate()+'</b>':day.getDate())+'</span>'+
+    var isSunStart=isSun&&i>0;
+    var bg=isToday?'rgba(45,107,228,.1)':(isSat||isSun)?'rgba(255,255,255,.015)':'transparent';
+    var bRight=isSunStart?'2px solid var(--border2)':isToday?'1px solid rgba(45,107,228,.4)':'1px solid var(--border)';
+    html+='<div style="width:'+COL_W+'px;flex-shrink:0;background:'+bg+';border-right:'+bRight+';position:relative">'+
+      '<span style="position:absolute;top:3px;left:0;right:0;text-align:center;font-size:8px;color:'+(isToday?'var(--blue)':isSun?'var(--muted)':'var(--muted2)')+';">'+(isToday?'<b>'+day.getDate()+'</b>':day.getDate())+'</span>'+
     '</div>';
   });
   html+='</div>';
