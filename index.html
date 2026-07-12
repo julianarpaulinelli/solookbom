@@ -1002,34 +1002,32 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .gantt-col-day.is-sun .gantt-col-day-num{color:var(--muted)}
 
 /* ── PRODUTO MODAL SHOPIFY-LIKE ──────────────────────────── */
-.modal-produto-wide{width:min(92vw,860px);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
-.prod-tabs{display:flex;gap:2px;flex-wrap:wrap;padding:0 0 12px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-shrink:0}
-.prod-tab{padding:6px 14px;font-size:11px;font-weight:600;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
-.prod-tab:hover{border-color:var(--border2);color:var(--fg)}
+.modal-produto-wide{width:min(96vw,680px);max-height:88vh;overflow-y:auto;display:flex;flex-direction:column}
+.prod-tabs{display:flex;gap:3px;flex-wrap:wrap;padding:0 0 14px;border-bottom:2px solid var(--border);margin-bottom:18px;flex-shrink:0}
+.prod-tab{padding:7px 16px;font-size:11px;font-weight:600;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.prod-tab:hover{border-color:var(--border2);color:var(--fg);background:var(--card)}
 .prod-tab.active{background:var(--blue);border-color:var(--blue);color:#fff}
 .prod-tab-panel{display:none}
 .prod-tab-panel.active{display:block}
-.prod-layout{display:grid;grid-template-columns:1fr 280px;gap:16px}
-@media(max-width:700px){.prod-layout{grid-template-columns:1fr}}
-.prod-col-main{}
-.prod-col-side{display:flex;flex-direction:column;gap:10px}
-.prod-side-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px}
-.prod-side-card .form-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding-top:0;margin-bottom:10px;border:none}
 /* Preço */
-.prod-margem-preview{display:flex;gap:16px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-top:8px}
-.prod-margem-lbl{font-size:10px;color:var(--muted);display:block;margin-bottom:2px}
-.prod-margem-val{font-size:14px;font-weight:700;color:var(--green)}
+.prod-margem-preview{display:flex;gap:0;margin-top:0}
+.prod-margem-preview > div{flex:1;padding:12px 16px;background:var(--surface);border:1px solid var(--border)}
+.prod-margem-preview > div:first-child{border-radius:8px 0 0 8px}
+.prod-margem-preview > div:last-child{border-radius:0 8px 8px 0;border-left:none}
+.prod-margem-lbl{font-size:10px;color:var(--muted);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.prod-margem-val{font-size:18px;font-weight:800;color:var(--green)}
 /* SEO preview */
-.prod-seo-preview{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-bottom:16px}
-.prod-seo-url{font-size:11px;color:var(--green);margin-bottom:2px}
-.prod-seo-title-preview{font-size:14px;color:var(--blue);font-weight:600;margin-bottom:4px}
-.prod-seo-desc-preview{font-size:11px;color:var(--muted);line-height:1.5}
-.prod-seo-hint{font-size:10px;color:var(--muted2);margin-top:3px}
+.prod-seo-preview{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:20px}
+.prod-seo-url{font-size:11px;color:var(--green);margin-bottom:3px}
+.prod-seo-title-preview{font-size:15px;color:var(--blue);font-weight:600;margin-bottom:5px;line-height:1.3}
+.prod-seo-desc-preview{font-size:11px;color:var(--muted);line-height:1.6}
+.prod-seo-hint{font-size:10px;color:var(--muted2);margin-top:4px}
 /* Variantes */
-.prod-opcao-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px;margin-bottom:10px}
-.prod-opcao-header{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
-.prod-opcao-valores{display:flex;flex-direction:column;gap:6px}
-.prod-valor-row{display:flex;align-items:center;gap:6px}
+.prod-opcao-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+.prod-opcao-header{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.prod-opcao-header .form-group{margin:0}
+.prod-opcao-valores{display:flex;flex-direction:column;gap:8px}
+.prod-valor-row{display:flex;align-items:center;gap:8px}
 .prod-valor-row input{flex:1}
 </style>
 </head>
@@ -1773,68 +1771,84 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
   <!-- ABA: INFO GERAL -->
   <div class="prod-tab-panel active" id="prod-panel-info">
-    <div class="prod-layout">
-      <div class="prod-col-main">
-        <div class="form-group">
-          <label class="form-label">Título *</label>
-          <input class="form-input" id="pr-nome" placeholder="Ex: Camiseta Preta Festival">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Descrição</label>
-          <textarea class="form-textarea" id="pr-descricao" rows="4" placeholder="Descreva o produto, materiais, detalhes..."></textarea>
-        </div>
+    <div class="form-group">
+      <label class="form-label">Título *</label>
+      <input class="form-input" id="pr-nome" placeholder="Ex: Camiseta Preta Festival">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descrição</label>
+      <textarea class="form-textarea" id="pr-descricao" rows="3" placeholder="Materiais, detalhes, cuidados..."></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="pr-status">
+          <option value="ativo">🟢 Ativo</option>
+          <option value="rascunho" selected>📝 Rascunho</option>
+          <option value="arquivado">📁 Arquivado</option>
+        </select>
       </div>
-      <div class="prod-col-side">
-        <div class="prod-side-card">
-          <p class="form-section" style="margin-top:0">Status</p>
-          <select class="form-select" id="pr-status">
-            <option value="ativo">🟢 Ativo — visível na loja</option>
-            <option value="rascunho" selected>📝 Rascunho — não publicado</option>
-            <option value="arquivado">📁 Arquivado</option>
-          </select>
-        </div>
-        <div class="prod-side-card">
-          <p class="form-section" style="margin-top:0">Publicação</p>
-          <label class="form-check" style="margin-bottom:6px"><input type="checkbox" id="pr-canal-loja" checked> 🛍 Loja online</label>
-          <label class="form-check" style="margin-bottom:6px"><input type="checkbox" id="pr-canal-ig"> 📸 Instagram</label>
-          <label class="form-check"><input type="checkbox" id="pr-canal-tiktok"> 🎵 TikTok Shop</label>
-        </div>
-        <div class="prod-side-card">
-          <p class="form-section" style="margin-top:0">Organização</p>
-          <div class="form-group"><label class="form-label">SKU</label><input class="form-input" id="pr-sku" placeholder="SLB0001" readonly></div>
-          <div class="form-group"><label class="form-label">Tipo de produto</label><input class="form-input" id="pr-tipo" placeholder="Camiseta, Vestido, Calça..."></div>
-          <div class="form-group"><label class="form-label">Fabricante / Vendor</label><input class="form-input" id="pr-fabricante" placeholder="Ex: Tiggas Confecções"></div>
-          <div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="pr-colecao"></select></div>
-          <div class="form-group"><label class="form-label">Fornecedor</label><select class="form-select" id="pr-fornecedor"></select></div>
-          <div class="form-group"><label class="form-label">Tags</label><input class="form-input" id="pr-tags" placeholder="festival, preto, camiseta..."></div>
-        </div>
+      <div class="form-group">
+        <label class="form-label">SKU (gerado automaticamente)</label>
+        <input class="form-input" id="pr-sku" readonly placeholder="SLB0001">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Tipo de produto</label>
+        <input class="form-input" id="pr-tipo" placeholder="Camiseta, Vestido, Calça...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fabricante / Vendor</label>
+        <input class="form-input" id="pr-fabricante" placeholder="Ex: Tiggas Confecções">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Coleção</label>
+        <select class="form-select" id="pr-colecao"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fornecedor</label>
+        <select class="form-select" id="pr-fornecedor"></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tags <span style="color:var(--muted);font-weight:400">— separadas por vírgula</span></label>
+      <input class="form-input" id="pr-tags" placeholder="festival, preto, camiseta, verão...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Canais de venda</label>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:6px">
+        <label class="form-check"><input type="checkbox" id="pr-canal-loja" checked> 🛍 Loja online</label>
+        <label class="form-check"><input type="checkbox" id="pr-canal-ig"> 📸 Instagram Shopping</label>
+        <label class="form-check"><input type="checkbox" id="pr-canal-tiktok"> 🎵 TikTok Shop</label>
       </div>
     </div>
   </div>
 
   <!-- ABA: PREÇO -->
   <div class="prod-tab-panel" id="prod-panel-preco">
-    <div class="prod-layout">
-      <div class="prod-col-main">
-        <p class="form-section" style="margin-top:0">Precificação</p>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Preço (R$) *</label>
-            <input class="form-input" id="pr-venda" type="number" step="0.01" placeholder="0,00">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Preço de comparação (R$) <span style="color:var(--muted);font-weight:400">— riscado</span></label>
-            <input class="form-input" id="pr-preco-comparacao" type="number" step="0.01" placeholder="0,00">
-          </div>
-        </div>
-        <label class="form-check" style="margin-bottom:16px"><input type="checkbox" id="pr-cobrar-tributos" checked> Cobrar tributos neste produto</label>
-        <div class="form-group">
-          <label class="form-label">Custo por item (R$) <span style="color:var(--muted);font-weight:400">— para cálculo de margem</span></label>
-          <input class="form-input" id="pr-custo" type="number" step="0.01" placeholder="0,00">
-        </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Preço (R$) *</label>
+        <input class="form-input" id="pr-venda" type="number" step="0.01" placeholder="0,00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Preço de comparação (R$) <span style="color:var(--muted);font-weight:400">— aparece riscado</span></label>
+        <input class="form-input" id="pr-preco-comparacao" type="number" step="0.01" placeholder="0,00">
+      </div>
+    </div>
+    <label class="form-check" style="margin-bottom:18px"><input type="checkbox" id="pr-cobrar-tributos" checked> Cobrar tributos neste produto</label>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Custo por item (R$) <span style="color:var(--muted);font-weight:400">— para margem</span></label>
+        <input class="form-input" id="pr-custo" type="number" step="0.01" placeholder="0,00">
+      </div>
+      <div class="form-group" style="display:flex;flex-direction:column;justify-content:flex-end">
         <div class="prod-margem-preview" id="pr-margem-preview" style="display:none">
-          <div><span class="prod-margem-lbl">Margem</span><span class="prod-margem-val" id="pr-margem">—</span></div>
-          <div><span class="prod-margem-lbl">Lucro por peça</span><span class="prod-margem-val" id="pr-lucro">—</span></div>
+          <div style="flex:1"><span class="prod-margem-lbl">Margem</span><span class="prod-margem-val" id="pr-margem">—</span></div>
+          <div style="flex:1"><span class="prod-margem-lbl">Lucro/peça</span><span class="prod-margem-val" id="pr-lucro">—</span></div>
         </div>
       </div>
     </div>
@@ -1842,31 +1856,25 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
   <!-- ABA: ESTOQUE -->
   <div class="prod-tab-panel" id="prod-panel-estoque">
-    <div class="prod-layout">
-      <div class="prod-col-main">
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">SKU (código interno)</label>
-            <input class="form-input" id="pr-sku-codigo" placeholder="SLB-CAM-001">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Código de barras (EAN)</label>
-            <input class="form-input" id="pr-codigo-barras" placeholder="7891234567890">
-          </div>
-        </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">SKU interno</label>
+        <input class="form-input" id="pr-sku-codigo" placeholder="SLB-CAM-001">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Código de barras (EAN)</label>
+        <input class="form-input" id="pr-codigo-barras" placeholder="7891234567890">
+      </div>
+    </div>
+    <label class="form-check" style="margin-bottom:14px"><input type="checkbox" id="pr-rastrear-estoque"> Rastrear quantidade em estoque</label>
+    <div id="pr-estoque-qtd-group" style="display:none">
+      <div class="form-row">
         <div class="form-group">
-          <label class="form-check"><input type="checkbox" id="pr-rastrear-estoque"> Rastrear quantidade em estoque</label>
+          <label class="form-label">Quantidade disponível</label>
+          <input class="form-input" id="pr-qtd-estoque" type="number" min="0" placeholder="0">
         </div>
-        <div id="pr-estoque-qtd-group" style="display:none">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Quantidade disponível</label>
-              <input class="form-input" id="pr-qtd-estoque" type="number" min="0" placeholder="0">
-            </div>
-            <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:12px">
-              <label class="form-check"><input type="checkbox" id="pr-vender-sem-estoque"> Continuar vendendo quando sem estoque</label>
-            </div>
-          </div>
+        <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:12px">
+          <label class="form-check"><input type="checkbox" id="pr-vender-sem-estoque"> Continuar vendendo sem estoque</label>
         </div>
       </div>
     </div>
@@ -1874,38 +1882,32 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
   <!-- ABA: FRETE -->
   <div class="prod-tab-panel" id="prod-panel-frete">
-    <div class="prod-layout">
-      <div class="prod-col-main">
-        <label class="form-check" style="margin-bottom:16px"><input type="checkbox" id="pr-e-fisico" checked> Este é um produto físico</label>
-        <div id="pr-frete-fields">
-          <p class="form-section">Embalagem e peso</p>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Peso do produto (kg)</label>
-              <input class="form-input" id="pr-peso-kg" type="number" step="0.001" placeholder="0.300">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Dimensões (C × L × A em cm)</label>
-              <input class="form-input" id="pr-dimensoes" placeholder="30 × 20 × 5">
-            </div>
-          </div>
-          <p class="form-section">Alfândega (para exportação)</p>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">País de origem</label>
-              <select class="form-select" id="pr-pais-origem">
-                <option value="BR" selected>🇧🇷 Brasil</option>
-                <option value="CN">🇨🇳 China</option>
-                <option value="US">🇺🇸 Estados Unidos</option>
-                <option value="PT">🇵🇹 Portugal</option>
-                <option value="outro">Outro</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Código SH (NCM)</label>
-              <input class="form-input" id="pr-codigo-sh" placeholder="6109.10.00">
-            </div>
-          </div>
+    <label class="form-check" style="margin-bottom:16px"><input type="checkbox" id="pr-e-fisico" checked> Este é um produto físico</label>
+    <div id="pr-frete-fields">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Peso do produto (kg)</label>
+          <input class="form-input" id="pr-peso-kg" type="number" step="0.001" placeholder="0.300">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dimensões C × L × A (cm)</label>
+          <input class="form-input" id="pr-dimensoes" placeholder="30 × 20 × 5">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">País de origem</label>
+          <select class="form-select" id="pr-pais-origem">
+            <option value="BR" selected>🇧🇷 Brasil</option>
+            <option value="CN">🇨🇳 China</option>
+            <option value="US">🇺🇸 Estados Unidos</option>
+            <option value="PT">🇵🇹 Portugal</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Código SH / NCM</label>
+          <input class="form-input" id="pr-codigo-sh" placeholder="6109.10.00">
         </div>
       </div>
     </div>
@@ -1913,85 +1915,76 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
   <!-- ABA: VARIANTES -->
   <div class="prod-tab-panel" id="prod-panel-variantes">
-    <div class="prod-layout">
-      <div class="prod-col-main">
-        <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Adicione opções como tamanho, cor ou material. Cada combinação gera uma variante.</p>
-        <div id="pr-opcoes-variante">
-          <!-- Opções adicionadas dinamicamente -->
-        </div>
-        <button class="btn-sec" id="pr-add-opcao" style="margin-top:8px">+ Adicionar opção</button>
-
-        <div id="pr-variantes-lista" style="margin-top:20px;display:none">
-          <p class="form-section">Variantes geradas</p>
-          <div id="pr-variantes-table"></div>
-        </div>
-      </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Adicione opções como tamanho, cor ou material. Cada combinação gera uma variante.</p>
+    <div id="pr-opcoes-variante"></div>
+    <button class="btn-sec" id="pr-add-opcao" style="margin-top:4px">+ Adicionar opção</button>
+    <div id="pr-variantes-lista" style="margin-top:24px;display:none">
+      <p class="form-section">Variantes geradas</p>
+      <div id="pr-variantes-table"></div>
     </div>
   </div>
 
   <!-- ABA: SEO -->
   <div class="prod-tab-panel" id="prod-panel-seo">
-    <div class="prod-layout">
-      <div class="prod-col-main">
-        <div class="prod-seo-preview">
-          <p class="prod-seo-url" id="pr-seo-url-preview">solookbom.com.br/products/</p>
-          <p class="prod-seo-title-preview" id="pr-seo-titulo-preview">Título do produto</p>
-          <p class="prod-seo-desc-preview" id="pr-seo-desc-preview">Meta descrição aparecerá aqui...</p>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Título para mecanismos de busca</label>
-          <input class="form-input" id="pr-seo-titulo" placeholder="Ex: Camiseta Preta Festival | SLB Só Look Bom" maxlength="70">
-          <p class="prod-seo-hint"><span id="pr-seo-titulo-count">0</span>/70 caracteres</p>
-        </div>
-        <div class="form-group">
-          <label class="form-label">URL (slug)</label>
-          <div style="display:flex;align-items:center;gap:0">
-            <span style="font-size:11px;color:var(--muted);padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-right:none;border-radius:7px 0 0 7px;white-space:nowrap">solookbom.com.br/products/</span>
-            <input class="form-input" id="pr-seo-slug" placeholder="camiseta-preta-festival" style="border-radius:0 7px 7px 0">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Meta descrição</label>
-          <textarea class="form-textarea" id="pr-seo-descricao" rows="3" placeholder="Descreva o produto para aparecer nos resultados de busca..." maxlength="160"></textarea>
-          <p class="prod-seo-hint"><span id="pr-seo-desc-count">0</span>/160 caracteres</p>
-        </div>
+    <div class="prod-seo-preview">
+      <p class="prod-seo-url" id="pr-seo-url-preview">solookbom.com.br/products/</p>
+      <p class="prod-seo-title-preview" id="pr-seo-titulo-preview">Título do produto</p>
+      <p class="prod-seo-desc-preview" id="pr-seo-desc-preview">Meta descrição aparecerá aqui...</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Título para busca</label>
+      <input class="form-input" id="pr-seo-titulo" placeholder="Ex: Camiseta Preta Festival | SLB Só Look Bom" maxlength="70">
+      <p class="prod-seo-hint"><span id="pr-seo-titulo-count">0</span>/70 caracteres</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">URL (slug)</label>
+      <div style="display:flex;align-items:center">
+        <span style="font-size:11px;color:var(--muted);padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-right:none;border-radius:7px 0 0 7px;white-space:nowrap">solookbom.com.br/products/</span>
+        <input class="form-input" id="pr-seo-slug" placeholder="camiseta-preta-festival" style="border-radius:0 7px 7px 0;flex:1">
       </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Meta descrição</label>
+      <textarea class="form-textarea" id="pr-seo-descricao" rows="3" placeholder="Descreva o produto para os mecanismos de busca..." maxlength="160"></textarea>
+      <p class="prod-seo-hint"><span id="pr-seo-desc-count">0</span>/160 caracteres</p>
     </div>
   </div>
 
   <!-- ABA: CUSTO SKU -->
   <div class="prod-tab-panel" id="prod-panel-custo">
-    <div class="prod-layout">
-      <div class="prod-col-main">
-        <div class="custo-add-row" id="custo-chips">
-          <span class="custo-chip" data-comp="Matéria-prima">+ Matéria-prima</span>
-          <span class="custo-chip" data-comp="Estampa/Bordado">+ Estampa</span>
-          <span class="custo-chip" data-comp="Embalagem">+ Embalagem</span>
-          <span class="custo-chip" data-comp="Aviamento">+ Aviamento</span>
-          <span class="custo-chip" data-comp="Confecção">+ Confecção</span>
-          <span class="custo-chip" data-comp="Etiqueta/Hangtag">+ Etiqueta</span>
-          <span class="custo-chip" data-comp="Envio ao cliente">+ Envio</span>
-          <span class="custo-chip" data-comp="Outro">+ Outro</span>
-        </div>
-        <table class="custo-table" id="custo-sku-table">
-          <thead><tr><th>Componente</th><th>Descrição</th><th style="text-align:right">Qtd</th><th style="text-align:right">Valor unit.</th><th style="text-align:right">Subtotal</th><th></th></tr></thead>
-          <tbody id="custo-sku-body"></tbody>
-          <tfoot><tr><td colspan="4" style="text-align:right;font-size:10px;font-weight:700;color:var(--muted);padding:6px 4px">CUSTO TOTAL</td><td class="custo-row-total" id="custo-total-display">R$ 0,00</td><td></td></tr></tfoot>
-        </table>
-        <div class="custo-resultado">
-          <div class="custo-margem-wrap">
-            <span class="custo-margem-lbl">Margem desejada</span>
-            <input type="range" class="custo-margem-slider" id="pr-margem-slider" min="10" max="90" value="60">
-            <span class="custo-margem-pct" id="pr-margem-pct">60%</span>
-          </div>
-          <div class="custo-res-row"><span class="custo-res-lbl">Custo total do SKU</span><span class="custo-res-val" id="custo-res-custo">R$ 0,00</span></div>
-          <div class="custo-res-row"><span class="custo-res-lbl">→ Preço de venda sugerido</span><span class="custo-res-val neon" id="custo-res-venda">R$ 0,00</span></div>
-          <div class="custo-res-row"><span class="custo-res-lbl">Lucro por peça</span><span class="custo-res-val green" id="custo-res-lucro">R$ 0,00</span></div>
-        </div>
-        <div class="form-row3" style="margin-top:12px">
-          <div class="form-group"><label class="form-label">Tamanho do lote</label><input class="form-input" id="pr-lote" type="number" min="1" placeholder="1" value="1"></div>
-          <div class="form-group"><label class="form-label">Ponto de equilíbrio</label><input class="form-input" id="pr-breakeven" readonly placeholder="auto"></div>
-        </div>
+    <div class="custo-add-row" id="custo-chips">
+      <span class="custo-chip" data-comp="Matéria-prima">+ Matéria-prima</span>
+      <span class="custo-chip" data-comp="Estampa/Bordado">+ Estampa</span>
+      <span class="custo-chip" data-comp="Embalagem">+ Embalagem</span>
+      <span class="custo-chip" data-comp="Aviamento">+ Aviamento</span>
+      <span class="custo-chip" data-comp="Confecção">+ Confecção</span>
+      <span class="custo-chip" data-comp="Etiqueta/Hangtag">+ Etiqueta</span>
+      <span class="custo-chip" data-comp="Envio ao cliente">+ Envio</span>
+      <span class="custo-chip" data-comp="Outro">+ Outro</span>
+    </div>
+    <table class="custo-table" id="custo-sku-table">
+      <thead><tr><th>Componente</th><th>Descrição</th><th style="text-align:right">Qtd</th><th style="text-align:right">Valor unit.</th><th style="text-align:right">Subtotal</th><th></th></tr></thead>
+      <tbody id="custo-sku-body"></tbody>
+      <tfoot><tr><td colspan="4" style="text-align:right;font-size:10px;font-weight:700;color:var(--muted);padding:6px 4px">CUSTO TOTAL</td><td class="custo-row-total" id="custo-total-display">R$ 0,00</td><td></td></tr></tfoot>
+    </table>
+    <div class="custo-resultado">
+      <div class="custo-margem-wrap">
+        <span class="custo-margem-lbl">Margem desejada</span>
+        <input type="range" class="custo-margem-slider" id="pr-margem-slider" min="10" max="90" value="60">
+        <span class="custo-margem-pct" id="pr-margem-pct">60%</span>
+      </div>
+      <div class="custo-res-row"><span class="custo-res-lbl">Custo total do SKU</span><span class="custo-res-val" id="custo-res-custo">R$ 0,00</span></div>
+      <div class="custo-res-row"><span class="custo-res-lbl">→ Preço sugerido</span><span class="custo-res-val neon" id="custo-res-venda">R$ 0,00</span></div>
+      <div class="custo-res-row"><span class="custo-res-lbl">Lucro por peça</span><span class="custo-res-val green" id="custo-res-lucro">R$ 0,00</span></div>
+    </div>
+    <div class="form-row" style="margin-top:12px">
+      <div class="form-group">
+        <label class="form-label">Tamanho do lote</label>
+        <input class="form-input" id="pr-lote" type="number" min="1" placeholder="1" value="1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ponto de equilíbrio (qtd mín.)</label>
+        <input class="form-input" id="pr-breakeven" readonly placeholder="auto">
       </div>
     </div>
   </div>
