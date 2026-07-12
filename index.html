@@ -1000,6 +1000,37 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .gantt-col-day-num{position:absolute;top:3px;left:0;right:0;text-align:center;font-size:8px;color:var(--muted2);pointer-events:none}
 .gantt-col-day.is-today .gantt-col-day-num{color:var(--blue);font-weight:700}
 .gantt-col-day.is-sun .gantt-col-day-num{color:var(--muted)}
+
+/* ── PRODUTO MODAL SHOPIFY-LIKE ──────────────────────────── */
+.modal-produto-wide{width:min(92vw,860px);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
+.prod-tabs{display:flex;gap:2px;flex-wrap:wrap;padding:0 0 12px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-shrink:0}
+.prod-tab{padding:6px 14px;font-size:11px;font-weight:600;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.prod-tab:hover{border-color:var(--border2);color:var(--fg)}
+.prod-tab.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.prod-tab-panel{display:none}
+.prod-tab-panel.active{display:block}
+.prod-layout{display:grid;grid-template-columns:1fr 280px;gap:16px}
+@media(max-width:700px){.prod-layout{grid-template-columns:1fr}}
+.prod-col-main{}
+.prod-col-side{display:flex;flex-direction:column;gap:10px}
+.prod-side-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px}
+.prod-side-card .form-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding-top:0;margin-bottom:10px;border:none}
+/* Preço */
+.prod-margem-preview{display:flex;gap:16px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-top:8px}
+.prod-margem-lbl{font-size:10px;color:var(--muted);display:block;margin-bottom:2px}
+.prod-margem-val{font-size:14px;font-weight:700;color:var(--green)}
+/* SEO preview */
+.prod-seo-preview{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-bottom:16px}
+.prod-seo-url{font-size:11px;color:var(--green);margin-bottom:2px}
+.prod-seo-title-preview{font-size:14px;color:var(--blue);font-weight:600;margin-bottom:4px}
+.prod-seo-desc-preview{font-size:11px;color:var(--muted);line-height:1.5}
+.prod-seo-hint{font-size:10px;color:var(--muted2);margin-top:3px}
+/* Variantes */
+.prod-opcao-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px;margin-bottom:10px}
+.prod-opcao-header{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.prod-opcao-valores{display:flex;flex-direction:column;gap:6px}
+.prod-valor-row{display:flex;align-items:center;gap:6px}
+.prod-valor-row input{flex:1}
 </style>
 </head>
 <body>
@@ -1722,28 +1753,254 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 </div></div>
 
 <!-- PRODUTO -->
-<div class="modal-bg" id="modal-produto"><div class="modal wide">
-  <div class="modal-title"><span id="prod-modal-title">Novo Produto</span><button class="modal-close-btn" data-close="produto">×</button></div>
-  <input type="hidden" id="pr-id">
-  <div class="form-row"><div class="form-group"><label class="form-label">SKU (automático)</label><input class="form-input" id="pr-sku" readonly placeholder="SLB0001"></div><div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="pr-nome" placeholder="Nome do produto"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Produto pai (para variantes)</label><select class="form-select" id="pr-pai-id"><option value="">— Produto independente —</option></select></div><div class="form-group" style="display:flex;align-items:flex-end;gap:8px;padding-bottom:11px"><label class="form-check"><input type="checkbox" id="pr-e-variante"> Este produto é uma variante</label></div></div>
-  <div id="pr-variante-attrs" style="display:none"><div class="form-row"><div class="form-group"><label class="form-label">Cor</label><input class="form-input" id="pr-atrib-cor" placeholder="Preta, Branca, Bege..."></div><div class="form-group"><label class="form-label">Tamanho</label><select class="form-select" id="pr-atrib-tam"><option value="">—</option><option>PP</option><option>P</option><option>M</option><option>G</option><option>GG</option><option>XGG</option><option>Especial</option></select></div></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="pr-cat"><option value="">—</option><option>Camiseta</option><option>Calça</option><option>Vestido</option><option>Bermuda</option><option>Moletom</option><option>Jaqueta</option><option>Acessório</option><option>Outro</option></select></div><div class="form-group"><label class="form-label">Cor</label><input class="form-input" id="pr-cor" placeholder="Ex: Preto, Branco..."></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Tamanho</label><input class="form-input" id="pr-tamanho" placeholder="P / M / G / GG / Único"></div><div class="form-group"><label class="form-label">Fornecedor</label><select class="form-select" id="pr-fornecedor"></select></div></div>
-  <div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="pr-colecao"></select></div>
-  <p class="form-section">Ficha de Custo</p>
-  <div class="custo-add-row" id="custo-chips"><span class="custo-chip" data-comp="Matéria-prima">+ Matéria-prima</span><span class="custo-chip" data-comp="Estampa/Bordado">+ Estampa</span><span class="custo-chip" data-comp="Embalagem">+ Embalagem</span><span class="custo-chip" data-comp="Aviamento">+ Aviamento</span><span class="custo-chip" data-comp="Confecção">+ Confecção</span><span class="custo-chip" data-comp="Etiqueta/Hangtag">+ Etiqueta</span><span class="custo-chip" data-comp="Envio ao cliente">+ Envio</span><span class="custo-chip" data-comp="Outro">+ Outro</span></div>
-  <table class="custo-table" id="custo-sku-table"><thead><tr><th>Componente</th><th>Descrição</th><th style="text-align:right">Qtd</th><th style="text-align:right">Valor unit.</th><th style="text-align:right">Subtotal</th><th></th></tr></thead><tbody id="custo-sku-body"></tbody><tfoot><tr><td colspan="4" style="text-align:right;font-size:10px;font-weight:700;color:var(--muted);padding:6px 4px">CUSTO TOTAL</td><td class="custo-row-total" id="custo-total-display">R$ 0,00</td><td></td></tr></tfoot></table>
-  <div class="custo-resultado">
-    <div class="custo-margem-wrap"><span class="custo-margem-lbl">Margem desejada</span><input type="range" class="custo-margem-slider" id="pr-margem-slider" min="10" max="90" value="60"><span class="custo-margem-pct" id="pr-margem-pct">60%</span></div>
-    <div class="custo-res-row"><span class="custo-res-lbl">Custo total do SKU</span><span class="custo-res-val" id="custo-res-custo">R$ 0,00</span></div>
-    <div class="custo-res-row"><span class="custo-res-lbl">&#8594; Preço de venda sugerido</span><span class="custo-res-val neon" id="custo-res-venda">R$ 0,00</span></div>
-    <div class="custo-res-row"><span class="custo-res-lbl">Lucro por peça</span><span class="custo-res-val green" id="custo-res-lucro">R$ 0,00</span></div>
+<div class="modal-bg" id="modal-produto"><div class="modal modal-produto-wide">
+  <div class="modal-title">
+    <span id="prod-modal-title">Novo Produto</span>
+    <button class="modal-close-btn" data-close="produto">×</button>
   </div>
-  <div class="form-row3" style="margin-top:12px"><div class="form-group"><label class="form-label">Custo total (R$)</label><input class="form-input" id="pr-custo" type="number" step="0.01" placeholder="calculado auto" readonly></div><div class="form-group"><label class="form-label">Preço de venda (R$)</label><input class="form-input" id="pr-venda" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Margem real (%)</label><input class="form-input" id="pr-margem" readonly placeholder="auto"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Tamanho do lote</label><input class="form-input" id="pr-lote" type="number" min="1" placeholder="1" value="1"></div><div class="form-group"><label class="form-label">Ponto de equilíbrio (qtd mín.)</label><input class="form-input" id="pr-breakeven" readonly placeholder="auto"></div></div>
-  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="pr-obs"></textarea></div>
-  <div class="modal-footer"><button class="btn-save" id="save-produto">Salvar Produto</button><button class="btn-delete-modal" id="delete-produto" style="display:none">Excluir</button><button class="btn-close-modal" data-close="produto">Fechar</button></div>
+  <input type="hidden" id="pr-id">
+
+  <!-- ABAS -->
+  <div class="prod-tabs">
+    <button class="prod-tab active" data-tab="info">📋 Info geral</button>
+    <button class="prod-tab" data-tab="preco">💰 Preço</button>
+    <button class="prod-tab" data-tab="estoque">📦 Estoque</button>
+    <button class="prod-tab" data-tab="frete">🚚 Frete</button>
+    <button class="prod-tab" data-tab="variantes">🎨 Variantes</button>
+    <button class="prod-tab" data-tab="seo">🔍 SEO</button>
+    <button class="prod-tab" data-tab="custo">🧮 Custo SKU</button>
+  </div>
+
+  <!-- ABA: INFO GERAL -->
+  <div class="prod-tab-panel active" id="prod-panel-info">
+    <div class="prod-layout">
+      <div class="prod-col-main">
+        <div class="form-group">
+          <label class="form-label">Título *</label>
+          <input class="form-input" id="pr-nome" placeholder="Ex: Camiseta Preta Festival">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descrição</label>
+          <textarea class="form-textarea" id="pr-descricao" rows="4" placeholder="Descreva o produto, materiais, detalhes..."></textarea>
+        </div>
+      </div>
+      <div class="prod-col-side">
+        <div class="prod-side-card">
+          <p class="form-section" style="margin-top:0">Status</p>
+          <select class="form-select" id="pr-status">
+            <option value="ativo">🟢 Ativo — visível na loja</option>
+            <option value="rascunho" selected>📝 Rascunho — não publicado</option>
+            <option value="arquivado">📁 Arquivado</option>
+          </select>
+        </div>
+        <div class="prod-side-card">
+          <p class="form-section" style="margin-top:0">Publicação</p>
+          <label class="form-check" style="margin-bottom:6px"><input type="checkbox" id="pr-canal-loja" checked> 🛍 Loja online</label>
+          <label class="form-check" style="margin-bottom:6px"><input type="checkbox" id="pr-canal-ig"> 📸 Instagram</label>
+          <label class="form-check"><input type="checkbox" id="pr-canal-tiktok"> 🎵 TikTok Shop</label>
+        </div>
+        <div class="prod-side-card">
+          <p class="form-section" style="margin-top:0">Organização</p>
+          <div class="form-group"><label class="form-label">SKU</label><input class="form-input" id="pr-sku" placeholder="SLB0001" readonly></div>
+          <div class="form-group"><label class="form-label">Tipo de produto</label><input class="form-input" id="pr-tipo" placeholder="Camiseta, Vestido, Calça..."></div>
+          <div class="form-group"><label class="form-label">Fabricante / Vendor</label><input class="form-input" id="pr-fabricante" placeholder="Ex: Tiggas Confecções"></div>
+          <div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="pr-colecao"></select></div>
+          <div class="form-group"><label class="form-label">Fornecedor</label><select class="form-select" id="pr-fornecedor"></select></div>
+          <div class="form-group"><label class="form-label">Tags</label><input class="form-input" id="pr-tags" placeholder="festival, preto, camiseta..."></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA: PREÇO -->
+  <div class="prod-tab-panel" id="prod-panel-preco">
+    <div class="prod-layout">
+      <div class="prod-col-main">
+        <p class="form-section" style="margin-top:0">Precificação</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Preço (R$) *</label>
+            <input class="form-input" id="pr-venda" type="number" step="0.01" placeholder="0,00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Preço de comparação (R$) <span style="color:var(--muted);font-weight:400">— riscado</span></label>
+            <input class="form-input" id="pr-preco-comparacao" type="number" step="0.01" placeholder="0,00">
+          </div>
+        </div>
+        <label class="form-check" style="margin-bottom:16px"><input type="checkbox" id="pr-cobrar-tributos" checked> Cobrar tributos neste produto</label>
+        <div class="form-group">
+          <label class="form-label">Custo por item (R$) <span style="color:var(--muted);font-weight:400">— para cálculo de margem</span></label>
+          <input class="form-input" id="pr-custo" type="number" step="0.01" placeholder="0,00">
+        </div>
+        <div class="prod-margem-preview" id="pr-margem-preview" style="display:none">
+          <div><span class="prod-margem-lbl">Margem</span><span class="prod-margem-val" id="pr-margem">—</span></div>
+          <div><span class="prod-margem-lbl">Lucro por peça</span><span class="prod-margem-val" id="pr-lucro">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA: ESTOQUE -->
+  <div class="prod-tab-panel" id="prod-panel-estoque">
+    <div class="prod-layout">
+      <div class="prod-col-main">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">SKU (código interno)</label>
+            <input class="form-input" id="pr-sku-codigo" placeholder="SLB-CAM-001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Código de barras (EAN)</label>
+            <input class="form-input" id="pr-codigo-barras" placeholder="7891234567890">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-check"><input type="checkbox" id="pr-rastrear-estoque"> Rastrear quantidade em estoque</label>
+        </div>
+        <div id="pr-estoque-qtd-group" style="display:none">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Quantidade disponível</label>
+              <input class="form-input" id="pr-qtd-estoque" type="number" min="0" placeholder="0">
+            </div>
+            <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:12px">
+              <label class="form-check"><input type="checkbox" id="pr-vender-sem-estoque"> Continuar vendendo quando sem estoque</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA: FRETE -->
+  <div class="prod-tab-panel" id="prod-panel-frete">
+    <div class="prod-layout">
+      <div class="prod-col-main">
+        <label class="form-check" style="margin-bottom:16px"><input type="checkbox" id="pr-e-fisico" checked> Este é um produto físico</label>
+        <div id="pr-frete-fields">
+          <p class="form-section">Embalagem e peso</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Peso do produto (kg)</label>
+              <input class="form-input" id="pr-peso-kg" type="number" step="0.001" placeholder="0.300">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dimensões (C × L × A em cm)</label>
+              <input class="form-input" id="pr-dimensoes" placeholder="30 × 20 × 5">
+            </div>
+          </div>
+          <p class="form-section">Alfândega (para exportação)</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">País de origem</label>
+              <select class="form-select" id="pr-pais-origem">
+                <option value="BR" selected>🇧🇷 Brasil</option>
+                <option value="CN">🇨🇳 China</option>
+                <option value="US">🇺🇸 Estados Unidos</option>
+                <option value="PT">🇵🇹 Portugal</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Código SH (NCM)</label>
+              <input class="form-input" id="pr-codigo-sh" placeholder="6109.10.00">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA: VARIANTES -->
+  <div class="prod-tab-panel" id="prod-panel-variantes">
+    <div class="prod-layout">
+      <div class="prod-col-main">
+        <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Adicione opções como tamanho, cor ou material. Cada combinação gera uma variante.</p>
+        <div id="pr-opcoes-variante">
+          <!-- Opções adicionadas dinamicamente -->
+        </div>
+        <button class="btn-sec" id="pr-add-opcao" style="margin-top:8px">+ Adicionar opção</button>
+
+        <div id="pr-variantes-lista" style="margin-top:20px;display:none">
+          <p class="form-section">Variantes geradas</p>
+          <div id="pr-variantes-table"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA: SEO -->
+  <div class="prod-tab-panel" id="prod-panel-seo">
+    <div class="prod-layout">
+      <div class="prod-col-main">
+        <div class="prod-seo-preview">
+          <p class="prod-seo-url" id="pr-seo-url-preview">solookbom.com.br/products/</p>
+          <p class="prod-seo-title-preview" id="pr-seo-titulo-preview">Título do produto</p>
+          <p class="prod-seo-desc-preview" id="pr-seo-desc-preview">Meta descrição aparecerá aqui...</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Título para mecanismos de busca</label>
+          <input class="form-input" id="pr-seo-titulo" placeholder="Ex: Camiseta Preta Festival | SLB Só Look Bom" maxlength="70">
+          <p class="prod-seo-hint"><span id="pr-seo-titulo-count">0</span>/70 caracteres</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL (slug)</label>
+          <div style="display:flex;align-items:center;gap:0">
+            <span style="font-size:11px;color:var(--muted);padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-right:none;border-radius:7px 0 0 7px;white-space:nowrap">solookbom.com.br/products/</span>
+            <input class="form-input" id="pr-seo-slug" placeholder="camiseta-preta-festival" style="border-radius:0 7px 7px 0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Meta descrição</label>
+          <textarea class="form-textarea" id="pr-seo-descricao" rows="3" placeholder="Descreva o produto para aparecer nos resultados de busca..." maxlength="160"></textarea>
+          <p class="prod-seo-hint"><span id="pr-seo-desc-count">0</span>/160 caracteres</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA: CUSTO SKU -->
+  <div class="prod-tab-panel" id="prod-panel-custo">
+    <div class="prod-layout">
+      <div class="prod-col-main">
+        <div class="custo-add-row" id="custo-chips">
+          <span class="custo-chip" data-comp="Matéria-prima">+ Matéria-prima</span>
+          <span class="custo-chip" data-comp="Estampa/Bordado">+ Estampa</span>
+          <span class="custo-chip" data-comp="Embalagem">+ Embalagem</span>
+          <span class="custo-chip" data-comp="Aviamento">+ Aviamento</span>
+          <span class="custo-chip" data-comp="Confecção">+ Confecção</span>
+          <span class="custo-chip" data-comp="Etiqueta/Hangtag">+ Etiqueta</span>
+          <span class="custo-chip" data-comp="Envio ao cliente">+ Envio</span>
+          <span class="custo-chip" data-comp="Outro">+ Outro</span>
+        </div>
+        <table class="custo-table" id="custo-sku-table">
+          <thead><tr><th>Componente</th><th>Descrição</th><th style="text-align:right">Qtd</th><th style="text-align:right">Valor unit.</th><th style="text-align:right">Subtotal</th><th></th></tr></thead>
+          <tbody id="custo-sku-body"></tbody>
+          <tfoot><tr><td colspan="4" style="text-align:right;font-size:10px;font-weight:700;color:var(--muted);padding:6px 4px">CUSTO TOTAL</td><td class="custo-row-total" id="custo-total-display">R$ 0,00</td><td></td></tr></tfoot>
+        </table>
+        <div class="custo-resultado">
+          <div class="custo-margem-wrap">
+            <span class="custo-margem-lbl">Margem desejada</span>
+            <input type="range" class="custo-margem-slider" id="pr-margem-slider" min="10" max="90" value="60">
+            <span class="custo-margem-pct" id="pr-margem-pct">60%</span>
+          </div>
+          <div class="custo-res-row"><span class="custo-res-lbl">Custo total do SKU</span><span class="custo-res-val" id="custo-res-custo">R$ 0,00</span></div>
+          <div class="custo-res-row"><span class="custo-res-lbl">→ Preço de venda sugerido</span><span class="custo-res-val neon" id="custo-res-venda">R$ 0,00</span></div>
+          <div class="custo-res-row"><span class="custo-res-lbl">Lucro por peça</span><span class="custo-res-val green" id="custo-res-lucro">R$ 0,00</span></div>
+        </div>
+        <div class="form-row3" style="margin-top:12px">
+          <div class="form-group"><label class="form-label">Tamanho do lote</label><input class="form-input" id="pr-lote" type="number" min="1" placeholder="1" value="1"></div>
+          <div class="form-group"><label class="form-label">Ponto de equilíbrio</label><input class="form-input" id="pr-breakeven" readonly placeholder="auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn-save" id="save-produto">Salvar Produto</button>
+    <button class="btn-delete-modal" id="delete-produto" style="display:none">Excluir</button>
+    <button class="btn-close-modal" data-close="produto">Fechar</button>
+  </div>
 </div></div>
 
 <!-- ESTOQUE -->
@@ -2076,14 +2333,183 @@ function openModal(type){
   if(type==='produto'){
     setTimeout(function(){
       custoSkuInit();
-      var varCkb=document.getElementById('pr-e-variante');
-      if(varCkb)varCkb.addEventListener('change',function(){
-        var va=document.getElementById('pr-variante-attrs');
-        if(va)va.style.display=varCkb.checked?'block':'none';
-      });
-      populatePaiSelect();
+      prodInitTabs();
+      prodInitVariantes();
+      prodInitSEO();
     },50);
   }
+}
+
+// ── PRODUTO ABAS ──────────────────────────────────────────
+function prodInitTabs(){
+  var tabs=document.querySelectorAll('.prod-tab');
+  tabs.forEach(function(tab){
+    if(tab._prodTabInit)return;
+    tab._prodTabInit=true;
+    tab.addEventListener('click',function(){
+      tabs.forEach(function(t){t.classList.remove('active');});
+      document.querySelectorAll('.prod-tab-panel').forEach(function(p){p.classList.remove('active');});
+      tab.classList.add('active');
+      var panel=$('prod-panel-'+tab.dataset.tab);
+      if(panel)panel.classList.add('active');
+    });
+  });
+  // Estoque toggle
+  var ckEst=$('pr-rastrear-estoque');
+  if(ckEst&&!ckEst._init){ckEst._init=true;ckEst.addEventListener('change',function(){$('pr-estoque-qtd-group').style.display=ckEst.checked?'block':'none';});}
+  // Fisico toggle
+  var ckFis=$('pr-e-fisico');
+  if(ckFis&&!ckFis._init){ckFis._init=true;ckFis.addEventListener('change',function(){$('pr-frete-fields').style.display=ckFis.checked?'block':'none';});}
+  // Preço → margem
+  var venda=$('pr-venda');var custo=$('pr-custo');
+  function calcMargem(){
+    var v=parseFloat(venda&&venda.value)||0;var c=parseFloat(custo&&custo.value)||0;
+    var prev=$('pr-margem-preview');if(prev)prev.style.display=(v>0&&c>0)?'flex':'none';
+    if(v>0&&c>0){
+      var m=Math.round((v-c)/v*100);
+      var el=$('pr-margem');if(el)el.textContent=m+'%';
+      var el2=$('pr-lucro');if(el2)el2.textContent='R$ '+(v-c).toFixed(2).replace('.',',');
+    }
+  }
+  if(venda&&!venda._mgInit){venda._mgInit=true;venda.addEventListener('input',calcMargem);}
+  if(custo&&!custo._mgInit){custo._mgInit=true;custo.addEventListener('input',calcMargem);}
+}
+
+// ── PRODUTO VARIANTES ─────────────────────────────────────
+var prodOpcoes=[];var prodOpcaoNextId=1;
+var OPCAO_SUGESTOES=['Tamanho','Cor','Material'];
+
+function prodInitVariantes(){
+  var btn=$('pr-add-opcao');
+  if(btn&&!btn._init){
+    btn._init=true;
+    btn.addEventListener('click',function(){
+      var idx=prodOpcoes.length;
+      var sugestao=OPCAO_SUGESTOES[idx]||'Opção '+(idx+1);
+      prodOpcoes.push({id:prodOpcaoNextId++,nome:sugestao,valores:['']});
+      prodRenderOpcoes();
+    });
+  }
+  prodRenderOpcoes();
+}
+
+function prodRenderOpcoes(){
+  var container=$('pr-opcoes-variante');
+  if(!container)return;
+  if(!prodOpcoes.length){
+    container.innerHTML='<p style="font-size:11px;color:var(--muted2);padding:8px 0">Nenhuma opção adicionada.</p>';
+    prodRenderVariantesLista();
+    return;
+  }
+  container.innerHTML=prodOpcoes.map(function(op,oi){
+    return '<div class="prod-opcao-card">'+
+      '<div class="prod-opcao-header">'+
+        '<div class="form-group" style="flex:1;margin:0"><label class="form-label">Nome da opção</label>'+
+          '<input class="form-input prod-opcao-nome" data-oid="'+op.id+'" value="'+cEsc(op.nome)+'" placeholder="Ex: Tamanho"></div>'+
+        '<button class="sim-del prod-opcao-del" data-oid="'+op.id+'" style="margin-top:20px">×</button>'+
+      '</div>'+
+      '<div class="prod-opcao-valores" data-oid="'+op.id+'">'+
+        op.valores.map(function(v,vi){
+          return '<div class="prod-valor-row">'+
+            '<input class="form-input prod-valor-inp" data-oid="'+op.id+'" data-vi="'+vi+'" value="'+cEsc(v)+'" placeholder="Adicionar valor...">'+
+            (vi>0?'<button class="sim-del" data-odel="'+op.id+'" data-vi="'+vi+'">×</button>':'')+
+          '</div>';
+        }).join('')+
+        '<button class="btn-sec prod-add-valor" data-oid="'+op.id+'" style="font-size:10px;padding:4px 10px;margin-top:4px">+ Valor</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  // Wire events
+  container.querySelectorAll('.prod-opcao-nome').forEach(function(inp){
+    inp.addEventListener('input',function(){
+      var op=prodOpcoes.find(function(o){return o.id===parseInt(inp.dataset.oid);});
+      if(op){op.nome=inp.value;prodRenderVariantesLista();}
+    });
+  });
+  container.querySelectorAll('.prod-valor-inp').forEach(function(inp){
+    inp.addEventListener('input',function(){
+      var op=prodOpcoes.find(function(o){return o.id===parseInt(inp.dataset.oid);});
+      if(op){op.valores[parseInt(inp.dataset.vi)]=inp.value;prodRenderVariantesLista();}
+    });
+  });
+  container.querySelectorAll('.prod-add-valor').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var op=prodOpcoes.find(function(o){return o.id===parseInt(btn.dataset.oid);});
+      if(op){op.valores.push('');prodRenderOpcoes();}
+    });
+  });
+  container.querySelectorAll('.prod-opcao-del').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      prodOpcoes=prodOpcoes.filter(function(o){return o.id!==parseInt(btn.dataset.oid);});
+      prodRenderOpcoes();
+    });
+  });
+  container.querySelectorAll('[data-odel]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var op=prodOpcoes.find(function(o){return o.id===parseInt(btn.dataset.odel);});
+      if(op){op.valores.splice(parseInt(btn.dataset.vi),1);prodRenderOpcoes();}
+    });
+  });
+  prodRenderVariantesLista();
+}
+
+function prodGerarVariantes(){
+  // Gerar combinações de todos os valores das opções
+  var ops=prodOpcoes.filter(function(o){return o.nome.trim();}).map(function(o){return o.valores.filter(function(v){return v.trim();});});
+  if(!ops.length||!ops[0].length)return[];
+  var result=[[]];
+  ops.forEach(function(vals){
+    var novo=[];
+    result.forEach(function(combo){
+      vals.forEach(function(v){novo.push(combo.concat([v]));});
+    });
+    result=novo;
+  });
+  return result;
+}
+
+function prodRenderVariantesLista(){
+  var lista=$('pr-variantes-lista');
+  var table=$('pr-variantes-table');
+  var variantes=prodGerarVariantes();
+  if(!variantes.length||!lista||!table){if(lista)lista.style.display='none';return;}
+  lista.style.display='block';
+  var nomeOps=prodOpcoes.filter(function(o){return o.nome.trim();}).map(function(o){return o.nome;});
+  table.innerHTML='<table class="sim-table"><thead><tr>'+
+    nomeOps.map(function(n){return '<th>'+n+'</th>';}).join('')+
+    '<th class="num">Preço</th><th class="num">Estoque</th><th>SKU</th></tr></thead><tbody>'+
+    variantes.map(function(combo){
+      var key=combo.join('-').toLowerCase().replace(/\s+/g,'-');
+      return '<tr>'+combo.map(function(v){return '<td>'+v+'</td>';}).join('')+
+        '<td><input class="sim-inp num" type="number" step="0.01" placeholder="—" data-var-key="'+key+'" data-var-field="preco"></td>'+
+        '<td><input class="sim-inp num" type="number" min="0" placeholder="0" data-var-key="'+key+'" data-var-field="estoque"></td>'+
+        '<td><input class="sim-inp" placeholder="SLB-" data-var-key="'+key+'" data-var-field="sku"></td>'+
+      '</tr>';
+    }).join('')+'</tbody></table>';
+}
+
+// ── PRODUTO SEO ───────────────────────────────────────────
+function prodInitSEO(){
+  var titulo=$('pr-seo-titulo');var slug=$('pr-seo-slug');var desc=$('pr-seo-descricao');
+  function updatePreview(){
+    var t=titulo&&titulo.value||$('pr-nome')&&$('pr-nome').value||'Título do produto';
+    var s=slug&&slug.value||'url-do-produto';
+    var d=desc&&desc.value||'Meta descrição aparecerá aqui...';
+    var tp=$('pr-seo-titulo-preview');if(tp)tp.textContent=t;
+    var up=$('pr-seo-url-preview');if(up)up.textContent='solookbom.com.br/products/'+s;
+    var dp=$('pr-seo-desc-preview');if(dp)dp.textContent=d;
+    var tc=$('pr-seo-titulo-count');if(tc)tc.textContent=(titulo&&titulo.value||'').length;
+    var dc=$('pr-seo-desc-count');if(dc)dc.textContent=(desc&&desc.value||'').length;
+  }
+  function slugify(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+  if(titulo&&!titulo._seoInit){titulo._seoInit=true;titulo.addEventListener('input',updatePreview);}
+  if(slug&&!slug._seoInit){slug._seoInit=true;slug.addEventListener('input',updatePreview);}
+  if(desc&&!desc._seoInit){desc._seoInit=true;desc.addEventListener('input',updatePreview);}
+  // Auto-slug do nome
+  var nome=$('pr-nome');
+  if(nome&&!nome._slugInit){nome._slugInit=true;nome.addEventListener('input',function(){if(slug&&!slug._userEdited)slug.value=slugify(nome.value);updatePreview();});}
+  if(slug&&!slug._editInit){slug._editInit=true;slug.addEventListener('focus',function(){slug._userEdited=true;});}
+  updatePreview();
 }
 function closeModal(type){$('modal-'+type).classList.remove('open');}
 function closePanel(){$('sup-panel').classList.remove('open');$('overlay').classList.remove('open');}
@@ -3573,26 +3999,95 @@ function renderProdutos() {
 
 function openProdutoEdit(id){
   var p=D.produtos.find(function(x){return x.id===id;});if(!p)return;
-  $('prod-modal-title').textContent='Editar Produto';$('pr-id').value=p.id;$('pr-sku').value=p.sku;$('pr-nome').value=p.nome;$('pr-cat').value=p.categoria||'';$('pr-cor').value=p.cor||'';$('pr-tamanho').value=p.tamanho||'';$('pr-custo').value=p.custo||'';$('pr-venda').value=p.preco_venda||'';$('pr-obs').value=p.observacoes||'';
+  $('prod-modal-title').textContent='Editar Produto';
+  $('pr-id').value=p.id;
+  $('pr-sku').value=p.sku||'';
+  $('pr-nome').value=p.nome||'';
+  $('pr-descricao').value=p.descricao||'';
+  $('pr-status').value=p.status||'rascunho';
+  $('pr-tipo').value=p.tipo||'';
+  $('pr-fabricante').value=p.fabricante||'';
+  $('pr-tags').value=p.tags||'';
+  $('pr-venda').value=p.preco_venda||'';
+  $('pr-preco-comparacao').value=p.preco_comparacao||'';
+  $('pr-custo').value=p.custo_item||p.custo||'';
+  $('pr-cobrar-tributos').checked=p.cobrar_tributos!==false;
+  $('pr-sku-codigo').value=p.sku_codigo||'';
+  $('pr-codigo-barras').value=p.codigo_barras||'';
+  $('pr-rastrear-estoque').checked=!!p.rastrear_estoque;
+  $('pr-estoque-qtd-group').style.display=p.rastrear_estoque?'block':'none';
+  $('pr-qtd-estoque').value=p.quantidade_estoque||0;
+  $('pr-vender-sem-estoque').checked=!!p.vender_sem_estoque;
+  $('pr-e-fisico').checked=p.e_fisico!==false;
+  $('pr-frete-fields').style.display=p.e_fisico!==false?'block':'none';
+  $('pr-peso-kg').value=p.peso_kg||'';
+  $('pr-dimensoes').value=p.dimensoes_cm||'';
+  $('pr-pais-origem').value=p.pais_origem||'BR';
+  $('pr-codigo-sh').value=p.codigo_sh||'';
+  $('pr-seo-titulo').value=p.seo_titulo||'';
+  $('pr-seo-slug').value=p.seo_slug||'';
+  $('pr-seo-descricao').value=p.seo_descricao||'';
+  var canais=(p.canais_venda||'loja_online').split(',');
+  $('pr-canal-loja').checked=canais.indexOf('loja_online')!==-1;
+  $('pr-canal-ig').checked=canais.indexOf('instagram')!==-1;
+  $('pr-canal-tiktok').checked=canais.indexOf('tiktok')!==-1;
   if(p.fornecedor_id)$('pr-fornecedor').value=p.fornecedor_id;
   if(p.colecao_id)$('pr-colecao').value=p.colecao_id;
-  updateMargem();var dBtn=$('delete-produto');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}custoSkuLoadForProduct(p.id);
-  populatePaiSelect();
-  var paiEl=$('pr-pai-id');if(paiEl&&p.produto_pai_id)paiEl.value=p.produto_pai_id;
-  var varCk=document.getElementById('pr-e-variante');if(varCk)varCk.checked=!!p.e_variante;
-  var varAttrs=document.getElementById('pr-variante-attrs');if(varAttrs)varAttrs.style.display=p.e_variante?'block':'none';
-  if(p.atributo_cor){var acEl=$('pr-atrib-cor');if(acEl)acEl.value=p.atributo_cor;}
-  if(p.atributo_tam){var atEl=$('pr-atrib-tam');if(atEl)atEl.value=p.atributo_tam;}
+  // Variantes
+  prodOpcoes=[];prodOpcaoNextId=1;
+  try{var ops=p.opcoes_variante?JSON.parse(p.opcoes_variante):[];prodOpcoes=ops;prodOpcaoNextId=ops.reduce(function(mx,o){return Math.max(mx,o.id||0);},0)+1;}catch(e){}
+  custoSkuLoadForProduct(p.id);
+  var dBtn=$('delete-produto');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  // Resetar para aba Info
+  document.querySelectorAll('.prod-tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.prod-tab-panel').forEach(function(t){t.classList.remove('active');});
+  var firstTab=document.querySelector('.prod-tab[data-tab="info"]');if(firstTab)firstTab.classList.add('active');
+  var firstPanel=$('prod-panel-info');if(firstPanel)firstPanel.classList.add('active');
   openModal('produto');
 }
 function updateMargem(){var c=num('pr-custo'),v=num('pr-venda');$('pr-margem').value=v>0&&c>0?Math.round(((v-c)/v)*100)+'%':'—';custoSkuRecalc();}
 function nextSKU(){if(!D.produtos.length)return 'SLB0001';var nums=D.produtos.map(function(p){return parseInt((p.sku||'SLB0000').replace('SLB',''))||0;});return 'SLB'+String(Math.max.apply(null,nums)+1).padStart(4,'0');}
 function saveProduto(){
-  var nome=val('pr-nome').trim();if(!nome){toast('Informe o nome');return;}
+  var nome=val('pr-nome').trim();if(!nome){toast('Informe o título do produto');return;}
   var id=val('pr-id');var sku=id?val('pr-sku'):nextSKU();
-  var payload={sku:sku,nome:nome,categoria:val('pr-cat')||null,cor:val('pr-cor')||null,tamanho:val('pr-tamanho')||null,custo:num('pr-custo')||null,preco_venda:num('pr-venda')||null,fornecedor_id:val('pr-fornecedor')||null,colecao_id:val('pr-colecao')||null,observacoes:val('pr-obs')||null,updated_at:new Date().toISOString()};
+  var canais=[];
+  if($('pr-canal-loja')&&$('pr-canal-loja').checked)canais.push('loja_online');
+  if($('pr-canal-ig')&&$('pr-canal-ig').checked)canais.push('instagram');
+  if($('pr-canal-tiktok')&&$('pr-canal-tiktok').checked)canais.push('tiktok');
+  var slugVal=val('pr-seo-slug')||nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  var payload={
+    sku:sku,nome:nome,
+    descricao:val('pr-descricao')||null,
+    status:val('pr-status')||'rascunho',
+    tipo:val('pr-tipo')||null,
+    fabricante:val('pr-fabricante')||null,
+    tags:val('pr-tags')||null,
+    preco_venda:num('pr-venda')||null,
+    preco_comparacao:num('pr-preco-comparacao')||null,
+    custo_item:num('pr-custo')||null,
+    custo:num('pr-custo')||null,
+    cobrar_tributos:$('pr-cobrar-tributos')&&$('pr-cobrar-tributos').checked,
+    sku_codigo:val('pr-sku-codigo')||null,
+    codigo_barras:val('pr-codigo-barras')||null,
+    rastrear_estoque:$('pr-rastrear-estoque')&&$('pr-rastrear-estoque').checked,
+    quantidade_estoque:iNum('pr-qtd-estoque')||0,
+    vender_sem_estoque:$('pr-vender-sem-estoque')&&$('pr-vender-sem-estoque').checked,
+    e_fisico:$('pr-e-fisico')&&$('pr-e-fisico').checked,
+    peso_kg:num('pr-peso-kg')||null,
+    dimensoes_cm:val('pr-dimensoes')||null,
+    pais_origem:val('pr-pais-origem')||'BR',
+    codigo_sh:val('pr-codigo-sh')||null,
+    seo_titulo:val('pr-seo-titulo')||null,
+    seo_slug:slugVal||null,
+    seo_descricao:val('pr-seo-descricao')||null,
+    canais_venda:canais.join(',')||'loja_online',
+    fornecedor_id:val('pr-fornecedor')||null,
+    colecao_id:val('pr-colecao')||null,
+    opcoes_variante:prodOpcoes.length?JSON.stringify(prodOpcoes):null,
+    updated_at:new Date().toISOString()
+  };
   var q=id?db.from('produtos').update(payload).eq('id',id):db.from('produtos').insert(payload);
-  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveProduto]',res.error.message);return;}var savedId=id||(res.data&&res.data[0]&&res.data[0].id);custoSkuSaveForProduct(savedId).then(function(){closeModal('produto');resetForm('produto');toast(id?'Atualizado!':'Criado!');auditLog(id?'update':'create','produtos',id,val('pr-sku')+' '+val('pr-nome'));loadProdutos();});});
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveProduto]',res.error.message);return;}var savedId=id||(res.data&&res.data[0]&&res.data[0].id);custoSkuSaveForProduct(savedId).then(function(){closeModal('produto');resetForm('produto');toast(id?'Atualizado!':'Criado!');auditLog(id?'update':'create','produtos',id,sku+' '+nome);loadProdutos();});});
 }
 
 // ── ESTOQUE ────────────────────────────────────────────────
