@@ -1029,6 +1029,75 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .prod-opcao-valores{display:flex;flex-direction:column;gap:8px}
 .prod-valor-row{display:flex;align-items:center;gap:8px}
 .prod-valor-row input{flex:1}
+
+/* ── TOOLTIPS ────────────────────────────────────────────── */
+.tt-icon{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--border2);color:var(--muted);font-size:8px;font-weight:800;margin-left:5px;cursor:help;flex-shrink:0;vertical-align:middle;user-select:none}
+.tt-icon:hover{background:var(--blue);color:#fff}
+.tt-bubble{position:fixed;z-index:9998;max-width:280px;background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:11px;line-height:1.5;color:var(--fg);box-shadow:0 4px 20px rgba(0,0,0,.5);pointer-events:none;opacity:0;transition:opacity .15s;white-space:normal}
+.tt-bubble.visible{opacity:1}
+
+/* ── LANÇAMENTO MODAL ────────────────────────────────────── */
+.modal-lancamento{width:min(96vw,600px)}
+.lanc-tipo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
+.lanc-tipo-btn{padding:8px 4px;font-size:10px;font-weight:700;border:2px solid var(--border);border-radius:8px;background:var(--card);color:var(--muted);cursor:pointer;transition:all .15s;text-align:center;line-height:1.4}
+.lanc-tipo-btn:hover{border-color:var(--tc,var(--blue));color:var(--tc,var(--blue))}
+.lanc-tipo-btn.active{border-color:var(--tc,var(--blue));background:color-mix(in srgb,var(--tc,var(--blue)) 12%,transparent);color:var(--tc,var(--blue))}
+.lanc-hint{font-size:11px;color:var(--blue);background:var(--blue-bg);border:1px solid var(--blue-bd);border-radius:7px;padding:9px 12px;line-height:1.5}
+
+/* ── FINANÇAS ABAS ───────────────────────────────────────── */
+.fin-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid var(--border);padding-bottom:0}
+.fin-tab{padding:8px 18px;font-size:11px;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.fin-tab:hover{color:var(--fg)}
+.fin-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.fin-panel{display:none}
+.fin-panel.active{display:block}
+
+/* ── DRE ─────────────────────────────────────────────────── */
+.dre-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.dre-mes-sel{display:flex;align-items:center;gap:10px}
+.dre-mes-lbl{font-size:14px;font-weight:700;color:var(--fg);min-width:140px;text-align:center}
+.dre-table{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.dre-row{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);font-size:12px;color:var(--fg)}
+.dre-row:last-child{border-bottom:none}
+.dre-row.dre-bold{background:var(--surface);font-weight:700;font-size:13px}
+.dre-row.dre-pos .dre-val{color:var(--green)}
+.dre-row.dre-neg .dre-val{color:var(--red)}
+.dre-val{font-weight:700;white-space:nowrap}
+.dre-val.neg{color:var(--red)}
+.dre-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:20px}
+.dre-kpi-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:14px;text-align:center}
+.dre-kpi-val{font-size:20px;font-weight:800;color:var(--fg)}
+.dre-kpi-val.pos{color:var(--green)}
+.dre-kpi-val.neg{color:var(--red)}
+.dre-kpi-lbl{font-size:10px;color:var(--muted);margin-top:3px}
+.dre-kpi-sub{font-size:10px;margin-top:4px;color:var(--muted2)}
+
+/* ── PRECIFICAÇÃO ────────────────────────────────────────── */
+.precif-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.precif-layout{grid-template-columns:1fr}}
+.precif-col{display:flex;flex-direction:column;gap:12px}
+.precif-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.precif-resultado{background:var(--surface);border:2px solid var(--blue-bd);border-radius:12px;padding:24px;text-align:center;position:sticky;top:20px}
+.precif-res-titulo{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px}
+.precif-main-preco{font-size:36px;font-weight:900;color:var(--blue);margin-bottom:4px}
+.precif-main-lbl{font-size:11px;color:var(--muted);margin-bottom:12px}
+.precif-res-formula{font-size:10px;color:var(--muted2);padding:8px;background:var(--card);border-radius:6px;margin-bottom:12px}
+.precif-kpis{display:flex;flex-direction:column;gap:8px;text-align:left;margin-bottom:12px}
+.precif-kpi{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--card);border-radius:7px}
+.precif-kpi-lbl{font-size:11px;color:var(--muted)}
+.precif-kpi-val{font-size:13px;font-weight:700;color:var(--fg)}
+.precif-kpi-val.green{color:var(--green)}
+.precif-kpi-val.red{color:var(--red)}
+.precif-alerta-warn{background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.3);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--red);line-height:1.5;text-align:left}
+
+/* ── ONBOARDING ──────────────────────────────────────────── */
+.onboard-icon{width:64px;height:64px;border-radius:50%;font-size:28px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.onboard-step-num{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.onboard-title{font-size:22px;font-weight:800;margin-bottom:10px}
+.onboard-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.onboard-dots{display:flex;gap:6px;justify-content:center}
+.onboard-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);transition:all .2s}
+.onboard-dot.active{width:20px;border-radius:4px;background:var(--blue)}
 </style>
 </head>
 <body>
@@ -1106,6 +1175,10 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           <div class="nav-item" data-sec="simulador">
             <svg viewBox="0 0 24 24"><path d="M9 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-3"/><path d="M9 15h3l8.5-8.5a1.5 1.5 0 0 0-3-3L9 12v3"/><line x1="16" y1="5" x2="19" y2="8"/></svg>
             <span class="nav-label">Simulador</span>
+          </div>
+          <div class="nav-item" data-sec="precificacao">
+            <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            <span class="nav-label">Precificação</span>
           </div>
         </div>
 
@@ -1387,14 +1460,22 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
         <!-- FINANÇAS -->
         <div class="cw" id="section-financas">
-          <!-- HEADER -->
           <div class="section-header">
             <h2 class="section-title">Finanças</h2>
             <div class="header-actions">
-              <button class="export-btn" onclick="exportFinancas()">&#8595; CSV</button>
+              <button class="btn-sec" onclick="exportFinancas()">&#8595; CSV</button>
               <button class="btn-add" data-modal="cost">+ Novo lançamento</button>
             </div>
           </div>
+
+          <!-- ABAS FINANÇAS -->
+          <div class="fin-tabs">
+            <button class="fin-tab active" data-ftab="lancamentos">📋 Lançamentos</button>
+            <button class="fin-tab" data-ftab="dre">📊 DRE</button>
+          </div>
+
+          <!-- PAINEL: LANÇAMENTOS -->
+          <div class="fin-panel active" id="fin-panel-lancamentos">
 
           <!-- ZONA 1: SAÚDE FINANCEIRA -->
           <div id="fin-saude"></div>
@@ -1455,8 +1536,86 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           <div class="filters"><span class="fl">Recorrência:</span><button class="fb active" data-f="fin" data-k="rec" data-v="all">Todos</button><button class="fb" data-f="fin" data-k="rec" data-v="sim">Recorrentes</button><button class="fb" data-f="fin" data-k="rec" data-v="nao">Únicos</button></div>
           <div id="cost-list"></div>
           <div id="fin-mensal" style="margin-top:20px"></div>
+          </div><!-- fim fin-panel-lancamentos -->
+
+          <!-- PAINEL: DRE -->
+          <div class="fin-panel" id="fin-panel-dre">
+            <div class="dre-controls">
+              <div class="dre-mes-sel">
+                <button class="btn-sec" id="dre-mes-prev">&#8249;</button>
+                <span class="dre-mes-lbl" id="dre-mes-lbl">Julho 2026</span>
+                <button class="btn-sec" id="dre-mes-next">&#8250;</button>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn-sec" id="dre-export-pdf">&#8595; PDF</button>
+                <button class="btn-sec" id="dre-export-xlsx">&#8595; Excel</button>
+              </div>
+            </div>
+
+            <!-- DRE TABLE -->
+            <div class="dre-table" id="dre-table"></div>
+
+            <!-- INDICADORES -->
+            <div class="dre-kpis" id="dre-kpis"></div>
+          </div><!-- fim fin-panel-dre -->
+
         </div>
 
+
+        <!-- PRECIFICAÇÃO -->
+        <div class="cw" id="section-precificacao">
+          <div class="section-header">
+            <h2 class="section-title">Calculadora de Precificação</h2>
+          </div>
+          <div class="precif-layout">
+            <div class="precif-col">
+              <div class="precif-card">
+                <p class="form-section" style="margin-top:0">Produto</p>
+                <div class="form-group">
+                  <label class="form-label">Produto<span class="tt-icon" data-tt="precif_produto">?</span></label>
+                  <select class="form-select" id="precif-produto"><option value="">— Selecione ou preencha manualmente —</option></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Custo unitário (R$)<span class="tt-icon" data-tt="custo_unitario">?</span></label>
+                  <input class="form-input" id="precif-custo" type="number" step="0.01" placeholder="0,00">
+                  <p class="prod-seo-hint" id="precif-custo-hint"></p>
+                </div>
+              </div>
+              <div class="precif-card">
+                <p class="form-section" style="margin-top:0">Taxas e margem</p>
+                <div class="form-group">
+                  <label class="form-label">% Taxas variáveis (gateway + imposto)<span class="tt-icon" data-tt="taxas_var">?</span></label>
+                  <input class="form-input" id="precif-taxas" type="number" step="0.1" placeholder="12" value="12">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">% Margem desejada<span class="tt-icon" data-tt="margem_desejada">?</span></label>
+                  <input class="form-input" id="precif-margem" type="number" step="1" placeholder="40" value="40">
+                  <input type="range" id="precif-margem-slider" min="5" max="85" value="40" style="width:100%;margin-top:8px;accent-color:var(--blue)">
+                </div>
+                <div class="form-group">
+                  <label class="form-check">
+                    <input type="checkbox" id="precif-frete-gratis">
+                    Oferecer frete grátis<span class="tt-icon" data-tt="frete_gratis">?</span>
+                  </label>
+                  <div id="precif-frete-val-group" style="display:none;margin-top:8px">
+                    <label class="form-label">Valor médio do frete (R$)</label>
+                    <input class="form-input" id="precif-frete-val" type="number" step="0.01" placeholder="18,00">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="precif-col">
+              <div class="precif-resultado" id="precif-resultado">
+                <div class="precif-res-titulo">Resultado</div>
+                <div class="precif-main-preco" id="precif-preco-sug">R$ —</div>
+                <div class="precif-main-lbl">Preço de venda sugerido</div>
+                <div class="precif-res-formula" id="precif-formula"></div>
+                <div class="precif-kpis" id="precif-kpis"></div>
+                <div id="precif-alerta" style="display:none" class="precif-alerta-warn"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- SIMULADOR -->
         <div class="cw" id="section-simulador">
@@ -1733,21 +1892,142 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 </div></div>
 
 <!-- CUSTO / FINANÇAS -->
-<div class="modal-bg" id="modal-cost"><div class="modal">
+<div class="modal-bg" id="modal-cost"><div class="modal modal-lancamento">
   <div class="modal-title"><span id="cost-modal-title">Novo Lançamento</span><button class="modal-close-btn" data-close="cost">×</button></div>
   <input type="hidden" id="c-id">
-  <div class="form-group"><label class="form-label">Descrição *</label><input class="form-input" id="c-name" placeholder="Ex: Domínio solookbom.com.br"></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="c-cat"><option>Tecnologia</option><option>Confecção</option><option>Arte &amp; Design</option><option>Marketing</option><option>Jurídico</option><option>Outro</option></select></div><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="c-type"><option value="despesa">Despesa</option><option value="investimento">Investimento</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Valor (R$) *</label><input class="form-input" id="c-val" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Data</label><input class="form-input" id="c-date" type="date"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Data de vencimento</label><input class="form-input" id="c-venc" type="date"></div><div class="form-group"><label class="form-label">Status pagamento</label><select class="form-select" id="c-status-pagto"><option value="pago">✅ Pago</option><option value="pendente">⏳ Pendente</option><option value="vencido">🔴 Vencido</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Método de pagamento</label><select class="form-select" id="c-metodo"><option value="">—</option><option>PIX</option><option>Cartão de crédito</option><option>Cartão de débito</option><option>Boleto</option><option>Transferência</option><option>Dinheiro</option></select></div><div class="form-group"><label class="form-label">Pago por</label><select class="form-select" id="c-pago-por"></select></div></div>
-  <div style="display:flex;gap:14px;margin-bottom:10px"><label class="form-check"><input type="checkbox" id="c-recorrente"> Despesa recorrente</label></div>
-  <p class="form-section">Tipo de compromisso</p>
-  <div class="form-row"><div class="form-group"><label class="form-label">Compromisso</label><select class="form-select" id="c-tipo-comp"><option value="unico">Único</option><option value="recorrente">Recorrente / Assinatura</option><option value="parcelado">Parcelado</option></select></div><div class="form-group"><label class="form-label">Cat. compromisso</label><select class="form-select" id="c-cat-comp"><option value="">—</option><option>Assinatura</option><option>Plataforma</option><option>Fornecedor</option><option>Marketing</option><option>Infraestrutura</option><option>Outro</option></select></div></div>
-  <div id="recorrencia-group" style="display:none"><div class="form-group"><label class="form-label">Periodicidade</label><select class="form-select" id="c-recorrencia"><option value="mensal">Mensal</option><option value="trimestral">Trimestral</option><option value="anual">Anual</option></select></div></div>
-  <div id="parcela-group" style="display:none"><div class="form-row"><div class="form-group"><label class="form-label">Parcela atual</label><input class="form-input" id="c-parcela-atual" type="number" placeholder="3" min="1"></div><div class="form-group"><label class="form-label">Total parcelas</label><input class="form-input" id="c-total-parcelas" type="number" placeholder="12" min="1"></div></div></div>
-  <div class="form-group"><label class="form-label">Notas</label><textarea class="form-textarea" id="c-notas" placeholder="Detalhes, link de acesso, contrato..."></textarea></div>
-  <div class="modal-footer"><button class="btn-save" id="save-cost">Salvar</button><button class="btn-delete-modal" id="delete-cost" style="display:none">Excluir</button><button class="btn-close-modal" data-close="cost">Fechar</button></div>
+
+  <!-- Tipo de lançamento — primeiro campo, determina categorias -->
+  <div class="form-group">
+    <label class="form-label">Tipo de lançamento *<span class="tt-icon" data-tt="tipo_lanc">?</span></label>
+    <div class="lanc-tipo-grid" id="c-tipo-grid">
+      <button class="lanc-tipo-btn" data-tipo="receita" style="--tc:var(--green)">💰 Receita</button>
+      <button class="lanc-tipo-btn active" data-tipo="despesa" style="--tc:var(--green2)">📤 Despesa</button>
+      <button class="lanc-tipo-btn" data-tipo="custo" style="--tc:var(--amber)">🏷️ Custo</button>
+      <button class="lanc-tipo-btn" data-tipo="investimento" style="--tc:var(--muted)">📈 Investimento</button>
+      <button class="lanc-tipo-btn" data-tipo="outros" style="--tc:var(--red)">⚡ Outros</button>
+    </div>
+    <input type="hidden" id="c-tipo-lancamento" value="despesa">
+  </div>
+
+  <div class="form-row">
+    <div class="form-group" style="flex:2">
+      <label class="form-label">Descrição *<span class="tt-icon" data-tt="descricao">?</span></label>
+      <input class="form-input" id="c-name" placeholder="Ex: Compra de tecido — fornecedor Tiggas">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Data *<span class="tt-icon" data-tt="data_lanc">?</span></label>
+      <input class="form-input" id="c-date" type="date">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Categoria *<span class="tt-icon" data-tt="categoria">?</span></label>
+      <select class="form-select" id="c-cat"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Valor (R$) *<span class="tt-icon" data-tt="valor">?</span></label>
+      <input class="form-input" id="c-val" type="number" step="0.01" placeholder="0,00">
+    </div>
+  </div>
+
+  <!-- Dica de produto se tipo=custo -->
+  <div id="c-produto-hint" style="display:none;margin-bottom:12px">
+    <div class="lanc-hint">💡 Esse custo é de um produto específico? Vincule abaixo — ajuda a calcular o preço certo depois.</div>
+    <div class="form-group" style="margin-top:8px">
+      <label class="form-label">Vincular ao produto<span class="tt-icon" data-tt="produto_id">?</span></label>
+      <select class="form-select" id="c-produto-id"><option value="">— Não vincular —</option></select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Recorrência<span class="tt-icon" data-tt="recorrencia">?</span></label>
+      <select class="form-select" id="c-recorrencia-tipo">
+        <option value="unico">Único</option>
+        <option value="mensal">Mensal</option>
+        <option value="semanal">Semanal</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fornecedor / Cliente<span class="tt-icon" data-tt="forn_cli">?</span></label>
+      <input class="form-input" id="c-fornecedor-cliente" placeholder="Nome de quem pagou ou recebeu">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Forma de pagamento<span class="tt-icon" data-tt="forma_pgto">?</span></label>
+      <select class="form-select" id="c-metodo">
+        <option value="">—</option>
+        <option>Pix</option>
+        <option>Cartão de crédito</option>
+        <option>Cartão de débito</option>
+        <option>Boleto</option>
+        <option>Dinheiro</option>
+        <option>Transferência</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Pago por</label>
+      <select class="form-select" id="c-pago-por"></select>
+    </div>
+  </div>
+
+  <p class="form-section">Controle de pagamento</p>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Data de vencimento</label>
+      <input class="form-input" id="c-venc" type="date">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <select class="form-select" id="c-status-pagto">
+        <option value="pago">✅ Pago</option>
+        <option value="pendente">⏳ Pendente</option>
+        <option value="vencido">🔴 Vencido</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Compromisso</label>
+      <select class="form-select" id="c-tipo-comp">
+        <option value="unico">Único</option>
+        <option value="recorrente">Recorrente / Assinatura</option>
+        <option value="parcelado">Parcelado</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cat. compromisso</label>
+      <select class="form-select" id="c-cat-comp">
+        <option value="">—</option><option>Assinatura</option><option>Plataforma</option>
+        <option>Fornecedor</option><option>Marketing</option><option>Infraestrutura</option><option>Outro</option>
+      </select>
+    </div>
+  </div>
+  <div id="recorrencia-group" style="display:none">
+    <div class="form-group"><label class="form-label">Periodicidade</label>
+      <select class="form-select" id="c-recorrencia"><option value="mensal">Mensal</option><option value="trimestral">Trimestral</option><option value="anual">Anual</option></select>
+    </div>
+  </div>
+  <div id="parcela-group" style="display:none">
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Parcela atual</label><input class="form-input" id="c-parcela-atual" type="number" placeholder="3" min="1"></div>
+      <div class="form-group"><label class="form-label">Total parcelas</label><input class="form-input" id="c-total-parcelas" type="number" placeholder="12" min="1"></div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Notas</label>
+    <textarea class="form-textarea" id="c-notas" placeholder="Detalhes, link, contrato..." rows="2"></textarea>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn-save" id="save-cost">Salvar Lançamento</button>
+    <button class="btn-delete-modal" id="delete-cost" style="display:none">Excluir</button>
+    <button class="btn-close-modal" data-close="cost">Fechar</button>
+  </div>
 </div></div>
 
 <!-- PRODUTO -->
@@ -2244,6 +2524,17 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="me-desc" placeholder="Contexto e estratégia para atingir essa meta..."></textarea></div>
   <div class="modal-footer"><button class="btn-save" id="save-meta">Salvar</button><button class="btn-delete-modal" id="delete-meta" style="display:none">Excluir</button><button class="btn-close-modal" data-close="meta">Fechar</button></div>
 </div></div>
+<!-- ONBOARDING -->
+<div class="modal-bg" id="modal-onboarding" style="z-index:9999">
+  <div class="modal" style="max-width:420px;text-align:center;padding:32px 28px">
+    <div id="onboard-content"></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:24px">
+      <button class="btn-sec" id="onboard-prev" style="display:none">← Anterior</button>
+      <button class="btn-add" id="onboard-next">Próximo →</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -5466,6 +5757,560 @@ function initSimulador(){
   simRenderHistory();
 }
 
+
+
+// ── TOOLTIPS GLOBAIS ─────────────────────────────────────
+var TOOLTIPS = {
+  tipo_lanc: 'Receita = dinheiro entrando pelas vendas. Custo = ligado direto ao produto. Despesa = mantém a empresa funcionando mesmo sem vender. Investimento = bem durável (mais de 1 ano). Outros = fora da operação normal.',
+  descricao: 'Descreva o que foi: ex. "Compra de tecido - fornecedor X".',
+  data_lanc: 'Data em que o gasto ou receita efetivamente ocorreu.',
+  categoria: 'Classificação específica do lançamento dentro do tipo escolhido.',
+  valor: 'Valor total do lançamento, sempre em reais.',
+  recorrencia: 'Marque como recorrente se esse gasto se repete todo mês (ex. aluguel).',
+  forn_cli: 'Nome de quem você pagou ou de quem pagou você.',
+  forma_pgto: 'Como o valor foi pago ou recebido.',
+  produto_id: 'Vincule a um produto para alimentar o cálculo de custo unitário daquele produto.',
+  custo_unitario: 'Quanto custa colocar 1 unidade pronta. Puxado dos lançamentos vinculados ao produto.',
+  taxas_var: 'Some aqui a taxa de gateway/cartão + impostos. Normalmente entre 8% e 15%.',
+  margem_desejada: 'Quanto você quer que sobre de lucro sobre o preço de venda. NÃO é a mesma coisa que markup.',
+  frete_gratis: 'Se marcado, o app desconta o frete médio da margem — mostra o impacto real no lucro.',
+  precif_produto: 'Selecione um produto cadastrado para puxar o custo automaticamente.',
+  lucro_bruto: 'O que sobra depois de pagar só o que está ligado direto ao produto vendido.',
+  lucro_op: 'O que sobra depois de pagar também as despesas fixas e variáveis do dia a dia.',
+  lucro_liq: 'O resultado final da empresa no período, considerando tudo.',
+  ponto_eq: 'Quanto a empresa precisa vender no mês só para não ter prejuízo nem lucro.',
+  capital_giro: 'Quanto dinheiro de folga você precisa ter para comprar estoque e pagar contas antes de receber.',
+  margem_liq: 'Percentual da receita que vira lucro de verdade.'
+};
+
+function initTooltips(){
+  // Criar tooltip container
+  var tip = document.getElementById('tt-global');
+  if(!tip){
+    tip = document.createElement('div');
+    tip.id = 'tt-global';
+    tip.className = 'tt-bubble';
+    document.body.appendChild(tip);
+  }
+  // Delegação de eventos
+  document.addEventListener('mouseover', function(e){
+    var icon = e.target.closest('.tt-icon');
+    if(!icon)return;
+    var key = icon.dataset.tt;
+    var text = TOOLTIPS[key]||'';
+    if(!text)return;
+    tip.textContent = text;
+    tip.classList.add('visible');
+    var rect = icon.getBoundingClientRect();
+    tip.style.left = Math.min(rect.left, window.innerWidth - 300) + 'px';
+    tip.style.top = (rect.bottom + 6 + window.scrollY) + 'px';
+  });
+  document.addEventListener('mouseout', function(e){
+    if(!e.target.closest('.tt-icon')) return;
+    tip.classList.remove('visible');
+  });
+  // Mobile: toque
+  document.addEventListener('click', function(e){
+    var icon = e.target.closest('.tt-icon');
+    if(icon){
+      var key = icon.dataset.tt;
+      var text = TOOLTIPS[key]||'';
+      if(!text)return;
+      tip.textContent = text;
+      tip.classList.toggle('visible');
+      var rect = icon.getBoundingClientRect();
+      tip.style.left = Math.min(rect.left, window.innerWidth - 300) + 'px';
+      tip.style.top = (rect.bottom + 6 + window.scrollY) + 'px';
+      e.stopPropagation();
+      return;
+    }
+    tip.classList.remove('visible');
+  });
+}
+
+// ── CATEGORIAS POR TIPO DE LANÇAMENTO ────────────────────
+var CAT_DRE = {
+  custo: [
+    {v:'compra_produto', l:'Compra de produto / matéria-prima', tt:'O que você paga pelo produto em si ou pelos insumos para fabricá-lo.'},
+    {v:'embalagem', l:'Embalagem do produto', tt:'Saco, caixa, etiqueta — quando faz parte do produto entregue.'},
+    {v:'frete_compra', l:'Frete de compra', tt:'Custo para trazer o produto/matéria-prima até você.'},
+    {v:'taxa_gateway', l:'Taxa de gateway sobre a venda', tt:'Taxa cobrada por Pix/cartão/boleto na hora que o cliente paga.'}
+  ],
+  despesa: [
+    {v:'aluguel', l:'Aluguel', tt:'Despesa fixa mensal do espaço físico, se houver.'},
+    {v:'salarios', l:'Salários administrativos', tt:'Pagamento de quem trabalha na gestão, não na produção.'},
+    {v:'contador', l:'Contador', tt:'Serviço de contabilidade.'},
+    {v:'softwares', l:'Softwares e assinaturas', tt:'Ferramentas pagas: Shopify, apps de gestão.'},
+    {v:'marketing', l:'Marketing / tráfego pago', tt:'Anúncios, influenciadores, impulsionamento.'},
+    {v:'comissao', l:'Comissão de vendedor', tt:'% pago a quem vendeu.'},
+    {v:'frete_entrega', l:'Frete de entrega (absorvido)', tt:'Quando a empresa banca o frete — isso come margem.'},
+    {v:'internet', l:'Internet / telefone', tt:'Despesas administrativas de conexão e comunicação.'},
+    {v:'outro_despesa', l:'Outro', tt:'Despesa que não se enquadra nas categorias acima.'}
+  ],
+  investimento: [
+    {v:'maquinas', l:'Máquinas e equipamentos', tt:'Bens que você compra uma vez e usa por anos.'},
+    {v:'estoque_vitrine', l:'Estoque de vitrine / mostruário', tt:'Peças compradas para exposição, não para giro imediato.'},
+    {v:'reforma', l:'Reforma / estrutura', tt:'Obra ou melhoria física do espaço.'},
+    {v:'site', l:'Site / plataforma', tt:'Desenvolvimento do site ou sistema próprio.'},
+    {v:'marca', l:'Marca / identidade visual', tt:'Registro de marca, criação de logo, identidade.'}
+  ],
+  outros: [
+    {v:'juros', l:'Juros de empréstimo', tt:'Custo financeiro de dívidas.'},
+    {v:'rendimento', l:'Rendimento de aplicação', tt:'Dinheiro ganho com investimento financeiro da empresa.'},
+    {v:'venda_ativo', l:'Venda de ativo', tt:'Venda de algo que não é produto regular.'},
+    {v:'multas', l:'Multas / indenizações', tt:'Penalidades ou compensações pagas ou recebidas.'}
+  ],
+  receita: [
+    {v:'venda_produto', l:'Venda de produto', tt:'Receita direta da venda dos produtos.'},
+    {v:'frete_cobrado', l:'Frete cobrado do cliente', tt:'Quando o cliente paga o frete — entra como receita.'}
+  ]
+};
+
+function initModalLancamento(){
+  var tipoGrid = document.getElementById('c-tipo-grid');
+  var tipoHidden = document.getElementById('c-tipo-lancamento');
+  var catSel = document.getElementById('c-cat');
+  var prodHint = document.getElementById('c-produto-hint');
+  if(!tipoGrid)return;
+
+  function updateCategorias(tipo){
+    var cats = CAT_DRE[tipo]||[];
+    catSel.innerHTML = cats.map(function(c){return '<option value="'+c.v+'">'+c.l+'</option>';}).join('');
+    prodHint.style.display = tipo==='custo'?'block':'none';
+  }
+
+  tipoGrid.querySelectorAll('.lanc-tipo-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      tipoGrid.querySelectorAll('.lanc-tipo-btn').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      tipoHidden.value = btn.dataset.tipo;
+      updateCategorias(btn.dataset.tipo);
+    });
+  });
+
+  // Inicializar com despesa
+  updateCategorias('despesa');
+
+  // Popular produtos
+  var pSel = document.getElementById('c-produto-id');
+  if(pSel){
+    pSel.innerHTML = '<option value="">— Não vincular —</option>' +
+      D.produtos.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(p){
+        return '<option value="'+p.id+'">'+p.sku+' — '+p.nome+'</option>';
+      }).join('');
+  }
+}
+
+// Interceptar openModal para inicializar modal de lançamento
+var _origOpenModal = openModal;
+openModal = function(type){
+  _origOpenModal(type);
+  if(type==='cost'){
+    setTimeout(initModalLancamento, 50);
+  }
+};
+
+// Interceptar openCostEdit para setar tipo_lancamento
+var _origOpenCostEdit = openCostEdit;
+openCostEdit = function(id){
+  _origOpenCostEdit(id);
+  var c = D.costs.find(function(x){return x.id===id;});
+  if(!c)return;
+  setTimeout(function(){
+    var tipo = c.tipo_lancamento||c.tipo||'despesa';
+    var tipoGrid = document.getElementById('c-tipo-grid');
+    var tipoHidden = document.getElementById('c-tipo-lancamento');
+    var catSel = document.getElementById('c-cat');
+    if(!tipoGrid)return;
+    tipoGrid.querySelectorAll('.lanc-tipo-btn').forEach(function(b){
+      b.classList.toggle('active', b.dataset.tipo===tipo);
+    });
+    if(tipoHidden)tipoHidden.value=tipo;
+    var cats = CAT_DRE[tipo]||[];
+    if(catSel){
+      catSel.innerHTML = cats.map(function(ct){return '<option value="'+ct.v+'"'+(ct.v===c.categoria_dre?' selected':'')+(ct.l===(c.categoria||'')?' selected':'')+'>'+ct.l+'</option>';}).join('');
+    }
+    var prodHint = document.getElementById('c-produto-hint');
+    if(prodHint)prodHint.style.display=tipo==='custo'?'block':'none';
+    var fcEl=document.getElementById('c-fornecedor-cliente');
+    if(fcEl)fcEl.value=c.fornecedor_cliente||'';
+    var rcEl=document.getElementById('c-recorrencia-tipo');
+    if(rcEl)rcEl.value=c.recorrencia_tipo||'unico';
+  }, 80);
+};
+
+// Interceptar saveCost para salvar tipo_lancamento e categoria_dre
+var _origSaveCost = saveCost;
+saveCost = function(){
+  // Pegar tipo_lancamento e categoria_dre do novo modal
+  var tipoLanc = (document.getElementById('c-tipo-lancamento')||{value:''}).value||'despesa';
+  var catDre = (document.getElementById('c-cat')||{value:''}).value;
+  var fCli = (document.getElementById('c-fornecedor-cliente')||{value:''}).value;
+  var rTipo = (document.getElementById('c-recorrencia-tipo')||{value:'unico'}).value;
+  var prodId = (document.getElementById('c-produto-id')||{value:''}).value;
+  // Guardar em temporário para saveCost pegar
+  window._extraCostFields = {tipo_lancamento:tipoLanc, categoria_dre:catDre, fornecedor_cliente:fCli||null, recorrencia_tipo:rTipo, produto_id:prodId||null};
+  _origSaveCost();
+};
+
+// Patch saveCost para incluir campos extras
+var _origSaveCostInner = saveCost;
+// Override final que será chamado pela UI
+window._patchedSaveCost = function(){
+  var d=val('c-name').trim(),v=num('c-val');if(!d||!v){toast('Preencha descrição e valor');return;}
+  var id=val('c-id'),rec=false;
+  var tipoComp=val('c-tipo-comp')||'unico';
+  var isRec=tipoComp==='recorrente';var isPar=tipoComp==='parcelado';
+  var extra = window._extraCostFields||{};
+  var payload={
+    descricao:d,
+    categoria:extra.categoria_dre||val('c-cat'),
+    categoria_dre:extra.categoria_dre||null,
+    tipo_lancamento:extra.tipo_lancamento||'despesa',
+    tipo:extra.tipo_lancamento||'despesa',
+    valor:v,
+    data:val('c-date')||null,
+    data_vencimento:val('c-venc')||null,
+    status_pagto:val('c-status-pagto'),
+    metodo_pagto:val('c-metodo')||null,
+    pago_por_id:val('c-pago-por')||null,
+    produto_id:extra.produto_id||null,
+    fornecedor_cliente:extra.fornecedor_cliente||null,
+    recorrencia_tipo:extra.recorrencia_tipo||'unico',
+    recorrente:isRec,
+    recorrencia:isRec?val('c-recorrencia'):null,
+    tipo_compromisso:tipoComp,
+    categoria_comp:val('c-cat-comp')||null,
+    parcela_atual:isPar?iNum('c-parcela-atual')||null:null,
+    total_parcelas:isPar?iNum('c-total-parcelas')||null:null,
+    notas:val('c-notas')||null
+  };
+  var q=id?db.from('custos').update(payload).eq('id',id):db.from('custos').insert(payload);
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveCost]',res.error.message);return;}closeModal('cost');resetForm('cost');toast(id?'Atualizado!':'Salvo!');loadCosts();});
+};
+
+// ── DRE ──────────────────────────────────────────────────
+var dreCurrentDate = new Date();
+
+function initFinTabs(){
+  var tabs = document.querySelectorAll('.fin-tab');
+  tabs.forEach(function(tab){
+    if(tab._finTabInit)return;
+    tab._finTabInit=true;
+    tab.addEventListener('click',function(){
+      tabs.forEach(function(t){t.classList.remove('active');});
+      document.querySelectorAll('.fin-panel').forEach(function(p){p.classList.remove('active');});
+      tab.classList.add('active');
+      var panel = document.getElementById('fin-panel-'+tab.dataset.ftab);
+      if(panel)panel.classList.add('active');
+      if(tab.dataset.ftab==='dre')renderDRE();
+    });
+  });
+  // Navegação de mês na DRE
+  var prev=document.getElementById('dre-mes-prev');
+  var next=document.getElementById('dre-mes-next');
+  if(prev&&!prev._dreInit){prev._dreInit=true;prev.addEventListener('click',function(){dreCurrentDate.setMonth(dreCurrentDate.getMonth()-1);renderDRE();});}
+  if(next&&!next._dreInit){next._dreInit=true;next.addEventListener('click',function(){dreCurrentDate.setMonth(dreCurrentDate.getMonth()+1);renderDRE();});}
+  var btnPdf=document.getElementById('dre-export-pdf');
+  if(btnPdf&&!btnPdf._init){btnPdf._init=true;btnPdf.addEventListener('click',exportDREPDF);}
+  var btnXlsx=document.getElementById('dre-export-xlsx');
+  if(btnXlsx&&!btnXlsx._init){btnXlsx._init=true;btnXlsx.addEventListener('click',exportDREXLSX);}
+}
+
+function dreGetMes(){
+  return dreCurrentDate.getFullYear()+'-'+(String(dreCurrentDate.getMonth()+1).padStart(2,'0'));
+}
+
+function renderDRE(){
+  var mes = dreGetMes();
+  var lbl = document.getElementById('dre-mes-lbl');
+  if(lbl)lbl.textContent = dreCurrentDate.toLocaleString('pt-BR',{month:'long',year:'numeric'}).replace(/^./,function(c){return c.toUpperCase();});
+
+  var doMes = D.costs.filter(function(c){return c.data&&c.data.startsWith(mes);});
+
+  var receita = doMes.filter(function(c){return c.tipo_lancamento==='receita'||c.tipo==='receita';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var custos  = doMes.filter(function(c){return c.tipo_lancamento==='custo'||c.tipo==='custo';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var despesas= doMes.filter(function(c){return c.tipo_lancamento==='despesa'||c.tipo==='despesa';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var outros  = doMes.filter(function(c){return c.tipo_lancamento==='outros'||c.tipo==='outros';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var invest  = doMes.filter(function(c){return c.tipo_lancamento==='investimento'||c.tipo==='investimento';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+
+  // Receita de pedidos também (para o mês)
+  var recPedidos = D.pedidos.filter(function(p){return p.created_at&&p.created_at.startsWith(mes);}).reduce(function(a,p){return a+parseFloat(p.valor_total||0);},0);
+  var recTotal = receita + recPedidos;
+
+  var lucroBruto  = recTotal - custos;
+  var lucroOp     = lucroBruto - despesas;
+  var lucroLiq    = lucroOp + (outros>=0?outros:-outros) - invest;
+  var margemLiq   = recTotal>0?Math.round(lucroLiq/recTotal*100):0;
+
+  function dreRow(label,valor,indent,bold,tooltip,cls){
+    var ttHtml = tooltip?'<span class="tt-icon" data-tt="'+tooltip+'">?</span>':'';
+    var style = indent?'padding-left:'+(indent*20)+'px':'';
+    return '<div class="dre-row'+(bold?' dre-bold':'')+(cls?' dre-'+cls:'')+'" style="'+style+'">'+
+      '<span class="dre-label">'+label+ttHtml+'</span>'+
+      '<span class="dre-val'+(valor<0?' neg':'')+'">'+mo(valor)+'</span>'+
+    '</div>';
+  }
+
+  var html = dreRow('(+) Receita de vendas', recTotal, 0, false, '') +
+    (recPedidos>0?dreRow('Pedidos registrados', recPedidos, 1, false, ''):'') +
+    (receita>0?dreRow('Lançamentos receita', receita, 1, false, ''):'') +
+    dreRow('(–) Custos (CMV)', custos, 0, false, '') +
+    dreRow('= Lucro Bruto', lucroBruto, 0, true, 'lucro_bruto', lucroBruto>=0?'pos':'neg') +
+    dreRow('(–) Despesas operacionais', despesas, 0, false, '') +
+    dreRow('= Lucro Operacional', lucroOp, 0, true, 'lucro_op', lucroOp>=0?'pos':'neg') +
+    dreRow('(–/+) Investimentos', invest, 0, false, '') +
+    dreRow('(–/+) Outros', outros, 0, false, '') +
+    dreRow('= Lucro Líquido', lucroLiq, 0, true, 'lucro_liq', lucroLiq>=0?'pos':'neg');
+
+  var tableEl = document.getElementById('dre-table');
+  if(tableEl)tableEl.innerHTML = html;
+
+  // Indicadores
+  var despFixas = despesas;
+  var varRatio  = recTotal>0?custos/recTotal:0;
+  var pe        = (1-varRatio)>0?despFixas/(1-varRatio):0;
+  var kpisEl = document.getElementById('dre-kpis');
+  if(kpisEl){
+    kpisEl.innerHTML =
+      '<div class="dre-kpi-card"><div class="dre-kpi-val '+(margemLiq>=0?'pos':'neg')+'">'+margemLiq+'%</div>'+
+        '<div class="dre-kpi-lbl">Margem Líquida<span class="tt-icon" data-tt="margem_liq">?</span></div></div>'+
+      '<div class="dre-kpi-card"><div class="dre-kpi-val">'+mo(pe)+'</div>'+
+        '<div class="dre-kpi-lbl">Ponto de Equilíbrio<span class="tt-icon" data-tt="ponto_eq">?</span></div>'+
+        '<div class="dre-kpi-sub">'+(recTotal>=pe&&pe>0?'✅ Atingido':'⚠️ Faltam '+mo(pe-recTotal))+'</div></div>'+
+      '<div class="dre-kpi-card"><div class="dre-kpi-val">'+mo(recTotal)+'</div>'+
+        '<div class="dre-kpi-lbl">Receita do mês</div></div>'+
+      '<div class="dre-kpi-card"><div class="dre-kpi-val '+(lucroLiq>=0?'pos':'neg')+'">'+mo(lucroLiq)+'</div>'+
+        '<div class="dre-kpi-lbl">Resultado Final</div></div>';
+  }
+
+  // Guardar para exportação
+  window._dreData = {mes:mes,receita:recTotal,custos,despesas,outros,invest,lucroBruto,lucroOp,lucroLiq,margemLiq,pe};
+}
+
+function exportDREPDF(){
+  if(!window._dreData){toast('Gere a DRE primeiro');return;}
+  var d=window._dreData;
+  var html='<html><head><meta charset="utf-8"><title>DRE '+d.mes+'</title>'+
+    '<style>body{font-family:Arial,sans-serif;margin:30px;color:#222}h1{color:#1a1a2e}table{width:100%;border-collapse:collapse}td{padding:8px 12px;border-bottom:1px solid #eee}td:last-child{text-align:right}.bold{font-weight:bold;background:#f5f5f5}.pos{color:#16a34a}.neg{color:#dc2626}</style>'+
+    '</head><body>'+
+    '<h1>DRE — Só Look Bom</h1><p>Período: '+d.mes+'</p>'+
+    '<table>'+
+    '<tr><td>(+) Receita de vendas</td><td>R$ '+d.receita.toFixed(2)+'</td></tr>'+
+    '<tr><td>(–) Custos (CMV)</td><td>R$ '+d.custos.toFixed(2)+'</td></tr>'+
+    '<tr class="bold"><td>= Lucro Bruto</td><td class="'+(d.lucroBruto>=0?'pos':'neg')+'">R$ '+d.lucroBruto.toFixed(2)+'</td></tr>'+
+    '<tr><td>(–) Despesas operacionais</td><td>R$ '+d.despesas.toFixed(2)+'</td></tr>'+
+    '<tr class="bold"><td>= Lucro Operacional</td><td class="'+(d.lucroOp>=0?'pos':'neg')+'">R$ '+d.lucroOp.toFixed(2)+'</td></tr>'+
+    '<tr><td>(–/+) Outros / Investimentos</td><td>R$ '+(d.outros+d.invest).toFixed(2)+'</td></tr>'+
+    '<tr class="bold"><td>= Lucro Líquido</td><td class="'+(d.lucroLiq>=0?'pos':'neg')+'">R$ '+d.lucroLiq.toFixed(2)+'</td></tr>'+
+    '<tr><td colspan="2" style="padding-top:16px"><b>Margem Líquida:</b> '+d.margemLiq+'% | <b>Ponto de Equilíbrio:</b> R$ '+d.pe.toFixed(2)+'</td></tr>'+
+    '</table></body></html>';
+  var blob=new Blob([html],{type:'text/html'});
+  var url=URL.createObjectURL(blob);
+  var w=window.open(url,'_blank');
+  if(w)setTimeout(function(){w.print();},800);
+  toast('Abrindo para impressão / salvar como PDF...');
+}
+
+function exportDREXLSX(){
+  if(!window._dreData){toast('Gere a DRE primeiro');return;}
+  var d=window._dreData;
+  var rows=[
+    {item:'DRE — Só Look Bom', valor:''},
+    {item:'Período', valor:d.mes},
+    {item:'', valor:''},
+    {item:'(+) Receita de vendas', valor:d.receita.toFixed(2)},
+    {item:'(–) Custos (CMV)', valor:d.custos.toFixed(2)},
+    {item:'= Lucro Bruto', valor:d.lucroBruto.toFixed(2)},
+    {item:'(–) Despesas operacionais', valor:d.despesas.toFixed(2)},
+    {item:'= Lucro Operacional', valor:d.lucroOp.toFixed(2)},
+    {item:'(–/+) Outros', valor:d.outros.toFixed(2)},
+    {item:'(–/+) Investimentos', valor:d.invest.toFixed(2)},
+    {item:'= Lucro Líquido', valor:d.lucroLiq.toFixed(2)},
+    {item:'', valor:''},
+    {item:'Margem Líquida (%)', valor:d.margemLiq+'%'},
+    {item:'Ponto de Equilíbrio (R$)', valor:d.pe.toFixed(2)},
+  ];
+  csvDownload('DRE_SLB_'+d.mes+'.csv', rows);
+}
+
+// ── PRECIFICAÇÃO ─────────────────────────────────────────
+function initPrecificacao(){
+  var pSel=document.getElementById('precif-produto');
+  if(pSel&&!pSel._init){
+    pSel._init=true;
+    pSel.innerHTML='<option value="">— Selecione ou preencha manualmente —</option>'+
+      D.produtos.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(p){
+        return '<option value="'+p.id+'">'+p.sku+' — '+p.nome+'</option>';
+      }).join('');
+    pSel.addEventListener('change',function(){
+      var p=D.produtos.find(function(x){return x.id===pSel.value;});
+      var cEl=document.getElementById('precif-custo');
+      var hint=document.getElementById('precif-custo-hint');
+      if(p&&(p.custo_item||p.custo)){
+        if(cEl)cEl.value=p.custo_item||p.custo||'';
+        if(hint)hint.textContent='Custo registrado no produto: '+mo(p.custo_item||p.custo);
+      } else {
+        if(hint)hint.textContent='';
+      }
+      calcPrecif();
+    });
+  }
+  ['precif-custo','precif-taxas','precif-margem','precif-frete-val'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el&&!el._init){el._init=true;el.addEventListener('input',calcPrecif);}
+  });
+  var slider=document.getElementById('precif-margem-slider');
+  if(slider&&!slider._init){
+    slider._init=true;
+    slider.addEventListener('input',function(){
+      var mEl=document.getElementById('precif-margem');
+      if(mEl)mEl.value=slider.value;
+      calcPrecif();
+    });
+  }
+  var mEl=document.getElementById('precif-margem');
+  if(mEl&&!mEl._marInit){
+    mEl._marInit=true;
+    mEl.addEventListener('input',function(){
+      var sEl=document.getElementById('precif-margem-slider');
+      if(sEl)sEl.value=mEl.value;
+    });
+  }
+  var frGratis=document.getElementById('precif-frete-gratis');
+  if(frGratis&&!frGratis._init){
+    frGratis._init=true;
+    frGratis.addEventListener('change',function(){
+      var g=document.getElementById('precif-frete-val-group');
+      if(g)g.style.display=frGratis.checked?'block':'none';
+      calcPrecif();
+    });
+  }
+  calcPrecif();
+}
+
+function calcPrecif(){
+  var custo=parseFloat((document.getElementById('precif-custo')||{value:0}).value)||0;
+  var taxas=(parseFloat((document.getElementById('precif-taxas')||{value:12}).value)||12)/100;
+  var margem=(parseFloat((document.getElementById('precif-margem')||{value:40}).value)||40)/100;
+  var frGratis=(document.getElementById('precif-frete-gratis')||{checked:false}).checked;
+  var frVal=parseFloat((document.getElementById('precif-frete-val')||{value:0}).value)||0;
+
+  if(custo<=0){
+    var res=document.getElementById('precif-resultado');
+    if(res)res.style.opacity='0.4';
+    return;
+  }
+  var res=document.getElementById('precif-resultado');
+  if(res)res.style.opacity='1';
+
+  // Fórmula: preço = custo / (1 - taxas - margem)
+  var denom = 1 - taxas - margem;
+  var preco = denom>0?custo/denom:custo*3;
+  var lucro = preco - custo - (preco*taxas) - (frGratis?frVal:0);
+  var margemReal = preco>0?lucro/preco:0;
+  var alertaLimiar = margem - 0.05;
+
+  var precoEl=document.getElementById('precif-preco-sug');
+  if(precoEl)precoEl.textContent=mo(preco);
+
+  var formulaEl=document.getElementById('precif-formula');
+  if(formulaEl)formulaEl.textContent='Custo '+mo(custo)+' ÷ (1 − '+Math.round(taxas*100)+'% taxas − '+Math.round(margem*100)+'% margem)';
+
+  var kpisEl=document.getElementById('precif-kpis');
+  if(kpisEl)kpisEl.innerHTML=
+    '<div class="precif-kpi"><span class="precif-kpi-lbl">Margem real</span><span class="precif-kpi-val '+(margemReal>=0?'green':'red')+'">'+Math.round(margemReal*100)+'%</span></div>'+
+    '<div class="precif-kpi"><span class="precif-kpi-lbl">Lucro / peça</span><span class="precif-kpi-val '+(lucro>=0?'green':'red')+'">'+mo(lucro)+'</span></div>'+
+    '<div class="precif-kpi"><span class="precif-kpi-lbl">Taxas sobre preço</span><span class="precif-kpi-val">'+mo(preco*taxas)+'</span></div>'+
+    (frGratis?'<div class="precif-kpi"><span class="precif-kpi-lbl">Frete absorvido</span><span class="precif-kpi-val red">−'+mo(frVal)+'</span></div>':'');
+
+  var alertEl=document.getElementById('precif-alerta');
+  if(alertEl){
+    if(margemReal<alertaLimiar){
+      alertEl.style.display='block';
+      alertEl.innerHTML='⚠️ Sua margem real ('+Math.round(margemReal*100)+'%) está abaixo do planejado ('+Math.round(margem*100)+'%). Considere: aumentar o preço, reduzir custo, ou cobrar frete.';
+    } else {
+      alertEl.style.display='none';
+    }
+  }
+}
+
+// ── ONBOARDING ───────────────────────────────────────────
+var ONBOARDING_KEY = 'slb_onboarding_done';
+var onboardStep = 0;
+var ONBOARDING_STEPS = [
+  {icon:'💰',title:'Receita',color:'var(--green)',desc:'É o dinheiro que <b>entra</b> quando você vende. Todo pedido feito = receita. Sem receita, não há empresa.'},
+  {icon:'🏷️',title:'Custo',color:'var(--amber)',desc:'É o que você gasta <b>diretamente</b> para ter o produto pronto: tecido, estampa, embalagem, frete de compra. Custo existe porque o produto existe.'},
+  {icon:'📤',title:'Despesa',color:'var(--green2)',desc:'É o que mantém a empresa <b>funcionando</b>, mesmo sem vender nada: Shopify, contador, internet, marketing. Despesa existe independente de vendas.'},
+  {icon:'📈',title:'Investimento',color:'var(--muted)',desc:'É o que você compra para <b>usar por muito tempo</b>: computador, máquina de costura, desenvolvimento do site. Dura mais de 1 ano.'}
+];
+
+function showOnboarding(){
+  if(localStorage.getItem(ONBOARDING_KEY))return;
+  var modal=document.getElementById('modal-onboarding');
+  if(!modal)return;
+  onboardStep=0;
+  renderOnboardStep();
+  modal.classList.add('open');
+}
+function renderOnboardStep(){
+  var s=ONBOARDING_STEPS[onboardStep];
+  var el=document.getElementById('onboard-content');
+  if(!el)return;
+  el.innerHTML=
+    '<div class="onboard-icon" style="background:'+s.color+'1a;border:2px solid '+s.color+';color:'+s.color+'">'+s.icon+'</div>'+
+    '<div class="onboard-step-num">'+(onboardStep+1)+' de '+ONBOARDING_STEPS.length+'</div>'+
+    '<h2 class="onboard-title" style="color:'+s.color+'">'+s.title+'</h2>'+
+    '<p class="onboard-desc">'+s.desc+'</p>'+
+    '<div class="onboard-dots">'+ONBOARDING_STEPS.map(function(_,i){return '<span class="onboard-dot'+(i===onboardStep?' active':'')+'" style="'+(i===onboardStep?'background:'+s.color:'')+'"></span>';}).join('')+'</div>';
+  var nextBtn=document.getElementById('onboard-next');
+  var prevBtn=document.getElementById('onboard-prev');
+  if(nextBtn)nextBtn.textContent=onboardStep===ONBOARDING_STEPS.length-1?'Começar →':'Próximo →';
+  if(prevBtn)prevBtn.style.display=onboardStep>0?'inline-flex':'none';
+}
+function onboardNext(){
+  if(onboardStep<ONBOARDING_STEPS.length-1){onboardStep++;renderOnboardStep();}
+  else{localStorage.setItem(ONBOARDING_KEY,'1');document.getElementById('modal-onboarding').classList.remove('open');}
+}
+function onboardPrev(){if(onboardStep>0){onboardStep--;renderOnboardStep();}}
+
+// ── HOOK openSection para init ───────────────────────────
+var _origOpenSection = openSection;
+openSection = function(name){
+  _origOpenSection(name);
+  if(name==='financas'){
+    setTimeout(initFinTabs,50);
+  }
+  if(name==='precificacao'){
+    setTimeout(initPrecificacao,50);
+  }
+};
+
+// Inicializar tooltips e onboarding no showApp
+var _origShowApp = showApp;
+showApp = function(){
+  _origShowApp();
+  setTimeout(function(){
+    initTooltips();
+    showOnboarding();
+  },500);
+};
+
+// Bind save-cost ao _patchedSaveCost
+document.addEventListener('DOMContentLoaded', function(){
+  var saveBtn=document.getElementById('save-cost');
+  if(saveBtn){
+    // Remove o listener antigo e adiciona o novo
+    var newBtn=saveBtn.cloneNode(true);
+    saveBtn.parentNode.replaceChild(newBtn,saveBtn);
+    newBtn.addEventListener('click',window._patchedSaveCost);
+  }
+  // Onboard buttons
+  var nxt=document.getElementById('onboard-next');
+  if(nxt)nxt.addEventListener('click',onboardNext);
+  var prv=document.getElementById('onboard-prev');
+  if(prv)prv.addEventListener('click',onboardPrev);
+});
 
 })();
 </script>
