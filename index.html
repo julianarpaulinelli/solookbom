@@ -1114,6 +1114,23 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .fiscal-card{border-left:3px solid var(--border)}
 .fiscal-warn{border-left-color:var(--amber);background:rgba(230,162,46,.04)}
 .fiscal-danger{border-left-color:var(--red);background:rgba(224,82,82,.04)}
+
+/* ── PROJEÇÃO DE CAIXA ───────────────────────────────────── */
+.proj-inputs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.proj-input-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.proj-input-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:4px}
+.proj-caixa-row{display:flex;gap:6px}
+.proj-caixa-inp{flex:1;min-width:0}
+.proj-caixa-auto{font-size:10px;padding:6px 10px;white-space:nowrap;flex-shrink:0}
+.proj-alerta{padding:12px 16px;border-radius:9px;font-size:12px;line-height:1.6;margin-bottom:16px;background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.3);color:var(--red)}
+.proj-alerta-ok{background:rgba(39,192,138,.08);border-color:rgba(39,192,138,.3);color:var(--green)}
+.proj-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:20px}
+.proj-chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:20px}
+.proj-chart-title{font-size:11px;font-weight:700;color:var(--fg);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.proj-chart-area{width:100%;min-height:200px}
+.proj-chart-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.proj-leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.proj-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -1299,6 +1316,10 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
             <span class="nav-label">Docs Contadora</span>
             <span class="nav-badge" id="badge-contadora" style="display:none">0</span>
+          </div>
+          <div class="nav-item" data-sec="projecao">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span class="nav-label">Projeção de Caixa</span>
           </div>
         </div>
 
@@ -1792,6 +1813,62 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             <select class="form-select" id="docs-mes-filter" style="width:auto;padding:5px 10px;font-size:11px"></select>
           </div>
           <div id="contadora-list"></div>
+        </div>
+
+        <!-- PROJEÇÃO DE CAIXA -->
+        <div class="cw" id="section-projecao">
+          <div class="section-header">
+            <h2 class="section-title">Projeção de Caixa</h2>
+          </div>
+
+          <!-- INPUTS DE CAIXA -->
+          <div class="proj-inputs-grid">
+            <div class="proj-input-card">
+              <div class="proj-input-label">💰 Caixa atual (R$)<span class="tt-icon" data-tt="proj_caixa_atual">?</span></div>
+              <div class="proj-caixa-row">
+                <input class="form-input proj-caixa-inp" id="proj-caixa-manual" type="number" step="0.01" placeholder="0,00">
+                <button class="btn-sec proj-caixa-auto" id="proj-caixa-auto-btn" title="Calcular automaticamente dos lançamentos">⟳ Auto</button>
+              </div>
+              <p class="prod-seo-hint" id="proj-caixa-hint">Ou clique em Auto para calcular pela diferença receitas − gastos.</p>
+            </div>
+            <div class="proj-input-card">
+              <div class="proj-input-label">📈 Receita esperada/mês (R$)<span class="tt-icon" data-tt="proj_receita_esp">?</span></div>
+              <input class="form-input" id="proj-receita-esp" type="number" step="0.01" placeholder="0,00">
+              <p class="prod-seo-hint">Estimativa manual de vendas nos próximos meses.</p>
+            </div>
+            <div class="proj-input-card">
+              <div class="proj-input-label">📅 Horizonte</div>
+              <select class="form-select" id="proj-horizonte">
+                <option value="30">30 dias</option>
+                <option value="60">60 dias</option>
+                <option value="90" selected>90 dias</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn-add" id="proj-calcular" style="margin-bottom:20px">Calcular projeção</button>
+
+          <!-- ALERTA -->
+          <div id="proj-alerta" style="display:none" class="proj-alerta"></div>
+
+          <!-- KPIs -->
+          <div class="proj-kpis" id="proj-kpis" style="display:none"></div>
+
+          <!-- GRÁFICO -->
+          <div class="proj-chart-wrap" id="proj-chart-wrap" style="display:none">
+            <div class="proj-chart-title">Saldo projetado semana a semana<span class="tt-icon" data-tt="proj_grafico">?</span></div>
+            <div class="proj-chart-area" id="proj-chart"></div>
+            <div class="proj-chart-legend">
+              <span class="proj-leg-item"><span class="proj-leg-dot" style="background:var(--blue)"></span>Saldo projetado</span>
+              <span class="proj-leg-item"><span class="proj-leg-dot" style="background:var(--red)"></span>Zona de risco (negativo)</span>
+            </div>
+          </div>
+
+          <!-- TABELA SEMANAL -->
+          <div id="proj-tabela-wrap" style="display:none">
+            <p class="form-section">Detalhamento semana a semana</p>
+            <div id="proj-tabela"></div>
+          </div>
         </div>
 
         <!-- PRODUTOS -->
@@ -6926,7 +7003,270 @@ if(L&&L.sections){
   L.sections['config']='Configurações';
   L.sections['fiscal']='Calendário Fiscal';
   L.sections['contadora']='Docs Contadora';
+  L.sections['projecao']='Projeção de Caixa';
 }
+
+
+// ── C3: PROJEÇÃO DE CAIXA ────────────────────────────────
+Object.assign(TOOLTIPS, {
+  proj_caixa_atual: 'Quanto dinheiro a empresa tem agora. Pode informar manualmente ou calcular automaticamente pela diferença entre receitas e gastos já lançados.',
+  proj_receita_esp: 'Estimativa de quanto você espera vender nos próximos meses. Use a média dos últimos meses como referência.',
+  proj_grafico: 'Essa linha mostra se o caixa da empresa fica positivo ou negativo nas próximas semanas, considerando o que já sabemos que vai entrar e sair. Se a linha cruzar o zero, é sinal de alerta antes de faltar dinheiro de verdade.'
+});
+
+function initProjecao(){
+  var autoBtn=$('proj-caixa-auto-btn');
+  if(autoBtn&&!autoBtn._init){
+    autoBtn._init=true;
+    autoBtn.addEventListener('click',calcCaixaAuto);
+  }
+  var calcBtn=$('proj-calcular');
+  if(calcBtn&&!calcBtn._init){
+    calcBtn._init=true;
+    calcBtn.addEventListener('click',calcProjecao);
+  }
+  var horizonte=$('proj-horizonte');
+  if(horizonte&&!horizonte._init){
+    horizonte._init=true;
+    horizonte.addEventListener('change',function(){
+      if($('proj-kpis').style.display!=='none')calcProjecao();
+    });
+  }
+}
+
+function calcCaixaAuto(){
+  // Saldo = soma receitas - soma gastos de todos os lançamentos
+  var totalRec=D.costs.filter(function(c){
+    return c.tipo_lancamento==='receita'||c.tipo==='receita';
+  }).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var totalRec2=D.pedidos.reduce(function(a,p){return a+parseFloat(p.valor_total||0);},0);
+  var totalGasto=D.costs.filter(function(c){
+    return c.tipo_lancamento!=='receita'&&c.tipo!=='receita';
+  }).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var saldo=totalRec+totalRec2-totalGasto;
+  var inp=$('proj-caixa-manual');
+  if(inp)inp.value=saldo.toFixed(2);
+  var hint=$('proj-caixa-hint');
+  if(hint)hint.textContent='Calculado: Receitas ('+mo(totalRec+totalRec2)+') − Gastos ('+mo(totalGasto)+') = '+mo(saldo);
+}
+
+function calcProjecao(){
+  var caixaAtual=parseFloat(($('proj-caixa-manual')||{value:0}).value)||0;
+  var receitaEsp=parseFloat(($('proj-receita-esp')||{value:0}).value)||0;
+  var horizonte=parseInt(($('proj-horizonte')||{value:90}).value)||90;
+  var hoje=new Date();hoje.setHours(0,0,0,0);
+
+  // Calcular saídas recorrentes mensais
+  var saidasRec=D.costs.filter(function(c){
+    return (c.recorrente||c.tipo_compromisso==='recorrente'||c.recorrencia_tipo==='mensal')&&
+           c.tipo_lancamento!=='receita'&&c.tipo!=='receita';
+  }).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+
+  // Parcelas futuras
+  var parcelasMes=D.costs.filter(function(c){
+    return c.tipo_compromisso==='parcelado'&&c.parcela_atual&&c.total_parcelas&&
+           parseInt(c.parcela_atual)<parseInt(c.total_parcelas);
+  }).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+
+  // Obrigações fiscais dentro do horizonte
+  var fimHorizonte=new Date(hoje);fimHorizonte.setDate(fimHorizonte.getDate()+horizonte);
+  var obrigacoesFuturas=D_obrigacoes.filter(function(o){
+    if(o.status==='pago_enviado')return false;
+    var d=new Date(o.data_vencimento+'T12:00:00');
+    return d>=hoje&&d<=fimHorizonte;
+  });
+
+  // Saída mensal base
+  var saidaMensal=saidasRec+parcelasMes;
+  var saidaSemanal=saidaMensal/4.33;
+  var entradaSemanal=receitaEsp/4.33;
+
+  // Gerar semanas
+  var semanas=[];
+  var saldoCorrente=caixaAtual;
+  var numSemanas=Math.ceil(horizonte/7);
+  var temNegativo=false;
+  var primeiraNegativa=null;
+
+  for(var i=0;i<numSemanas;i++){
+    var inicioSem=new Date(hoje);inicioSem.setDate(inicioSem.getDate()+i*7);
+    var fimSem=new Date(inicioSem);fimSem.setDate(fimSem.getDate()+6);
+
+    // Obrigações fiscais que vencem nessa semana
+    var obrigSem=obrigacoesFuturas.filter(function(o){
+      var d=new Date(o.data_vencimento+'T12:00:00');
+      return d>=inicioSem&&d<=fimSem;
+    }).reduce(function(a,o){return a+(parseFloat(o.valor_estimado||0));},0);
+
+    var entradas=entradaSemanal;
+    var saidas=saidaSemanal+obrigSem;
+    saldoCorrente=saldoCorrente+entradas-saidas;
+
+    if(saldoCorrente<0&&!temNegativo){
+      temNegativo=true;
+      primeiraNegativa=new Date(inicioSem);
+    }
+
+    semanas.push({
+      inicio:new Date(inicioSem),
+      fim:new Date(fimSem),
+      entradas:entradas,
+      saidas:saidas,
+      obrigacoes:obrigSem,
+      saldo:saldoCorrente
+    });
+  }
+
+  // Alerta
+  var alertEl=$('proj-alerta');
+  if(alertEl){
+    if(temNegativo){
+      alertEl.style.display='block';
+      alertEl.innerHTML='⚠️ Projeção indica <b>caixa negativo</b> a partir de '+
+        primeiraNegativa.toLocaleDateString('pt-BR')+
+        '. Considere: antecipar recebíveis, renegociar prazo com fornecedor, ou reduzir despesa no período.';
+    } else {
+      alertEl.style.display='block';
+      alertEl.className='proj-alerta proj-alerta-ok';
+      alertEl.innerHTML='✅ Caixa projetado positivo em todo o período de '+horizonte+' dias.';
+    }
+  }
+
+  // KPIs
+  var saldoFinal=semanas.length?semanas[semanas.length-1].saldo:caixaAtual;
+  var totalEntradas=semanas.reduce(function(a,s){return a+s.entradas;},0);
+  var totalSaidas=semanas.reduce(function(a,s){return a+s.saidas;},0);
+  var kpisEl=$('proj-kpis');
+  if(kpisEl){
+    kpisEl.style.display='grid';
+    kpisEl.innerHTML=
+      '<div class="dre-kpi-card"><div class="dre-kpi-val">'+mo(caixaAtual)+'</div><div class="dre-kpi-lbl">Caixa hoje</div></div>'+
+      '<div class="dre-kpi-card"><div class="dre-kpi-val '+(saldoFinal>=0?'pos':'neg')+'">'+mo(saldoFinal)+'</div><div class="dre-kpi-lbl">Saldo em '+horizonte+' dias</div></div>'+
+      '<div class="dre-kpi-card"><div class="dre-kpi-val pos">'+mo(totalEntradas)+'</div><div class="dre-kpi-lbl">Entradas previstas</div></div>'+
+      '<div class="dre-kpi-card"><div class="dre-kpi-val neg">'+mo(totalSaidas)+'</div><div class="dre-kpi-lbl">Saídas previstas</div></div>';
+  }
+
+  // Gráfico SVG
+  renderProjecaoChart(semanas);
+
+  // Tabela
+  renderProjecaoTabela(semanas);
+}
+
+function renderProjecaoChart(semanas){
+  var wrap=$('proj-chart-wrap');
+  var el=$('proj-chart');
+  if(!wrap||!el)return;
+  wrap.style.display='block';
+
+  var W=el.offsetWidth||600;
+  var H=200;
+  var PAD={t:20,r:20,b:40,l:70};
+  var cW=W-PAD.l-PAD.r;
+  var cH=H-PAD.t-PAD.b;
+  var n=semanas.length;
+
+  var saldos=semanas.map(function(s){return s.saldo;});
+  var minS=Math.min.apply(null,saldos);
+  var maxS=Math.max.apply(null,saldos);
+  if(minS===maxS){minS=minS-1000;maxS=maxS+1000;}
+  // incluir zero na escala
+  if(minS>0)minS=0;
+  if(maxS<0)maxS=0;
+  var range=maxS-minS;
+
+  function xPos(i){return PAD.l+i*(cW/(n-1||1));}
+  function yPos(v){return PAD.t+cH-(((v-minS)/range)*cH);}
+  var y0=yPos(0);
+
+  // Pontos da linha
+  var pts=semanas.map(function(s,i){return xPos(i)+','+yPos(s.saldo);}).join(' ');
+  // Área preenchida
+  var areaPath='M '+xPos(0)+' '+yPos(semanas[0].saldo)+' '+
+    semanas.map(function(s,i){return 'L '+xPos(i)+' '+yPos(s.saldo);}).join(' ')+
+    ' L '+xPos(n-1)+' '+Math.min(y0,PAD.t+cH)+
+    ' L '+PAD.l+' '+Math.min(y0,PAD.t+cH)+' Z';
+
+  // Labels eixo Y
+  var yTicks=[minS,minS+range*0.25,minS+range*0.5,minS+range*0.75,maxS];
+  var yLabels=yTicks.map(function(v){
+    return '<text x="'+(PAD.l-8)+'" y="'+(yPos(v)+4)+'" text-anchor="end" font-size="9" fill="var(--muted)">'+
+      (v>=1000?'R$'+(v/1000).toFixed(0)+'k':v<=-1000?'-R$'+(Math.abs(v)/1000).toFixed(0)+'k':'R$'+v.toFixed(0))+'</text>';
+  }).join('');
+
+  // Labels eixo X (a cada 2 semanas)
+  var xLabels=semanas.filter(function(_,i){return i%2===0;}).map(function(s,ii){
+    var i=ii*2;
+    return '<text x="'+xPos(i)+'" y="'+(PAD.t+cH+16)+'" text-anchor="middle" font-size="9" fill="var(--muted)">'+
+      s.inicio.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+'</text>';
+  }).join('');
+
+  // Linha do zero
+  var zeroLine=minS<0&&maxS>0?
+    '<line x1="'+PAD.l+'" y1="'+y0+'" x2="'+(PAD.l+cW)+'" y2="'+y0+'" stroke="var(--red)" stroke-width="1" stroke-dasharray="4,3" opacity=".6"/>'+
+    '<text x="'+(PAD.l-4)+'" y="'+(y0+3)+'" text-anchor="end" font-size="8" fill="var(--red)">R$0</text>':
+    '';
+
+  // Pontos negativos em vermelho
+  var negDots=semanas.filter(function(s){return s.saldo<0;}).map(function(s,_,__,i){
+    var idx=semanas.indexOf(s);
+    return '<circle cx="'+xPos(idx)+'" cy="'+yPos(s.saldo)+'" r="3" fill="var(--red)"/>';
+  }).join('');
+
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:'+H+'px">'+
+    '<defs><linearGradient id="projGrad" x1="0" y1="0" x2="0" y2="1">'+
+      '<stop offset="0%" stop-color="var(--blue)" stop-opacity=".3"/>'+
+      '<stop offset="100%" stop-color="var(--blue)" stop-opacity=".02"/>'+
+    '</linearGradient></defs>'+
+    // Grade horizontal
+    yTicks.map(function(v){
+      return '<line x1="'+PAD.l+'" y1="'+yPos(v)+'" x2="'+(PAD.l+cW)+'" y2="'+yPos(v)+'" stroke="var(--border)" stroke-width="1"/>';
+    }).join('')+
+    zeroLine+
+    // Área
+    '<path d="'+areaPath+'" fill="url(#projGrad)"/>'+
+    // Linha
+    '<polyline points="'+pts+'" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linejoin="round"/>'+
+    // Pontos
+    semanas.map(function(s,i){
+      var neg=s.saldo<0;
+      return '<circle cx="'+xPos(i)+'" cy="'+yPos(s.saldo)+'" r="'+(neg?3:2)+'" fill="'+(neg?'var(--red)':'var(--blue)')+'"/>';
+    }).join('')+
+    yLabels+xLabels+
+  '</svg>';
+  el.innerHTML=svg;
+}
+
+function renderProjecaoTabela(semanas){
+  var wrap=$('proj-tabela-wrap');
+  var el=$('proj-tabela');
+  if(!wrap||!el)return;
+  wrap.style.display='block';
+
+  el.innerHTML='<table class="sim-table"><thead><tr>'+
+    '<th>Semana</th><th class="num">Entradas</th><th class="num">Saídas</th>'+
+    '<th class="num">Obrigações</th><th class="num">Saldo</th></tr></thead><tbody>'+
+    semanas.map(function(s,i){
+      var neg=s.saldo<0;
+      var ini=s.inicio.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+      var fim=s.fim.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+      return '<tr style="'+(neg?'background:rgba(224,82,82,.05)':'')+'">'+
+        '<td style="font-size:10px">Sem '+(i+1)+' ('+ini+' – '+fim+')</td>'+
+        '<td class="num" style="color:var(--green)">'+mo(s.entradas)+'</td>'+
+        '<td class="num" style="color:var(--amber)">'+mo(s.saidas)+'</td>'+
+        '<td class="num" style="color:'+(s.obrigacoes>0?'var(--red)':'var(--muted)')+'">'+
+          (s.obrigacoes>0?mo(s.obrigacoes):'—')+'</td>'+
+        '<td class="num" style="font-weight:700;color:'+(neg?'var(--red)':'var(--green)')+'">'+mo(s.saldo)+'</td>'+
+      '</tr>';
+    }).join('')+'</tbody></table>';
+}
+
+// Hook openSection para projeção
+var _origOpenSectionProj = openSection;
+openSection = function(name){
+  _origOpenSectionProj(name);
+  if(name==='projecao')setTimeout(function(){initProjecao();calcCaixaAuto();},100);
+};
 
 })();
 </script>
