@@ -1101,6 +1101,19 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
 /* ── FIN-CARD (painéis internos de gráfico — não confundir com fin-panel de abas) */
 .fin-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:0}
+
+/* ── CONFIG EMPRESA ──────────────────────────────────────── */
+.config-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.config-layout{grid-template-columns:1fr}}
+.config-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px}
+.cfg-imposto-total{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-top:8px}
+.cfg-total-lbl{font-size:11px;color:var(--muted)}
+.cfg-total-val{font-size:18px;font-weight:800;color:var(--blue)}
+
+/* ── FISCAL CARDS ────────────────────────────────────────── */
+.fiscal-card{border-left:3px solid var(--border)}
+.fiscal-warn{border-left-color:var(--amber);background:rgba(230,162,46,.04)}
+.fiscal-danger{border-left-color:var(--red);background:rgba(224,82,82,.04)}
 </style>
 </head>
 <body>
@@ -1271,6 +1284,24 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           </div>
         </div>
 
+        <!-- ── FISCAL ────────────────────────────── -->
+        <div class="nav-group-header open" data-group="fiscal">
+          <span class="nav-group-toggle">▾</span>
+          <span class="nav-group-label">Fiscal</span>
+        </div>
+        <div class="nav-group-items" id="navg-fiscal">
+          <div class="nav-item" data-sec="fiscal">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span class="nav-label">Calendário Fiscal</span>
+            <span class="nav-badge" id="badge-fiscal" style="display:none">0</span>
+          </div>
+          <div class="nav-item" data-sec="contadora">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+            <span class="nav-label">Docs Contadora</span>
+            <span class="nav-badge" id="badge-contadora" style="display:none">0</span>
+          </div>
+        </div>
+
         <!-- ── ADMIN ──────────────────────────────── -->
         <div class="nav-group-header open" data-group="admin">
           <span class="nav-group-toggle">▾</span>
@@ -1288,6 +1319,10 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           <div class="nav-item" data-sec="pessoas">
             <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             <span class="nav-label">Pessoas</span>
+          </div>
+          <div class="nav-item" data-sec="config">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+            <span class="nav-label">Configurações</span>
           </div>
         </div>
 
@@ -1686,6 +1721,79 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           </div>
         </div>
 
+        <!-- CONFIG EMPRESA -->
+        <div class="cw" id="section-config">
+          <div class="section-header"><h2 class="section-title">Configurações da Empresa</h2></div>
+          <div class="config-layout">
+            <div class="config-card">
+              <p class="form-section" style="margin-top:0">Regime Tributário</p>
+              <div class="form-group">
+                <label class="form-label">Regime<span class="tt-icon" data-tt="regime_trib">?</span></label>
+                <select class="form-select" id="cfg-regime">
+                  <option value="mei">MEI</option>
+                  <option value="simples_nacional" selected>Simples Nacional</option>
+                  <option value="lucro_presumido">Lucro Presumido</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">% Imposto efetivo<span class="tt-icon" data-tt="pct_imposto">?</span></label>
+                  <input class="form-input" id="cfg-imposto" type="number" step="0.1" placeholder="6.0">
+                  <p class="prod-seo-hint">Informado pela contadora. Ex: 6% no Simples faixa 1.</p>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">% Taxa de gateway<span class="tt-icon" data-tt="pct_gateway">?</span></label>
+                  <input class="form-input" id="cfg-gateway" type="number" step="0.1" placeholder="3.0">
+                  <p class="prod-seo-hint">Média de Pix + cartão. Ex: 2% Pix, 3% cartão.</p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Última atualização</label>
+                <input class="form-input" id="cfg-data-atualizacao" type="date">
+              </div>
+              <div class="cfg-imposto-total">
+                <span class="cfg-total-lbl">Total taxas variáveis (imposto + gateway)</span>
+                <span class="cfg-total-val" id="cfg-total-display">0%</span>
+              </div>
+              <button class="btn-save" id="save-config" style="margin-top:16px">Salvar configurações</button>
+            </div>
+            <div class="config-card">
+              <p class="form-section" style="margin-top:0">Como isso afeta a Precificação</p>
+              <p style="font-size:12px;color:var(--muted);line-height:1.7">O campo <b>"% Taxas variáveis"</b> na calculadora de precificação puxa automaticamente os valores configurados aqui (imposto + gateway).</p>
+              <p style="font-size:12px;color:var(--muted);line-height:1.7;margin-top:8px">Você pode sobrescrever manualmente na precificação para simular cenários diferentes sem alterar as configurações globais.</p>
+              <div class="cfg-regime-info" id="cfg-regime-info"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CALENDÁRIO FISCAL -->
+        <div class="cw" id="section-fiscal">
+          <div class="section-header">
+            <h2 class="section-title">Calendário Fiscal</h2>
+            <button class="btn-add" data-modal="obrigacao">+ Nova obrigação</button>
+          </div>
+          <div class="metrics" id="fiscal-metrics"></div>
+          <div id="fiscal-list"></div>
+        </div>
+
+        <!-- DOCS CONTADORA -->
+        <div class="cw" id="section-contadora">
+          <div class="section-header">
+            <h2 class="section-title">Documentos para Contadora</h2>
+            <div class="header-actions">
+              <button class="btn-sec" id="docs-marcar-todos">✓ Marcar todos como enviados</button>
+              <button class="btn-add" data-modal="doc-contadora">+ Novo documento</button>
+            </div>
+          </div>
+          <div class="metrics" id="contadora-metrics"></div>
+          <div class="filters">
+            <span class="fl">Mês:</span>
+            <select class="form-select" id="docs-mes-filter" style="width:auto;padding:5px 10px;font-size:11px"></select>
+          </div>
+          <div id="contadora-list"></div>
+        </div>
+
         <!-- PRODUTOS -->
         <div class="cw" id="section-produtos">
           <div class="section-header"><h2 class="section-title">Produtos</h2><div class="header-actions"><button class="export-btn" onclick="exportProdutos()">&#8595; CSV</button><button class="btn-add" data-modal="produto">+ Novo produto</button></div></div>
@@ -1940,6 +2048,14 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
     <div class="form-group" style="margin-top:8px">
       <label class="form-label">Vincular ao produto<span class="tt-icon" data-tt="produto_id">?</span></label>
       <select class="form-select" id="c-produto-id"><option value="">— Não vincular —</option></select>
+    </div>
+  </div>
+
+  <!-- Campo sócia — aparece só quando cat = prolabore ou distribuicao_lucro -->
+  <div id="c-socia-group" style="display:none">
+    <div class="form-group">
+      <label class="form-label">Sócia vinculada<span class="tt-icon" data-tt="socia_vinc">?</span></label>
+      <select class="form-select" id="c-socia-id"><option value="">— Selecione —</option></select>
     </div>
   </div>
 
@@ -2537,6 +2653,101 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
     </div>
   </div>
 </div>
+
+<!-- MODAL: OBRIGAÇÃO FISCAL -->
+<div class="modal-bg" id="modal-obrigacao"><div class="modal">
+  <div class="modal-title"><span id="obrig-modal-title">Nova Obrigação Fiscal</span><button class="modal-close-btn" data-close="obrigacao">×</button></div>
+  <input type="hidden" id="obrig-id">
+  <div class="form-group">
+    <label class="form-label">Nome da obrigação *<span class="tt-icon" data-tt="obrig_nome">?</span></label>
+    <input class="form-input" id="obrig-nome" placeholder="Ex: DAS Simples Nacional, Declaração Anual">
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Data de vencimento *<span class="tt-icon" data-tt="obrig_data">?</span></label>
+      <input class="form-input" id="obrig-data" type="date">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Recorrência<span class="tt-icon" data-tt="obrig_rec">?</span></label>
+      <select class="form-select" id="obrig-recorrencia">
+        <option value="mensal">Mensal</option>
+        <option value="anual">Anual</option>
+        <option value="unico">Único</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Valor estimado (R$)<span class="tt-icon" data-tt="obrig_valor">?</span></label>
+      <input class="form-input" id="obrig-valor" type="number" step="0.01" placeholder="0,00">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Responsável<span class="tt-icon" data-tt="obrig_resp">?</span></label>
+      <select class="form-select" id="obrig-responsavel">
+        <option value="socias">Sócias</option>
+        <option value="contadora">Contadora</option>
+        <option value="ambos">Ambos</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Status</label>
+    <select class="form-select" id="obrig-status">
+      <option value="pendente">⏳ Pendente</option>
+      <option value="pago_enviado">✅ Pago / Enviado</option>
+      <option value="atrasado">🔴 Atrasado</option>
+    </select>
+  </div>
+  <div class="modal-footer">
+    <button class="btn-save" id="save-obrigacao">Salvar</button>
+    <button class="btn-delete-modal" id="delete-obrigacao" style="display:none">Excluir</button>
+    <button class="btn-close-modal" data-close="obrigacao">Fechar</button>
+  </div>
+</div></div>
+
+<!-- MODAL: DOCUMENTO CONTADORA -->
+<div class="modal-bg" id="modal-doc-contadora"><div class="modal">
+  <div class="modal-title"><span>Documento para Contadora</span><button class="modal-close-btn" data-close="doc-contadora">×</button></div>
+  <input type="hidden" id="doc-id">
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Tipo de documento *</label>
+      <select class="form-select" id="doc-tipo">
+        <option value="nota_fiscal">Nota Fiscal</option>
+        <option value="extrato_bancario">Extrato Bancário</option>
+        <option value="comprovante_despesa">Comprovante de Despesa</option>
+        <option value="contrato">Contrato</option>
+        <option value="outro">Outro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mês de referência *</label>
+      <input class="form-input" id="doc-mes" type="month">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <select class="form-select" id="doc-status">
+        <option value="pendente">⏳ Pendente</option>
+        <option value="enviado">✅ Enviado</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Data limite de envio</label>
+      <input class="form-input" id="doc-data-limite" type="date">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Descrição</label>
+    <input class="form-input" id="doc-descricao" placeholder="Ex: Notas de compra de tecido julho/26">
+  </div>
+  <div class="modal-footer">
+    <button class="btn-save" id="save-doc-contadora">Salvar</button>
+    <button class="btn-delete-modal" id="delete-doc-contadora" style="display:none">Excluir</button>
+    <button class="btn-close-modal" data-close="doc-contadora">Fechar</button>
+  </div>
+</div></div>
 
 <div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -5840,6 +6051,8 @@ var CAT_DRE = {
     {v:'taxa_gateway', l:'Taxa de gateway sobre a venda', tt:'Taxa cobrada por Pix/cartão/boleto na hora que o cliente paga.'}
   ],
   despesa: [
+    {v:'prolabore', l:'Pró-labore', tt:'Salário fixo mensal que cada sócia recebe pela gestão da empresa — é fixo, não varia com o lucro do mês.'},
+    {v:'distribuicao_lucro', l:'Distribuição de lucro', tt:'Valor variável que as sócias retiram quando sobra lucro, além do pró-labore. Muda a cada mês conforme o resultado.'},
     {v:'aluguel', l:'Aluguel', tt:'Despesa fixa mensal do espaço físico, se houver.'},
     {v:'salarios', l:'Salários administrativos', tt:'Pagamento de quem trabalha na gestão, não na produção.'},
     {v:'contador', l:'Contador', tt:'Serviço de contabilidade.'},
@@ -6313,6 +6526,407 @@ document.addEventListener('DOMContentLoaded', function(){
   var prv=document.getElementById('onboard-prev');
   if(prv)prv.addEventListener('click',onboardPrev);
 });
+
+
+// ── COMPLEMENTOS FINANCEIROS ─────────────────────────────
+
+// Tooltips extras
+Object.assign(TOOLTIPS, {
+  regime_trib: 'Regime informado pela contadora — define o % de imposto nos cálculos de precificação.',
+  pct_imposto: 'Percentual real de imposto sobre a venda. Revise a cada 6 meses ou quando o faturamento mudar de faixa.',
+  pct_gateway: 'Taxa média cobrada por Pix/cartão. Normalmente entre 2% e 5%.',
+  socia_vinc: 'A quem esse pró-labore ou distribuição pertence — permite ver quanto cada sócia já recebeu.',
+  obrig_nome: 'Ex: DAS do Simples Nacional, Declaração Anual, Folha de Pagamento.',
+  obrig_data: 'Dia em que precisa estar pago ou enviado.',
+  obrig_rec: 'Se repete todo mês/ano, marque aqui pra não precisar recriar.',
+  obrig_valor: 'Se souber o valor aproximado, ajuda a planejar o caixa.',
+  obrig_resp: 'Quem precisa agir nesse prazo.'
+});
+
+// ── C4: CONFIGURAÇÕES DA EMPRESA ─────────────────────────
+var D_config = null;
+
+function loadConfig(){
+  db.from('config_empresa').select('*').limit(1).then(function(res){
+    if(res.data&&res.data.length){
+      D_config = res.data[0];
+      renderConfig();
+      // Atualizar taxas na precificação
+      var pEl=document.getElementById('precif-taxas');
+      if(pEl&&!pEl._userSet){
+        pEl.value = ((D_config.percentual_imposto||0)+(D_config.percentual_gateway||0));
+      }
+    }
+  });
+}
+
+function renderConfig(){
+  if(!D_config)return;
+  var r=$('cfg-regime');if(r)r.value=D_config.regime_tributario||'simples_nacional';
+  var i=$('cfg-imposto');if(i)i.value=D_config.percentual_imposto||6;
+  var g=$('cfg-gateway');if(g)g.value=D_config.percentual_gateway||3;
+  var d=$('cfg-data-atualizacao');if(d)d.value=D_config.data_atualizacao||'';
+  updateCfgTotal();
+  renderCfgRegimeInfo();
+}
+
+function updateCfgTotal(){
+  var imp=parseFloat(($('cfg-imposto')||{value:0}).value)||0;
+  var gat=parseFloat(($('cfg-gateway')||{value:0}).value)||0;
+  var el=$('cfg-total-display');
+  if(el)el.textContent=(imp+gat).toFixed(1)+'%';
+}
+
+function renderCfgRegimeInfo(){
+  var el=$('cfg-regime-info');if(!el)return;
+  var regimes={
+    mei:'<b>MEI</b> — Faturamento até R$ 81.000/ano. Imposto fixo mensal (DAS). Não pode ter sócios.',
+    simples_nacional:'<b>Simples Nacional</b> — Faturamento até R$ 4,8 milhões/ano. Imposto unificado (DAS) com alíquota por faixa.',
+    lucro_presumido:'<b>Lucro Presumido</b> — Faturamento até R$ 78 milhões/ano. Base de cálculo presumida sobre receita.',
+    outro:'Regime especial — consulte sua contadora para mais detalhes.'
+  };
+  var v=($('cfg-regime')||{value:'simples_nacional'}).value;
+  el.innerHTML='<p style="font-size:12px;color:var(--muted);line-height:1.6;margin-top:12px;padding:10px 12px;background:var(--card);border-radius:8px">'+(regimes[v]||'')+'</p>';
+}
+
+function saveConfig(){
+  var payload={
+    regime_tributario:val('cfg-regime')||'simples_nacional',
+    percentual_imposto:parseFloat(($('cfg-imposto')||{value:6}).value)||6,
+    percentual_gateway:parseFloat(($('cfg-gateway')||{value:3}).value)||3,
+    data_atualizacao:val('cfg-data-atualizacao')||new Date().toISOString().split('T')[0]
+  };
+  var q=D_config?db.from('config_empresa').update(payload).eq('id',D_config.id):db.from('config_empresa').insert(payload);
+  q.then(function(res){
+    if(res&&res.error){toast('Erro: '+res.error.message);return;}
+    toast('Configurações salvas!');
+    loadConfig();
+  });
+}
+
+function initConfig(){
+  ['cfg-imposto','cfg-gateway'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el&&!el._cfgInit){el._cfgInit=true;el.addEventListener('input',updateCfgTotal);}
+  });
+  var rEl=$('cfg-regime');
+  if(rEl&&!rEl._cfgInit){rEl._cfgInit=true;rEl.addEventListener('change',renderCfgRegimeInfo);}
+  var saveBtn=$('save-config');
+  if(saveBtn&&!saveBtn._init){saveBtn._init=true;saveBtn.addEventListener('click',saveConfig);}
+  renderConfig();
+}
+
+// ── C1: SÓCIA NO MODAL DE LANÇAMENTO ────────────────────
+function initSociaSelect(){
+  var sel=document.getElementById('c-socia-id');
+  if(!sel||sel._init)return;
+  sel._init=true;
+  sel.innerHTML='<option value="">— Selecione —</option>'+
+    D.pessoas.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(p){
+      return '<option value="'+p.id+'">'+p.nome.split(' ')[0]+'</option>';
+    }).join('');
+}
+
+// Hook na atualização de categorias para mostrar campo sócia
+var _origUpdateCats = null;
+function hookSociaOnCat(){
+  var catSel=document.getElementById('c-cat');
+  var socGrp=document.getElementById('c-socia-group');
+  if(!catSel||!socGrp)return;
+  if(catSel._sociaHook)return;
+  catSel._sociaHook=true;
+  catSel.addEventListener('change',function(){
+    var v=catSel.value;
+    var show=v==='prolabore'||v==='distribuicao_lucro';
+    socGrp.style.display=show?'block':'none';
+    if(show)initSociaSelect();
+  });
+}
+
+// Patch initModalLancamento para adicionar hook sócia
+var _origInitModal = initModalLancamento;
+initModalLancamento = function(){
+  _origInitModal();
+  setTimeout(hookSociaOnCat,100);
+};
+
+// Patch _patchedSaveCost para salvar socia_id
+var _origPatchedSave = window._patchedSaveCost;
+window._patchedSaveCost = function(){
+  window._extraCostFields = window._extraCostFields||{};
+  window._extraCostFields.socia_id = ($('c-socia-id')||{value:''}).value||null;
+  _origPatchedSave();
+};
+
+// ── C2: CALENDÁRIO FISCAL ────────────────────────────────
+var D_obrigacoes = [];
+
+function loadObrigacoes(){
+  db.from('obrigacoes_fiscais').select('*').eq('ativo',true).order('data_vencimento',{ascending:true})
+    .then(function(res){
+      D_obrigacoes=res.data||[];
+      renderFiscal();
+      updateFiscalBadge();
+    });
+}
+
+function updateFiscalBadge(){
+  var hoje=new Date().toISOString().split('T')[0];
+  var in5=new Date();in5.setDate(in5.getDate()+5);var in5s=in5.toISOString().split('T')[0];
+  var urgentes=D_obrigacoes.filter(function(o){
+    return o.status==='pendente'&&(o.data_vencimento<=in5s||o.data_vencimento<hoje);
+  });
+  var badge=$('badge-fiscal');
+  if(badge){badge.textContent=urgentes.length;badge.style.display=urgentes.length?'inline-flex':'none';}
+}
+
+function renderFiscal(){
+  var hoje=new Date().toISOString().split('T')[0];
+  var in5=new Date();in5.setDate(in5.getDate()+5);var in5s=in5.toISOString().split('T')[0];
+
+  var venc=D_obrigacoes.filter(function(o){return o.status==='pendente'&&o.data_vencimento<hoje;}).length;
+  var prox=D_obrigacoes.filter(function(o){return o.status==='pendente'&&o.data_vencimento>=hoje&&o.data_vencimento<=in5s;}).length;
+  var el=$('fiscal-metrics');
+  if(el)el.innerHTML=metric(D_obrigacoes.length,'Total')+metric(prox,'Vencem em 5 dias','var(--amber)')+metric(venc,'Atrasadas','var(--red)');
+
+  var list=$('fiscal-list');if(!list)return;
+  if(!D_obrigacoes.length){list.innerHTML='<p class="empty">Nenhuma obrigação fiscal cadastrada</p>';return;}
+
+  var stIcon={pendente:'⏳',pago_enviado:'✅',atrasado:'🔴'};
+  var respLabel={socias:'Sócias',contadora:'Contadora',ambos:'Ambos'};
+  var recLabel={mensal:'Mensal',anual:'Anual',unico:'Único'};
+
+  list.innerHTML=D_obrigacoes.map(function(o){
+    var diasRestantes=Math.round((new Date(o.data_vencimento+'T12:00:00')-new Date())/(1000*60*60*24));
+    var atrasada=o.status==='pendente'&&diasRestantes<0;
+    var urgente=o.status==='pendente'&&diasRestantes>=0&&diasRestantes<=5;
+    var cls=atrasada?'danger':urgente?'warn':'';
+    return '<div class="card fiscal-card'+(cls?' fiscal-'+cls:'')+'">'+
+      '<div class="card-row">'+
+        '<div class="card-body">'+
+          '<p class="card-title">'+stIcon[o.status]+' '+o.nome+'</p>'+
+          '<div class="card-meta">'+
+            (o.recorrencia?catTag(recLabel[o.recorrencia]||o.recorrencia):'')+
+            (o.responsavel?catTag('👤 '+( respLabel[o.responsavel]||o.responsavel)):'')+
+            '<span style="font-size:9px;color:var(--muted)">📅 '+new Date(o.data_vencimento+'T12:00:00').toLocaleDateString('pt-BR')+'</span>'+
+            (o.valor_estimado?'<span style="font-size:9px;color:var(--muted)"> · '+mo(o.valor_estimado)+'</span>':'')+
+          '</div>'+
+          (atrasada?'<p style="font-size:10px;color:var(--red);margin-top:4px">🔴 Atrasada há '+Math.abs(diasRestantes)+' dias</p>':
+           urgente?'<p style="font-size:10px;color:var(--amber);margin-top:4px">⚠️ Vence em '+diasRestantes+' dia(s)</p>':'')+
+        '</div>'+
+        '<div class="card-actions">'+
+          (o.status!=='pago_enviado'?'<button class="btn-sec" style="font-size:10px;padding:4px 10px" data-pagar-obrig="'+o.id+'">✓ Pagar</button>':'')+
+          '<button class="btn-sec" data-edit-obrig="'+o.id+'" style="font-size:10px;padding:4px 8px">✏</button>'+
+          '<button class="del" data-del-obrig="'+o.id+'">×</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  // Event delegation
+  list.onclick=function(e){
+    var pay=e.target.closest('[data-pagar-obrig]');
+    if(pay){
+      db.from('obrigacoes_fiscais').update({status:'pago_enviado'}).eq('id',pay.dataset.pagarObrig)
+        .then(function(){toast('Marcado como pago!');loadObrigacoes();});
+      return;
+    }
+    var edit=e.target.closest('[data-edit-obrig]');
+    if(edit){openObrigacaoEdit(edit.dataset.editObrig);return;}
+    var del=e.target.closest('[data-del-obrig]');
+    if(del&&confirm('Excluir esta obrigação?')){
+      db.from('obrigacoes_fiscais').update({ativo:false}).eq('id',del.dataset.delObrig)
+        .then(function(){toast('Excluída!');loadObrigacoes();});
+    }
+  };
+}
+
+function openObrigacaoEdit(id){
+  var o=D_obrigacoes.find(function(x){return x.id===id;});if(!o)return;
+  $('obrig-modal-title').textContent='Editar Obrigação';
+  $('obrig-id').value=o.id;
+  $('obrig-nome').value=o.nome||'';
+  $('obrig-data').value=o.data_vencimento||'';
+  $('obrig-recorrencia').value=o.recorrencia||'mensal';
+  $('obrig-valor').value=o.valor_estimado||'';
+  $('obrig-responsavel').value=o.responsavel||'socias';
+  $('obrig-status').value=o.status||'pendente';
+  var dBtn=$('delete-obrigacao');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  openModal('obrigacao');
+}
+
+function saveObrigacao(){
+  var nome=val('obrig-nome').trim();if(!nome){toast('Informe o nome');return;}
+  var data=val('obrig-data');if(!data){toast('Informe a data');return;}
+  var id=val('obrig-id');
+  var payload={nome,data_vencimento:data,recorrencia:val('obrig-recorrencia'),
+    valor_estimado:parseFloat(($('obrig-valor')||{value:0}).value)||null,
+    responsavel:val('obrig-responsavel'),status:val('obrig-status')};
+  var q=id?db.from('obrigacoes_fiscais').update(payload).eq('id',id):db.from('obrigacoes_fiscais').insert(payload);
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);return;}
+    closeModal('obrigacao');toast(id?'Atualizado!':'Salvo!');loadObrigacoes();});
+}
+
+// ── C5: DOCS CONTADORA ───────────────────────────────────
+var D_docs = [];
+var DOCS_TEMPLATE = [
+  {tipo:'nota_fiscal',descricao:'Notas fiscais de compra'},
+  {tipo:'extrato_bancario',descricao:'Extrato bancário completo'},
+  {tipo:'comprovante_despesa',descricao:'Comprovantes de despesas'},
+  {tipo:'contrato',descricao:'Contratos vigentes (se houver alteração)'}
+];
+
+function loadDocs(){
+  db.from('docs_contadora').select('*').eq('ativo',true).order('created_at',{ascending:false})
+    .then(function(res){
+      D_docs=res.data||[];
+      renderDocs();
+      updateContadoraBadge();
+    });
+}
+
+function updateContadoraBadge(){
+  var mesAtual=new Date().toISOString().slice(0,7);
+  var pend=D_docs.filter(function(d){return d.status==='pendente'&&d.mes_referencia===mesAtual;}).length;
+  var badge=$('badge-contadora');
+  if(badge){badge.textContent=pend;badge.style.display=pend?'inline-flex':'none';}
+}
+
+function renderDocs(){
+  // Popular select de mês
+  var meses=[...new Set(D_docs.map(function(d){return d.mes_referencia;}))].sort().reverse();
+  var mesAtual=new Date().toISOString().slice(0,7);
+  if(!meses.includes(mesAtual))meses.unshift(mesAtual);
+  var mSel=$('docs-mes-filter');
+  if(mSel&&!mSel._init){
+    mSel._init=true;
+    mSel.innerHTML='<option value="all">Todos os meses</option>'+
+      meses.map(function(m){var d=new Date(m+'-15');return '<option value="'+m+'">'+d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})+'</option>';}).join('');
+    mSel.value=mesAtual;
+    mSel.addEventListener('change',renderDocs);
+  }
+
+  var filtroMes=(mSel&&mSel.value)||mesAtual;
+  var lista=filtroMes==='all'?D_docs:D_docs.filter(function(d){return d.mes_referencia===filtroMes;});
+
+  var pend=lista.filter(function(d){return d.status==='pendente';}).length;
+  var envi=lista.filter(function(d){return d.status==='enviado';}).length;
+  var mEl=$('contadora-metrics');
+  if(mEl)mEl.innerHTML=metric(lista.length,'Total')+metric(pend,'Pendentes','var(--amber)')+metric(envi,'Enviados','var(--green)');
+
+  var tipoLabel={nota_fiscal:'Nota Fiscal',extrato_bancario:'Extrato Bancário',comprovante_despesa:'Comprovante',contrato:'Contrato',outro:'Outro'};
+  var el=$('contadora-list');if(!el)return;
+  if(!lista.length){
+    el.innerHTML='<p class="empty">Nenhum documento neste mês. <button class="btn-sec" id="docs-gerar-template" style="margin-left:8px;font-size:11px">Gerar checklist padrão</button></p>';
+    var btn=el.querySelector('#docs-gerar-template');
+    if(btn)btn.addEventListener('click',function(){gerarTemplateDoc(filtroMes==='all'?mesAtual:filtroMes);});
+    return;
+  }
+  el.innerHTML=lista.map(function(d){
+    return '<div class="card">'+
+      '<div class="card-row">'+
+        '<div class="card-body">'+
+          '<p class="card-title">'+(d.status==='enviado'?'✅ ':'⏳ ')+(tipoLabel[d.tipo]||d.tipo)+'</p>'+
+          '<div class="card-meta">'+catTag(d.mes_referencia)+(d.descricao?catTag(d.descricao):'')+(d.data_limite?'<span style="font-size:9px;color:var(--muted)">Limite: '+new Date(d.data_limite+'T12:00:00').toLocaleDateString('pt-BR')+'</span>':'')+'</div>'+
+        '</div>'+
+        '<div class="card-actions">'+
+          (d.status==='pendente'?'<button class="btn-sec" data-enviar-doc="'+d.id+'" style="font-size:10px;padding:4px 10px">✓ Enviar</button>':'')+
+          '<button class="del" data-del-doc="'+d.id+'">×</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  el.onclick=function(e){
+    var env=e.target.closest('[data-enviar-doc]');
+    if(env){db.from('docs_contadora').update({status:'enviado'}).eq('id',env.dataset.enviarDoc)
+      .then(function(){toast('Marcado como enviado!');loadDocs();});return;}
+    var del=e.target.closest('[data-del-doc]');
+    if(del&&confirm('Excluir?')){db.from('docs_contadora').update({ativo:false}).eq('id',del.dataset.delDoc)
+      .then(function(){toast('Excluído!');loadDocs();});}
+  };
+}
+
+function gerarTemplateDoc(mes){
+  var inserts=DOCS_TEMPLATE.map(function(t){
+    return {tipo:t.tipo,descricao:t.descricao,mes_referencia:mes,status:'pendente'};
+  });
+  db.from('docs_contadora').insert(inserts).then(function(res){
+    if(res&&res.error){toast('Erro: '+res.error.message);return;}
+    toast('Checklist padrão gerado!');loadDocs();
+  });
+}
+
+function saveDocContadora(){
+  var tipo=val('doc-tipo');var mes=val('doc-mes');
+  if(!tipo||!mes){toast('Preencha tipo e mês');return;}
+  var id=val('doc-id');
+  var payload={tipo,mes_referencia:mes,status:val('doc-status')||'pendente',
+    data_limite:val('doc-data-limite')||null,descricao:val('doc-descricao')||null};
+  var q=id?db.from('docs_contadora').update(payload).eq('id',id):db.from('docs_contadora').insert(payload);
+  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);return;}
+    closeModal('doc-contadora');toast(id?'Atualizado!':'Salvo!');loadDocs();});
+}
+
+// ── HOOKS openSection para novos módulos ─────────────────
+var _origOpenSectionFiscal = openSection;
+openSection = function(name){
+  _origOpenSectionFiscal(name);
+  if(name==='config')setTimeout(initConfig,50);
+  if(name==='fiscal')setTimeout(loadObrigacoes,50);
+  if(name==='contadora')setTimeout(loadDocs,50);
+};
+
+// ── HOOK showApp para carregar config e obrigações ───────
+var _origShowApp2 = showApp;
+showApp = function(){
+  _origShowApp2();
+  loadConfig();
+  loadObrigacoes();
+  loadDocs();
+};
+
+// ── BIND botões de save ──────────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  var sobrg=$('save-obrigacao');
+  if(sobrg)sobrg.addEventListener('click',saveObrigacao);
+  var sdoc=$('save-doc-contadora');
+  if(sdoc)sdoc.addEventListener('click',saveDocContadora);
+  // Delete obrigação
+  var dObrig=$('delete-obrigacao');
+  if(dObrig)dObrig.addEventListener('click',function(){
+    var id=dObrig.dataset.deleteId;if(!id)return;
+    if(!confirm('Excluir esta obrigação?'))return;
+    db.from('obrigacoes_fiscais').update({ativo:false}).eq('id',id)
+      .then(function(){closeModal('obrigacao');loadObrigacoes();toast('Excluída!');});
+  });
+  // Delete doc
+  var dDoc=$('delete-doc-contadora');
+  if(dDoc)dDoc.addEventListener('click',function(){
+    var id=dDoc.dataset.deleteId;if(!id)return;
+    if(!confirm('Excluir?'))return;
+    db.from('docs_contadora').update({ativo:false}).eq('id',id)
+      .then(function(){closeModal('doc-contadora');loadDocs();toast('Excluído!');});
+  });
+  // Marcar todos como enviados
+  var mTodos=$('docs-marcar-todos');
+  if(mTodos)mTodos.addEventListener('click',function(){
+    var mSel=$('docs-mes-filter');
+    var mes=mSel?mSel.value:new Date().toISOString().slice(0,7);
+    if(!confirm('Marcar todos os pendentes deste mês como enviados?'))return;
+    var pendIds=D_docs.filter(function(d){return d.status==='pendente'&&(mes==='all'||d.mes_referencia===mes);}).map(function(d){return d.id;});
+    if(!pendIds.length){toast('Nenhum pendente!');return;}
+    db.from('docs_contadora').update({status:'enviado'}).in('id',pendIds)
+      .then(function(){toast(pendIds.length+' marcados como enviados!');loadDocs();});
+  });
+});
+
+// ── L.sections update ────────────────────────────────────
+if(L&&L.sections){
+  L.sections['config']='Configurações';
+  L.sections['fiscal']='Calendário Fiscal';
+  L.sections['contadora']='Docs Contadora';
+}
 
 })();
 </script>
