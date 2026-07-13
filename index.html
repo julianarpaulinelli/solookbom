@@ -6279,7 +6279,7 @@ var _origOpenSection = openSection;
 openSection = function(name){
   _origOpenSection(name);
   if(name==='financas'){
-    setTimeout(initFinTabs,50);
+    setTimeout(function(){initFinTabs();showOnboarding();},50);
   }
   if(name==='precificacao'){
     setTimeout(initPrecificacao,50);
@@ -6292,7 +6292,6 @@ showApp = function(){
   _origShowApp();
   setTimeout(function(){
     initTooltips();
-    showOnboarding();
   },500);
 };
 
