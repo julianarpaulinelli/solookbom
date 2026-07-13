@@ -1098,6 +1098,9 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .onboard-dots{display:flex;gap:6px;justify-content:center}
 .onboard-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);transition:all .2s}
 .onboard-dot.active{width:20px;border-radius:4px;background:var(--blue)}
+
+/* ── FIN-CARD (painéis internos de gráfico — não confundir com fin-panel de abas) */
+.fin-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:0}
 </style>
 </head>
 <body>
@@ -1489,21 +1492,21 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           <!-- ZONA 4: ANÁLISES -->
           <div class="fin-section-label">Análise do período</div>
           <div class="fin-two-col" style="margin-bottom:12px">
-            <div class="fin-panel"><p class="fin-panel-title">Gastos por categoria</p><div id="fin-cat-chart"></div></div>
-            <div class="fin-panel"><p class="fin-panel-title">Evolução últimos 6 meses</p><div class="fin-month-chart-wrap" id="fin-month-chart"></div></div>
+            <div class="fin-card"><p class="fin-panel-title">Gastos por categoria</p><div id="fin-cat-chart"></div></div>
+            <div class="fin-card"><p class="fin-panel-title">Evolução últimos 6 meses</p><div class="fin-month-chart-wrap" id="fin-month-chart"></div></div>
           </div>
           <div class="fin-two-col" style="margin-bottom:12px">
-            <div class="fin-panel"><p class="fin-panel-title">Despesa vs Investimento</p><div id="fin-tipo-chart"></div></div>
-            <div class="fin-panel"><p class="fin-panel-title">Divisão por sócio (mês atual)</p><div id="fin-socio-chart"></div></div>
+            <div class="fin-card"><p class="fin-panel-title">Despesa vs Investimento</p><div id="fin-tipo-chart"></div></div>
+            <div class="fin-card"><p class="fin-panel-title">Divisão por sócio (mês atual)</p><div id="fin-socio-chart"></div></div>
           </div>
 
           <!-- ZONA 5: COMPROMISSOS -->
           <div class="fin-section-label">Compromissos futuros — próximos 90 dias</div>
           <div class="fin-two-col" style="margin-bottom:12px">
-            <div class="fin-panel"><p class="fin-panel-title">Assinaturas &amp; recorrentes ativas</p><div id="fin-recorrentes"></div></div>
-            <div class="fin-panel"><p class="fin-panel-title">Parcelas em andamento</p><div id="fin-parcelas"></div></div>
+            <div class="fin-card"><p class="fin-panel-title">Assinaturas &amp; recorrentes ativas</p><div id="fin-recorrentes"></div></div>
+            <div class="fin-card"><p class="fin-panel-title">Parcelas em andamento</p><div id="fin-parcelas"></div></div>
           </div>
-          <div class="fin-panel" style="margin-bottom:32px"><p class="fin-panel-title">Timeline de saídas previstas — próximos 3 meses</p><div id="fin-timeline"></div></div>
+          <div class="fin-card" style="margin-bottom:32px"><p class="fin-panel-title">Timeline de saídas previstas — próximos 3 meses</p><div id="fin-timeline"></div></div>
 
           <!-- ZONA 6: LANÇAMENTOS -->
           <div class="fin-section-label">Todos os lançamentos</div>
