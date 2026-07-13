@@ -4089,10 +4089,63 @@ function renderFinMensal(){
 }
 function openCostEdit(id){
   var c=D.costs.find(function(x){return x.id===id;});if(!c)return;
-  $('cost-modal-title').textContent='Editar Lançamento';$('c-id').value=c.id;$('c-name').value=c.descricao;$('c-cat').value=c.categoria||'';$('c-type').value=c.tipo;$('c-val').value=c.valor||'';$('c-date').value=c.data||'';$('c-venc').value=c.data_vencimento||'';$('c-status-pagto').value=c.status_pagto||'pago';$('c-metodo').value=c.metodo_pagto||'';
-  if(c.pago_por_id)$('c-pago-por').value=c.pago_por_id;
-  $('c-recorrente').checked=!!c.recorrente;$('recorrencia-group').style.display=c.recorrente?'block':'none';$('c-recorrencia').value=c.recorrencia||'mensal';
-  var dBtn=$('delete-cost');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('cost');
+  $('cost-modal-title').textContent='Editar Lançamento';
+  $('c-id').value=c.id;
+  $('c-name').value=c.descricao||'';
+  $('c-val').value=c.valor||'';
+  $('c-date').value=c.data||'';
+  $('c-venc').value=c.data_vencimento||'';
+  $('c-status-pagto').value=c.status_pagto||'pago';
+  $('c-metodo').value=c.metodo_pagto||'';
+  if(c.pago_por_id&&$('c-pago-por'))$('c-pago-por').value=c.pago_por_id;
+  // Tipo compromisso
+  var tipoComp=val('c-tipo-comp');
+  if($('c-tipo-comp'))$('c-tipo-comp').value=c.tipo_compromisso||'unico';
+  if($('c-cat-comp'))$('c-cat-comp').value=c.categoria_comp||'';
+  var isRec=c.tipo_compromisso==='recorrente';
+  var isPar=c.tipo_compromisso==='parcelado';
+  if($('recorrencia-group'))$('recorrencia-group').style.display=isRec?'block':'none';
+  if($('parcela-group'))$('parcela-group').style.display=isPar?'block':'none';
+  if($('c-recorrencia'))$('c-recorrencia').value=c.recorrencia||'mensal';
+  if($('c-parcela-atual'))$('c-parcela-atual').value=c.parcela_atual||'';
+  if($('c-total-parcelas'))$('c-total-parcelas').value=c.total_parcelas||'';
+  if($('c-notas'))$('c-notas').value=c.notas||'';
+  // tipo_lancamento — setar os botões e categoria
+  var tipo=c.tipo_lancamento||c.tipo||'despesa';
+  var tipoHidden=$('c-tipo-lancamento');
+  if(tipoHidden)tipoHidden.value=tipo;
+  var tipoGrid=$('c-tipo-grid');
+  if(tipoGrid){
+    tipoGrid.querySelectorAll('.lanc-tipo-btn').forEach(function(b){
+      b.classList.toggle('active',b.dataset.tipo===tipo);
+    });
+  }
+  // categoria
+  var cats=CAT_DRE[tipo]||[];
+  var catSel=$('c-cat');
+  if(catSel){
+    catSel.innerHTML=cats.map(function(ct){
+      return '<option value="'+ct.v+'"'+(ct.v===(c.categoria_dre||c.categoria)?' selected':'')+'>'+ct.l+'</option>';
+    }).join('');
+  }
+  // hint produto
+  var prodHint=$('c-produto-hint');
+  if(prodHint)prodHint.style.display=tipo==='custo'?'block':'none';
+  if($('c-produto-id')&&c.produto_id)$('c-produto-id').value=c.produto_id;
+  // campos extras
+  if($('c-fornecedor-cliente'))$('c-fornecedor-cliente').value=c.fornecedor_cliente||'';
+  if($('c-recorrencia-tipo'))$('c-recorrencia-tipo').value=c.recorrencia_tipo||'unico';
+  // sócia
+  var socGrp=$('c-socia-group');
+  var catVal=c.categoria_dre||c.categoria||'';
+  if(socGrp)socGrp.style.display=(catVal==='prolabore'||catVal==='distribuicao_lucro')?'block':'none';
+  if(catVal==='prolabore'||catVal==='distribuicao_lucro'){
+    initSociaSelect();
+    if($('c-socia-id')&&c.socia_id)$('c-socia-id').value=c.socia_id;
+  }
+  var dBtn=$('delete-cost');
+  if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  openModal('cost');
 }
 function saveCost(){
   var d=val('c-name').trim(),v=num('c-val');if(!d||!v){toast('Preencha descrição e valor');return;}
@@ -6203,34 +6256,7 @@ openModal = function(type){
   }
 };
 
-// Interceptar openCostEdit para setar tipo_lancamento
-var _origOpenCostEdit = openCostEdit;
-openCostEdit = function(id){
-  _origOpenCostEdit(id);
-  var c = D.costs.find(function(x){return x.id===id;});
-  if(!c)return;
-  setTimeout(function(){
-    var tipo = c.tipo_lancamento||c.tipo||'despesa';
-    var tipoGrid = document.getElementById('c-tipo-grid');
-    var tipoHidden = document.getElementById('c-tipo-lancamento');
-    var catSel = document.getElementById('c-cat');
-    if(!tipoGrid)return;
-    tipoGrid.querySelectorAll('.lanc-tipo-btn').forEach(function(b){
-      b.classList.toggle('active', b.dataset.tipo===tipo);
-    });
-    if(tipoHidden)tipoHidden.value=tipo;
-    var cats = CAT_DRE[tipo]||[];
-    if(catSel){
-      catSel.innerHTML = cats.map(function(ct){return '<option value="'+ct.v+'"'+(ct.v===c.categoria_dre?' selected':'')+(ct.l===(c.categoria||'')?' selected':'')+'>'+ct.l+'</option>';}).join('');
-    }
-    var prodHint = document.getElementById('c-produto-hint');
-    if(prodHint)prodHint.style.display=tipo==='custo'?'block':'none';
-    var fcEl=document.getElementById('c-fornecedor-cliente');
-    if(fcEl)fcEl.value=c.fornecedor_cliente||'';
-    var rcEl=document.getElementById('c-recorrencia-tipo');
-    if(rcEl)rcEl.value=c.recorrencia_tipo||'unico';
-  }, 80);
-};
+// openCostEdit já atualizado diretamente — intercept removido
 
 // Interceptar saveCost para salvar tipo_lancamento e categoria_dre
 var _origSaveCost = saveCost;
