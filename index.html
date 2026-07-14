@@ -2833,6 +2833,9 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   </div>
 </div></div>
 
+<div id="dev-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#f59e0b;color:#000;font-size:11px;font-weight:700;text-align:center;padding:4px;letter-spacing:1px">
+  ⚠️ AMBIENTE DE HOMOLOGAÇÃO — alterações aqui NÃO afetam a produção
+</div>
 <div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -7359,6 +7362,13 @@ openSection = function(name){
   _origOpenSectionProj(name);
   if(name==='projecao')setTimeout(function(){initProjecao();calcCaixaAuto();},100);
 };
+
+  // Banner de ambiente
+  if(typeof SLB_ENV !== 'undefined' && SLB_ENV === 'dev'){
+    var banner = document.getElementById('dev-banner');
+    if(banner) banner.style.display = 'block';
+    document.title = '[DEV] ' + document.title;
+  }
 
 })();
 </script>
