@@ -6371,6 +6371,7 @@ function initFinTabs(){
       var panel = document.getElementById('fin-panel-'+tab.dataset.ftab);
       if(panel)panel.classList.add('active');
       if(tab.dataset.ftab==='dre')renderDRE();
+      if(tab.dataset.ftab==='lancamentos'){try{renderCosts();}catch(e){console.warn(e);}}
     });
   });
   // Navegação de mês na DRE
@@ -6382,6 +6383,11 @@ function initFinTabs(){
   if(btnPdf&&!btnPdf._init){btnPdf._init=true;btnPdf.addEventListener('click',exportDREPDF);}
   var btnXlsx=document.getElementById('dre-export-xlsx');
   if(btnXlsx&&!btnXlsx._init){btnXlsx._init=true;btnXlsx.addEventListener('click',exportDREXLSX);}
+  // Renderizar aba ativa ao inicializar (Lançamentos é a default)
+  var activeTab=document.querySelector('.fin-tab.active');
+  if(activeTab&&activeTab.dataset.ftab==='lancamentos'){
+    try{renderCosts();}catch(e){console.warn('[renderCosts init]',e);}
+  }
 }
 
 function dreGetMes(){
