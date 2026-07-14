@@ -2827,7 +2827,7 @@ function setTheme(dark){
 // ── NAVIGATION ─────────────────────────────────────────────
 function openSection(name){
   document.querySelectorAll('.cw').forEach(function(s){s.classList.remove('visible');});
-  var el=$('section-'+name);if(el)el.classList.add('visible');if(name==='financas'&&D.costs.length)renderFinDashboard();if(name==='simulador')initSimulador();if(name==='tarefas'){setTaskView(taskView);}
+  var el=$('section-'+name);if(el)el.classList.add('visible');if(name==='financas'&&D.costs.length){try{renderFinDashboard();}catch(e){console.warn('[rFD]',e);}}if(name==='simulador')initSimulador();if(name==='tarefas'){setTaskView(taskView);}
   document.querySelectorAll('.nav-item').forEach(function(n){
     n.classList.toggle('active',n.dataset.sec===name);
   });
@@ -7293,6 +7293,17 @@ openSection = function(name){
     if(banner) banner.style.display = 'block';
     document.title = '[DEV] ' + document.title;
   }
+
+
+  // Fallback: se cost-list estiver vazio 1s após carregar, forçar render
+  setTimeout(function(){
+    var el = document.getElementById('cost-list');
+    var sec = document.getElementById('section-financas');
+    if(el && sec && sec.classList.contains('visible') && !el.innerHTML.trim()){
+      console.warn('[fallback] cost-list vazio - forçando renderCosts');
+      try{renderCosts();}catch(e){console.warn(e);}
+    }
+  }, 1000);
 
 })();
 </script>
