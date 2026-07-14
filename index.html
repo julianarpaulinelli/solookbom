@@ -3989,9 +3989,11 @@ function finAcaoCard(icon,lbl,val,sub,cls){
 function loadCosts(){
   return db.from('custos').select('*,pago_por:pessoas!custos_pago_por_id_fkey(nome)').order('created_at',{ascending:false}).then(function(r){
     D.costs=r.data||[];
-    // Sempre re-renderizar finanças quando dados chegarem (resolve timing de abertura)
-    try{renderCosts();}catch(e){}
-    try{renderFinDashboard();}catch(e){}
+    // Re-renderizar só se a seção finanças estiver aberta
+    var _fs=document.getElementById('section-financas');
+    if(_fs&&_fs.classList.contains('visible')){
+      try{renderCosts();}catch(e){}
+    }
   });
 }
 function renderCosts(){
@@ -7284,15 +7286,7 @@ function renderProjecaoTabela(semanas){
   }
 
 
-  // Fallback: se cost-list estiver vazio 1s após carregar, forçar render
-  setTimeout(function(){
-    var el = document.getElementById('cost-list');
-    var sec = document.getElementById('section-financas');
-    if(el && sec && sec.classList.contains('visible') && !el.innerHTML.trim()){
-      console.warn('[fallback] cost-list vazio - forçando renderCosts');
-      try{renderCosts();}catch(e){console.warn(e);}
-    }
-  }, 1000);
+// fallback removido
 
 })();
 </script>
