@@ -4023,7 +4023,12 @@ function finAcaoCard(icon,lbl,val,sub,cls){
 
 function loadCosts(){
   return db.from('custos').select('*,pago_por:pessoas!custos_pago_por_id_fkey(nome)').order('created_at',{ascending:false}).then(function(r){
-    D.costs=r.data||[];renderCosts();
+    D.costs=r.data||[];
+    // Só renderizar se a seção finanças estiver visível
+    var finSec=document.getElementById('section-financas');
+    if(finSec&&finSec.classList.contains('visible')){
+      try{renderCosts();}catch(e){console.warn('[loadCosts renderCosts]',e);}
+    }
   });
 }
 function renderCosts(){
@@ -5645,7 +5650,7 @@ document.addEventListener('DOMContentLoaded',function(){
   // Save buttons
   $('save-task').addEventListener('click',saveTask);
   $('save-supplier').addEventListener('click',saveSupplier);
-  $('save-cost').addEventListener('click',saveCost);
+  $('save-cost').addEventListener('click',function(){window._patchedSaveCost&&window._patchedSaveCost();});
   $('save-produto').addEventListener('click',saveProduto);
   $('save-estoque').addEventListener('click',saveEstoque);
   $('save-colecao').addEventListener('click',saveColecao);
@@ -6670,19 +6675,12 @@ showApp = function(){
 
 // Bind save-cost ao _patchedSaveCost
 document.addEventListener('DOMContentLoaded', function(){
-  var saveBtn=document.getElementById('save-cost');
-  if(saveBtn){
-    // Remove o listener antigo e adiciona o novo
-    var newBtn=saveBtn.cloneNode(true);
-    saveBtn.parentNode.replaceChild(newBtn,saveBtn);
-    newBtn.addEventListener('click',window._patchedSaveCost);
-  }
   // Onboard buttons
   var nxt=document.getElementById('onboard-next');
   if(nxt)nxt.addEventListener('click',onboardNext);
   var prv=document.getElementById('onboard-prev');
   if(prv)prv.addEventListener('click',onboardPrev);
-});
+});;
 
 
 // ── COMPLEMENTOS FINANCEIROS ─────────────────────────────
