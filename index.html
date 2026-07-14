@@ -4061,19 +4061,38 @@ function renderCosts(){
   var inv=list.filter(function(c){return c.tipo==='investimento';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
   var desp=list.filter(function(c){return c.tipo==='despesa';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
   var pend=list.filter(function(c){return c.status_pagto==='pendente'||c.status_pagto==='vencido';}).length;
-  $('cost-metrics').innerHTML=metric(mo(tot),'Total')+metric(mo(inv),'Investimentos','var(--blue)')+metric(mo(desp),'Despesas','var(--muted)')+metric(pend,'Pendentes',pend>0?'var(--red)':'var(--green)');
-  renderFinDashboard();
+  var metricsEl=$('cost-metrics');
+  if(metricsEl)metricsEl.innerHTML=metric(mo(tot),'Total')+metric(mo(inv),'Investimentos','var(--blue)')+metric(mo(desp),'Despesas','var(--muted)')+metric(pend,'Pendentes',pend>0?'var(--red)':'var(--green)');
   var el=$('cost-list');
-  if(!list.length){el.innerHTML='<p class="empty">Nenhum lançamento encontrado</p>';return;}
+  if(!el)return;
+  if(!list.length){el.innerHTML='<p class="empty">Nenhum lançamento encontrado</p>';try{renderFinDashboard();}catch(e){console.warn('[renderFinDashboard]',e);}return;}
   el.innerHTML=list.map(function(c){
-    return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+c.descricao+(c.recorrente?'<span class="badge b-recorrente" style="margin-left:6px">🔄 Recorrente</span>':'')+'</p><div class="card-meta">'+(function(){
-        var t=c.tipo_lancamento||c.tipo||'despesa';
-        var tLabel=L.tipoLanc[t]||t;
-        var tCls={receita:'green',custo:'amber',despesa:'muted',investimento:'blue',outros:'red'}[t]||'muted';
-        return '<span class="badge badge-'+tCls+'">'+tLabel+'</span>';
-      })()+badge(c.status_pagto||'pago',L.pagtoSt[c.status_pagto||'pago'])+(c.metodo_pagto?catTag(c.metodo_pagto):'')+(c.categoria?catTag(c.categoria):'')+(c.data?'<span style="font-size:9px;color:var(--muted)">'+fmtDate(c.data)+'</span>':'')+(c.data_vencimento?'<span style="font-size:9px;color:var(--red)">Vence: '+fmtDate(c.data_vencimento)+'</span>':'')+(c.pago_por?'<span style="font-size:9px;color:var(--muted)">👤 '+c.pago_por.nome+'</span>':'')+'</div></div><div class="card-actions"><span style="font-size:13px;font-weight:800;white-space:nowrap">'+mo(c.valor)+'</span>'+editBtn(c.id,'cost')+'<button class="del" data-del-cost="'+c.id+'">×</button></div></div></div>';
+    var t=c.tipo_lancamento||c.tipo||'despesa';
+    var tLabel=L.tipoLanc[t]||t;
+    var tCls={receita:'green',custo:'amber',despesa:'muted',investimento:'blue',outros:'red'}[t]||'muted';
+    var catLabel=c.categoria_dre||c.categoria||'';
+    return '<div class="card"><div class="card-row"><div class="card-body">'+
+      '<p class="card-title">'+c.descricao+(c.recorrente?'<span class="badge b-recorrente" style="margin-left:6px">🔄 Recorrente</span>':'')+'</p>'+
+      '<div class="card-meta">'+
+        '<span class="badge badge-'+tCls+'">'+tLabel+'</span>'+
+        badge(c.status_pagto||'pago',L.pagtoSt[c.status_pagto||'pago'])+
+        (c.metodo_pagto?catTag(c.metodo_pagto):'')+
+        (catLabel?catTag(catLabel):'')+
+        (c.data?'<span style="font-size:9px;color:var(--muted)">'+fmtDate(c.data)+'</span>':'')+
+        (c.data_vencimento?'<span style="font-size:9px;color:var(--red)">Vence: '+fmtDate(c.data_vencimento)+'</span>':'')+
+        (c.pago_por?'<span style="font-size:9px;color:var(--muted)">👤 '+c.pago_por.nome+'</span>':'')+
+        (c.fornecedor_cliente?'<span style="font-size:9px;color:var(--muted)">🏭 '+c.fornecedor_cliente+'</span>':'')+
+      '</div>'+
+      '</div>'+
+      '<div class="card-actions">'+
+        '<span style="font-size:13px;font-weight:800;white-space:nowrap">'+mo(c.valor)+'</span>'+
+        editBtn(c.id,'cost')+
+        '<button class="del" data-del-cost="'+c.id+'">×</button>'+
+      '</div>'+
+    '</div></div>';
   }).join('');
-  renderFinMensal();
+  try{renderFinDashboard();}catch(e){console.warn('[renderFinDashboard]',e);}
+  try{renderFinMensal();}catch(e){console.warn('[renderFinMensal]',e);}
 }
 
 function renderFinMensal(){
