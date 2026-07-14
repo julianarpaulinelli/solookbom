@@ -4069,7 +4069,14 @@ function renderCosts(){
   var metricsEl=$('cost-metrics');
   if(metricsEl)metricsEl.innerHTML=metric(mo(tot),'Total')+metric(mo(inv),'Investimentos','var(--blue)')+metric(mo(desp),'Despesas','var(--muted)')+metric(pend,'Pendentes',pend>0?'var(--red)':'var(--green)');
   var el=$('cost-list');
-  if(!el)return;
+  if(!el){console.warn('[renderCosts] cost-list not found');return;}
+  // Forçar visibilidade do painel pai
+  var panel=document.getElementById('fin-panel-lancamentos');
+  if(panel&&!panel.classList.contains('active')){
+    document.querySelectorAll('.fin-panel').forEach(function(p){p.classList.remove('active');});
+    panel.classList.add('active');
+    document.querySelectorAll('.fin-tab').forEach(function(t){t.classList.toggle('active',t.dataset.ftab==='lancamentos');});
+  }
   if(!list.length){el.innerHTML='<p class="empty">Nenhum lançamento encontrado</p>';try{renderFinDashboard();}catch(e){console.warn('[renderFinDashboard]',e);}return;}
   el.innerHTML=list.map(function(c){
     var t=c.tipo_lancamento||c.tipo||'despesa';
@@ -6657,7 +6664,14 @@ var _origOpenSection = openSection;
 openSection = function(name){
   _origOpenSection(name);
   if(name==='financas'){
-    setTimeout(function(){initFinTabs();showOnboarding();},50);
+    setTimeout(function(){
+      initFinTabs();
+      showOnboarding();
+      // Garantir render da lista mesmo que initFinTabs já tenha rodado antes
+      setTimeout(function(){
+        try{renderCosts();}catch(e){console.warn('[openSection renderCosts]',e);}
+      },100);
+    },50);
   }
   if(name==='precificacao'){
     setTimeout(initPrecificacao,50);
