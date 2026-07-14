@@ -2861,7 +2861,10 @@ function openSection(name){
       t.classList.toggle('active',t.dataset.ftab==='lancamentos');
     });
     initFinTabs();
-    try{renderCosts();}catch(e){console.warn('[fin renderCosts]',e);}
+    // Se dados já carregados, renderizar imediatamente
+    // Se não, loadCosts irá renderizar quando terminar
+    if(D.costs&&D.costs.length){try{renderCosts();}catch(e){}}
+    else{$('cost-list').innerHTML='<p class="empty" style="color:var(--muted)">Carregando lançamentos...</p>';}
     showOnboarding();
   }
   if(name==='simulador')initSimulador();
@@ -3986,11 +3989,9 @@ function finAcaoCard(icon,lbl,val,sub,cls){
 function loadCosts(){
   return db.from('custos').select('*,pago_por:pessoas!custos_pago_por_id_fkey(nome)').order('created_at',{ascending:false}).then(function(r){
     D.costs=r.data||[];
-    var finSec=document.getElementById('section-financas');
-    if(finSec&&finSec.classList.contains('visible')){
-      try{renderCosts();}catch(e){console.warn('[loadCosts]',e);}
-      try{renderFinDashboard();}catch(e){console.warn('[loadCosts dash]',e);}
-    }
+    // Sempre re-renderizar finanças quando dados chegarem (resolve timing de abertura)
+    try{renderCosts();}catch(e){}
+    try{renderFinDashboard();}catch(e){}
   });
 }
 function renderCosts(){
