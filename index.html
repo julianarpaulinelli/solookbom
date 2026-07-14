@@ -2845,7 +2845,7 @@ function openSection(name){
       t.classList.toggle('active',t.dataset.ftab==='lancamentos');
     });
     initFinTabs();
-    if(D.costs&&D.costs.length)try{renderCosts();}catch(e){console.warn('[fin]',e);}
+    try{renderCosts();}catch(e){console.warn('[fin renderCosts]',e);}
     showOnboarding();
   }
   if(name==='simulador')initSimulador();
@@ -3973,6 +3973,7 @@ function loadCosts(){
     var finSec=document.getElementById('section-financas');
     if(finSec&&finSec.classList.contains('visible')){
       try{renderCosts();}catch(e){console.warn('[loadCosts]',e);}
+      try{renderFinDashboard();}catch(e){console.warn('[loadCosts dash]',e);}
     }
   });
 }
