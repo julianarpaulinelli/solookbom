@@ -1131,6 +1131,13 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .proj-chart-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
 .proj-leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
 .proj-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── BADGES TIPO LANÇAMENTO ──────────────────────────────── */
+.badge-green{background:rgba(39,192,138,.15);color:var(--green);border:1px solid rgba(39,192,138,.3)}
+.badge-amber{background:rgba(230,162,46,.15);color:var(--amber);border:1px solid rgba(230,162,46,.3)}
+.badge-blue{background:rgba(45,107,228,.12);color:var(--blue);border:1px solid rgba(45,107,228,.25)}
+.badge-red{background:rgba(224,82,82,.12);color:var(--red);border:1px solid rgba(224,82,82,.25)}
+.badge-muted{background:var(--card2);color:var(--muted);border:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -4029,7 +4036,8 @@ function renderCosts(){
 
   var list=D.costs.filter(function(c){
     // filtros de botão
-    if(f.tipo!=='all'&&c.tipo!==f.tipo)return false;
+    var cTipo=c.tipo_lancamento||c.tipo||'despesa';
+    if(f.tipo!=='all'&&cTipo!==f.tipo)return false;
     if(f.pagto!=='all'&&c.status_pagto!==f.pagto)return false;
     if(f.rec==='sim'&&!c.recorrente)return false;
     if(f.rec==='nao'&&c.recorrente)return false;
@@ -4058,7 +4066,12 @@ function renderCosts(){
   var el=$('cost-list');
   if(!list.length){el.innerHTML='<p class="empty">Nenhum lançamento encontrado</p>';return;}
   el.innerHTML=list.map(function(c){
-    return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+c.descricao+(c.recorrente?'<span class="badge b-recorrente" style="margin-left:6px">🔄 Recorrente</span>':'')+'</p><div class="card-meta">'+badge(c.tipo,c.tipo)+badge(c.status_pagto||'pago',L.pagtoSt[c.status_pagto||'pago'])+(c.metodo_pagto?catTag(c.metodo_pagto):'')+(c.categoria?catTag(c.categoria):'')+(c.data?'<span style="font-size:9px;color:var(--muted)">'+fmtDate(c.data)+'</span>':'')+(c.data_vencimento?'<span style="font-size:9px;color:var(--red)">Vence: '+fmtDate(c.data_vencimento)+'</span>':'')+(c.pago_por?'<span style="font-size:9px;color:var(--muted)">👤 '+c.pago_por.nome+'</span>':'')+'</div></div><div class="card-actions"><span style="font-size:13px;font-weight:800;white-space:nowrap">'+mo(c.valor)+'</span>'+editBtn(c.id,'cost')+'<button class="del" data-del-cost="'+c.id+'">×</button></div></div></div>';
+    return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+c.descricao+(c.recorrente?'<span class="badge b-recorrente" style="margin-left:6px">🔄 Recorrente</span>':'')+'</p><div class="card-meta">'+(function(){
+        var t=c.tipo_lancamento||c.tipo||'despesa';
+        var tLabel=L.tipoLanc[t]||t;
+        var tCls={receita:'green',custo:'amber',despesa:'muted',investimento:'blue',outros:'red'}[t]||'muted';
+        return '<span class="badge badge-'+tCls+'">'+tLabel+'</span>';
+      })()+badge(c.status_pagto||'pago',L.pagtoSt[c.status_pagto||'pago'])+(c.metodo_pagto?catTag(c.metodo_pagto):'')+(c.categoria?catTag(c.categoria):'')+(c.data?'<span style="font-size:9px;color:var(--muted)">'+fmtDate(c.data)+'</span>':'')+(c.data_vencimento?'<span style="font-size:9px;color:var(--red)">Vence: '+fmtDate(c.data_vencimento)+'</span>':'')+(c.pago_por?'<span style="font-size:9px;color:var(--muted)">👤 '+c.pago_por.nome+'</span>':'')+'</div></div><div class="card-actions"><span style="font-size:13px;font-weight:800;white-space:nowrap">'+mo(c.valor)+'</span>'+editBtn(c.id,'cost')+'<button class="del" data-del-cost="'+c.id+'">×</button></div></div></div>';
   }).join('');
   renderFinMensal();
 }
