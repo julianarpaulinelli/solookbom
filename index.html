@@ -6301,36 +6301,37 @@ window._patchedSaveCost = function(){
 var dreCurrentDate = new Date();
 
 function initFinTabs(){
-  var tabs = document.querySelectorAll('.fin-tab');
-  tabs.forEach(function(tab){
-    if(tab._finTabInit)return;
-    tab._finTabInit=true;
-    tab.addEventListener('click',function(){
-      tabs.forEach(function(t){t.classList.remove('active');});
-      tab.classList.add('active');
-      // Mostrar painel correto
-      document.querySelectorAll('.fin-panel-content').forEach(function(p){p.style.display='none';});
-      var panel = document.getElementById('fin-panel-'+tab.dataset.ftab);
-      if(panel)panel.style.display='block';
-      if(tab.dataset.ftab==='dre')renderDRE();
-      if(tab.dataset.ftab==='lancamentos'){try{renderCosts();}catch(e){console.warn(e);}}
+  // Registrar listeners das abas (idempotente via _finTabInit)
+  var tabs=document.querySelectorAll('.fin-tab');
+  if(!document._finTabsRegistered){
+    document._finTabsRegistered=true;
+    tabs.forEach(function(tab){
+      tab.addEventListener('click',function(){
+        tabs.forEach(function(t){t.classList.remove('active');});
+        tab.classList.add('active');
+        var pl=document.getElementById('fin-panel-lancamentos');
+        var pd=document.getElementById('fin-panel-dre');
+        if(tab.dataset.ftab==='lancamentos'){
+          if(pl)pl.style.display='block';
+          if(pd)pd.style.display='none';
+          try{renderCosts();}catch(e){console.warn(e);}
+        } else {
+          if(pl)pl.style.display='none';
+          if(pd)pd.style.display='block';
+          renderDRE();
+        }
+      });
     });
-  });
-  // Navegação de mês na DRE
-  var prev=document.getElementById('dre-mes-prev');
-  var next=document.getElementById('dre-mes-next');
-  if(prev&&!prev._dreInit){prev._dreInit=true;prev.addEventListener('click',function(){dreCurrentDate.setMonth(dreCurrentDate.getMonth()-1);renderDRE();});}
-  if(next&&!next._dreInit){next._dreInit=true;next.addEventListener('click',function(){dreCurrentDate.setMonth(dreCurrentDate.getMonth()+1);renderDRE();});}
-  var btnPdf=document.getElementById('dre-export-pdf');
-  if(btnPdf&&!btnPdf._init){btnPdf._init=true;btnPdf.addEventListener('click',exportDREPDF);}
-  var btnXlsx=document.getElementById('dre-export-xlsx');
-  if(btnXlsx&&!btnXlsx._init){btnXlsx._init=true;btnXlsx.addEventListener('click',exportDREXLSX);}
-  // Garantir que só o painel ativo está visível
-  document.querySelectorAll('.fin-panel-content').forEach(function(p){p.style.display='none';});
-  var activePainel=document.getElementById('fin-panel-lancamentos');
-  if(activePainel)activePainel.style.display='block';
-  // Renderizar lista
-  try{renderCosts();}catch(e){console.warn('[renderCosts init]',e);}
+    // Navegação DRE
+    var prev=document.getElementById('dre-mes-prev');
+    var next=document.getElementById('dre-mes-next');
+    if(prev)prev.addEventListener('click',function(){dreCurrentDate.setMonth(dreCurrentDate.getMonth()-1);renderDRE();});
+    if(next)next.addEventListener('click',function(){dreCurrentDate.setMonth(dreCurrentDate.getMonth()+1);renderDRE();});
+    var btnPdf=document.getElementById('dre-export-pdf');
+    if(btnPdf)btnPdf.addEventListener('click',exportDREPDF);
+    var btnXlsx=document.getElementById('dre-export-xlsx');
+    if(btnXlsx)btnXlsx.addEventListener('click',exportDREXLSX);
+  }
 }
 
 function dreGetMes(){
@@ -6595,10 +6596,20 @@ var _origOpenSection = openSection;
 openSection = function(name){
   _origOpenSection(name);
   if(name==='financas'){
-    setTimeout(function(){
-      initFinTabs();
-      showOnboarding();
-    },50);
+    // Mostrar painel de lançamentos por padrão
+    var pl=document.getElementById('fin-panel-lancamentos');
+    var pd=document.getElementById('fin-panel-dre');
+    if(pl)pl.style.display='block';
+    if(pd)pd.style.display='none';
+    // Ativar aba lançamentos
+    document.querySelectorAll('.fin-tab').forEach(function(t){
+      t.classList.toggle('active',t.dataset.ftab==='lancamentos');
+    });
+    // Registrar listeners das abas (só uma vez)
+    initFinTabs();
+    // Renderizar lista imediatamente
+    if(D.costs)try{renderCosts();}catch(e){console.warn('[fin renderCosts]',e);}
+    showOnboarding();
   }
   if(name==='precificacao'){
     setTimeout(initPrecificacao,50);
