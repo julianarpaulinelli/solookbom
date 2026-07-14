@@ -2827,25 +2827,34 @@ function setTheme(dark){
 // ── NAVIGATION ─────────────────────────────────────────────
 function openSection(name){
   document.querySelectorAll('.cw').forEach(function(s){s.classList.remove('visible');});
-  var el=$('section-'+name);if(el)el.classList.add('visible');if(name==='financas'&&D.costs.length){try{renderFinDashboard();}catch(e){console.warn('[rFD]',e);}}if(name==='simulador')initSimulador();if(name==='tarefas'){setTaskView(taskView);}
+  var el=$('section-'+name);
+  if(el)el.classList.add('visible');
   document.querySelectorAll('.nav-item').forEach(function(n){
     n.classList.toggle('active',n.dataset.sec===name);
   });
   $('page-title').textContent=L.sections[name]||name;
-  // close sidebar on mobile
   if(window.innerWidth<=768)$('sidebar').classList.remove('open');
-  // lazy-load simuladores
-  if(name==='sim-fornecedores'||name==='sim-pedidos'){
-    if(typeof simLoad==='function'&&!simSups.length) simLoad();
-    else if(typeof simBuildUI==='function'&&simSups.length) simBuildUI();
+
+  // ── POR SEÇÃO ──────────────────────────────────────────
+  if(name==='financas'){
+    var pl=document.getElementById('fin-panel-lancamentos');
+    var pd=document.getElementById('fin-panel-dre');
+    if(pl)pl.style.display='block';
+    if(pd)pd.style.display='none';
+    document.querySelectorAll('.fin-tab').forEach(function(t){
+      t.classList.toggle('active',t.dataset.ftab==='lancamentos');
+    });
+    initFinTabs();
+    if(D.costs&&D.costs.length)try{renderCosts();}catch(e){console.warn('[fin]',e);}
+    showOnboarding();
   }
-  if(name==='sim-invest'){
-    if(typeof sinvInit==='function'){
-      var el=$('sinv-launch-items');
-      if(!el||!el.children.length) sinvInit();
-      else sinvRenderPesoSliders(); // re-render sliders in case of first open
-    }
-  }
+  if(name==='simulador')initSimulador();
+  if(name==='tarefas')setTaskView(taskView);
+  if(name==='config')setTimeout(initConfig,50);
+  if(name==='fiscal')setTimeout(loadObrigacoes,50);
+  if(name==='contadora')setTimeout(loadDocs,50);
+  if(name==='projecao')setTimeout(function(){initProjecao();calcCaixaAuto();},100);
+  if(name==='precificacao')setTimeout(initPrecificacao,50);
 }
 function openModal(type){
   $('modal-'+type).classList.add('open');
@@ -6591,30 +6600,7 @@ function onboardNext(){
 }
 function onboardPrev(){if(onboardStep>0){onboardStep--;renderOnboardStep();}}
 
-// ── HOOK openSection para init ───────────────────────────
-var _origOpenSection = openSection;
-openSection = function(name){
-  _origOpenSection(name);
-  if(name==='financas'){
-    // Mostrar painel de lançamentos por padrão
-    var pl=document.getElementById('fin-panel-lancamentos');
-    var pd=document.getElementById('fin-panel-dre');
-    if(pl)pl.style.display='block';
-    if(pd)pd.style.display='none';
-    // Ativar aba lançamentos
-    document.querySelectorAll('.fin-tab').forEach(function(t){
-      t.classList.toggle('active',t.dataset.ftab==='lancamentos');
-    });
-    // Registrar listeners das abas (só uma vez)
-    initFinTabs();
-    // Renderizar lista imediatamente
-    if(D.costs)try{renderCosts();}catch(e){console.warn('[fin renderCosts]',e);}
-    showOnboarding();
-  }
-  if(name==='precificacao'){
-    setTimeout(initPrecificacao,50);
-  }
-};
+// openSection unificado acima
 
 // Inicializar tooltips e onboarding no showApp
 var _origShowApp = showApp;
@@ -6976,22 +6962,6 @@ function saveDocContadora(){
 }
 
 // ── HOOKS openSection para novos módulos ─────────────────
-var _origOpenSectionFiscal = openSection;
-openSection = function(name){
-  _origOpenSectionFiscal(name);
-  if(name==='config')setTimeout(initConfig,50);
-  if(name==='fiscal')setTimeout(loadObrigacoes,50);
-  if(name==='contadora')setTimeout(loadDocs,50);
-};
-
-// ── HOOK showApp para carregar config e obrigações ───────
-var _origShowApp2 = showApp;
-showApp = function(){
-  _origShowApp2();
-  loadConfig();
-  loadObrigacoes();
-  loadDocs();
-};
 
 // ── BIND botões de save ──────────────────────────────────
 document.addEventListener('DOMContentLoaded',function(){
@@ -7291,12 +7261,7 @@ function renderProjecaoTabela(semanas){
     }).join('')+'</tbody></table>';
 }
 
-// Hook openSection para projeção
-var _origOpenSectionProj = openSection;
-openSection = function(name){
-  _origOpenSectionProj(name);
-  if(name==='projecao')setTimeout(function(){initProjecao();calcCaixaAuto();},100);
-};
+// openSection para projecao: integrado na função unificada
 
   // Banner de ambiente
   if(typeof SLB_ENV !== 'undefined' && SLB_ENV === 'dev'){
