@@ -6276,36 +6276,52 @@ saveCost = function(){
 var _origSaveCostInner = saveCost;
 // Override final que será chamado pela UI
 window._patchedSaveCost = function(){
-  var d=val('c-name').trim(),v=num('c-val');if(!d||!v){toast('Preencha descrição e valor');return;}
-  var id=val('c-id'),rec=false;
+  var d=val('c-name').trim(),v=num('c-val');
+  if(!d||!v){toast('Preencha descrição e valor');return;}
+  var id=val('c-id');
   var tipoComp=val('c-tipo-comp')||'unico';
-  var isRec=tipoComp==='recorrente';var isPar=tipoComp==='parcelado';
-  var extra = window._extraCostFields||{};
+  var isRec=tipoComp==='recorrente';
+  var isPar=tipoComp==='parcelado';
+  // Ler direto do DOM — sem depender de _extraCostFields
+  var tipoLanc=(document.getElementById('c-tipo-lancamento')||{value:'despesa'}).value||'despesa';
+  var catDre=(document.getElementById('c-cat')||{value:''}).value||null;
+  var fCli=(document.getElementById('c-fornecedor-cliente')||{value:''}).value||null;
+  var rTipo=(document.getElementById('c-recorrencia-tipo')||{value:'unico'}).value||'unico';
+  var prodId=(document.getElementById('c-produto-id')||{value:''}).value||null;
+  var sociaId=(document.getElementById('c-socia-id')||{value:''}).value||null;
   var payload={
     descricao:d,
-    categoria:extra.categoria_dre||val('c-cat'),
-    categoria_dre:extra.categoria_dre||null,
-    tipo_lancamento:extra.tipo_lancamento||'despesa',
-    tipo:extra.tipo_lancamento||'despesa',
+    categoria:catDre,
+    categoria_dre:catDre,
+    tipo_lancamento:tipoLanc,
+    tipo:tipoLanc,
     valor:v,
     data:val('c-date')||null,
     data_vencimento:val('c-venc')||null,
-    status_pagto:val('c-status-pagto'),
+    status_pagto:val('c-status-pagto')||'pago',
     metodo_pagto:val('c-metodo')||null,
     pago_por_id:val('c-pago-por')||null,
-    produto_id:extra.produto_id||null,
-    fornecedor_cliente:extra.fornecedor_cliente||null,
-    recorrencia_tipo:extra.recorrencia_tipo||'unico',
+    produto_id:prodId,
+    fornecedor_cliente:fCli,
+    recorrencia_tipo:rTipo,
+    socia_id:sociaId,
     recorrente:isRec,
     recorrencia:isRec?val('c-recorrencia'):null,
     tipo_compromisso:tipoComp,
     categoria_comp:val('c-cat-comp')||null,
     parcela_atual:isPar?iNum('c-parcela-atual')||null:null,
     total_parcelas:isPar?iNum('c-total-parcelas')||null:null,
-    notas:val('c-notas')||null
+    notas:val('c-notas')||null,
+    updated_at:new Date().toISOString()
   };
   var q=id?db.from('custos').update(payload).eq('id',id):db.from('custos').insert(payload);
-  q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveCost]',res.error.message);return;}closeModal('cost');resetForm('cost');toast(id?'Atualizado!':'Salvo!');loadCosts();});
+  q.then(function(res){
+    if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveCost]',res.error.message);return;}
+    closeModal('cost');
+    resetForm('cost');
+    toast(id?'Atualizado!':'Salvo!');
+    loadCosts();
+  });
 };
 
 // ── DRE ──────────────────────────────────────────────────
