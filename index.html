@@ -5614,7 +5614,7 @@ function init(){
   loadPessoas().then(function(){return loadColecoes();}).then(function(){return loadSuppliers();}).then(function(){
     return Promise.all([loadTasks(),loadCosts(),loadProdutos(),loadEstoque(),loadProducoes(),loadPedidos(),loadFretes(),loadParceiros()]);
   }).then(function(){buildPersonFilter();renderDashboard();});
-  Promise.all([loadPostagens(),loadMarketing(),loadClientes()]);
+  Promise.all([loadPostagens(),loadMarketing(),loadClientes(),loadMetas()]);
 }
 
 // ── DOM READY ──────────────────────────────────────────────
@@ -5699,7 +5699,7 @@ document.addEventListener('DOMContentLoaded',function(){
   $('pr-venda').addEventListener('input',updateMargem);
 
   // Task view toggle
-  $('toggle-view-btn').addEventListener('click',function(){
+  var _tvBtn=$('toggle-view-btn');if(_tvBtn)_tvBtn.addEventListener('click',function(){
     taskView=taskView==='list'?'timeline':'list';
     $('task-list').style.display=taskView==='list'?'block':'none';
     $('task-timeline').style.display=taskView==='timeline'?'block':'none';
