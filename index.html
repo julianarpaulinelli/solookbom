@@ -268,9 +268,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
 /* ── COMPAT — classes legadas mapeadas para o novo design ────── */
 .app-layout{display:flex;height:100vh;overflow:hidden}
-
-/* .sidebar consolidado abaixo */
-
+.sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:transform .25s;z-index:100}
 .sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0}
 .logo-name{font-size:13px;font-weight:700;letter-spacing:2px;color:var(--fg);line-height:1}
 .logo-sub{font-size:8px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
@@ -439,9 +437,8 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .b-recorrente{color:var(--purple)}.card-desc{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
 @media(max-width:768px){
   .sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(0,0,0
-/* .sidebar consolidado abaixo */
-
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(0,0,0,.6)}
+  .sidebar-toggle{display:flex !important;align-items:center;justify-content:center}
 }
 
 /* ── MÓDULOS ORIGINAIS ─────────────────────────────── */
@@ -755,9 +752,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .view-toggle-btn.active{background:var(--blue);color:#fff;font-weight:600}
 
 /* ── KANBAN BOARD ────────────────────────────────────────── */
-
-/* .kanban-board consolidado abaixo */
-
+.kanban-board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start}
 .kanban-col{background:var(--surface);border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;min-height:200px;overflow:hidden}
 .kanban-col-header{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
 .kanban-col-icon{font-size:14px;font-weight:700}
@@ -783,8 +778,10 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
 @media(max-width:900px){
   .kanban-board{grid-template-columns:repeat(2,1fr)}
-/* .kanban-board consolidado abaixo */
-
+}
+@media(max-width:600px){
+  .kanban-board{grid-template-columns:1fr}
+}
 
 /* ── KANBAN DRAG & DROP ──────────────────────────────────── */
 .kanban-card[draggable="true"]{cursor:grab}
@@ -2777,39 +2774,20 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>/*
  * ═══════════════════════════════════════════════════════════════
- *  SLB — SÓ LOOK BOM | App de Gestão da Marca
+ *  SLB — SÓ LOOK BOM | App de Gestão
  * ═══════════════════════════════════════════════════════════════
- *
- *  Stack: HTML/CSS/JS puro · Supabase (PostgreSQL) · Vercel
- *  Repo:  github.com/julianarpaulinelli/solookbom
+ *  Stack: HTML/CSS/JS · Supabase · Vercel
  *  Prod:  solookbom.vercel.app
  *  Dev:   solookbom-git-dev-julianarpaulinellis-projects.vercel.app
  *
- *  Módulos implementados:
- *  ├── Dashboard       — KPIs, alertas, tarefas urgentes
- *  ├── Tarefas         — Kanban, Cronograma Gantt, Lista
- *  ├── Finanças        — Lançamentos, DRE, análises
- *  ├── Simulador       — Cotações com histórico
- *  ├── Precificação    — Calculadora custo→preço
- *  ├── Calendário Fiscal — Obrigações e prazos
- *  ├── Docs Contadora  — Checklist mensal
- *  ├── Projeção Caixa  — Fluxo 30/60/90 dias
- *  ├── Produtos        — Compatível com Shopify
- *  ├── Estoque / Coleções
- *  ├── Produção / Pedidos
- *  ├── Fornecedores / Fretes
- *  ├── Marketing / Parceiros / Postagens
- *  ├── CRM / Clientes
- *  └── Admin: Metas & OKRs, Log, Pessoas, Configurações
+ *  Módulos: Dashboard · Tarefas · Finanças · Simulador ·
+ *           Precificação · Fiscal · Produtos · Estoque ·
+ *           Produção · Pedidos · Fornecedores · Fretes ·
+ *           Marketing · CRM · Admin · Configurações
  *
- *  Padrões de código:
- *  · Funções expostas diretamente (sem _orig encadeado)
- *  · data-* + addEventListener em vez de onclick inline
- *  · Validação JS: python3 -c "..." + node --check antes de deploy
- *  · Deploy: GET SHA → PUT branch dev → testar → merge main
+ *  Deploy: sempre em dev primeiro, prod apenas quando aprovado
  * ═══════════════════════════════════════════════════════════════
  */
-
 
 (function(){
 'use strict';
@@ -2819,6 +2797,7 @@ var PWD='SLB272Atucuri';
 var db=supabase.createClient(SB_URL,SB_KEY);
 
 var L={
+  tipoLanc:{receita:'Receita',custo:'Custo',despesa:'Despesa',investimento:'Investimento',outros:'Outros'},
   status:{todo:'A fazer',doing:'Em andamento',done:'Concluído',blocked:'Bloqueado'},
   supSt:{prospecto:'Prospecto',negociando:'Negociando',ativo:'Ativo',pausado:'Pausado',inativo:'Inativo'},
   cls:{gold:'🥇 Gold',silver:'🥈 Silver',bronze:'🥉 Bronze'},
@@ -2883,7 +2862,10 @@ function openSection(name){
       t.classList.toggle('active',t.dataset.ftab==='lancamentos');
     });
     initFinTabs();
-    try{renderCosts();}catch(e){console.warn('[fin renderCosts]',e);}
+    // Se dados já carregados, renderizar imediatamente
+    // Se não, loadCosts irá renderizar quando terminar
+    if(D.costs&&D.costs.length){try{renderCosts();}catch(e){}}
+    else{$('cost-list').innerHTML='<p class="empty" style="color:var(--muted)">Carregando lançamentos...</p>';}
     showOnboarding();
   }
   if(name==='simulador')initSimulador();
@@ -2903,9 +2885,6 @@ function openModal(type){
       prodInitVariantes();
       prodInitSEO();
     },50);
-  }
-  if(type==='cost'){
-    setTimeout(initModalLancamento,50);
   }
 }
 
@@ -3111,8 +3090,6 @@ function showApp(){
   init();
   // Mostrar alertas após carregar dados
   setTimeout(showWelcomeAlerts, 2000);
-  // Inicializar tooltips globais
-  setTimeout(initTooltips, 500);
 }
 
 function showWelcomeAlerts(){
@@ -4013,14 +3990,17 @@ function finAcaoCard(icon,lbl,val,sub,cls){
 function loadCosts(){
   return db.from('custos').select('*,pago_por:pessoas!custos_pago_por_id_fkey(nome)').order('created_at',{ascending:false}).then(function(r){
     D.costs=r.data||[];
-    var finSec=document.getElementById('section-financas');
-    if(finSec&&finSec.classList.contains('visible')){
-      try{renderCosts();}catch(e){console.warn('[loadCosts]',e);}
-      try{renderFinDashboard();}catch(e){console.warn('[loadCosts dash]',e);}
+    // Re-renderizar só se a seção finanças estiver aberta
+    var _fs=document.getElementById('section-financas');
+    if(_fs&&_fs.classList.contains('visible')){
+      try{renderCosts();}catch(e){}
     }
   });
 }
 function renderCosts(){
+  var _finSec=document.getElementById('section-financas');
+  if(!_finSec||!_finSec.classList.contains('visible'))return;
+
   var f=F.fin;
   var q=($('cost-search')||{value:''}).value.toLowerCase();
   var dataIni=($('cost-data-ini')||{value:''}).value;
@@ -4062,7 +4042,7 @@ function renderCosts(){
   if(!list.length){el.innerHTML='<p class="empty">Nenhum lançamento encontrado</p>';try{renderFinDashboard();}catch(e){console.warn('[renderFinDashboard]',e);}return;}
   el.innerHTML=list.map(function(c){
     var t=c.tipo_lancamento||c.tipo||'despesa';
-    var tLabel=L.tipoLanc[t]||t;
+    var tLabel=(L.tipoLanc&&L.tipoLanc[t])||t;
     var tCls={receita:'green',custo:'amber',despesa:'muted',investimento:'blue',outros:'red'}[t]||'muted';
     var catLabel=c.categoria_dre||c.categoria||'';
     return '<div class="card"><div class="card-row"><div class="card-body">'+
@@ -6266,18 +6246,36 @@ function initModalLancamento(){
         return '<option value="'+p.id+'">'+p.sku+' — '+p.nome+'</option>';
       }).join('');
   }
-  setTimeout(hookSociaOnCat,100);
 }
 
 // Interceptar openModal para inicializar modal de lançamento
+var _origOpenModal = openModal;
+openModal = function(type){
+  _origOpenModal(type);
+  if(type==='cost'){
+    setTimeout(initModalLancamento, 50);
+  }
+};
 
+// openCostEdit já atualizado diretamente — intercept removido
 
 // Interceptar saveCost para salvar tipo_lancamento e categoria_dre
-// saveCost: lógica movida para window._patchedSaveCost
-
+var _origSaveCost = saveCost;
+saveCost = function(){
+  // Pegar tipo_lancamento e categoria_dre do novo modal
+  var tipoLanc = (document.getElementById('c-tipo-lancamento')||{value:''}).value||'despesa';
+  var catDre = (document.getElementById('c-cat')||{value:''}).value;
+  var fCli = (document.getElementById('c-fornecedor-cliente')||{value:''}).value;
+  var rTipo = (document.getElementById('c-recorrencia-tipo')||{value:'unico'}).value;
+  var prodId = (document.getElementById('c-produto-id')||{value:''}).value;
+  // Guardar em temporário para saveCost pegar
+  window._extraCostFields = {tipo_lancamento:tipoLanc, categoria_dre:catDre, fornecedor_cliente:fCli||null, recorrencia_tipo:rTipo, produto_id:prodId||null};
+  _origSaveCost();
+};
 
 // Patch saveCost para incluir campos extras
-
+// (removido _origSaveCostInner — não utilizado)
+// Override final que será chamado pela UI
 window._patchedSaveCost = function(){
   var d=val('c-name').trim(),v=num('c-val');
   if(!d||!v){toast('Preencha descrição e valor');return;}
@@ -6621,6 +6619,16 @@ function onboardNext(){
 }
 function onboardPrev(){if(onboardStep>0){onboardStep--;renderOnboardStep();}}
 
+// openSection unificado acima
+
+// Inicializar tooltips e onboarding no showApp
+var _origShowApp = showApp;
+showApp = function(){
+  _origShowApp();
+  setTimeout(function(){
+    initTooltips();
+  },500);
+};
 
 // Bind save-cost ao _patchedSaveCost
 document.addEventListener('DOMContentLoaded', function(){
@@ -6632,14 +6640,6 @@ document.addEventListener('DOMContentLoaded', function(){
 });;
 
 
-/*
- * COMPLEMENTOS FINANCEIROS
- * C1: Pró-labore/Distribuição por sócia
- * C2: Calendário Fiscal
- * C3: Projeção de Caixa 90 dias
- * C4: Configurações empresa (regime tributário)
- * C5: Docs para Contadora
- */
 // ── COMPLEMENTOS FINANCEIROS ─────────────────────────────
 
 // Tooltips extras
@@ -6740,7 +6740,7 @@ function initSociaSelect(){
 }
 
 // Hook na atualização de categorias para mostrar campo sócia
-
+// (removido _origUpdateCats — não utilizado)
 function hookSociaOnCat(){
   var catSel=document.getElementById('c-cat');
   var socGrp=document.getElementById('c-socia-group');
@@ -6756,10 +6756,19 @@ function hookSociaOnCat(){
 }
 
 // Patch initModalLancamento para adicionar hook sócia
-
+var _origInitModal = initModalLancamento;
+initModalLancamento = function(){
+  _origInitModal();
+  setTimeout(hookSociaOnCat,100);
+};
 
 // Patch _patchedSaveCost para salvar socia_id
-
+var _origPatchedSave = window._patchedSaveCost;
+window._patchedSaveCost = function(){
+  window._extraCostFields = window._extraCostFields||{};
+  window._extraCostFields.socia_id = ($('c-socia-id')||{value:''}).value||null;
+  _origPatchedSave();
+};
 
 // ── C2: CALENDÁRIO FISCAL ────────────────────────────────
 var D_obrigacoes = [];
@@ -7281,15 +7290,7 @@ function renderProjecaoTabela(semanas){
   }
 
 
-  // Fallback: se cost-list estiver vazio 1s após carregar, forçar render
-  setTimeout(function(){
-    var el = document.getElementById('cost-list');
-    var sec = document.getElementById('section-financas');
-    if(el && sec && sec.classList.contains('visible') && !el.innerHTML.trim()){
-      console.warn('[fallback] cost-list vazio - forçando renderCosts');
-      try{renderCosts();}catch(e){console.warn(e);}
-    }
-  }, 1000);
+// fallback removido
 
 })();
 </script>
