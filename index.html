@@ -3997,9 +3997,13 @@ function loadCosts(){
   });
 }
 function renderCosts(){
-  // Guard: não renderizar se finanças não estiver visível
   var _finSec=document.getElementById('section-financas');
-  if(!_finSec||!_finSec.classList.contains('visible'))return;
+  var _el=document.getElementById('cost-list');
+  console.log('[renderCosts] D.costs='+D.costs.length+' finVisible='+(_finSec&&_finSec.classList.contains('visible'))+' costList='+(_el?'exists':'NULL'));
+  if(!_finSec||!_finSec.classList.contains('visible')){
+    console.log('[renderCosts] ABORTANDO - financas nao visivel');
+    return;
+  }
 
   var f=F.fin;
   var q=($('cost-search')||{value:''}).value.toLowerCase();
