@@ -1617,6 +1617,61 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
         </div>
 
+        <!-- PRECIFICAÇÃO -->
+        <div class="cw" id="section-precificacao">
+          <div class="section-header">
+            <h2 class="section-title">Calculadora de Precificação</h2>
+          </div>
+          <div class="precif-layout">
+            <div class="precif-col">
+              <div class="precif-card">
+                <p class="form-section" style="margin-top:0">Produto</p>
+                <div class="form-group">
+                  <label class="form-label">Produto<span class="tt-icon" data-tt="precif_produto">?</span></label>
+                  <select class="form-select" id="precif-produto"><option value="">— Selecione ou preencha manualmente —</option></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Custo unitário (R$)<span class="tt-icon" data-tt="custo_unitario">?</span></label>
+                  <input class="form-input" id="precif-custo" type="number" step="0.01" placeholder="0,00">
+                  <p class="prod-seo-hint" id="precif-custo-hint"></p>
+                </div>
+              </div>
+              <div class="precif-card">
+                <p class="form-section" style="margin-top:0">Taxas e margem</p>
+                <div class="form-group">
+                  <label class="form-label">% Taxas variáveis (gateway + imposto)<span class="tt-icon" data-tt="taxas_var">?</span></label>
+                  <input class="form-input" id="precif-taxas" type="number" step="0.1" placeholder="12" value="12">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">% Margem desejada<span class="tt-icon" data-tt="margem_desejada">?</span></label>
+                  <input class="form-input" id="precif-margem" type="number" step="1" placeholder="40" value="40">
+                  <input type="range" id="precif-margem-slider" min="5" max="85" value="40" style="width:100%;margin-top:8px;accent-color:var(--blue)">
+                </div>
+                <div class="form-group">
+                  <label class="form-check">
+                    <input type="checkbox" id="precif-frete-gratis">
+                    Oferecer frete grátis<span class="tt-icon" data-tt="frete_gratis">?</span>
+                  </label>
+                  <div id="precif-frete-val-group" style="display:none;margin-top:8px">
+                    <label class="form-label">Valor médio do frete (R$)</label>
+                    <input class="form-input" id="precif-frete-val" type="number" step="0.01" placeholder="18,00">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="precif-col">
+              <div class="precif-resultado" id="precif-resultado">
+                <div class="precif-res-titulo">Resultado</div>
+                <div class="precif-main-preco" id="precif-preco-sug">R$ —</div>
+                <div class="precif-main-lbl">Preço de venda sugerido</div>
+                <div class="precif-res-formula" id="precif-formula"></div>
+                <div class="precif-kpis" id="precif-kpis"></div>
+                <div id="precif-alerta" style="display:none" class="precif-alerta-warn"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- SIMULADOR -->
         <div class="cw" id="section-simulador">
           <div class="section-header">
