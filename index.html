@@ -7030,17 +7030,13 @@ function initSaidaCats(tipo){
   }
 }
 
-function initSaidaModal(){
-  var dEl=document.getElementById('sai-date');
-  if(dEl&&!dEl.value)dEl.value=new Date().toISOString().split('T')[0];
-  // Tipo → categorias
+function initSaidaListeners(){
+  // Registra listeners — seguro chamar sempre (usa flags _saiInit)
   var tipoSel=document.getElementById('sai-tipo');
   if(tipoSel&&!tipoSel._saiInit){
     tipoSel._saiInit=true;
     tipoSel.addEventListener('change',function(){initSaidaCats(tipoSel.value);});
   }
-  initSaidaCats((tipoSel&&tipoSel.value)||'despesa');
-  // Parcelas
   var tipoComp=document.getElementById('sai-tipo-comp');
   if(tipoComp&&!tipoComp._saiInit){
     tipoComp._saiInit=true;
@@ -7057,7 +7053,7 @@ function initSaidaModal(){
       if(cg)cg.style.display=parSel.value==='custom'?'block':'none';
     });
   }
-  // Popular sócios
+  // Popular selects de pessoas/produtos (uma vez)
   var socSel=document.getElementById('sai-socia-id');
   if(socSel&&!socSel._init){
     socSel._init=true;
@@ -7066,7 +7062,6 @@ function initSaidaModal(){
         return '<option value="'+p.id+'">'+p.nome.split(' ')[0]+'</option>';
       }).join('');
   }
-  // Popular produtos
   var prodSel=document.getElementById('sai-produto-id');
   if(prodSel&&!prodSel._init){
     prodSel._init=true;
@@ -7075,13 +7070,21 @@ function initSaidaModal(){
         return '<option value="'+p.id+'">'+p.sku+' — '+p.nome+'</option>';
       }).join('');
   }
-  // Popular pago por
   var pagoPor=document.getElementById('sai-pago-por');
   if(pagoPor&&!pagoPor._init){
     pagoPor._init=true;
     pagoPor.innerHTML='<option value="">— Nenhum —</option>'+
       D.pessoas.map(function(p){return '<option value="'+p.id+'">'+p.nome.split(' ')[0]+'</option>';}).join('');
   }
+}
+
+function initSaidaModal(){
+  // Para NOVO lançamento: registra listeners + popula categorias do tipo atual
+  var dEl=document.getElementById('sai-date');
+  if(dEl&&!dEl.value)dEl.value=new Date().toISOString().split('T')[0];
+  initSaidaListeners();
+  var tipoSel=document.getElementById('sai-tipo');
+  initSaidaCats((tipoSel&&tipoSel.value)||'despesa');
 }
 
 function saveSaida(){
@@ -7163,8 +7166,9 @@ function openSaidaEdit(id){
   },60);
   var dBtn=document.getElementById('delete-saida');
   if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  // Registrar listeners SEM chamar initSaidaCats (categoria já foi restaurada)
+  initSaidaListeners();
   openModal('saida');
-  setTimeout(initSaidaModal,60);
 }
 
 // ── BIND ENTRADA/SAÍDA ───────────────────────────────────
