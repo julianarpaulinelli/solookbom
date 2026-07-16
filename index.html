@@ -3938,22 +3938,60 @@ function renderFinDashboard(){
     return '<div class="fin-bar-row"><span class="fin-bar-label">'+k+'</span><div class="fin-bar-track"><div class="fin-bar-fill" style="width:'+Math.round(byCat[k]/maxCat*100)+'%;background:'+colors[i]+'"></div></div><span class="fin-bar-val">'+mo(byCat[k])+'</span></div>';
   }).join('')||'<p class="fin-empty">Sem dados</p>';
 
-  // ── EVOLUCAO MENSAL ───────────────────────────────────────
-  var months=[];
+  // ── EVOLUCAO MENSAL — barras duplas + projeção 6 meses ────
+  var monthsData=[];
+  // 6 meses passados + mês atual (reais)
   for(var i=5;i>=0;i--){
     var d=new Date(now);d.setMonth(d.getMonth()-i);
     var key=d.getFullYear()+'-'+(String(d.getMonth()+1).padStart(2,'0'));
     var lbl=d.toLocaleString('pt-BR',{month:'short'}).replace('.','');
-    var tot=allCosts.filter(function(c){return c.data&&c.data.startsWith(key);}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
-    months.push({lbl:lbl,tot:tot,key:key});
+    var entradas=allCosts.filter(function(c){return c.data&&c.data.startsWith(key)&&(c.tipo_lancamento==='receita'||c.tipo==='receita');}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+    // Pedidos também contam como receita
+    var entradasPed=D.pedidos.filter(function(p){return p.created_at&&p.created_at.startsWith(key);}).reduce(function(a,p){return a+parseFloat(p.valor_total||0);},0);
+    var saidas=allCosts.filter(function(c){return c.data&&c.data.startsWith(key)&&c.tipo_lancamento!=='receita'&&c.tipo!=='receita';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+    monthsData.push({lbl:lbl,key:key,entradas:entradas+entradasPed,saidas:saidas,projetado:false,isCur:key===curMonth});
   }
-  var maxM=Math.max.apply(null,months.map(function(m){return m.tot;}).concat([1]));
+  // Calcular média de saídas dos últimos 3 meses para projeção
+  var ultimos3=monthsData.slice(-3).map(function(m){return m.saidas;});
+  var mediaSaidas=ultimos3.reduce(function(a,v){return a+v;},0)/(ultimos3.filter(function(v){return v>0;}).length||1);
+  // Soma de recorrentes mensais cadastrados
+  var recorrentesVal=allCosts.filter(function(c){return c.recorrente||c.tipo_compromisso==='recorrente'||c.recorrencia_tipo==='mensal';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  // Projeção = recorrentes + média de variáveis (média - recorrentes, mínimo 0)
+  var variaveisMedia=Math.max(mediaSaidas-recorrentesVal,0);
+  var projecaoMensal=recorrentesVal+variaveisMedia;
+  // 6 meses futuros (projeção)
+  for(var j=1;j<=6;j++){
+    var df=new Date(now);df.setMonth(df.getMonth()+j);
+    var keyf=df.getFullYear()+'-'+(String(df.getMonth()+1).padStart(2,'0'));
+    var lblf=df.toLocaleString('pt-BR',{month:'short'}).replace('.','');
+    monthsData.push({lbl:lblf,key:keyf,entradas:0,saidas:projecaoMensal,projetado:true,isCur:false});
+  }
+  // Escala
+  var allVals=monthsData.map(function(m){return Math.max(m.entradas,m.saidas);}).concat([1]);
+  var maxM=Math.max.apply(null,allVals);
   var monthEl=$('fin-month-chart');
-  if(monthEl)monthEl.innerHTML=months.map(function(m){
-    var pct=Math.max(Math.round(m.tot/maxM*100),2);
-    var isCur=m.key===curMonth;
-    return '<div class="fin-month-bar-wrap" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:80px;gap:4px"><div style="width:100%;height:'+pct+'%;background:'+(isCur?'var(--blue)':'var(--border)')+';border-radius:3px 3px 0 0;min-height:3px"></div><span style="font-size:8px;color:'+(isCur?'var(--blue)':'var(--muted)')+'">'+m.lbl+'</span></div>';
-  }).join('');
+  if(monthEl){
+    monthEl.style.overflowX='auto';
+    monthEl.innerHTML='<div style="display:flex;align-items:flex-end;gap:6px;min-width:600px;padding:0 4px">'+
+      monthsData.map(function(m){
+        var pctE=Math.max(Math.round(m.entradas/maxM*100),m.entradas>0?2:0);
+        var pctS=Math.max(Math.round(m.saidas/maxM*100),m.saidas>0?2:0);
+        var corE='var(--green)';
+        var corS=m.projetado?'rgba(230,162,46,0.45)':'var(--red)';
+        var lblMes='<span style="font-size:8px;color:'+(m.isCur?'var(--blue)':m.projetado?'var(--amber)':'var(--muted)')+'">'+m.lbl+(m.projetado?'*':'')+'</span>';
+        var barE=m.entradas>0?'<div style="position:relative;display:flex;flex-direction:column;align-items:center"><span style="font-size:7px;color:var(--green);margin-bottom:1px;white-space:nowrap">'+mo(m.entradas)+'</span><div class="evol-bar" style="width:18px;height:'+pctE+'px;background:'+corE+';border-radius:3px 3px 0 0" title="Entradas: '+mo(m.entradas)+'"></div></div>':'<div style="width:18px"></div>';
+        var barS=m.saidas>0?'<div style="position:relative;display:flex;flex-direction:column;align-items:center"><span style="font-size:7px;color:'+(m.projetado?'var(--amber)':'var(--red)')+';margin-bottom:1px;white-space:nowrap">'+mo(m.saidas)+'</span><div class="evol-bar" style="width:18px;height:'+pctS+'px;background:'+corS+';border-radius:3px 3px 0 0;'+(m.projetado?'border:1px dashed var(--amber)':'')+'" title="Saídas: '+mo(m.saidas)+'"></div></div>':'<div style="width:18px"></div>';
+        return '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;min-width:44px">'+
+          '<div style="display:flex;align-items:flex-end;gap:2px;height:120px;align-items:flex-end">'+barE+barS+'</div>'+
+          lblMes+'</div>';
+      }).join('')+
+    '</div>'+
+    '<div style="display:flex;gap:12px;margin-top:8px;padding-left:4px">'+
+      '<span style="font-size:9px;color:var(--green)">▮ Entradas</span>'+
+      '<span style="font-size:9px;color:var(--red)">▮ Saídas</span>'+
+      '<span style="font-size:9px;color:var(--amber)">▮ Projeção*</span>'+
+    '</div>';
+  }
 
   // ── TIPO: DESPESA VS INVESTIMENTO ─────────────────────────
   var totDesp=allCosts.filter(function(c){return c.tipo==='despesa';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
