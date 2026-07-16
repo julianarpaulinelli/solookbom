@@ -1142,6 +1142,12 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 /* ── FIN PANEL ABAS ─────────────────────────────────────── */
 .fin-panel-content{display:block}
 .fin-panel-content.hidden{display:none}
+
+/* ── BOTÕES ENTRADA / SAÍDA ─────────────────────────────── */
+.btn-entrada{padding:7px 16px;font-size:11px;font-weight:700;border-radius:8px;background:rgba(39,192,138,.15);color:var(--green);border:1px solid rgba(39,192,138,.4);cursor:pointer;transition:all .15s;margin-left:6px}
+.btn-entrada:hover{background:rgba(39,192,138,.25)}
+.btn-saida{padding:7px 16px;font-size:11px;font-weight:700;border-radius:8px;background:rgba(224,82,82,.12);color:var(--red);border:1px solid rgba(224,82,82,.3);cursor:pointer;transition:all .15s;margin-left:6px}
+.btn-saida:hover{background:rgba(224,82,82,.22)}
 </style>
 </head>
 <body>
@@ -1530,7 +1536,8 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             <h2 class="section-title">Finanças</h2>
             <div class="header-actions">
               <button class="btn-sec" onclick="exportFinancas()">&#8595; CSV</button>
-              <button class="btn-add" data-modal="cost">+ Novo lançamento</button>
+              <button class="btn-entrada" id="btn-nova-entrada">&#43; Entrada</button>
+              <button class="btn-saida" id="btn-nova-saida">&#43; Saída</button>
             </div>
           </div>
 
@@ -2072,105 +2079,155 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 </div></div>
 
 <!-- CUSTO / FINANÇAS -->
-<div class="modal-bg" id="modal-cost"><div class="modal modal-lancamento">
-  <div class="modal-title"><span id="cost-modal-title">Novo Lançamento</span><button class="modal-close-btn" data-close="cost">×</button></div>
-  <input type="hidden" id="c-id">
+<div class="modal-bg" id="modal-cost" style="display:none"><div></div></div>
 
-  <!-- Tipo de lançamento — primeiro campo, determina categorias -->
-  <div class="form-group">
-    <label class="form-label">Tipo de lançamento *<span class="tt-icon" data-tt="tipo_lanc">?</span></label>
-    <div class="lanc-tipo-grid" id="c-tipo-grid">
-      <button class="lanc-tipo-btn" data-tipo="receita" style="--tc:var(--green)">💰 Receita</button>
-      <button class="lanc-tipo-btn active" data-tipo="despesa" style="--tc:var(--green2)">📤 Despesa</button>
-      <button class="lanc-tipo-btn" data-tipo="custo" style="--tc:var(--amber)">🏷️ Custo</button>
-      <button class="lanc-tipo-btn" data-tipo="investimento" style="--tc:var(--muted)">📈 Investimento</button>
-      <button class="lanc-tipo-btn" data-tipo="outros" style="--tc:var(--red)">⚡ Outros</button>
-    </div>
-    <input type="hidden" id="c-tipo-lancamento" value="despesa">
+<!-- MODAL: ENTRADA -->
+<div class="modal-bg" id="modal-entrada"><div class="modal modal-lancamento">
+  <div class="modal-title">
+    <span>💰 Nova Entrada</span>
+    <button class="modal-close-btn" data-close="entrada">×</button>
   </div>
-
+  <input type="hidden" id="ent-id">
   <div class="form-row">
     <div class="form-group" style="flex:2">
-      <label class="form-label">Descrição *<span class="tt-icon" data-tt="descricao">?</span></label>
-      <input class="form-input" id="c-name" placeholder="Ex: Compra de tecido — fornecedor Tiggas">
+      <label class="form-label">Descrição *</label>
+      <input class="form-input" id="ent-name" placeholder="Ex: Venda festival, Pedido loja...">
     </div>
     <div class="form-group">
-      <label class="form-label">Data *<span class="tt-icon" data-tt="data_lanc">?</span></label>
-      <input class="form-input" id="c-date" type="date">
+      <label class="form-label">Data *</label>
+      <input class="form-input" id="ent-date" type="date">
     </div>
   </div>
-
   <div class="form-row">
     <div class="form-group">
-      <label class="form-label">Categoria *<span class="tt-icon" data-tt="categoria">?</span></label>
-      <select class="form-select" id="c-cat"></select>
+      <label class="form-label">Categoria *</label>
+      <select class="form-select" id="ent-cat">
+        <option value="venda_produto">Venda de produto</option>
+        <option value="frete_cobrado">Frete cobrado do cliente</option>
+        <option value="outro_receita">Outro</option>
+      </select>
     </div>
     <div class="form-group">
-      <label class="form-label">Valor (R$) *<span class="tt-icon" data-tt="valor">?</span></label>
-      <input class="form-input" id="c-val" type="number" step="0.01" placeholder="0,00">
+      <label class="form-label">Valor (R$) *</label>
+      <input class="form-input" id="ent-val" type="number" step="0.01" placeholder="0,00">
     </div>
   </div>
-
-  <!-- Dica de produto se tipo=custo -->
-  <div id="c-produto-hint" style="display:none;margin-bottom:12px">
-    <div class="lanc-hint">💡 Esse custo é de um produto específico? Vincule abaixo — ajuda a calcular o preço certo depois.</div>
-    <div class="form-group" style="margin-top:8px">
-      <label class="form-label">Vincular ao produto<span class="tt-icon" data-tt="produto_id">?</span></label>
-      <select class="form-select" id="c-produto-id"><option value="">— Não vincular —</option></select>
-    </div>
-  </div>
-
-  <!-- Campo sócia — aparece só quando cat = prolabore ou distribuicao_lucro -->
-  <div id="c-socia-group" style="display:none">
-    <div class="form-group">
-      <label class="form-label">Sócia vinculada<span class="tt-icon" data-tt="socia_vinc">?</span></label>
-      <select class="form-select" id="c-socia-id"><option value="">— Selecione —</option></select>
-    </div>
-  </div>
-
   <div class="form-row">
     <div class="form-group">
-      <label class="form-label">Recorrência<span class="tt-icon" data-tt="recorrencia">?</span></label>
-      <select class="form-select" id="c-recorrencia-tipo">
+      <label class="form-label">Forma de recebimento</label>
+      <select class="form-select" id="ent-metodo">
+        <option value="">—</option><option>Pix</option><option>Cartão de crédito</option>
+        <option>Cartão de débito</option><option>Boleto</option><option>Dinheiro</option><option>Transferência</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cliente / Origem</label>
+      <input class="form-input" id="ent-cliente" placeholder="Nome do cliente ou canal">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Status</label>
+    <select class="form-select" id="ent-status">
+      <option value="pago">✅ Recebido</option>
+      <option value="pendente">⏳ A receber</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Notas</label>
+    <textarea class="form-textarea" id="ent-notas" rows="2" placeholder="Detalhes..."></textarea>
+  </div>
+  <div class="modal-footer">
+    <button class="btn-save" id="save-entrada">Salvar Entrada</button>
+    <button class="btn-delete-modal" id="delete-entrada" style="display:none">Excluir</button>
+    <button class="btn-close-modal" data-close="entrada">Fechar</button>
+  </div>
+</div></div>
+
+<!-- MODAL: SAÍDA -->
+<div class="modal-bg" id="modal-saida"><div class="modal modal-lancamento">
+  <div class="modal-title">
+    <span>📤 Nova Saída</span>
+    <button class="modal-close-btn" data-close="saida">×</button>
+  </div>
+  <input type="hidden" id="sai-id">
+  <div class="form-row">
+    <div class="form-group" style="flex:2">
+      <label class="form-label">Descrição *</label>
+      <input class="form-input" id="sai-name" placeholder="Ex: Compra tecido, Shopify, Máquina...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Data *</label>
+      <input class="form-input" id="sai-date" type="date">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Tipo *<span class="tt-icon" data-tt="tipo_lanc">?</span></label>
+      <select class="form-select" id="sai-tipo">
+        <option value="custo">🏷️ Custo — ligado ao produto</option>
+        <option value="despesa" selected>📤 Despesa — operacional</option>
+        <option value="investimento">📈 Investimento — bem durável</option>
+        <option value="outros">⚡ Outros</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Categoria *</label>
+      <select class="form-select" id="sai-cat"></select>
+    </div>
+  </div>
+  <div id="sai-socia-group" style="display:none">
+    <div class="form-group">
+      <label class="form-label">Sócio vinculado<span class="tt-icon" data-tt="socia_vinc">?</span></label>
+      <select class="form-select" id="sai-socia-id"><option value="">— Selecione —</option></select>
+    </div>
+  </div>
+  <div id="sai-produto-hint" style="display:none">
+    <div class="lanc-hint" style="margin-bottom:8px">💡 Vincule a um produto para calcular o custo unitário.</div>
+    <div class="form-group">
+      <label class="form-label">Vincular ao produto</label>
+      <select class="form-select" id="sai-produto-id"><option value="">— Não vincular —</option></select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Valor (R$) *</label>
+      <input class="form-input" id="sai-val" type="number" step="0.01" placeholder="0,00">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Recorrência</label>
+      <select class="form-select" id="sai-recorrencia-tipo">
         <option value="unico">Único</option>
         <option value="mensal">Mensal</option>
         <option value="semanal">Semanal</option>
       </select>
     </div>
-    <div class="form-group">
-      <label class="form-label">Fornecedor / Cliente<span class="tt-icon" data-tt="forn_cli">?</span></label>
-      <input class="form-input" id="c-fornecedor-cliente" placeholder="Nome de quem pagou ou recebeu">
-    </div>
   </div>
-
   <div class="form-row">
     <div class="form-group">
-      <label class="form-label">Forma de pagamento<span class="tt-icon" data-tt="forma_pgto">?</span></label>
-      <select class="form-select" id="c-metodo">
-        <option value="">—</option>
-        <option>Pix</option>
-        <option>Cartão de crédito</option>
-        <option>Cartão de débito</option>
-        <option>Boleto</option>
-        <option>Dinheiro</option>
-        <option>Transferência</option>
-      </select>
+      <label class="form-label">Fornecedor</label>
+      <input class="form-input" id="sai-fornecedor" placeholder="Nome do fornecedor">
     </div>
     <div class="form-group">
-      <label class="form-label">Pago por</label>
-      <select class="form-select" id="c-pago-por"></select>
+      <label class="form-label">Forma de pagamento</label>
+      <select class="form-select" id="sai-metodo">
+        <option value="">—</option><option>Pix</option><option>Cartão de crédito</option>
+        <option>Cartão de débito</option><option>Boleto</option><option>Dinheiro</option><option>Transferência</option>
+      </select>
     </div>
   </div>
-
+  <div class="form-group">
+    <label class="form-label">Pago por</label>
+    <select class="form-select" id="sai-pago-por"><option value="">— Nenhum —</option></select>
+  </div>
   <p class="form-section">Controle de pagamento</p>
   <div class="form-row">
     <div class="form-group">
       <label class="form-label">Data de vencimento</label>
-      <input class="form-input" id="c-venc" type="date">
+      <input class="form-input" id="sai-venc" type="date">
     </div>
     <div class="form-group">
       <label class="form-label">Status</label>
-      <select class="form-select" id="c-status-pagto">
+      <select class="form-select" id="sai-status">
         <option value="pago">✅ Pago</option>
         <option value="pendente">⏳ Pendente</option>
         <option value="vencido">🔴 Vencido</option>
@@ -2180,538 +2237,41 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <div class="form-row">
     <div class="form-group">
       <label class="form-label">Compromisso</label>
-      <select class="form-select" id="c-tipo-comp">
+      <select class="form-select" id="sai-tipo-comp">
         <option value="unico">Único</option>
         <option value="recorrente">Recorrente / Assinatura</option>
         <option value="parcelado">Parcelado</option>
       </select>
     </div>
-    <div class="form-group">
-      <label class="form-label">Cat. compromisso</label>
-      <select class="form-select" id="c-cat-comp">
-        <option value="">—</option><option>Assinatura</option><option>Plataforma</option>
-        <option>Fornecedor</option><option>Marketing</option><option>Infraestrutura</option><option>Outro</option>
+    <div class="form-group" id="sai-parcelas-group" style="display:none">
+      <label class="form-label">Nº de parcelas</label>
+      <select class="form-select" id="sai-parcelas-sel">
+        <option value="2">2x</option><option value="3">3x</option><option value="4">4x</option>
+        <option value="5">5x</option><option value="6">6x</option><option value="7">7x</option>
+        <option value="8">8x</option><option value="9">9x</option><option value="10">10x</option>
+        <option value="11">11x</option><option value="12">12x</option>
+        <option value="custom">Mais...</option>
       </select>
     </div>
   </div>
-  <div id="recorrencia-group" style="display:none">
-    <div class="form-group"><label class="form-label">Periodicidade</label>
-      <select class="form-select" id="c-recorrencia"><option value="mensal">Mensal</option><option value="trimestral">Trimestral</option><option value="anual">Anual</option></select>
+  <div id="sai-parcelas-custom" style="display:none">
+    <div class="form-group">
+      <label class="form-label">Número de parcelas</label>
+      <input class="form-input" id="sai-total-parcelas" type="number" min="13" placeholder="Ex: 24">
     </div>
   </div>
-  <div id="parcela-group" style="display:none">
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">Parcela atual</label><input class="form-input" id="c-parcela-atual" type="number" placeholder="3" min="1"></div>
-      <div class="form-group"><label class="form-label">Total parcelas</label><input class="form-input" id="c-total-parcelas" type="number" placeholder="12" min="1"></div>
-    </div>
-  </div>
-
   <div class="form-group">
     <label class="form-label">Notas</label>
-    <textarea class="form-textarea" id="c-notas" placeholder="Detalhes, link, contrato..." rows="2"></textarea>
+    <textarea class="form-textarea" id="sai-notas" rows="2" placeholder="Detalhes, link, contrato..."></textarea>
   </div>
-
   <div class="modal-footer">
-    <button class="btn-save" id="save-cost">Salvar Lançamento</button>
-    <button class="btn-delete-modal" id="delete-cost" style="display:none">Excluir</button>
-    <button class="btn-close-modal" data-close="cost">Fechar</button>
+    <button class="btn-save" id="save-saida">Salvar Saída</button>
+    <button class="btn-delete-modal" id="delete-saida" style="display:none">Excluir</button>
+    <button class="btn-close-modal" data-close="saida">Fechar</button>
   </div>
 </div></div>
 
-<!-- PRODUTO -->
-<div class="modal-bg" id="modal-produto"><div class="modal modal-produto-wide">
-  <div class="modal-title">
-    <span id="prod-modal-title">Novo Produto</span>
-    <button class="modal-close-btn" data-close="produto">×</button>
-  </div>
-  <input type="hidden" id="pr-id">
 
-  <!-- ABAS -->
-  <div class="prod-tabs">
-    <button class="prod-tab active" data-tab="info">📋 Info geral</button>
-    <button class="prod-tab" data-tab="preco">💰 Preço</button>
-    <button class="prod-tab" data-tab="estoque">📦 Estoque</button>
-    <button class="prod-tab" data-tab="frete">🚚 Frete</button>
-    <button class="prod-tab" data-tab="variantes">🎨 Variantes</button>
-    <button class="prod-tab" data-tab="seo">🔍 SEO</button>
-    <button class="prod-tab" data-tab="custo">🧮 Custo SKU</button>
-  </div>
-
-  <!-- ABA: INFO GERAL -->
-  <div class="prod-tab-panel active" id="prod-panel-info">
-    <div class="form-group">
-      <label class="form-label">Título *</label>
-      <input class="form-input" id="pr-nome" placeholder="Ex: Camiseta Preta Festival">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Descrição</label>
-      <textarea class="form-textarea" id="pr-descricao" rows="3" placeholder="Materiais, detalhes, cuidados..."></textarea>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Status</label>
-        <select class="form-select" id="pr-status">
-          <option value="ativo">🟢 Ativo</option>
-          <option value="rascunho" selected>📝 Rascunho</option>
-          <option value="arquivado">📁 Arquivado</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">SKU (gerado automaticamente)</label>
-        <input class="form-input" id="pr-sku" readonly placeholder="SLB0001">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Tipo de produto</label>
-        <input class="form-input" id="pr-tipo" placeholder="Camiseta, Vestido, Calça...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Fabricante / Vendor</label>
-        <input class="form-input" id="pr-fabricante" placeholder="Ex: Tiggas Confecções">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Coleção</label>
-        <select class="form-select" id="pr-colecao"></select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Fornecedor</label>
-        <select class="form-select" id="pr-fornecedor"></select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Tags <span style="color:var(--muted);font-weight:400">— separadas por vírgula</span></label>
-      <input class="form-input" id="pr-tags" placeholder="festival, preto, camiseta, verão...">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Canais de venda</label>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:6px">
-        <label class="form-check"><input type="checkbox" id="pr-canal-loja" checked> 🛍 Loja online</label>
-        <label class="form-check"><input type="checkbox" id="pr-canal-ig"> 📸 Instagram Shopping</label>
-        <label class="form-check"><input type="checkbox" id="pr-canal-tiktok"> 🎵 TikTok Shop</label>
-      </div>
-    </div>
-  </div>
-
-  <!-- ABA: PREÇO -->
-  <div class="prod-tab-panel" id="prod-panel-preco">
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Preço (R$) *</label>
-        <input class="form-input" id="pr-venda" type="number" step="0.01" placeholder="0,00">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Preço de comparação (R$) <span style="color:var(--muted);font-weight:400">— aparece riscado</span></label>
-        <input class="form-input" id="pr-preco-comparacao" type="number" step="0.01" placeholder="0,00">
-      </div>
-    </div>
-    <label class="form-check" style="margin-bottom:18px"><input type="checkbox" id="pr-cobrar-tributos" checked> Cobrar tributos neste produto</label>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Custo por item (R$) <span style="color:var(--muted);font-weight:400">— para margem</span></label>
-        <input class="form-input" id="pr-custo" type="number" step="0.01" placeholder="0,00">
-      </div>
-      <div class="form-group" style="display:flex;flex-direction:column;justify-content:flex-end">
-        <div class="prod-margem-preview" id="pr-margem-preview" style="display:none">
-          <div style="flex:1"><span class="prod-margem-lbl">Margem</span><span class="prod-margem-val" id="pr-margem">—</span></div>
-          <div style="flex:1"><span class="prod-margem-lbl">Lucro/peça</span><span class="prod-margem-val" id="pr-lucro">—</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ABA: ESTOQUE -->
-  <div class="prod-tab-panel" id="prod-panel-estoque">
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">SKU interno</label>
-        <input class="form-input" id="pr-sku-codigo" placeholder="SLB-CAM-001">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Código de barras (EAN)</label>
-        <input class="form-input" id="pr-codigo-barras" placeholder="7891234567890">
-      </div>
-    </div>
-    <label class="form-check" style="margin-bottom:14px"><input type="checkbox" id="pr-rastrear-estoque"> Rastrear quantidade em estoque</label>
-    <div id="pr-estoque-qtd-group" style="display:none">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Quantidade disponível</label>
-          <input class="form-input" id="pr-qtd-estoque" type="number" min="0" placeholder="0">
-        </div>
-        <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:12px">
-          <label class="form-check"><input type="checkbox" id="pr-vender-sem-estoque"> Continuar vendendo sem estoque</label>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ABA: FRETE -->
-  <div class="prod-tab-panel" id="prod-panel-frete">
-    <label class="form-check" style="margin-bottom:16px"><input type="checkbox" id="pr-e-fisico" checked> Este é um produto físico</label>
-    <div id="pr-frete-fields">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Peso do produto (kg)</label>
-          <input class="form-input" id="pr-peso-kg" type="number" step="0.001" placeholder="0.300">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Dimensões C × L × A (cm)</label>
-          <input class="form-input" id="pr-dimensoes" placeholder="30 × 20 × 5">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">País de origem</label>
-          <select class="form-select" id="pr-pais-origem">
-            <option value="BR" selected>🇧🇷 Brasil</option>
-            <option value="CN">🇨🇳 China</option>
-            <option value="US">🇺🇸 Estados Unidos</option>
-            <option value="PT">🇵🇹 Portugal</option>
-            <option value="outro">Outro</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Código SH / NCM</label>
-          <input class="form-input" id="pr-codigo-sh" placeholder="6109.10.00">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ABA: VARIANTES -->
-  <div class="prod-tab-panel" id="prod-panel-variantes">
-    <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Adicione opções como tamanho, cor ou material. Cada combinação gera uma variante.</p>
-    <div id="pr-opcoes-variante"></div>
-    <button class="btn-sec" id="pr-add-opcao" style="margin-top:4px">+ Adicionar opção</button>
-    <div id="pr-variantes-lista" style="margin-top:24px;display:none">
-      <p class="form-section">Variantes geradas</p>
-      <div id="pr-variantes-table"></div>
-    </div>
-  </div>
-
-  <!-- ABA: SEO -->
-  <div class="prod-tab-panel" id="prod-panel-seo">
-    <div class="prod-seo-preview">
-      <p class="prod-seo-url" id="pr-seo-url-preview">solookbom.com.br/products/</p>
-      <p class="prod-seo-title-preview" id="pr-seo-titulo-preview">Título do produto</p>
-      <p class="prod-seo-desc-preview" id="pr-seo-desc-preview">Meta descrição aparecerá aqui...</p>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Título para busca</label>
-      <input class="form-input" id="pr-seo-titulo" placeholder="Ex: Camiseta Preta Festival | SLB Só Look Bom" maxlength="70">
-      <p class="prod-seo-hint"><span id="pr-seo-titulo-count">0</span>/70 caracteres</p>
-    </div>
-    <div class="form-group">
-      <label class="form-label">URL (slug)</label>
-      <div style="display:flex;align-items:center">
-        <span style="font-size:11px;color:var(--muted);padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-right:none;border-radius:7px 0 0 7px;white-space:nowrap">solookbom.com.br/products/</span>
-        <input class="form-input" id="pr-seo-slug" placeholder="camiseta-preta-festival" style="border-radius:0 7px 7px 0;flex:1">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Meta descrição</label>
-      <textarea class="form-textarea" id="pr-seo-descricao" rows="3" placeholder="Descreva o produto para os mecanismos de busca..." maxlength="160"></textarea>
-      <p class="prod-seo-hint"><span id="pr-seo-desc-count">0</span>/160 caracteres</p>
-    </div>
-  </div>
-
-  <!-- ABA: CUSTO SKU -->
-  <div class="prod-tab-panel" id="prod-panel-custo">
-    <div class="custo-add-row" id="custo-chips">
-      <span class="custo-chip" data-comp="Matéria-prima">+ Matéria-prima</span>
-      <span class="custo-chip" data-comp="Estampa/Bordado">+ Estampa</span>
-      <span class="custo-chip" data-comp="Embalagem">+ Embalagem</span>
-      <span class="custo-chip" data-comp="Aviamento">+ Aviamento</span>
-      <span class="custo-chip" data-comp="Confecção">+ Confecção</span>
-      <span class="custo-chip" data-comp="Etiqueta/Hangtag">+ Etiqueta</span>
-      <span class="custo-chip" data-comp="Envio ao cliente">+ Envio</span>
-      <span class="custo-chip" data-comp="Outro">+ Outro</span>
-    </div>
-    <table class="custo-table" id="custo-sku-table">
-      <thead><tr><th>Componente</th><th>Descrição</th><th style="text-align:right">Qtd</th><th style="text-align:right">Valor unit.</th><th style="text-align:right">Subtotal</th><th></th></tr></thead>
-      <tbody id="custo-sku-body"></tbody>
-      <tfoot><tr><td colspan="4" style="text-align:right;font-size:10px;font-weight:700;color:var(--muted);padding:6px 4px">CUSTO TOTAL</td><td class="custo-row-total" id="custo-total-display">R$ 0,00</td><td></td></tr></tfoot>
-    </table>
-    <div class="custo-resultado">
-      <div class="custo-margem-wrap">
-        <span class="custo-margem-lbl">Margem desejada</span>
-        <input type="range" class="custo-margem-slider" id="pr-margem-slider" min="10" max="90" value="60">
-        <span class="custo-margem-pct" id="pr-margem-pct">60%</span>
-      </div>
-      <div class="custo-res-row"><span class="custo-res-lbl">Custo total do SKU</span><span class="custo-res-val" id="custo-res-custo">R$ 0,00</span></div>
-      <div class="custo-res-row"><span class="custo-res-lbl">→ Preço sugerido</span><span class="custo-res-val neon" id="custo-res-venda">R$ 0,00</span></div>
-      <div class="custo-res-row"><span class="custo-res-lbl">Lucro por peça</span><span class="custo-res-val green" id="custo-res-lucro">R$ 0,00</span></div>
-    </div>
-    <div class="form-row" style="margin-top:12px">
-      <div class="form-group">
-        <label class="form-label">Tamanho do lote</label>
-        <input class="form-input" id="pr-lote" type="number" min="1" placeholder="1" value="1">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Ponto de equilíbrio (qtd mín.)</label>
-        <input class="form-input" id="pr-breakeven" readonly placeholder="auto">
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-footer">
-    <button class="btn-save" id="save-produto">Salvar Produto</button>
-    <button class="btn-delete-modal" id="delete-produto" style="display:none">Excluir</button>
-    <button class="btn-close-modal" data-close="produto">Fechar</button>
-  </div>
-</div></div>
-
-<!-- ESTOQUE -->
-<div class="modal-bg" id="modal-estoque"><div class="modal">
-  <div class="modal-title"><span id="est-modal-title">Novo Item de Estoque</span><button class="modal-close-btn" data-close="estoque">×</button></div>
-  <input type="hidden" id="e-id">
-  <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="e-nome" placeholder="Ex: Tecido linho bege"></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="e-cat"><option>Tecido</option><option>Aviamento</option><option>Produto acabado</option><option>Embalagem</option><option>Outro</option></select></div><div class="form-group"><label class="form-label">SKU</label><input class="form-input" id="e-sku" placeholder="TEC-001"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Quantidade *</label><input class="form-input" id="e-qtd" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Unidade</label><select class="form-select" id="e-un"><option value="un">un</option><option value="m">m</option><option value="m²">m²</option><option value="kg">kg</option><option value="pç">pç</option><option value="cx">cx</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Qtd mínima</label><input class="form-input" id="e-qtdmin" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Localização</label><input class="form-input" id="e-local" placeholder="Prateleira A3"></div></div>
-  <div class="form-group"><label class="form-label">Produto vinculado (SKU)</label><select class="form-select" id="e-produto-id"><option value="">— Nenhum —</option></select><p style="font-size:9px;color:var(--muted);margin-top:4px">Vincule a um SKU para rastrear o consumo de estoque por produto.</p></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Preço custo</label><input class="form-input" id="e-custo" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Preço venda</label><input class="form-input" id="e-venda" type="number" step="0.01" placeholder="0,00"></div></div>
-  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="e-obs"></textarea></div>
-  <div class="modal-footer"><button class="btn-save" id="save-estoque">Salvar Item</button><button class="btn-delete-modal" id="delete-estoque" style="display:none">Excluir</button><button class="btn-close-modal" data-close="estoque">Fechar</button></div>
-</div></div>
-
-<!-- COLEÇÃO -->
-<div class="modal-bg" id="modal-colecao"><div class="modal">
-  <div class="modal-title"><span id="col-modal-title">Nova Coleção</span><button class="modal-close-btn" data-close="colecao">×</button></div>
-  <input type="hidden" id="col-id">
-  <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="col-nome" placeholder="Ex: Coleção Zamna 2026"></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Temporada</label><input class="form-input" id="col-temporada" placeholder="Verão, Inverno..."></div><div class="form-group"><label class="form-label">Ano</label><input class="form-input" id="col-ano" type="number" placeholder="2026"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="col-status"><option value="planejamento">Planejamento</option><option value="em_producao">Em produção</option><option value="lancada">Lançada</option><option value="encerrada">Encerrada</option></select></div><div class="form-group"><label class="form-label">Data lançamento</label><input class="form-input" id="col-lancamento" type="date"></div></div>
-  <div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="col-resp"></select></div>
-  <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="col-desc" placeholder="Conceito, inspiração..."></textarea></div>
-  <div class="modal-footer"><button class="btn-save" id="save-colecao">Salvar Coleção</button><button class="btn-delete-modal" id="delete-colecao" style="display:none">Excluir</button><button class="btn-close-modal" data-close="colecao">Fechar</button></div>
-</div></div>
-
-<!-- PRODUÇÃO -->
-<div class="modal-bg" id="modal-producao"><div class="modal">
-  <div class="modal-title"><span id="prd-modal-title">Nova Produção</span><button class="modal-close-btn" data-close="producao">×</button></div>
-  <input type="hidden" id="prd-id">
-  <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="prd-nome" placeholder="Ex: Camiseta Preta P/M/G - Coleção Zamna"></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="prd-colecao"></select></div><div class="form-group"><label class="form-label">Fornecedor</label><select class="form-select" id="prd-fornecedor"></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="prd-status"><option value="ideacao">Ideação</option><option value="aprovacao">Aguardando aprovação</option><option value="em_criacao">Em criação</option><option value="em_producao">Em produção</option><option value="produzido">Produzido</option><option value="recebido">Recebido</option><option value="disponivel">Disponível para venda</option></select></div><div class="form-group"><label class="form-label">Responsável</label>
-    <div class="resp-chips" id="prd-resp-chips">
-      <label class="resp-chip"><input type="checkbox" value="all" id="prd-resp-all" onchange="prdRespToggleAll(this)"> Todos</label>
-    </div>
-    <input type="hidden" id="prd-resp">
-  </div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Quantidade</label><input class="form-input" id="prd-qtd" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Custo total (R$)</label><input class="form-input" id="prd-custo" type="number" step="0.01" placeholder="0,00"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Data início</label><input class="form-input" id="prd-inicio" type="date"></div><div class="form-group"><label class="form-label">Previsão fim</label><input class="form-input" id="prd-prevfim" type="date"></div></div>
-  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="prd-obs"></textarea></div>
-  <p class="form-section">Aprovação dos sócios</p>
-  <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:4px">
-    <label class="form-check"><input type="checkbox" id="aprov-ju"> Juliana Paulinelli</label>
-    <label class="form-check"><input type="checkbox" id="aprov-fe"> Fernando Araújo</label>
-    <label class="form-check"><input type="checkbox" id="aprov-vi"> Victor Paulinelli</label>
-    <label class="form-check"><input type="checkbox" id="aprov-ya"> Yasmin Zurdo</label>
-  </div>
-  <p style="font-size:9px;color:var(--muted);margin-top:6px">⚠️ Avança para "Em criação" somente após aprovação dos 4 sócios.</p>
-  <p class="form-section">Fotografia / Amostras</p>
-  <div class="form-row"><div class="form-group"><label class="form-label">Status da foto</label><select class="form-select" id="prd-status-foto"><option value="sem_amostra">Sem amostra</option><option value="amostra_enviada">Amostra enviada</option><option value="em_fotografia">Em fotografia</option><option value="foto_aprovada">&#9989; Foto aprovada</option><option value="foto_reprovada">&#10060; Foto reprovada</option></select></div><div class="form-group"><label class="form-label">Data da fotografia</label><input class="form-input" id="prd-data-foto" type="date"></div></div>
-  <div class="form-group"><label class="form-label">Link das fotos</label><input class="form-input" id="prd-link-foto" placeholder="Drive, Dropbox, Google Photos..."></div>
-  <div class="modal-footer"><button class="btn-save" id="save-producao">Salvar Produção</button><button class="btn-delete-modal" id="delete-producao" style="display:none">Excluir</button><button class="btn-close-modal" data-close="producao">Fechar</button></div>
-</div></div>
-
-<!-- PEDIDO -->
-<div class="modal-bg" id="modal-pedido"><div class="modal wide">
-  <div class="modal-title"><span id="ped-modal-title">Novo Pedido</span><button class="modal-close-btn" data-close="pedido">×</button></div>
-  <input type="hidden" id="ped-id">
-  <p class="form-section" style="margin-top:0;padding-top:0;border:none">Cliente</p>
-  <div class="form-row"><div class="form-group"><label class="form-label">Nome do cliente *</label><input class="form-input" id="ped-cliente" placeholder="Nome completo"></div><div class="form-group"><label class="form-label">CPF</label><input class="form-input" id="ped-cpf" placeholder="000.000.000-00"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="ped-email" placeholder="cliente@email.com"></div><div class="form-group"><label class="form-label">Telefone</label><input class="form-input" id="ped-fone" placeholder="(11) 9 9999-0000"></div></div>
-  <p class="form-section">Pedido</p>
-  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="ped-status"><option value="pago">Pago</option><option value="separacao">Em separação</option><option value="producao">Produção</option><option value="enviado">Enviado</option><option value="entregue">Entregue</option><option value="troca">Troca</option><option value="cancelado">Cancelado</option></select></div><div class="form-group"><label class="form-label">Canal de venda</label><input class="form-input" id="ped-canal" placeholder="Instagram, Loja, Site..."></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Valor total (R$) *</label><input class="form-input" id="ped-valor" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Valor frete (R$)</label><input class="form-input" id="ped-frete" type="number" step="0.01" placeholder="0,00"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Transportadora</label><input class="form-input" id="ped-transp" placeholder="Correios, Jadlog..."></div><div class="form-group"><label class="form-label">Código de rastreio</label><input class="form-input" id="ped-rastreio" placeholder="BR123456789BR"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="ped-colecao"></select></div><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="ped-resp"></select></div></div>
-  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="ped-obs"></textarea></div>
-  <div class="form-group"><label class="form-label">Cliente no CRM</label><select class="form-select" id="ped-cliente-id"><option value="">— Criar/atualizar automaticamente pelo e-mail —</option></select><p style="font-size:9px;color:var(--muted);margin-top:4px">Se o e-mail já existir no CRM, o registro será atualizado ao salvar.</p></div>
-  <div class="modal-footer"><button class="btn-save" id="save-pedido">Salvar Pedido</button><button class="btn-delete-modal" id="delete-pedido" style="display:none">Excluir</button><button class="btn-close-modal" data-close="pedido">Fechar</button></div>
-</div></div>
-
-<!-- FRETE -->
-<div class="modal-bg" id="modal-frete"><div class="modal">
-  <div class="modal-title"><span id="frete-modal-title">Nova Tabela de Frete</span><button class="modal-close-btn" data-close="frete">×</button></div>
-  <input type="hidden" id="fr-id">
-
-  <div class="form-group"><label class="form-label">Transportadora *</label><input class="form-input" id="fr-trans" placeholder="Correios PAC, Loggi, Mandaê..."></div>
-
-  <div class="form-row">
-    <div class="form-group"><label class="form-label">Modalidade</label>
-      <select class="form-select" id="fr-tipo">
-        <option value="fixo">Fixo</option>
-        <option value="variavel">Variável (por peso)</option>
-        <option value="gratis">Grátis</option>
-        <option value="pac">Correios — PAC</option>
-        <option value="sedex">Correios — SEDEX</option>
-        <option value="mini_envios">Correios — Mini Envios</option>
-        <option value="loggi">Loggi</option>
-        <option value="mandae">Mandaê</option>
-      </select>
-    </div>
-    <div class="form-group"><label class="form-label">Status</label>
-      <select class="form-select" id="fr-status">
-        <option value="ativo">Ativo</option>
-        <option value="inativo">Inativo</option>
-      </select>
-    </div>
-  </div>
-
-  <p class="form-section">Acordo comercial</p>
-  <div class="form-row">
-    <div class="form-group"><label class="form-label">Tem acordo de preços fechado?</label>
-      <select class="form-select" id="fr-acordo">
-        <option value="nao">Não — tabela balcão</option>
-        <option value="negociando">Em negociação</option>
-        <option value="sim">Sim — acordo fechado</option>
-      </select>
-    </div>
-    <div class="form-group"><label class="form-label">Status da negociação</label>
-      <select class="form-select" id="fr-neg-status">
-        <option value="">— Sem negociação —</option>
-        <option value="prospeccao">Prospecção</option>
-        <option value="contato_feito">Contato feito</option>
-        <option value="proposta_recebida">Proposta recebida</option>
-        <option value="em_analise">Em análise</option>
-        <option value="fechado">Fechado ✓</option>
-        <option value="cancelado">Cancelado</option>
-      </select>
-    </div>
-  </div>
-
-  <p class="form-section">Cobertura e preços</p>
-  <div class="form-row">
-    <div class="form-group"><label class="form-label">Região / Cobertura</label><input class="form-input" id="fr-regiao" placeholder="Todo Brasil, Sul/Sudeste..."></div>
-    <div class="form-group"><label class="form-label">Prazo (dias úteis)</label><input class="form-input" id="fr-prazo" type="number" placeholder="5"></div>
-  </div>
-  <div class="form-row">
-    <div class="form-group"><label class="form-label">Preço fixo (R$)</label><input class="form-input" id="fr-preco" type="number" step="0.01" placeholder="0,00"></div>
-    <div class="form-group"><label class="form-label">Por kg (R$)</label><input class="form-input" id="fr-preckg" type="number" step="0.01" placeholder="0,00"></div>
-  </div>
-  <div class="form-row">
-    <div class="form-group"><label class="form-label">Peso máx. (kg)</label><input class="form-input" id="fr-pesomax" type="number" step="0.1" placeholder="30"></div>
-    <div class="form-group"><label class="form-label">Pedido mínimo (R$)</label><input class="form-input" id="fr-pedmin" type="number" step="0.01" placeholder="0,00"></div>
-  </div>
-
-  <p class="form-section">Links e observações</p>
-  <div class="form-group"><label class="form-label">Link do simulador oficial</label><input class="form-input" id="fr-link-sim" placeholder="https://..."></div>
-  <div class="form-group"><label class="form-label">Observações / condições negociadas</label><textarea class="form-textarea" id="fr-obs" placeholder="Descontos negociados, condições especiais..."></textarea></div>
-
-  <div class="modal-footer">
-    <button class="btn-save" id="save-frete">Salvar</button>
-    <button class="btn-delete-modal" id="delete-frete" style="display:none">Excluir</button>
-    <button class="btn-close-modal" data-close="frete">Fechar</button>
-  </div>
-</div></div>
-
-<!-- PARCEIRO -->
-<div class="modal-bg" id="modal-parceiro"><div class="modal wide">
-  <div class="modal-title"><span id="par-modal-title">Novo Parceiro / Influenciador</span><button class="modal-close-btn" data-close="parceiro">×</button></div>
-  <input type="hidden" id="pa-id">
-  <div class="form-row"><div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="pa-nome" placeholder="Nome / @handle"></div><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="pa-tipo"><option value="influenciador">Influenciador</option><option value="embaixador">Embaixador</option><option value="loja">Loja</option><option value="imprensa">Imprensa</option><option value="outro">Outro</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="pa-status"><option value="prospecto">Prospecto</option><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div><div class="form-group"><label class="form-label">Status Collab</label><select class="form-select" id="pa-status-collab"><option value="prospecto">Prospecto</option><option value="contato">Contato feito</option><option value="produto_enviado">Produto enviado</option><option value="postou">Postou</option><option value="encerrado">Encerrado</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Nicho</label><input class="form-input" id="pa-nicho" placeholder="Moda, Festival, Lifestyle..."></div><div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="pa-cidade" placeholder="São Paulo, Rio..."></div></div>
-  <p class="form-section">Redes Sociais</p>
-  <div class="form-row"><div class="form-group"><label class="form-label">Instagram @</label><input class="form-input" id="pa-ig" placeholder="@handle"></div><div class="form-group"><label class="form-label">Seguidores IG</label><input class="form-input" id="pa-ig-seg" type="number" placeholder="50000"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">TikTok @</label><input class="form-input" id="pa-tt" placeholder="@handle"></div><div class="form-group"><label class="form-label">Seguidores TikTok</label><input class="form-input" id="pa-tt-seg" type="number" placeholder="20000"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Threads @</label><input class="form-input" id="pa-threads" placeholder="@handle"></div><div class="form-group"><label class="form-label">YouTube @</label><input class="form-input" id="pa-yt" placeholder="@handle"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Engajamento (%)</label><input class="form-input" id="pa-eng" type="number" step="0.1" placeholder="3.5"></div><div class="form-group"><label class="form-label">Cachê / Valor (R$)</label><input class="form-input" id="pa-cache" type="number" step="0.01" placeholder="0,00"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="pa-whatsapp" placeholder="(11) 9 9999-0000"></div><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="pa-email" placeholder="contato@"></div></div>
-  <p class="form-section">Colaboração</p>
-  <div class="form-row"><div class="form-group"><label class="form-label">Data de envio do produto</label><input class="form-input" id="pa-data-envio" type="date"></div><div class="form-group"><label class="form-label">Coleção enviada</label><select class="form-select" id="pa-colecao"></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Vendas geradas</label><input class="form-input" id="pa-vendas" type="number" placeholder="0" min="0"></div><div class="form-group"><label class="form-label">Código de desconto</label><input class="form-input" id="pa-cod-desc" placeholder="SLB_INFL10"></div></div>
-  <div class="form-group"><label class="form-label">Resultado / Observações</label><textarea class="form-textarea" id="pa-resultado" placeholder="Ex: Recebeu produto em 15/07, postou reels em 20/07, gerou 3 vendas, alcance de 15k..."></textarea></div>
-  <div class="form-group"><label class="form-label">Endereço de envio</label><input class="form-input" id="pa-end-envio" placeholder="Rua, número, CEP, cidade"></div>
-  <div class="form-group"><label class="form-label">Responsável SLB</label><select class="form-select" id="pa-resp"></select></div>
-  <div class="modal-footer"><button class="btn-save" id="save-parceiro">Salvar</button><button class="btn-delete-modal" id="delete-parceiro" style="display:none">Excluir</button><button class="btn-close-modal" data-close="parceiro">Fechar</button></div>
-</div></div>
-
-<!-- PESSOA -->
-<div class="modal-bg" id="modal-pessoa"><div class="modal">
-  <div class="modal-title">Nova Pessoa<button class="modal-close-btn" data-close="pessoa">×</button></div>
-  <div class="form-group"><label class="form-label">Nome completo *</label><input class="form-input" id="p-nome" placeholder="Nome da pessoa"></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Cargo / Função</label><input class="form-input" id="p-cargo" placeholder="Designer, Fotógrafo..."></div><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="p-tipo"><option value="equipe">Equipe</option><option value="externo">Externo</option><option value="socio">Sócio</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="p-whatsapp" placeholder="(11) 9 9999-0000"></div><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="p-email" placeholder="nome@email.com"></div></div>
-  <div class="modal-footer"><button class="btn-save" id="save-pessoa">Salvar Pessoa</button><button class="btn-close-modal" data-close="pessoa">Fechar</button></div>
-</div></div>
-
-<!-- POSTAGEM -->
-<div class="modal-bg" id="modal-postagem"><div class="modal wide">
-  <div class="modal-title"><span id="post-modal-title">Nova Postagem</span><button class="modal-close-btn" data-close="postagem">×</button></div>
-  <input type="hidden" id="po-id">
-  <div class="form-row"><div class="form-group"><label class="form-label">Parceiro / Influenciador</label><select class="form-select" id="po-parceiro"></select></div><div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="po-colecao"></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Rede social</label><select class="form-select" id="po-rede"><option value="instagram_feed">Instagram Feed</option><option value="instagram_reels">Instagram Reels</option><option value="instagram_stories">Instagram Stories</option><option value="tiktok">TikTok</option><option value="threads">Threads</option><option value="youtube">YouTube</option></select></div><div class="form-group"><label class="form-label">Tipo de conteúdo</label><input class="form-input" id="po-tipo" placeholder="Look do dia, Review, Collab..."></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Data prevista</label><input class="form-input" id="po-data-prev" type="date"></div><div class="form-group"><label class="form-label">Data real de postagem</label><input class="form-input" id="po-data-real" type="date"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="po-status"><option value="planejado">Planejado</option><option value="confirmado">Confirmado</option><option value="postado">Postado</option><option value="cancelado">Cancelado</option></select></div><div class="form-group"><label class="form-label">Código de desconto</label><input class="form-input" id="po-cod-desc" placeholder="SLB10"></div></div>
-  <div class="form-group"><label class="form-label">Link da postagem</label><input class="form-input" id="po-link" placeholder="https://instagram.com/p/..."></div>
-  <p class="form-section">Métricas (após postagem)</p>
-  <div class="form-row3"><div class="form-group"><label class="form-label">Alcance</label><input class="form-input" id="po-alcance" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Curtidas</label><input class="form-input" id="po-curtidas" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Comentários</label><input class="form-input" id="po-coments" type="number" placeholder="0"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Cliques no link</label><input class="form-input" id="po-cliques" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Vendas geradas</label><input class="form-input" id="po-vendas" type="number" placeholder="0"></div></div>
-  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="po-obs" placeholder="Contexto, detalhes..."></textarea></div>
-  <div class="modal-footer"><button class="btn-save" id="save-postagem">Salvar</button><button class="btn-delete-modal" id="delete-postagem" style="display:none">Excluir</button><button class="btn-close-modal" data-close="postagem">Fechar</button></div>
-</div></div>
-
-<!-- MARKETING -->
-<div class="modal-bg" id="modal-marketing"><div class="modal wide">
-  <div class="modal-title"><span id="mkt-modal-title">Nova Ação de Marketing</span><button class="modal-close-btn" data-close="marketing">×</button></div>
-  <input type="hidden" id="mk-id">
-  <div class="form-group"><label class="form-label">Título *</label><input class="form-input" id="mk-titulo" placeholder="Ex: Campanha Zamna 2026, Reels com @influencer..."></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="mk-tipo"><option value="post_organico">Post orgânico</option><option value="reels">Reels</option><option value="campanha_paga">Campanha paga</option><option value="ads">Ads (Meta/Google)</option><option value="email">E-mail</option><option value="whatsapp">WhatsApp</option><option value="outro">Outro</option></select></div><div class="form-group"><label class="form-label">Plataforma</label><select class="form-select" id="mk-plat"><option value="instagram">Instagram</option><option value="tiktok">TikTok</option><option value="meta_ads">Meta Ads</option><option value="google">Google</option><option value="whatsapp">WhatsApp</option><option value="email">E-mail</option><option value="outro">Outro</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="mk-status"><option value="planejada">Planejada</option><option value="ativa">Ativa</option><option value="encerrada">Encerrada</option><option value="cancelada">Cancelada</option></select></div><div class="form-group"><label class="form-label">Coleção vinculada</label><select class="form-select" id="mk-colecao"></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Data início</label><input class="form-input" id="mk-inicio" type="date"></div><div class="form-group"><label class="form-label">Data fim</label><input class="form-input" id="mk-fim" type="date"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Investimento (R$)</label><input class="form-input" id="mk-invest" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="mk-resp"></select></div></div>
-  <div class="form-group"><label class="form-label">Público-alvo</label><input class="form-input" id="mk-publico" placeholder="Mulheres 18-35, amantes de festival..."></div>
-  <div class="form-group"><label class="form-label">Descrição / Criativo</label><textarea class="form-textarea" id="mk-desc" placeholder="Detalhes da campanha, link do criativo..."></textarea></div>
-  <p class="form-section">Resultados</p>
-  <div class="form-row3"><div class="form-group"><label class="form-label">Alcance</label><input class="form-input" id="mk-alcance" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Impressões</label><input class="form-input" id="mk-impressoes" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Cliques</label><input class="form-input" id="mk-cliques" type="number" placeholder="0"></div></div>
-  <div class="form-row3"><div class="form-group"><label class="form-label">Leads</label><input class="form-input" id="mk-leads" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Vendas</label><input class="form-input" id="mk-vendas" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Receita gerada (R$)</label><input class="form-input" id="mk-receita" type="number" step="0.01" placeholder="0,00"></div></div>
-  <div class="modal-footer"><button class="btn-save" id="save-marketing">Salvar</button><button class="btn-delete-modal" id="delete-marketing" style="display:none">Excluir</button><button class="btn-close-modal" data-close="marketing">Fechar</button></div>
-</div></div>
-
-<!-- CLIENTE -->
-<div class="modal-bg" id="modal-cliente"><div class="modal wide">
-  <div class="modal-title"><span id="cli-modal-title">Novo Cliente</span><button class="modal-close-btn" data-close="cliente">×</button></div>
-  <input type="hidden" id="cl-id">
-  <div class="form-row"><div class="form-group"><label class="form-label">Nome completo *</label><input class="form-input" id="cl-nome" placeholder="Nome do cliente"></div><div class="form-group"><label class="form-label">CPF</label><input class="form-input" id="cl-cpf" placeholder="000.000.000-00"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="cl-email" placeholder="cliente@email.com"></div><div class="form-group"><label class="form-label">Telefone / WhatsApp</label><input class="form-input" id="cl-tel" placeholder="(11) 9 9999-0000"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="cl-cidade" placeholder="São Paulo"></div><div class="form-group"><label class="form-label">Estado</label><select class="form-select" id="cl-estado"><option value="">-</option><option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>RS</option><option>SC</option><option>BA</option><option>CE</option><option>DF</option><option>GO</option><option>PE</option><option>Outro</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Aniversário</label><input class="form-input" id="cl-nasc" type="date"></div><div class="form-group"><label class="form-label">Como conheceu a SLB</label><select class="form-select" id="cl-origem"><option value="">-</option><option>Instagram</option><option>TikTok</option><option>Indicação</option><option>Evento / Festival</option><option>Loja física</option><option>Site</option><option>Outro</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Tamanho preferido</label><select class="form-select" id="cl-tam"><option value="">-</option><option>P</option><option>M</option><option>G</option><option>GG</option><option>Especial</option></select></div><div class="form-group"><label class="form-label">Estilo favorito</label><input class="form-input" id="cl-estilo" placeholder="Festival, streetwear, casual..."></div></div>
-  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px"><label class="form-check"><input type="checkbox" id="cl-vip"> ⭐ Cliente VIP</label><label class="form-check"><input type="checkbox" id="cl-optin-wp"> WhatsApp opt-in</label><label class="form-check"><input type="checkbox" id="cl-optin-email"> E-mail opt-in</label></div>
-  <div class="form-group"><label class="form-label">Observações internas</label><textarea class="form-textarea" id="cl-obs" placeholder="Preferências, histórico, notas da equipe..."></textarea></div>
-  <div class="modal-footer"><button class="btn-save" id="save-cliente">Salvar</button><button class="btn-delete-modal" id="delete-cliente" style="display:none">Excluir</button><button class="btn-close-modal" data-close="cliente">Fechar</button></div>
-</div></div>
-
-<!-- EVENTO COLECAO -->
-<div class="modal-bg" id="modal-evento"><div class="modal">
-  <div class="modal-title"><span id="ev-modal-title">Novo Evento</span><button class="modal-close-btn" data-close="evento">×</button></div>
-  <input type="hidden" id="ev-id">
-  <input type="hidden" id="ev-colecao-id">
-  <div class="form-group"><label class="form-label">Nome do evento *</label><input class="form-input" id="ev-nome" placeholder="Ex: Zamna Festival, Warung, Time Warp..."></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Data do evento</label><input class="form-input" id="ev-data" type="date"></div><div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="ev-cidade" placeholder="Tulum, Floripa..."></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="ev-tipo"><option value="festival">Festival</option><option value="balada">Balada</option><option value="popup">Pop-up</option><option value="lancamento">Lançamento</option><option value="outro">Outro</option></select></div><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="ev-status"><option value="negociacao">Em negociação</option><option value="confirmado">Confirmado</option><option value="cancelado">Cancelado</option></select></div></div>
-  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="ev-obs" placeholder="Detalhes, contato, planejamento..."></textarea></div>
-  <div class="modal-footer"><button class="btn-save" id="save-evento">Salvar Evento</button><button class="btn-delete-modal" id="delete-evento" style="display:none">Excluir</button><button class="btn-close-modal" data-close="evento">Fechar</button></div>
-</div></div>
-<!-- META -->
-<div class="modal-bg" id="modal-meta"><div class="modal">
-  <div class="modal-title"><span id="meta-modal-title">Nova Meta</span><button class="modal-close-btn" data-close="meta">×</button></div>
-  <input type="hidden" id="me-id">
-  <div class="form-group"><label class="form-label">Título *</label><input class="form-input" id="me-titulo" placeholder="Ex: Faturamento mensal de R$ 10k"></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="me-cat"><option value="financeiro">Financeiro</option><option value="vendas">Vendas</option><option value="marketing">Marketing</option><option value="producao">Produção</option><option value="operacional">Operacional</option><option value="outro">Outro</option></select></div><div class="form-group"><label class="form-label">Tipo de métrica</label><select class="form-select" id="me-tipo"><option value="moeda">Moeda (R$)</option><option value="numero">Número</option><option value="percentual">Percentual (%)</option><option value="booleano">Sim/Não</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Valor da meta</label><input class="form-input" id="me-meta" type="number" step="0.01" placeholder="10000"></div><div class="form-group"><label class="form-label">Valor atual</label><input class="form-input" id="me-atual" type="number" step="0.01" placeholder="0"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Período</label><select class="form-select" id="me-periodo"><option value="mensal">Mensal</option><option value="trimestral">Trimestral</option><option value="semestral">Semestral</option><option value="anual">Anual</option></select></div><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="me-resp"></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Inicio</label><input class="form-input" id="me-inicio" type="date"></div><div class="form-group"><label class="form-label">Prazo</label><input class="form-input" id="me-fim" type="date"></div></div>
-  <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="me-desc" placeholder="Contexto e estratégia para atingir essa meta..."></textarea></div>
-  <div class="modal-footer"><button class="btn-save" id="save-meta">Salvar</button><button class="btn-delete-modal" id="delete-meta" style="display:none">Excluir</button><button class="btn-close-modal" data-close="meta">Fechar</button></div>
-</div></div>
 <!-- ONBOARDING -->
 <div class="modal-bg" id="modal-onboarding" style="z-index:9999">
   <div class="modal" style="max-width:420px;text-align:center;padding:32px 28px">
@@ -4150,6 +3710,11 @@ function renderCosts(){
       '<div class="card-actions">'+
         '<span style="font-size:13px;font-weight:800;white-space:nowrap">'+mo(c.valor)+'</span>'+
         editBtn(c.id,'cost')+
+        (function(){
+          var t=c.tipo_lancamento||c.tipo||'despesa';
+          var isRec=t==='receita';
+          return '<button class="edit" data-edit-'+(isRec?'entrada':'saida')+'="'+c.id+'">✏</button>';
+        })()+
         '<button class="del" data-del-cost="'+c.id+'">×</button>'+
       '</div>'+
     '</div></div>';
@@ -7382,6 +6947,248 @@ function renderProjecaoTabela(semanas){
 
 // fallback removido
 
+
+// ── MODAL ENTRADA ────────────────────────────────────────
+function saveEntrada(){
+  var d=(document.getElementById('ent-name')||{value:''}).value.trim();
+  var v=parseFloat((document.getElementById('ent-val')||{value:0}).value)||0;
+  if(!d||!v){toast('Preencha descrição e valor');return;}
+  var id=(document.getElementById('ent-id')||{value:''}).value;
+  var payload={
+    descricao:d, tipo_lancamento:'receita', tipo:'receita',
+    categoria_dre:(document.getElementById('ent-cat')||{value:''}).value,
+    categoria:(document.getElementById('ent-cat')||{value:''}).value,
+    valor:v,
+    data:(document.getElementById('ent-date')||{value:''}).value||null,
+    status_pagto:(document.getElementById('ent-status')||{value:'pago'}).value,
+    metodo_pagto:(document.getElementById('ent-metodo')||{value:''}).value||null,
+    fornecedor_cliente:(document.getElementById('ent-cliente')||{value:''}).value||null,
+    notas:(document.getElementById('ent-notas')||{value:''}).value||null,
+    tipo_compromisso:'unico', recorrencia_tipo:'unico',
+    updated_at:new Date().toISOString()
+  };
+  var q=id?db.from('custos').update(payload).eq('id',id):db.from('custos').insert(payload);
+  q.then(function(res){
+    if(res&&res.error){toast('Erro: '+res.error.message);return;}
+    closeModal('entrada');
+    toast(id?'Atualizado!':'Entrada salva!');
+    loadCosts();
+  });
+}
+
+function openEntradaEdit(id){
+  var c=D.costs.find(function(x){return x.id===id;});if(!c)return;
+  document.getElementById('ent-id').value=c.id;
+  document.getElementById('ent-name').value=c.descricao||'';
+  document.getElementById('ent-val').value=c.valor||'';
+  document.getElementById('ent-date').value=c.data||'';
+  document.getElementById('ent-cat').value=c.categoria_dre||c.categoria||'venda_produto';
+  document.getElementById('ent-metodo').value=c.metodo_pagto||'';
+  document.getElementById('ent-cliente').value=c.fornecedor_cliente||'';
+  document.getElementById('ent-status').value=c.status_pagto||'pago';
+  document.getElementById('ent-notas').value=c.notas||'';
+  var dBtn=document.getElementById('delete-entrada');
+  if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  openModal('entrada');
+}
+
+// ── MODAL SAÍDA ──────────────────────────────────────────
+function initSaidaCats(tipo){
+  var catSel=document.getElementById('sai-cat');
+  var socGrp=document.getElementById('sai-socia-group');
+  var prodHint=document.getElementById('sai-produto-hint');
+  if(!catSel)return;
+  var cats=CAT_DRE[tipo]||[];
+  catSel.innerHTML=cats.map(function(c){return '<option value="'+c.v+'">'+c.l+'</option>';}).join('');
+  if(prodHint)prodHint.style.display=tipo==='custo'?'block':'none';
+  // Hook para campo sócia
+  if(!catSel._socHook){
+    catSel._socHook=true;
+    catSel.addEventListener('change',function(){
+      var show=catSel.value==='prolabore'||catSel.value==='distribuicao_lucro';
+      if(socGrp)socGrp.style.display=show?'block':'none';
+    });
+  }
+}
+
+function initSaidaModal(){
+  var dEl=document.getElementById('sai-date');
+  if(dEl&&!dEl.value)dEl.value=new Date().toISOString().split('T')[0];
+  // Tipo → categorias
+  var tipoSel=document.getElementById('sai-tipo');
+  if(tipoSel&&!tipoSel._saiInit){
+    tipoSel._saiInit=true;
+    tipoSel.addEventListener('change',function(){initSaidaCats(tipoSel.value);});
+  }
+  initSaidaCats((tipoSel&&tipoSel.value)||'despesa');
+  // Parcelas
+  var tipoComp=document.getElementById('sai-tipo-comp');
+  if(tipoComp&&!tipoComp._saiInit){
+    tipoComp._saiInit=true;
+    tipoComp.addEventListener('change',function(){
+      var pg=document.getElementById('sai-parcelas-group');
+      if(pg)pg.style.display=tipoComp.value==='parcelado'?'block':'none';
+    });
+  }
+  var parSel=document.getElementById('sai-parcelas-sel');
+  if(parSel&&!parSel._saiInit){
+    parSel._saiInit=true;
+    parSel.addEventListener('change',function(){
+      var cg=document.getElementById('sai-parcelas-custom');
+      if(cg)cg.style.display=parSel.value==='custom'?'block':'none';
+    });
+  }
+  // Popular sócios
+  var socSel=document.getElementById('sai-socia-id');
+  if(socSel&&!socSel._init){
+    socSel._init=true;
+    socSel.innerHTML='<option value="">— Selecione —</option>'+
+      D.pessoas.filter(function(p){return p.tipo==='socio';}).map(function(p){
+        return '<option value="'+p.id+'">'+p.nome.split(' ')[0]+'</option>';
+      }).join('');
+  }
+  // Popular produtos
+  var prodSel=document.getElementById('sai-produto-id');
+  if(prodSel&&!prodSel._init){
+    prodSel._init=true;
+    prodSel.innerHTML='<option value="">— Não vincular —</option>'+
+      D.produtos.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(p){
+        return '<option value="'+p.id+'">'+p.sku+' — '+p.nome+'</option>';
+      }).join('');
+  }
+  // Popular pago por
+  var pagoPor=document.getElementById('sai-pago-por');
+  if(pagoPor&&!pagoPor._init){
+    pagoPor._init=true;
+    pagoPor.innerHTML='<option value="">— Nenhum —</option>'+
+      D.pessoas.map(function(p){return '<option value="'+p.id+'">'+p.nome.split(' ')[0]+'</option>';}).join('');
+  }
+}
+
+function saveSaida(){
+  var d=(document.getElementById('sai-name')||{value:''}).value.trim();
+  var v=parseFloat((document.getElementById('sai-val')||{value:0}).value)||0;
+  if(!d||!v){toast('Preencha descrição e valor');return;}
+  var id=(document.getElementById('sai-id')||{value:''}).value;
+  var tipoLanc=(document.getElementById('sai-tipo')||{value:'despesa'}).value;
+  var catDre=(document.getElementById('sai-cat')||{value:''}).value;
+  var tipoComp=(document.getElementById('sai-tipo-comp')||{value:'unico'}).value;
+  var isPar=tipoComp==='parcelado';
+  var parSel=document.getElementById('sai-parcelas-sel');
+  var totalPar=null;
+  if(isPar){
+    totalPar=parSel&&parSel.value==='custom'
+      ?parseInt((document.getElementById('sai-total-parcelas')||{value:0}).value)||null
+      :parseInt((parSel&&parSel.value)||0)||null;
+  }
+  var payload={
+    descricao:d, tipo_lancamento:tipoLanc, tipo:tipoLanc,
+    categoria_dre:catDre, categoria:catDre, valor:v,
+    data:(document.getElementById('sai-date')||{value:''}).value||null,
+    data_vencimento:(document.getElementById('sai-venc')||{value:''}).value||null,
+    status_pagto:(document.getElementById('sai-status')||{value:'pago'}).value,
+    metodo_pagto:(document.getElementById('sai-metodo')||{value:''}).value||null,
+    pago_por_id:(document.getElementById('sai-pago-por')||{value:''}).value||null,
+    fornecedor_cliente:(document.getElementById('sai-fornecedor')||{value:''}).value||null,
+    produto_id:(document.getElementById('sai-produto-id')||{value:''}).value||null,
+    socia_id:(document.getElementById('sai-socia-id')||{value:''}).value||null,
+    recorrencia_tipo:(document.getElementById('sai-recorrencia-tipo')||{value:'unico'}).value,
+    recorrente:tipoComp==='recorrente',
+    tipo_compromisso:tipoComp,
+    total_parcelas:totalPar,
+    parcela_atual:isPar?1:null,
+    notas:(document.getElementById('sai-notas')||{value:''}).value||null,
+    updated_at:new Date().toISOString()
+  };
+  var q=id?db.from('custos').update(payload).eq('id',id):db.from('custos').insert(payload);
+  q.then(function(res){
+    if(res&&res.error){toast('Erro: '+res.error.message);return;}
+    closeModal('saida');
+    toast(id?'Atualizado!':'Saída salva!');
+    loadCosts();
+  });
+}
+
+function openSaidaEdit(id){
+  var c=D.costs.find(function(x){return x.id===id;});if(!c)return;
+  var tipo=c.tipo_lancamento||c.tipo||'despesa';
+  document.getElementById('sai-id').value=c.id;
+  document.getElementById('sai-name').value=c.descricao||'';
+  document.getElementById('sai-tipo').value=tipo;
+  document.getElementById('sai-val').value=c.valor||'';
+  document.getElementById('sai-date').value=c.data||'';
+  document.getElementById('sai-venc').value=c.data_vencimento||'';
+  document.getElementById('sai-status').value=c.status_pagto||'pago';
+  document.getElementById('sai-metodo').value=c.metodo_pagto||'';
+  document.getElementById('sai-fornecedor').value=c.fornecedor_cliente||'';
+  document.getElementById('sai-notas').value=c.notas||'';
+  document.getElementById('sai-recorrencia-tipo').value=c.recorrencia_tipo||'unico';
+  document.getElementById('sai-tipo-comp').value=c.tipo_compromisso||'unico';
+  var pg=document.getElementById('sai-parcelas-group');
+  if(pg)pg.style.display=c.tipo_compromisso==='parcelado'?'block':'none';
+  initSaidaCats(tipo);
+  setTimeout(function(){
+    var catSel=document.getElementById('sai-cat');
+    if(catSel)catSel.value=c.categoria_dre||c.categoria||'';
+    var show=(c.categoria_dre||c.categoria)==='prolabore'||(c.categoria_dre||c.categoria)==='distribuicao_lucro';
+    var sg=document.getElementById('sai-socia-group');
+    if(sg)sg.style.display=show?'block':'none';
+    if(show&&c.socia_id){var ss=document.getElementById('sai-socia-id');if(ss)ss.value=c.socia_id;}
+    if(c.produto_id){var ps=document.getElementById('sai-produto-id');if(ps)ps.value=c.produto_id;}
+    if(c.pago_por_id){var pp=document.getElementById('sai-pago-por');if(pp)pp.value=c.pago_por_id;}
+  },60);
+  var dBtn=document.getElementById('delete-saida');
+  if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  openModal('saida');
+  setTimeout(initSaidaModal,60);
+}
+
+// ── BIND ENTRADA/SAÍDA ───────────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  var btnEnt=document.getElementById('btn-nova-entrada');
+  if(btnEnt)btnEnt.addEventListener('click',function(){
+    document.getElementById('ent-id').value='';
+    document.getElementById('ent-date').value=new Date().toISOString().split('T')[0];
+    var dBtn=document.getElementById('delete-entrada');if(dBtn)dBtn.style.display='none';
+    openModal('entrada');
+  });
+  var btnSai=document.getElementById('btn-nova-saida');
+  if(btnSai)btnSai.addEventListener('click',function(){
+    document.getElementById('sai-id').value='';
+    document.getElementById('sai-date').value=new Date().toISOString().split('T')[0];
+    var dBtn=document.getElementById('delete-saida');if(dBtn)dBtn.style.display='none';
+    openModal('saida');
+    setTimeout(initSaidaModal,60);
+  });
+  var bSaveEnt=document.getElementById('save-entrada');
+  if(bSaveEnt)bSaveEnt.addEventListener('click',saveEntrada);
+  var bSaveSai=document.getElementById('save-saida');
+  if(bSaveSai)bSaveSai.addEventListener('click',saveSaida);
+  var delEnt=document.getElementById('delete-entrada');
+  if(delEnt)delEnt.addEventListener('click',function(){
+    var id=delEnt.dataset.deleteId;if(!id||!confirm('Excluir?'))return;
+    db.from('custos').delete().eq('id',id).then(function(){closeModal('entrada');toast('Excluído!');loadCosts();});
+  });
+  var delSai=document.getElementById('delete-saida');
+  if(delSai)delSai.addEventListener('click',function(){
+    var id=delSai.dataset.deleteId;if(!id||!confirm('Excluir?'))return;
+    db.from('custos').delete().eq('id',id).then(function(){closeModal('saida');toast('Excluído!');loadCosts();});
+  });
+});
+
+// Interceptar clique de edição nos cards da lista
+(function(){
+  var _origHandleClick=handleClick;
+  handleClick=function(e){
+    // Entrada
+    var eEnt=e.target.closest('[data-edit-entrada]');
+    if(eEnt){openEntradaEdit(eEnt.dataset.editEntrada);return;}
+    // Saída
+    var eSai=e.target.closest('[data-edit-saida]');
+    if(eSai){openSaidaEdit(eSai.dataset.editSaida);return;}
+    _origHandleClick(e);
+  };
+})();
 })();
 </script>
 </body>
