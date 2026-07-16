@@ -1562,19 +1562,9 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
               <span class="fin-periodo-lbl">Período:</span>
               <select class="fin-periodo-sel" id="fin-filtro-ano"></select>
               <select class="fin-periodo-sel" id="fin-filtro-mes">
-                <option value="all">Todos os meses (YTD)</option>
-                <option value="1">Janeiro</option>
-                <option value="2">Fevereiro</option>
-                <option value="3">Março</option>
-                <option value="4">Abril</option>
-                <option value="5">Maio</option>
-                <option value="6">Junho</option>
-                <option value="7">Julho</option>
-                <option value="8">Agosto</option>
-                <option value="9">Setembro</option>
-                <option value="10">Outubro</option>
-                <option value="11">Novembro</option>
-                <option value="12">Dezembro</option>
+                <option value="all">Todos os meses</option>
+                <option value="3">Últimos 3 meses</option>
+                <option value="6">Últimos 6 meses</option>
               </select>
               <span class="fin-periodo-badge" id="fin-periodo-label">YTD 2026</span>
             </div>
@@ -7255,8 +7245,8 @@ function initFinPeriodoFiltro(){
     if(!lbl) return;
     var ano = anoSel.value;
     var mes = mesSel.value;
-    var meses = ['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    lbl.textContent = mes==='all' ? 'YTD '+ano : meses[parseInt(mes)]+'/'+ano;
+    var lblMap = {'all':'YTD '+ano,'3':'Últimos 3 meses','6':'Últimos 6 meses'};
+    lbl.textContent = lblMap[mes]||'YTD '+ano;
   }
 
   function onFiltroChange(){
@@ -7281,19 +7271,28 @@ renderFinDashboard = function(){
   // Trocar D.costs e D.pedidos temporariamente pelo período filtrado
   var backupCosts = D.costs;
   var backupPed   = D.pedidos;
+  // Calcular data de corte para "últimos N meses"
+  var dataCorte = null;
+  if(mes==='3'||mes==='6'){
+    dataCorte = new Date();
+    dataCorte.setMonth(dataCorte.getMonth() - parseInt(mes));
+    dataCorte.setDate(1);
+  }
   D.costs = D.costs.filter(function(c){
     if(!c.data) return false;
+    if(dataCorte){
+      return new Date(c.data+'T00:00:00') >= dataCorte;
+    }
     var p=c.data.split('-');
-    if(parseInt(p[0])!==ano) return false;
-    if(mes!=='all'&&parseInt(p[1])!==parseInt(mes)) return false;
-    return true;
+    return parseInt(p[0])===ano;
   });
   D.pedidos = D.pedidos.filter(function(p){
     if(!p.created_at) return false;
+    if(dataCorte){
+      return new Date(p.created_at) >= dataCorte;
+    }
     var pts=p.created_at.split('-');
-    if(parseInt(pts[0])!==ano) return false;
-    if(mes!=='all'&&parseInt(pts[1])!==parseInt(mes)) return false;
-    return true;
+    return parseInt(pts[0])===ano;
   });
   try{ _origRFD(); }
   finally{ D.costs=backupCosts; D.pedidos=backupPed; }
