@@ -7145,14 +7145,19 @@ function openSaidaEdit(id){
   document.getElementById('sai-tipo-comp').value=c.tipo_compromisso||'unico';
   var pg=document.getElementById('sai-parcelas-group');
   if(pg)pg.style.display=c.tipo_compromisso==='parcelado'?'block':'none';
+  // Popular categorias e restaurar valor salvo
+  var catAtual = c.categoria_dre||c.categoria||'';
   initSaidaCats(tipo);
+  // Restaurar categoria imediatamente após popular o select
+  var catSel=document.getElementById('sai-cat');
+  if(catSel && catAtual) catSel.value=catAtual;
+  // Sócia
+  var show=catAtual==='prolabore'||catAtual==='distribuicao_lucro';
+  var sg=document.getElementById('sai-socia-group');
+  if(sg)sg.style.display=show?'block':'none';
+  if(show&&c.socia_id){var ss=document.getElementById('sai-socia-id');if(ss)ss.value=c.socia_id;}
+  // Produto e pago por (podem precisar de init assíncrono)
   setTimeout(function(){
-    var catSel=document.getElementById('sai-cat');
-    if(catSel)catSel.value=c.categoria_dre||c.categoria||'';
-    var show=(c.categoria_dre||c.categoria)==='prolabore'||(c.categoria_dre||c.categoria)==='distribuicao_lucro';
-    var sg=document.getElementById('sai-socia-group');
-    if(sg)sg.style.display=show?'block':'none';
-    if(show&&c.socia_id){var ss=document.getElementById('sai-socia-id');if(ss)ss.value=c.socia_id;}
     if(c.produto_id){var ps=document.getElementById('sai-produto-id');if(ps)ps.value=c.produto_id;}
     if(c.pago_por_id){var pp=document.getElementById('sai-pago-por');if(pp)pp.value=c.pago_por_id;}
   },60);
