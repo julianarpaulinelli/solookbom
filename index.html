@@ -1155,6 +1155,31 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .fin-periodo-sel{padding:6px 12px;font-size:12px;font-weight:600;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--fg);cursor:pointer;outline:none}
 .fin-periodo-sel:focus{border-color:var(--blue)}
 .fin-periodo-badge{padding:4px 12px;font-size:11px;font-weight:700;background:var(--blue-bg,rgba(45,107,228,.12));color:var(--blue);border:1px solid var(--blue-bd,rgba(45,107,228,.25));border-radius:20px;white-space:nowrap}
+
+/* ── SIMULADOR ROI ──────────────────────────────────────── */
+.roi-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--border);padding-bottom:0}
+.roi-tab{padding:9px 20px;font-size:12px;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.roi-tab:hover{color:var(--fg)}
+.roi-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.roi-panel{display:none}
+.roi-panel.active{display:block}
+.roi-layout{display:grid;grid-template-columns:340px 1fr;gap:16px;align-items:start}
+@media(max-width:800px){.roi-layout{grid-template-columns:1fr}}
+.roi-col-inputs{display:flex;flex-direction:column;gap:12px}
+.roi-col-results{display:flex;flex-direction:column;gap:12px}
+.roi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px}
+.roi-card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:14px}
+.roi-result-card{border-color:var(--blue-bd,rgba(45,107,228,.3));background:rgba(45,107,228,.04)}
+.roi-kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.roi-kpi{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px}
+.roi-kpi-label{font-size:10px;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.roi-kpi-value{font-size:20px;font-weight:800;color:var(--fg)}
+.roi-kpi-value.green{color:var(--green)}
+.roi-kpi-value.red{color:var(--red)}
+.roi-kpi-value.amber{color:var(--amber)}
+.roi-kpi-value.blue{color:var(--blue)}
+.roi-explicacao{background:var(--surface);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7}
+.roi-explicacao strong{color:var(--fg)}
 </style>
 </head>
 <body>
@@ -1231,6 +1256,10 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           <div class="nav-item" data-sec="precificacao">
             <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
             <span class="nav-label">Precificação</span>
+          </div>
+          <div class="nav-item" data-sec="roi">
+            <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            <span class="nav-label">Simulador ROI</span>
           </div>
           <div class="nav-item" data-sec="metas">
             <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
@@ -1689,6 +1718,105 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
                 <div class="precif-res-formula" id="precif-formula"></div>
                 <div class="precif-kpis" id="precif-kpis"></div>
                 <div id="precif-alerta" style="display:none" class="precif-alerta-warn"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIMULADOR ROI -->
+        <div class="cw" id="section-roi">
+          <div class="section-header">
+            <h2 class="section-title">Simulador ROI</h2>
+          </div>
+
+          <!-- ABAS -->
+          <div class="roi-tabs">
+            <button class="roi-tab active" data-roitab="investimento">🎯 Investimento Específico</button>
+            <button class="roi-tab" data-roitab="negocio">🏢 Negócio como um Todo</button>
+          </div>
+
+          <!-- ABA 1: INVESTIMENTO ESPECÍFICO -->
+          <div class="roi-panel active" id="roi-panel-investimento">
+            <div class="roi-layout">
+              <div class="roi-col-inputs">
+                <div class="roi-card">
+                  <p class="roi-card-title">📥 Dados do Investimento</p>
+                  <div class="form-group">
+                    <label class="form-label">Nome do investimento<span class="tt-icon" data-tt="roi_nome">?</span></label>
+                    <input class="form-input" id="roi-nome" placeholder="Ex: Máquina de estampa, Campanha marketing...">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Valor investido (R$)<span class="tt-icon" data-tt="roi_valor">?</span></label>
+                    <input class="form-input" id="roi-valor" type="number" step="0.01" placeholder="0,00">
+                  </div>
+                </div>
+                <div class="roi-card">
+                  <p class="roi-card-title">📊 Projeção Mensal</p>
+                  <div class="form-group">
+                    <label class="form-label">Receita gerada por mês (R$)<span class="tt-icon" data-tt="roi_receita">?</span></label>
+                    <input class="form-input" id="roi-receita-mes" type="number" step="0.01" placeholder="0,00">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Custo mensal relacionado (R$)<span class="tt-icon" data-tt="roi_custo_mes">?</span></label>
+                    <input class="form-input" id="roi-custo-mes" type="number" step="0.01" placeholder="0,00">
+                    <p class="prod-seo-hint">Manutenção, operação, insumos ligados a este investimento.</p>
+                  </div>
+                  <button class="btn-add" id="roi-calcular-inv" style="width:100%;margin-top:4px">Calcular ROI</button>
+                </div>
+              </div>
+              <div class="roi-col-results" id="roi-inv-results" style="display:none">
+                <div class="roi-card roi-result-card">
+                  <p class="roi-card-title">📈 Resultados</p>
+                  <div class="roi-kpis" id="roi-inv-kpis"></div>
+                  <div class="roi-explicacao" id="roi-inv-explicacao"></div>
+                </div>
+                <div class="roi-card">
+                  <p class="roi-card-title">📉 Gráfico de retorno</p>
+                  <div id="roi-inv-chart" style="width:100%;overflow-x:auto"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ABA 2: NEGÓCIO -->
+          <div class="roi-panel" id="roi-panel-negocio">
+            <div class="roi-layout">
+              <div class="roi-col-inputs">
+                <div class="roi-card">
+                  <p class="roi-card-title">📥 Dados do Negócio</p>
+                  <div class="form-group">
+                    <label class="form-label">Investimento total (R$)<span class="tt-icon" data-tt="neg_invest">?</span></label>
+                    <input class="form-input" id="neg-investimento" type="number" step="0.01" placeholder="0,00">
+                    <p class="prod-seo-hint" id="neg-invest-hint">Carregando dos lançamentos...</p>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Receita mensal média (R$)<span class="tt-icon" data-tt="neg_receita">?</span></label>
+                    <input class="form-input" id="neg-receita" type="number" step="0.01" placeholder="0,00">
+                    <p class="prod-seo-hint" id="neg-receita-hint">Carregando média dos últimos 3 meses...</p>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Custo + Despesa mensal média (R$)<span class="tt-icon" data-tt="neg_custo">?</span></label>
+                    <input class="form-input" id="neg-custo" type="number" step="0.01" placeholder="0,00">
+                    <p class="prod-seo-hint" id="neg-custo-hint">Carregando média dos últimos 3 meses...</p>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Meta de receita mensal (R$)<span class="tt-icon" data-tt="neg_meta">?</span></label>
+                    <input class="form-input" id="neg-meta" type="number" step="0.01" placeholder="0,00">
+                    <p class="prod-seo-hint">Quanto você quer faturar por mês para o negócio ser saudável.</p>
+                  </div>
+                  <button class="btn-add" id="roi-calcular-neg" style="width:100%;margin-top:4px">Calcular ROI do Negócio</button>
+                </div>
+              </div>
+              <div class="roi-col-results" id="roi-neg-results" style="display:none">
+                <div class="roi-card roi-result-card">
+                  <p class="roi-card-title">📈 Resultados</p>
+                  <div class="roi-kpis" id="roi-neg-kpis"></div>
+                  <div class="roi-explicacao" id="roi-neg-explicacao"></div>
+                </div>
+                <div class="roi-card">
+                  <p class="roi-card-title">📉 Gráfico de projeção</p>
+                  <div id="roi-neg-chart" style="width:100%;overflow-x:auto"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -6694,6 +6822,7 @@ document.addEventListener('DOMContentLoaded',function(){
 if(L&&L.sections){
   L.sections['config']='Configurações';
   L.sections['home']='Dashboard';
+  L.sections['roi']='Simulador ROI';
   L.sections['fiscal']='Calendário Fiscal';
   L.sections['contadora']='Docs Contadora';
   L.sections['projecao']='Projeção de Caixa';
@@ -7312,6 +7441,307 @@ var _origInitFinTabs = initFinTabs;
 initFinTabs = function(){
   _origInitFinTabs();
   setTimeout(initFinPeriodoFiltro, 80);
+};
+
+// ── SIMULADOR ROI ────────────────────────────────────────
+Object.assign(TOOLTIPS, {
+  roi_nome: 'Dê um nome para identificar este investimento. Ex: Máquina de estampa, Campanha Instagram.',
+  roi_valor: 'Quanto você gastou (ou vai gastar) neste investimento. É o valor que precisa ser recuperado.',
+  roi_receita: 'Quanto este investimento gera de receita por mês. Se for uma máquina, é o faturamento adicional que ela permite. Se for marketing, é o retorno em vendas.',
+  roi_custo_mes: 'Custos mensais diretamente relacionados a este investimento. Ex: manutenção da máquina, insumos, taxa da plataforma.',
+  neg_invest: 'Total já investido no negócio — puxado automaticamente dos lançamentos do tipo Investimento. Você pode editar para simular cenários.',
+  neg_receita: 'Receita média mensal dos últimos 3 meses, puxada dos lançamentos. Edite para projetar cenários futuros.',
+  neg_custo: 'Média mensal de custos + despesas dos últimos 3 meses. Edite para simular reduções ou aumentos.',
+  neg_meta: 'A receita mensal que você quer atingir para o negócio ser saudável. Ajuda a calcular quanto falta para chegar lá.'
+});
+
+function initROI(){
+  // Abas
+  var tabs = document.querySelectorAll('.roi-tab');
+  tabs.forEach(function(tab){
+    if(tab._roiInit) return;
+    tab._roiInit = true;
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){t.classList.remove('active');});
+      document.querySelectorAll('.roi-panel').forEach(function(p){p.classList.remove('active');});
+      tab.classList.add('active');
+      var panel = document.getElementById('roi-panel-'+tab.dataset.roitab);
+      if(panel) panel.classList.add('active');
+      if(tab.dataset.roitab === 'negocio') preencherDadosNegocio();
+    });
+  });
+
+  // Botões calcular
+  var btnInv = document.getElementById('roi-calcular-inv');
+  if(btnInv && !btnInv._init){
+    btnInv._init = true;
+    btnInv.addEventListener('click', calcularROIInvestimento);
+  }
+  var btnNeg = document.getElementById('roi-calcular-neg');
+  if(btnNeg && !btnNeg._init){
+    btnNeg._init = true;
+    btnNeg.addEventListener('click', calcularROINegocio);
+  }
+}
+
+// ── ABA 1: INVESTIMENTO ESPECÍFICO ───────────────────────
+function calcularROIInvestimento(){
+  var nome = (document.getElementById('roi-nome')||{value:''}).value || 'Investimento';
+  var valor = parseFloat((document.getElementById('roi-valor')||{value:0}).value)||0;
+  var receitaMes = parseFloat((document.getElementById('roi-receita-mes')||{value:0}).value)||0;
+  var custoMes = parseFloat((document.getElementById('roi-custo-mes')||{value:0}).value)||0;
+
+  if(!valor){ toast('Informe o valor investido'); return; }
+  if(!receitaMes){ toast('Informe a receita mensal estimada'); return; }
+
+  var lucroMes = receitaMes - custoMes;
+  var breakeven = lucroMes > 0 ? Math.ceil(valor / lucroMes) : null;
+  var roi12 = valor > 0 ? ((lucroMes * 12 - valor) / valor * 100) : 0;
+  var roi6  = valor > 0 ? ((lucroMes * 6  - valor) / valor * 100) : 0;
+
+  // KPIs
+  var kpisEl = document.getElementById('roi-inv-kpis');
+  if(kpisEl) kpisEl.innerHTML =
+    roiKpi('Lucro líquido/mês', mo(lucroMes), lucroMes>=0?'green':'red', '= Receita − Custo mensal') +
+    roiKpi('Breakeven', breakeven ? breakeven+'m' : '∞', breakeven&&breakeven<=12?'green':breakeven&&breakeven<=24?'amber':'red', 'Meses para recuperar o investimento') +
+    roiKpi('ROI em 6 meses', roi6.toFixed(1)+'%', roi6>=0?'green':'red', 'Retorno sobre o valor investido') +
+    roiKpi('ROI em 12 meses', roi12.toFixed(1)+'%', roi12>=0?'green':'red', 'Retorno sobre o valor investido');
+
+  // Explicação
+  var expEl = document.getElementById('roi-inv-explicacao');
+  if(expEl){
+    var msg = '';
+    if(!breakeven){
+      msg = '⚠️ Com lucro mensal negativo ou zero, <strong>o investimento não se paga sozinho</strong>. Revise a receita esperada ou reduza os custos mensais.';
+    } else if(breakeven <= 6){
+      msg = '🟢 Ótimo retorno! <strong>"'+nome+'"</strong> se paga em <strong>'+breakeven+' meses</strong> — menos de 6 meses é excelente para um negócio de moda.';
+    } else if(breakeven <= 12){
+      msg = '🟡 Retorno razoável. <strong>"'+nome+'"</strong> se paga em <strong>'+breakeven+' meses</strong>. Dentro do ano — aceitável dependendo do tipo de investimento.';
+    } else if(breakeven <= 24){
+      msg = '🟠 Retorno lento. <strong>"'+nome+'"</strong> leva <strong>'+breakeven+' meses</strong> para se pagar. Avalie se vale manter ou se dá para aumentar a receita gerada.';
+    } else {
+      msg = '🔴 Retorno muito longo: <strong>'+breakeven+' meses</strong>. Considere renegociar o investimento ou buscar formas de aumentar o retorno mensal.';
+    }
+    expEl.innerHTML = msg;
+  }
+
+  // Gráfico
+  renderROIChart('roi-inv-chart', valor, lucroMes, Math.min(breakeven||36, 36), nome);
+
+  // Mostrar resultados
+  var res = document.getElementById('roi-inv-results');
+  if(res) res.style.display = 'flex';
+}
+
+function roiKpi(label, value, cls, hint){
+  return '<div class="roi-kpi">'+
+    '<div class="roi-kpi-label">'+label+
+      (hint?'<span class="tt-icon" style="cursor:help" title="'+hint+'">?</span>':'')+
+    '</div>'+
+    '<div class="roi-kpi-value '+cls+'">'+value+'</div>'+
+  '</div>';
+}
+
+function renderROIChart(elId, investimento, lucroMes, meses, nome){
+  var el = document.getElementById(elId);
+  if(!el) return;
+
+  var W = Math.max(el.offsetWidth||500, 400);
+  var H = 200;
+  var PAD = {t:30,r:20,b:40,l:80};
+  var cW = W-PAD.l-PAD.r;
+  var cH = H-PAD.t-PAD.b;
+
+  // Dados: saldo acumulado mês a mês
+  var pontos = [];
+  for(var i=0; i<=meses; i++){
+    pontos.push({mes:i, saldo: -investimento + lucroMes*i});
+  }
+
+  var minS = Math.min.apply(null, pontos.map(function(p){return p.saldo;}));
+  var maxS = Math.max.apply(null, pontos.map(function(p){return p.saldo;}));
+  if(minS===maxS){minS=minS-1000;maxS=maxS+1000;}
+  if(minS>0) minS=-investimento*0.1;
+  if(maxS<0) maxS=investimento*0.1;
+  var range = maxS-minS;
+
+  function xPos(i){ return PAD.l + (i/meses)*cW; }
+  function yPos(v){ return PAD.t + cH - ((v-minS)/range*cH); }
+
+  var y0 = yPos(0);
+  var pts = pontos.map(function(p){ return xPos(p.mes)+','+yPos(p.saldo); }).join(' ');
+
+  // Área
+  var areaPath = 'M '+xPos(0)+' '+yPos(pontos[0].saldo)+
+    pontos.map(function(p){ return ' L '+xPos(p.mes)+' '+yPos(p.saldo); }).join('')+
+    ' L '+xPos(meses)+' '+Math.min(y0,PAD.t+cH)+
+    ' L '+xPos(0)+' '+Math.min(y0,PAD.t+cH)+' Z';
+
+  // Labels eixo Y
+  var yLabels = [minS, minS+range*0.5, maxS].map(function(v){
+    var txt = v>=0?'+'+mo(v):mo(v);
+    return '<text x="'+(PAD.l-6)+'" y="'+(yPos(v)+4)+'" text-anchor="end" font-size="9" fill="var(--muted)">'+txt+'</text>';
+  }).join('');
+
+  // Labels eixo X
+  var step = Math.max(1, Math.floor(meses/6));
+  var xLabels = pontos.filter(function(_,i){return i%step===0;}).map(function(p){
+    return '<text x="'+xPos(p.mes)+'" y="'+(PAD.t+cH+16)+'" text-anchor="middle" font-size="9" fill="var(--muted)">'+
+      (p.mes===0?'Hoje':'M'+p.mes)+'</text>';
+  }).join('');
+
+  // Linha zero
+  var zeroLine = '<line x1="'+PAD.l+'" y1="'+y0+'" x2="'+(PAD.l+cW)+'" y2="'+y0+'" stroke="var(--green)" stroke-width="1" stroke-dasharray="4,3" opacity=".7"/>'+
+    '<text x="'+(PAD.l-4)+'" y="'+(y0+3)+'" text-anchor="end" font-size="8" fill="var(--green)">R$0</text>';
+
+  // Ponto de breakeven
+  var bePoint = '';
+  var beIndex = pontos.findIndex(function(p){return p.saldo>=0;});
+  if(beIndex>0){
+    bePoint = '<circle cx="'+xPos(beIndex)+'" cy="'+yPos(pontos[beIndex].saldo)+'" r="5" fill="var(--green)" stroke="var(--card)" stroke-width="2"/>'+
+      '<text x="'+xPos(beIndex)+'" y="'+(yPos(pontos[beIndex].saldo)-10)+'" text-anchor="middle" font-size="9" fill="var(--green)" font-weight="bold">✓ Breakeven</text>';
+  }
+
+  el.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:'+H+'px">'+
+    '<defs>'+
+      '<linearGradient id="roiGradPos" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0%" stop-color="var(--green)" stop-opacity=".3"/>'+
+        '<stop offset="100%" stop-color="var(--green)" stop-opacity=".02"/>'+
+      '</linearGradient>'+
+      '<linearGradient id="roiGradNeg" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0%" stop-color="var(--red)" stop-opacity=".02"/>'+
+        '<stop offset="100%" stop-color="var(--red)" stop-opacity=".25"/>'+
+      '</linearGradient>'+
+    '</defs>'+
+    '<line x1="'+PAD.l+'" y1="'+PAD.t+'" x2="'+PAD.l+'" y2="'+(PAD.t+cH)+'" stroke="var(--border)" stroke-width="1"/>'+
+    zeroLine+
+    '<path d="'+areaPath+'" fill="url(#roiGradPos)" opacity=".7"/>'+
+    '<polyline points="'+pts+'" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linejoin="round"/>'+
+    bePoint+
+    yLabels+xLabels+
+  '</svg>';
+}
+
+// ── ABA 2: NEGÓCIO COMO UM TODO ──────────────────────────
+function preencherDadosNegocio(){
+  var now = new Date();
+  // Calcular médias dos últimos 3 meses
+  var meses3 = [];
+  for(var i=2; i>=0; i--){
+    var d = new Date(now); d.setMonth(d.getMonth()-i);
+    meses3.push(d.getFullYear()+'-'+(String(d.getMonth()+1).padStart(2,'0')));
+  }
+
+  // Investimento total
+  var totalInvest = D.costs.filter(function(c){
+    return c.tipo_lancamento==='investimento'||c.tipo==='investimento';
+  }).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+
+  // Receita mensal média (últimos 3 meses)
+  var recMeses = meses3.map(function(m){
+    return D.costs.filter(function(c){return (c.tipo_lancamento==='receita'||c.tipo==='receita')&&c.data&&c.data.startsWith(m);})
+      .reduce(function(a,c){return a+parseFloat(c.valor||0);},0) +
+      D.pedidos.filter(function(p){return p.created_at&&p.created_at.startsWith(m);})
+      .reduce(function(a,p){return a+parseFloat(p.valor_total||0);},0);
+  });
+  var mediaReceita = recMeses.reduce(function(a,v){return a+v;},0)/3;
+
+  // Custo + Despesa mensal média
+  var custMeses = meses3.map(function(m){
+    return D.costs.filter(function(c){
+      var t=c.tipo_lancamento||c.tipo||'';
+      return (t==='custo'||t==='despesa')&&c.data&&c.data.startsWith(m);
+    }).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  });
+  var mediaCusto = custMeses.reduce(function(a,v){return a+v;},0)/3;
+
+  // Preencher campos
+  var invEl = document.getElementById('neg-investimento');
+  if(invEl && !invEl._userEdited) invEl.value = totalInvest.toFixed(2);
+  var recEl = document.getElementById('neg-receita');
+  if(recEl && !recEl._userEdited) recEl.value = mediaReceita.toFixed(2);
+  var cusEl = document.getElementById('neg-custo');
+  if(cusEl && !cusEl._userEdited) cusEl.value = mediaCusto.toFixed(2);
+
+  // Hints
+  var ih = document.getElementById('neg-invest-hint');
+  if(ih) ih.textContent = 'Total dos lançamentos tipo Investimento: '+mo(totalInvest);
+  var rh = document.getElementById('neg-receita-hint');
+  if(rh) rh.textContent = 'Média dos últimos 3 meses: '+meses3.map(function(m,i){return mo(recMeses[i]);}).join(', ');
+  var ch = document.getElementById('neg-custo-hint');
+  if(ch) ch.textContent = 'Média dos últimos 3 meses: '+meses3.map(function(m,i){return mo(custMeses[i]);}).join(', ');
+
+  // Marcar que foram editados pelo usuário para não sobrescrever
+  [invEl,recEl,cusEl].forEach(function(el){
+    if(el&&!el._editInit){el._editInit=true;el.addEventListener('input',function(){el._userEdited=true;});}
+  });
+}
+
+function calcularROINegocio(){
+  var investimento = parseFloat((document.getElementById('neg-investimento')||{value:0}).value)||0;
+  var receitaMes   = parseFloat((document.getElementById('neg-receita')||{value:0}).value)||0;
+  var custoMes     = parseFloat((document.getElementById('neg-custo')||{value:0}).value)||0;
+  var metaMes      = parseFloat((document.getElementById('neg-meta')||{value:0}).value)||0;
+
+  if(!investimento){ toast('Informe o investimento total'); return; }
+  if(!receitaMes)  { toast('Informe a receita mensal média'); return; }
+
+  var lucroMes    = receitaMes - custoMes;
+  var margemAtual = receitaMes > 0 ? lucroMes/receitaMes*100 : 0;
+  var breakeven   = lucroMes > 0 ? Math.ceil(investimento/lucroMes) : null;
+  var roi12       = investimento > 0 ? ((lucroMes*12-investimento)/investimento*100) : 0;
+  var faltaMeta   = metaMes > 0 ? Math.max(0, metaMes-receitaMes) : null;
+  var mesesMeta   = faltaMeta&&lucroMes>0 ? Math.ceil(faltaMeta/lucroMes) : null;
+
+  // KPIs
+  var kpisEl = document.getElementById('roi-neg-kpis');
+  if(kpisEl) kpisEl.innerHTML =
+    roiKpi('Lucro líquido/mês', mo(lucroMes), lucroMes>=0?'green':'red', 'Receita − (Custos + Despesas)') +
+    roiKpi('Margem atual', margemAtual.toFixed(1)+'%', margemAtual>=20?'green':margemAtual>=0?'amber':'red', 'Percentual da receita que vira lucro') +
+    roiKpi('Breakeven do negócio', breakeven?breakeven+'m':'∞', breakeven&&breakeven<=18?'green':breakeven&&breakeven<=36?'amber':'red', 'Meses para recuperar todo o investimento') +
+    roiKpi('ROI em 12 meses', roi12.toFixed(1)+'%', roi12>=0?'green':'red', 'Retorno sobre o total investido em 1 ano') +
+    (metaMes?roiKpi('Falta para meta', mo(faltaMeta), faltaMeta===0?'green':'amber', 'Quanto falta de receita mensal para atingir a meta'):'') +
+    (mesesMeta?roiKpi('Meses para meta', mesesMeta+'m', mesesMeta<=6?'green':mesesMeta<=12?'amber':'red', 'Se mantiver o crescimento atual'):'');
+
+  // Explicação
+  var expEl = document.getElementById('roi-neg-explicacao');
+  if(expEl){
+    var linhas = [];
+    if(lucroMes < 0){
+      linhas.push('⚠️ O negócio ainda gasta mais do que gera. Cada mês o prejuízo é de <strong>'+mo(Math.abs(lucroMes))+'</strong>.');
+    } else {
+      linhas.push('✅ O negócio gera <strong>'+mo(lucroMes)+'/mês</strong> de lucro líquido.');
+    }
+    if(breakeven){
+      linhas.push('📅 Com esse ritmo, o investimento total se recupera em <strong>'+breakeven+' meses</strong>'+
+        (breakeven <= 24?' ('+Math.ceil(breakeven/12)+' ano'+(breakeven>12?'s':'')+')':'')+'. ');
+    }
+    if(margemAtual < 15 && margemAtual >= 0){
+      linhas.push('💡 Margem de <strong>'+margemAtual.toFixed(1)+'%</strong> está baixa. Para uma marca de moda D2C, o ideal é acima de 30%. Revise custos ou preços.');
+    } else if(margemAtual >= 30){
+      linhas.push('💚 Margem saudável! <strong>'+margemAtual.toFixed(1)+'%</strong> é um bom resultado para moda D2C.');
+    }
+    if(metaMes && faltaMeta > 0){
+      linhas.push('🎯 Para atingir a meta de <strong>'+mo(metaMes)+'/mês</strong>, faltam <strong>'+mo(faltaMeta)+'</strong> de receita mensal.');
+    }
+    expEl.innerHTML = linhas.join('<br><br>');
+  }
+
+  // Gráfico
+  renderROIChart('roi-neg-chart', investimento, lucroMes, Math.min(breakeven||36, 48), 'Negócio SLB');
+
+  var res = document.getElementById('roi-neg-results');
+  if(res) res.style.display = 'flex';
+}
+
+// Hook openSection para ROI
+var _origOpenSectionROI = openSection;
+openSection = function(name){
+  _origOpenSectionROI(name);
+  if(name==='roi') setTimeout(function(){
+    initROI();
+    preencherDadosNegocio();
+  }, 80);
 };
 })();
 </script>
