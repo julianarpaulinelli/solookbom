@@ -7832,7 +7832,7 @@ function renderHistoricoROI(tipo, lista){
           tags.map(function(t){return '<span class="roi-hist-tag '+t.cls+'">'+t.l+'</span>';}).join('')+
         '</div>'+
       '</div>'+
-      '<button class="del" onclick="db.from(\'simulacoes_roi\').delete().eq(\'id\',\''+s.id+'\').then(function(){carregarHistoricoROI(\''+tipo+'\');})" title="Excluir">×</button>'+
+      '<button class="del roi-hist-del" data-roi-del-id="'+s.id+'" data-roi-del-tipo="'+tipo+'" style="font-size:11px;padding:4px 10px">🗑 Excluir</button>'+
     '</div>';
   }).join('');
 }
@@ -7874,6 +7874,21 @@ calcularROINegocio = function(){
     resultados: {lucroMes,margemAtual,breakeven,roi12}
   };
 };
+
+// Event delegation para excluir do histórico
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.roi-hist-del');
+  if(!btn) return;
+  var id   = btn.dataset.roiDelId;
+  var tipo = btn.dataset.roiDelTipo;
+  if(!id||!tipo) return;
+  if(!confirm('Excluir esta simulação do histórico?')) return;
+  db.from('simulacoes_roi').delete().eq('id',id).then(function(res){
+    if(res&&res.error){ toast('Erro: '+res.error.message); return; }
+    toast('Simulação excluída!');
+    carregarHistoricoROI(tipo);
+  });
+});
 
 // Bind botões salvar e carregar histórico ao abrir
 var _origInitROI = initROI;
