@@ -1180,6 +1180,20 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .roi-kpi-value.blue{color:var(--blue)}
 .roi-explicacao{background:var(--surface);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7}
 .roi-explicacao strong{color:var(--fg)}
+
+/* ── ROI HISTÓRICO ──────────────────────────────────────── */
+.roi-save-btn{background:rgba(39,192,138,.1);color:var(--green);border:1px solid rgba(39,192,138,.3) !important}
+.roi-save-btn:hover{background:rgba(39,192,138,.2) !important}
+.roi-historico-wrap{margin-top:4px}
+.roi-hist-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.roi-hist-info{flex:1}
+.roi-hist-nome{font-size:13px;font-weight:700;color:var(--fg);margin-bottom:3px}
+.roi-hist-data{font-size:10px;color:var(--muted);margin-bottom:6px}
+.roi-hist-tags{display:flex;gap:6px;flex-wrap:wrap}
+.roi-hist-tag{font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface);color:var(--muted);border:1px solid var(--border)}
+.roi-hist-tag.green{color:var(--green);background:rgba(39,192,138,.08);border-color:rgba(39,192,138,.2)}
+.roi-hist-tag.red{color:var(--red);background:rgba(224,82,82,.08);border-color:rgba(224,82,82,.2)}
+.roi-hist-tag.amber{color:var(--amber);background:rgba(230,162,46,.08);border-color:rgba(230,162,46,.2)}
 </style>
 </head>
 <body>
@@ -1769,12 +1783,18 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
                   <p class="roi-card-title">📈 Resultados</p>
                   <div class="roi-kpis" id="roi-inv-kpis"></div>
                   <div class="roi-explicacao" id="roi-inv-explicacao"></div>
+                  <button class="btn-sec roi-save-btn" id="roi-salvar-inv" style="margin-top:12px;width:100%">💾 Salvar simulação</button>
                 </div>
                 <div class="roi-card">
                   <p class="roi-card-title">📉 Gráfico de retorno</p>
                   <div id="roi-inv-chart" style="width:100%;overflow-x:auto"></div>
                 </div>
               </div>
+            </div>
+            <!-- HISTÓRICO -->
+            <div class="roi-historico-wrap" id="roi-inv-historico-wrap" style="display:none">
+              <p class="roi-card-title" style="margin:16px 0 8px">🕓 Histórico de simulações</p>
+              <div id="roi-inv-historico"></div>
             </div>
           </div>
 
@@ -1812,12 +1832,18 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
                   <p class="roi-card-title">📈 Resultados</p>
                   <div class="roi-kpis" id="roi-neg-kpis"></div>
                   <div class="roi-explicacao" id="roi-neg-explicacao"></div>
+                  <button class="btn-sec roi-save-btn" id="roi-salvar-neg" style="margin-top:12px;width:100%">💾 Salvar simulação</button>
                 </div>
                 <div class="roi-card">
                   <p class="roi-card-title">📉 Gráfico de projeção</p>
                   <div id="roi-neg-chart" style="width:100%;overflow-x:auto"></div>
                 </div>
               </div>
+            </div>
+            <!-- HISTÓRICO -->
+            <div class="roi-historico-wrap" id="roi-neg-historico-wrap" style="display:none">
+              <p class="roi-card-title" style="margin:16px 0 8px">🕓 Histórico de simulações</p>
+              <div id="roi-neg-historico"></div>
             </div>
           </div>
         </div>
@@ -7742,6 +7768,130 @@ openSection = function(name){
     initROI();
     preencherDadosNegocio();
   }, 80);
+};
+
+// ── ROI: SALVAR E HISTÓRICO ──────────────────────────────
+var _roiUltimaSimInv = null;
+var _roiUltimaSimNeg = null;
+
+function salvarSimulacaoROI(tipo){
+  var sim = tipo==='investimento' ? _roiUltimaSimInv : _roiUltimaSimNeg;
+  if(!sim){ toast('Calcule a simulação antes de salvar'); return; }
+
+  var payload = {
+    tipo: tipo,
+    nome: sim.nome || (tipo==='investimento'?'Investimento':'Negócio SLB'),
+    inputs: sim.inputs,
+    resultados: sim.resultados,
+    criado_por: me || null
+  };
+
+  db.from('simulacoes_roi').insert(payload).then(function(res){
+    if(res&&res.error){ toast('Erro ao salvar: '+res.error.message); return; }
+    toast('Simulação salva! 💾');
+    carregarHistoricoROI(tipo);
+  });
+}
+
+function carregarHistoricoROI(tipo){
+  db.from('simulacoes_roi').select('*').eq('tipo',tipo)
+    .order('created_at',{ascending:false}).limit(5)
+    .then(function(res){
+      if(res.error) return;
+      renderHistoricoROI(tipo, res.data||[]);
+    });
+}
+
+function renderHistoricoROI(tipo, lista){
+  var wrap = document.getElementById('roi-'+tipo.replace('investimento','inv').replace('negocio','neg')+'-historico-wrap');
+  var el   = document.getElementById('roi-'+tipo.replace('investimento','inv').replace('negocio','neg')+'-historico');
+  if(!wrap||!el) return;
+
+  if(!lista.length){
+    wrap.style.display='none';
+    return;
+  }
+  wrap.style.display='block';
+
+  el.innerHTML = lista.map(function(s){
+    var r = s.resultados||{};
+    var inp = s.inputs||{};
+    var data = new Date(s.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    var tags = [];
+    if(r.lucroMes!==undefined) tags.push({l:'Lucro/mês: '+mo(r.lucroMes), cls: r.lucroMes>=0?'green':'red'});
+    if(r.breakeven)            tags.push({l:'Breakeven: '+r.breakeven+'m', cls: r.breakeven<=12?'green':r.breakeven<=24?'amber':'red'});
+    if(r.roi12!==undefined)    tags.push({l:'ROI 12m: '+r.roi12.toFixed(1)+'%', cls: r.roi12>=0?'green':'red'});
+    if(r.margemAtual!==undefined) tags.push({l:'Margem: '+r.margemAtual.toFixed(1)+'%', cls: r.margemAtual>=20?'green':'amber'});
+    if(inp.valor)              tags.push({l:'Invest.: '+mo(inp.valor), cls:''});
+
+    return '<div class="roi-hist-card">'+
+      '<div class="roi-hist-info">'+
+        '<div class="roi-hist-nome">'+(s.nome||'—')+'</div>'+
+        '<div class="roi-hist-data">'+data+'</div>'+
+        '<div class="roi-hist-tags">'+
+          tags.map(function(t){return '<span class="roi-hist-tag '+t.cls+'">'+t.l+'</span>';}).join('')+
+        '</div>'+
+      '</div>'+
+      '<button class="del" onclick="db.from(\'simulacoes_roi\').delete().eq(\'id\',\''+s.id+'\').then(function(){carregarHistoricoROI(\''+tipo+'\');})" title="Excluir">×</button>'+
+    '</div>';
+  }).join('');
+}
+
+// Interceptar calcularROI para guardar última simulação
+var _origCalcInv = calcularROIInvestimento;
+calcularROIInvestimento = function(){
+  _origCalcInv();
+  // Guardar dados para salvar depois
+  var nome      = (document.getElementById('roi-nome')||{value:''}).value||'Investimento';
+  var valor     = parseFloat((document.getElementById('roi-valor')||{value:0}).value)||0;
+  var receitaMes= parseFloat((document.getElementById('roi-receita-mes')||{value:0}).value)||0;
+  var custoMes  = parseFloat((document.getElementById('roi-custo-mes')||{value:0}).value)||0;
+  var lucroMes  = receitaMes-custoMes;
+  var breakeven = lucroMes>0?Math.ceil(valor/lucroMes):null;
+  var roi12     = valor>0?((lucroMes*12-valor)/valor*100):0;
+  var roi6      = valor>0?((lucroMes*6-valor)/valor*100):0;
+  _roiUltimaSimInv = {
+    nome: nome,
+    inputs:     {valor,receitaMes,custoMes},
+    resultados: {lucroMes,breakeven,roi12,roi6}
+  };
+};
+
+var _origCalcNeg = calcularROINegocio;
+calcularROINegocio = function(){
+  _origCalcNeg();
+  var investimento= parseFloat((document.getElementById('neg-investimento')||{value:0}).value)||0;
+  var receitaMes  = parseFloat((document.getElementById('neg-receita')||{value:0}).value)||0;
+  var custoMes    = parseFloat((document.getElementById('neg-custo')||{value:0}).value)||0;
+  var metaMes     = parseFloat((document.getElementById('neg-meta')||{value:0}).value)||0;
+  var lucroMes    = receitaMes-custoMes;
+  var margemAtual = receitaMes>0?lucroMes/receitaMes*100:0;
+  var breakeven   = lucroMes>0?Math.ceil(investimento/lucroMes):null;
+  var roi12       = investimento>0?((lucroMes*12-investimento)/investimento*100):0;
+  _roiUltimaSimNeg = {
+    nome: 'Negócio SLB — '+new Date().toLocaleDateString('pt-BR',{month:'short',year:'numeric'}),
+    inputs:     {investimento,receitaMes,custoMes,metaMes},
+    resultados: {lucroMes,margemAtual,breakeven,roi12}
+  };
+};
+
+// Bind botões salvar e carregar histórico ao abrir
+var _origInitROI = initROI;
+initROI = function(){
+  _origInitROI();
+  var btnInv = document.getElementById('roi-salvar-inv');
+  if(btnInv&&!btnInv._saveInit){
+    btnInv._saveInit=true;
+    btnInv.addEventListener('click',function(){salvarSimulacaoROI('investimento');});
+  }
+  var btnNeg = document.getElementById('roi-salvar-neg');
+  if(btnNeg&&!btnNeg._saveInit){
+    btnNeg._saveInit=true;
+    btnNeg.addEventListener('click',function(){salvarSimulacaoROI('negocio');});
+  }
+  // Carregar histórico de ambos
+  carregarHistoricoROI('investimento');
+  carregarHistoricoROI('negocio');
 };
 })();
 </script>
