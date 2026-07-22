@@ -1194,6 +1194,56 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .roi-hist-tag.green{color:var(--green);background:rgba(39,192,138,.08);border-color:rgba(39,192,138,.2)}
 .roi-hist-tag.red{color:var(--red);background:rgba(224,82,82,.08);border-color:rgba(224,82,82,.2)}
 .roi-hist-tag.amber{color:var(--amber);background:rgba(230,162,46,.08);border-color:rgba(230,162,46,.2)}
+
+/* ── DIVISÃO DE SAÍDAS ──────────────────────────────────── */
+.div-layout{display:grid;grid-template-columns:380px 1fr;gap:16px;align-items:start}
+@media(max-width:900px){.div-layout{grid-template-columns:1fr}}
+.div-col-left{display:flex;flex-direction:column;gap:12px}
+.div-col-right{display:flex;flex-direction:column;gap:12px}
+.div-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.div-card-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px}
+.div-result-card{border-color:rgba(45,107,228,.3);background:rgba(45,107,228,.03)}
+/* Saída item */
+.div-saida-item{display:flex;align-items:center;gap:8px;padding:8px 6px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.div-saida-item:hover{background:var(--surface)}
+.div-saida-item:last-child{border-bottom:none}
+.div-saida-check{width:16px;height:16px;accent-color:var(--blue);cursor:pointer;flex-shrink:0}
+.div-saida-info{flex:1;min-width:0}
+.div-saida-desc{font-size:12px;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.div-saida-meta{font-size:10px;color:var(--muted);margin-top:1px}
+.div-saida-val{font-size:12px;font-weight:700;color:var(--fg);white-space:nowrap}
+.div-saida-pago{font-size:9px;color:var(--blue);margin-top:2px;text-align:right}
+/* Total selecionado */
+.div-total-sel{display:flex;justify-content:space-between;align-items:center;padding:10px 6px 0;border-top:1px solid var(--border);margin-top:8px;font-size:12px;color:var(--muted)}
+.div-total-val{font-size:16px;font-weight:800;color:var(--fg)}
+/* Modo config */
+.div-socio-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.div-socio-avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.div-socio-nome{flex:1;font-size:12px;font-weight:600;color:var(--fg)}
+.div-socio-inp{width:90px;text-align:right}
+.div-restante{font-size:11px;padding:6px 10px;border-radius:6px;margin-top:4px;text-align:center}
+.div-restante.ok{background:rgba(39,192,138,.1);color:var(--green)}
+.div-restante.err{background:rgba(224,82,82,.1);color:var(--red)}
+/* Débitos */
+.div-debito-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:8px;margin-bottom:8px;background:var(--surface);border:1px solid var(--border)}
+.div-debito-item.pago{opacity:.5;text-decoration:line-through}
+.div-debito-de{font-size:13px;font-weight:700;color:var(--fg)}
+.div-debito-para{font-size:11px;color:var(--muted);margin-top:2px}
+.div-debito-val{font-size:16px;font-weight:800;color:var(--red);white-space:nowrap}
+.div-debito-pago-btn{font-size:10px;padding:3px 10px;margin-left:10px;background:rgba(39,192,138,.1);color:var(--green);border:1px solid rgba(39,192,138,.3);border-radius:5px;cursor:pointer;white-space:nowrap}
+/* Participação */
+.div-part-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.div-part-nome{width:100px;font-size:12px;font-weight:600;color:var(--fg);flex-shrink:0}
+.div-part-bar-wrap{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.div-part-bar{height:100%;border-radius:4px;background:var(--blue);transition:width .4s}
+.div-part-val{font-size:11px;color:var(--muted);white-space:nowrap;width:90px;text-align:right}
+/* Histórico */
+.div-hist-item{padding:12px 14px;border-radius:8px;border:1px solid var(--border);margin-bottom:8px;background:var(--surface)}
+.div-hist-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.div-hist-nome{font-size:13px;font-weight:700;color:var(--fg)}
+.div-hist-data{font-size:10px;color:var(--muted)}
+.div-hist-tags{display:flex;gap:6px;flex-wrap:wrap}
+.div-hist-tag{font-size:10px;padding:2px 8px;border-radius:4px;background:var(--card);color:var(--muted);border:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -1595,6 +1645,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           <div class="fin-tabs">
             <button class="fin-tab active" data-ftab="lancamentos">📋 Lançamentos</button>
             <button class="fin-tab" data-ftab="dre">📊 DRE</button>
+            <button class="fin-tab" data-ftab="divisao">🤝 Divisão</button>
           </div>
 
           <!-- PAINEL: LANÇAMENTOS -->
@@ -1679,6 +1730,101 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             <div class="dre-table" id="dre-table"></div>
             <div class="dre-kpis" id="dre-kpis"></div>
           </div><!-- fim dre -->
+
+          <!-- PAINEL: DIVISÃO DE SAÍDAS -->
+          <div id="fin-panel-divisao" class="fin-panel-content" style="display:none">
+
+            <div class="div-layout">
+
+              <!-- COLUNA ESQUERDA: Seleção e configuração -->
+              <div class="div-col-left">
+
+                <!-- Filtro de período -->
+                <div class="div-card">
+                  <p class="div-card-title">📅 Período</p>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">De</label>
+                      <input class="form-input" id="div-data-ini" type="date">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Até</label>
+                      <input class="form-input" id="div-data-fim" type="date">
+                    </div>
+                  </div>
+                  <button class="btn-sec" id="div-filtrar" style="width:100%">🔍 Buscar saídas</button>
+                </div>
+
+                <!-- Lista de saídas para selecionar -->
+                <div class="div-card">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                    <p class="div-card-title" style="margin:0">📋 Saídas disponíveis</p>
+                    <div style="display:flex;gap:6px">
+                      <button class="btn-sec" id="div-sel-todas" style="font-size:10px;padding:3px 8px">✓ Todas</button>
+                      <button class="btn-sec" id="div-desel-todas" style="font-size:10px;padding:3px 8px">✗ Nenhuma</button>
+                    </div>
+                  </div>
+                  <div id="div-saidas-lista" style="max-height:300px;overflow-y:auto">
+                    <p class="empty" style="font-size:11px">Selecione um período e clique em Buscar</p>
+                  </div>
+                  <div class="div-total-sel" id="div-total-sel" style="display:none">
+                    <span>Total selecionado:</span>
+                    <span class="div-total-val" id="div-total-val">R$ 0,00</span>
+                  </div>
+                </div>
+
+                <!-- Modo de divisão -->
+                <div class="div-card">
+                  <p class="div-card-title">⚖️ Modo de divisão</p>
+                  <div class="form-group">
+                    <select class="form-select" id="div-modo">
+                      <option value="igual">Por igual (25% cada)</option>
+                      <option value="percentual">Por percentual (%)</option>
+                      <option value="valor">Por valor (R$)</option>
+                    </select>
+                  </div>
+                  <div id="div-modo-config" style="display:none">
+                    <div id="div-socios-config"></div>
+                    <div class="div-restante" id="div-restante" style="display:none">
+                      <span id="div-restante-lbl"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Nome da divisão</label>
+                  <input class="form-input" id="div-nome" placeholder="Ex: Despesas Julho 2026">
+                </div>
+                <button class="btn-add" id="div-calcular" style="width:100%">Calcular divisão</button>
+
+              </div>
+
+              <!-- COLUNA DIREITA: Resultado -->
+              <div class="div-col-right" id="div-resultado" style="display:none">
+
+                <div class="div-card div-result-card">
+                  <p class="div-card-title">💰 Resumo — quem deve quanto para quem</p>
+                  <div id="div-debitos-lista"></div>
+                  <button class="btn-save" id="div-salvar" style="margin-top:14px;width:100%">💾 Salvar divisão</button>
+                </div>
+
+                <div class="div-card">
+                  <p class="div-card-title">📊 Participação por sócio</p>
+                  <div id="div-participacao"></div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- HISTÓRICO DE DIVISÕES -->
+            <div class="div-card" style="margin-top:16px" id="div-historico-wrap">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <p class="div-card-title" style="margin:0">🕓 Divisões salvas</p>
+              </div>
+              <div id="div-historico"></div>
+            </div>
+
+          </div><!-- fim divisao -->
 
         </div>
 
@@ -6412,14 +6558,22 @@ function initFinTabs(){
         tab.classList.add('active');
         var pl=document.getElementById('fin-panel-lancamentos');
         var pd=document.getElementById('fin-panel-dre');
+        var pv=document.getElementById('fin-panel-divisao');
         if(tab.dataset.ftab==='lancamentos'){
           if(pl)pl.style.display='block';
           if(pd)pd.style.display='none';
+          if(pv)pv.style.display='none';
           try{renderCosts();}catch(e){console.warn(e);}
-        } else {
+        } else if(tab.dataset.ftab==='dre'){
           if(pl)pl.style.display='none';
           if(pd)pd.style.display='block';
+          if(pv)pv.style.display='none';
           renderDRE();
+        } else if(tab.dataset.ftab==='divisao'){
+          if(pl)pl.style.display='none';
+          if(pd)pd.style.display='none';
+          if(pv)pv.style.display='block';
+          setTimeout(initDivisao,80);
         }
       });
     });
@@ -8153,6 +8307,409 @@ initROI = function(){
   // Carregar histórico de ambos
   carregarHistoricoROI('investimento');
   carregarHistoricoROI('negocio');
+};
+
+// ── DIVISÃO DE SAÍDAS (SPLITWISE) ────────────────────────
+var divSaidasSelecionadas = {};   // id → custo obj
+var divUltimaCalc = null;         // última divisão calculada
+var D_divisoes = [];              // histórico
+
+function initDivisao(){
+  // Inicializar datas com mês atual
+  var hoje = new Date();
+  var ini = document.getElementById('div-data-ini');
+  var fim = document.getElementById('div-data-fim');
+  if(ini && !ini.value){
+    var primeiro = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+    ini.value = primeiro.toISOString().split('T')[0];
+  }
+  if(fim && !fim.value) fim.value = hoje.toISOString().split('T')[0];
+
+  // Botões
+  var btnFiltrar = document.getElementById('div-filtrar');
+  if(btnFiltrar && !btnFiltrar._init){
+    btnFiltrar._init = true;
+    btnFiltrar.addEventListener('click', divBuscarSaidas);
+  }
+  var btnSelTodas = document.getElementById('div-sel-todas');
+  if(btnSelTodas && !btnSelTodas._init){
+    btnSelTodas._init = true;
+    btnSelTodas.addEventListener('click', function(){ divToggleAll(true); });
+  }
+  var btnDesel = document.getElementById('div-desel-todas');
+  if(btnDesel && !btnDesel._init){
+    btnDesel._init = true;
+    btnDesel.addEventListener('click', function(){ divToggleAll(false); });
+  }
+  var modoSel = document.getElementById('div-modo');
+  if(modoSel && !modoSel._init){
+    modoSel._init = true;
+    modoSel.addEventListener('change', divRenderModoConfig);
+  }
+  var btnCalc = document.getElementById('div-calcular');
+  if(btnCalc && !btnCalc._init){
+    btnCalc._init = true;
+    btnCalc.addEventListener('click', divCalcular);
+  }
+  var btnSalvar = document.getElementById('div-salvar');
+  if(btnSalvar && !btnSalvar._init){
+    btnSalvar._init = true;
+    btnSalvar.addEventListener('click', divSalvar);
+  }
+
+  divRenderModoConfig();
+  divCarregarHistorico();
+}
+
+function divBuscarSaidas(){
+  var ini = (document.getElementById('div-data-ini')||{value:''}).value;
+  var fim = (document.getElementById('div-data-fim')||{value:''}).value;
+  if(!ini||!fim){ toast('Selecione o período'); return; }
+
+  var saidas = D.costs.filter(function(c){
+    var t = c.tipo_lancamento||c.tipo||'';
+    if(t === 'receita') return false;
+    if(!c.data) return false;
+    return c.data >= ini && c.data <= fim;
+  }).sort(function(a,b){ return (b.data||'').localeCompare(a.data||''); });
+
+  divSaidasSelecionadas = {};
+  var el = document.getElementById('div-saidas-lista');
+  if(!el) return;
+
+  if(!saidas.length){
+    el.innerHTML = '<p class="empty" style="font-size:11px">Nenhuma saída no período</p>';
+    return;
+  }
+
+  el.innerHTML = saidas.map(function(c){
+    var pagador = c.pago_por ? c.pago_por.nome.split(' ')[0] : (c.pago_por_id ? '?' : '—');
+    var tipo = (c.tipo_lancamento||c.tipo||'').replace('despesa','Despesa').replace('custo','Custo').replace('investimento','Invest.');
+    return '<div class="div-saida-item" data-div-id="'+c.id+'">'+
+      '<input type="checkbox" class="div-saida-check" id="divck-'+c.id+'" data-div-id="'+c.id+'">'+
+      '<div class="div-saida-info">'+
+        '<div class="div-saida-desc">'+c.descricao+'</div>'+
+        '<div class="div-saida-meta">'+tipo+' · '+(c.data||'')+' · '+(c.categoria_dre||c.categoria||'')+'</div>'+
+      '</div>'+
+      '<div>'+
+        '<div class="div-saida-val">'+mo(c.valor)+'</div>'+
+        '<div class="div-saida-pago">💳 '+pagador+'</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  // Event listeners nos checkboxes
+  el.querySelectorAll('.div-saida-check').forEach(function(ck){
+    ck.addEventListener('change', function(){
+      var id = ck.dataset.divId;
+      var custo = saidas.find(function(c){return c.id===id;});
+      if(ck.checked && custo){
+        divSaidasSelecionadas[id] = custo;
+      } else {
+        delete divSaidasSelecionadas[id];
+      }
+      divAtualizarTotal();
+    });
+  });
+  // Click na linha também marca
+  el.querySelectorAll('.div-saida-item').forEach(function(row){
+    row.addEventListener('click', function(e){
+      if(e.target.type==='checkbox') return;
+      var ck = row.querySelector('.div-saida-check');
+      if(ck){ ck.checked = !ck.checked; ck.dispatchEvent(new Event('change')); }
+    });
+  });
+}
+
+function divToggleAll(check){
+  document.querySelectorAll('.div-saida-check').forEach(function(ck){
+    ck.checked = check;
+    ck.dispatchEvent(new Event('change'));
+  });
+}
+
+function divAtualizarTotal(){
+  var total = Object.values(divSaidasSelecionadas).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var totalEl = document.getElementById('div-total-sel');
+  var valEl   = document.getElementById('div-total-val');
+  if(totalEl) totalEl.style.display = Object.keys(divSaidasSelecionadas).length ? 'flex' : 'none';
+  if(valEl)   valEl.textContent = mo(total);
+  // Atualizar modo config se necessário
+  divRenderModoConfig();
+}
+
+function divRenderModoConfig(){
+  var modo   = (document.getElementById('div-modo')||{value:'igual'}).value;
+  var config = document.getElementById('div-modo-config');
+  var rest   = document.getElementById('div-restante');
+  if(!config) return;
+
+  if(modo === 'igual'){
+    config.style.display = 'none';
+    return;
+  }
+
+  config.style.display = 'block';
+  var socios = D.pessoas.filter(function(p){return p.tipo==='socio';});
+  var total  = Object.values(divSaidasSelecionadas).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var cores  = ['#2D6BE4','#27C08A','#E6A22E','#E05252'];
+
+  var configEl = document.getElementById('div-socios-config');
+  if(!configEl) return;
+  configEl.innerHTML = socios.map(function(p, i){
+    var ini = ini(p.nome);
+    return '<div class="div-socio-row">'+
+      '<div class="div-socio-avatar" style="background:'+cores[i%cores.length]+'">'+ini+'</div>'+
+      '<div class="div-socio-nome">'+p.nome.split(' ')[0]+'</div>'+
+      '<input class="form-input div-socio-inp" id="div-socio-inp-'+p.id+'" type="number" step="0.01" '+
+        'min="0" placeholder="'+(modo==='percentual'?'%':'R$')+'" data-socio-id="'+p.id+'" '+
+        'value="'+(modo==='percentual'?'25':'')+'">'+
+      (modo==='percentual'?'<span style="font-size:11px;color:var(--muted)">%</span>':'')+
+    '</div>';
+  }).join('');
+
+  // Listeners para calcular restante
+  configEl.querySelectorAll('.div-socio-inp').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      var soma = 0;
+      configEl.querySelectorAll('.div-socio-inp').forEach(function(i2){
+        soma += parseFloat(i2.value)||0;
+      });
+      if(rest){
+        if(modo==='percentual'){
+          var diff = 100-soma;
+          rest.style.display = 'block';
+          rest.className = 'div-restante '+(Math.abs(diff)<0.01?'ok':'err');
+          rest.textContent = Math.abs(diff)<0.01 ? '✅ 100% distribuído' : (diff>0?'⚠️ Faltam '+diff.toFixed(1)+'%':'⚠️ Excede em '+(-diff).toFixed(1)+'%');
+        } else {
+          var diff2 = total-soma;
+          rest.style.display = 'block';
+          rest.className = 'div-restante '+(Math.abs(diff2)<0.01?'ok':'err');
+          rest.textContent = Math.abs(diff2)<0.01 ? '✅ Total distribuído' : (diff2>0?'⚠️ Faltam '+mo(diff2):'⚠️ Excede em '+mo(-diff2));
+        }
+      }
+    });
+  });
+}
+
+function divCalcular(){
+  var selecionadas = Object.values(divSaidasSelecionadas);
+  if(!selecionadas.length){ toast('Selecione ao menos uma saída'); return; }
+
+  var modo   = (document.getElementById('div-modo')||{value:'igual'}).value;
+  var total  = selecionadas.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var socios = D.pessoas.filter(function(p){return p.tipo==='socio';});
+
+  // Calcular parte de cada sócio
+  var partes = {}; // pessoa_id → valor que deve pagar
+  if(modo==='igual'){
+    var parte = total/socios.length;
+    socios.forEach(function(p){ partes[p.id] = parte; });
+  } else if(modo==='percentual'){
+    socios.forEach(function(p){
+      var pct = parseFloat((document.getElementById('div-socio-inp-'+p.id)||{value:0}).value)||0;
+      partes[p.id] = total*(pct/100);
+    });
+  } else { // valor
+    socios.forEach(function(p){
+      partes[p.id] = parseFloat((document.getElementById('div-socio-inp-'+p.id)||{value:0}).value)||0;
+    });
+  }
+
+  // Calcular quanto cada um pagou (pelo campo pago_por)
+  var pagou = {}; // pessoa_id → valor que já pagou
+  socios.forEach(function(p){ pagou[p.id] = 0; });
+  selecionadas.forEach(function(c){
+    if(c.pago_por_id && pagou[c.pago_por_id] !== undefined){
+      pagou[c.pago_por_id] += parseFloat(c.valor||0);
+    }
+  });
+
+  // Calcular saldo: positivo = a receber, negativo = a pagar
+  var saldos = {}; // pessoa_id → saldo
+  socios.forEach(function(p){
+    saldos[p.id] = (pagou[p.id]||0) - (partes[p.id]||0);
+  });
+
+  // Algoritmo de liquidação mínima (estilo Splitwise)
+  var devedores  = socios.filter(function(p){return saldos[p.id] < -0.01;}).map(function(p){return {id:p.id, nome:p.nome, val:-saldos[p.id]};});
+  var credores   = socios.filter(function(p){return saldos[p.id] >  0.01;}).map(function(p){return {id:p.id, nome:p.nome, val:saldos[p.id]};});
+  var transacoes = [];
+
+  // Copiar para não mutar
+  var devs = devedores.map(function(d){return {id:d.id,nome:d.nome,val:d.val};});
+  var creds= credores.map(function(c){return {id:c.id,nome:c.nome,val:c.val};});
+
+  while(devs.length && creds.length){
+    var dev  = devs[0];
+    var cred = creds[0];
+    var valor = Math.min(dev.val, cred.val);
+    transacoes.push({de_id:dev.id, de_nome:dev.nome, para_id:cred.id, para_nome:cred.nome, valor:valor});
+    dev.val  -= valor;
+    cred.val -= valor;
+    if(dev.val  < 0.01) devs.shift();
+    if(cred.val < 0.01) creds.shift();
+  }
+
+  divUltimaCalc = {total, modo, partes, pagou, saldos, transacoes,
+    saidas_ids: selecionadas.map(function(c){return c.id;}),
+    divisao: Object.fromEntries ? Object.fromEntries(socios.map(function(p){return [p.id, partes[p.id]];})) : (function(){var o={};socios.forEach(function(p){o[p.id]=partes[p.id];});return o;})()
+  };
+
+  divRenderResultado(total, partes, pagou, saldos, transacoes, socios);
+}
+
+function divRenderResultado(total, partes, pagou, saldos, transacoes, socios){
+  var res = document.getElementById('div-resultado');
+  if(res) res.style.display = 'flex';
+
+  // Débitos (transações)
+  var debitosEl = document.getElementById('div-debitos-lista');
+  if(debitosEl){
+    if(!transacoes.length){
+      debitosEl.innerHTML = '<p style="font-size:12px;color:var(--green);text-align:center;padding:10px">✅ Tudo quitado! Nenhuma transferência necessária.</p>';
+    } else {
+      debitosEl.innerHTML = transacoes.map(function(t, i){
+        var deNome   = t.de_nome.split(' ')[0];
+        var paraNome = t.para_nome.split(' ')[0];
+        return '<div class="div-debito-item" id="div-deb-'+i+'">'+
+          '<div>'+
+            '<div class="div-debito-de">'+deNome+' → '+paraNome+'</div>'+
+            '<div class="div-debito-para">'+deNome+' deve para '+paraNome+'</div>'+
+          '</div>'+
+          '<div style="display:flex;align-items:center">'+
+            '<div class="div-debito-val">'+mo(t.valor)+'</div>'+
+            '<button class="div-debito-pago-btn" data-deb-idx="'+i+'">✓ Pago</button>'+
+          '</div>'+
+        '</div>';
+      }).join('');
+      debitosEl.querySelectorAll('[data-deb-idx]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var item = document.getElementById('div-deb-'+btn.dataset.debIdx);
+          if(item) item.classList.toggle('pago');
+          btn.textContent = item&&item.classList.contains('pago') ? '↩ Desfazer' : '✓ Pago';
+        });
+      });
+    }
+  }
+
+  // Participação por sócio
+  var partEl = document.getElementById('div-participacao');
+  if(partEl){
+    var cores = {'0':'var(--blue)','1':'var(--green)','2':'var(--amber)','3':'var(--red)'};
+    partEl.innerHTML = socios.map(function(p, i){
+      var pctParte = total>0 ? (partes[p.id]||0)/total*100 : 0;
+      var pagouVal = pagou[p.id]||0;
+      var parteVal = partes[p.id]||0;
+      var saldo    = saldos[p.id]||0;
+      return '<div class="div-part-row">'+
+        '<div class="div-part-nome">'+p.nome.split(' ')[0]+'</div>'+
+        '<div class="div-part-bar-wrap"><div class="div-part-bar" style="width:'+pctParte.toFixed(1)+'%;background:'+cores[i%4]+'""></div></div>'+
+        '<div class="div-part-val" style="color:'+(saldo>0?'var(--green)':saldo<0?'var(--red)':'var(--muted)')+'">'+
+          mo(parteVal)+' '+(saldo>0?'(+'+mo(saldo)+')':saldo<0?'('+mo(saldo)+')':'✅')+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
+}
+
+function divSalvar(){
+  if(!divUltimaCalc){ toast('Calcule a divisão primeiro'); return; }
+  var nome = (document.getElementById('div-nome')||{value:''}).value.trim() ||
+    'Divisão '+ new Date().toLocaleDateString('pt-BR',{month:'short',year:'numeric'});
+
+  var payload = {
+    nome: nome,
+    periodo_inicio: (document.getElementById('div-data-ini')||{value:null}).value||null,
+    periodo_fim:    (document.getElementById('div-data-fim')||{value:null}).value||null,
+    modo: divUltimaCalc.modo,
+    saidas_ids: divUltimaCalc.saidas_ids,
+    total: divUltimaCalc.total,
+    divisao: divUltimaCalc.divisao,
+    debitos: divUltimaCalc.transacoes
+  };
+
+  db.from('divisao_socio').insert(payload).then(function(res){
+    if(res&&res.error){ toast('Erro: '+res.error.message); return; }
+    toast('Divisão salva! 💾');
+    divCarregarHistorico();
+  });
+}
+
+function divCarregarHistorico(){
+  db.from('divisao_socio').select('*').order('created_at',{ascending:false}).limit(10)
+    .then(function(res){
+      D_divisoes = res.data||[];
+      divRenderHistorico();
+    });
+}
+
+function divRenderHistorico(){
+  var el = document.getElementById('div-historico');
+  if(!el) return;
+  if(!D_divisoes.length){
+    el.innerHTML = '<p class="empty" style="font-size:11px">Nenhuma divisão salva ainda</p>';
+    return;
+  }
+  el.innerHTML = D_divisoes.map(function(d){
+    var data = new Date(d.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    var debitos = d.debitos||[];
+    return '<div class="div-hist-item">'+
+      '<div class="div-hist-header">'+
+        '<div>'+
+          '<div class="div-hist-nome">'+d.nome+'</div>'+
+          '<div class="div-hist-data">'+data+(d.periodo_inicio?' · '+d.periodo_inicio+' a '+d.periodo_fim:'')+'</div>'+
+        '</div>'+
+        '<button class="del" data-div-del="'+d.id+'" title="Excluir">×</button>'+
+      '</div>'+
+      '<div class="div-hist-tags">'+
+        '<span class="div-hist-tag">Total: '+mo(d.total)+'</span>'+
+        '<span class="div-hist-tag">'+d.modo+'</span>'+
+        '<span class="div-hist-tag">'+debitos.length+' transações</span>'+
+        '<span class="div-hist-tag" style="color:var(--'+(d.status==='quitada'?'green':'amber')+')">'+
+          (d.status==='quitada'?'✅ Quitada':'⏳ Aberta')+
+        '</span>'+
+      '</div>'+
+      (debitos.length?'<div style="margin-top:10px">'+debitos.map(function(t){
+        var deN  = (D.pessoas.find(function(p){return p.id===t.de_id;})||{nome:t.de_nome||'?'}).nome.split(' ')[0];
+        var parN = (D.pessoas.find(function(p){return p.id===t.para_id;})||{nome:t.para_nome||'?'}).nome.split(' ')[0];
+        return '<div style="font-size:11px;color:var(--muted);margin-bottom:3px">'+
+          '→ <b style="color:var(--fg)">'+deN+'</b> deve '+mo(t.valor)+' para <b style="color:var(--fg)">'+parN+'</b></div>';
+      }).join('')+'</div>':'')+
+    '</div>';
+  }).join('');
+
+  // Delete
+  el.querySelectorAll('[data-div-del]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(!confirm('Excluir esta divisão?')) return;
+      db.from('divisao_socio').delete().eq('id',btn.dataset.divDel).then(function(){
+        toast('Excluída!'); divCarregarHistorico();
+      });
+    });
+  });
+}
+
+// Hook no initFinTabs para inicializar divisão
+var _origInitFinTabsDiv = initFinTabs;
+initFinTabs = function(){
+  _origInitFinTabsDiv();
+  var tabs = document.querySelectorAll('.fin-tab');
+  tabs.forEach(function(tab){
+    if(tab._divInit) return;
+    tab._divInit = true;
+    tab.addEventListener('click', function(){
+      if(tab.dataset.ftab === 'divisao'){
+        var pl = document.getElementById('fin-panel-lancamentos');
+        var pd = document.getElementById('fin-panel-dre');
+        var pv = document.getElementById('fin-panel-divisao');
+        if(pl) pl.style.display='none';
+        if(pd) pd.style.display='none';
+        if(pv) pv.style.display='block';
+        setTimeout(initDivisao, 80);
+      }
+    });
+  });
 };
 })();
 </script>
