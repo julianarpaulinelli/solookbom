@@ -1244,6 +1244,103 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .div-hist-data{font-size:10px;color:var(--muted)}
 .div-hist-tags{display:flex;gap:6px;flex-wrap:wrap}
 .div-hist-tag{font-size:10px;padding:2px 8px;border-radius:4px;background:var(--card);color:var(--muted);border:1px solid var(--border)}
+
+/* ══════════════════════════════════════════════════════════
+   BARRA DE LANÇAMENTO FIXA
+══════════════════════════════════════════════════════════ */
+.launch-bar{display:flex;align-items:center;gap:16px;padding:8px 24px;background:linear-gradient(90deg,rgba(45,107,228,.12),rgba(39,192,138,.08));border-bottom:1px solid rgba(45,107,228,.2);flex-wrap:wrap;flex-shrink:0}
+.launch-bar-home{display:flex;align-items:center;gap:16px;padding:14px 20px;background:linear-gradient(135deg,#1a3a8f,#1a6b4a);border-radius:14px;flex-wrap:wrap;margin-bottom:4px;box-shadow:0 4px 24px rgba(45,107,228,.35)}
+.launch-bar-left{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.launch-bar-rocket{font-size:16px}
+.launch-bar-label{font-size:12px;color:rgba(255,255,255,.75)}
+.launch-bar-label strong{color:#fff}
+.launch-bar-dias{font-size:13px;font-weight:800;padding:4px 14px;background:rgba(255,255,255,.18);color:#fff;border-radius:20px;letter-spacing:.5px}
+.launch-bar-mid{display:flex;align-items:center;gap:8px;flex:1;min-width:180px}
+.launch-bar-track{flex:1;height:8px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden}
+.launch-bar-fill{height:100%;background:linear-gradient(90deg,#5b9fff,#27C08A);border-radius:4px;transition:width .6s}
+.launch-bar-pct{font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap}
+.launch-bar-right{margin-left:auto;white-space:nowrap}
+.launch-bar-stat{font-size:11px;color:rgba(255,255,255,.7)}
+
+/* ══════════════════════════════════════════════════════════
+   SIDEBAR SIMPLIFICADA
+══════════════════════════════════════════════════════════ */
+.nav-item-list{display:flex;flex-direction:column;gap:2px;padding:8px}
+.nav-item-main{border-radius:10px;padding:10px 12px;font-size:13px;font-weight:600}
+.nav-item-launch{background:rgba(45,107,228,.08);color:var(--blue) !important}
+.nav-item-launch:hover{background:rgba(45,107,228,.15) !important}
+.nav-item-launch svg{stroke:var(--blue) !important}
+.nav-divider{height:1px;background:var(--border);margin:6px 4px}
+.nav-item-mais{border-radius:10px;padding:10px 12px;font-size:13px;font-weight:600;color:var(--muted)}
+.nav-mais-menu{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px;margin:0 4px}
+.nav-mais-title{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;padding:4px 8px 8px}
+.nav-item-sub{border-radius:7px;padding:7px 10px;font-size:12px;gap:8px;color:var(--muted)}
+.nav-item-sub:hover{color:var(--fg);background:var(--card)}
+.nav-mais-sep{height:1px;background:var(--border);margin:4px 0}
+
+/* ══════════════════════════════════════════════════════════
+   DASHBOARD — CENTRO DE COMANDO
+══════════════════════════════════════════════════════════ */
+.dash-command{display:flex;flex-direction:column;gap:16px}
+.dash-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:800px){.dash-kpis{grid-template-columns:repeat(2,1fr)}}
+.dash-kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s}
+.dash-kpi:hover{border-color:var(--blue);transform:translateY(-1px)}
+.dash-kpi-icon{font-size:24px;flex-shrink:0}
+.dash-kpi-val{font-size:20px;font-weight:800;color:var(--fg);line-height:1}
+.dash-kpi-lbl{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+.dash-main{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.dash-main{grid-template-columns:1fr}}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.dash-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.dash-card-title{font-size:12px;font-weight:700;color:var(--fg)}
+.dash-card-link{font-size:10px;color:var(--blue);background:none;border:none;cursor:pointer;padding:0}
+.dash-card-link:hover{text-decoration:underline}
+.dash-empty{font-size:11px;color:var(--muted);text-align:center;padding:12px 0}
+/* Urgente */
+.dash-urgente-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.dash-urgente-item:last-child{border-bottom:none}
+.dash-urg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.dash-urg-dot.vencido{background:var(--red)}
+.dash-urg-dot.hoje{background:var(--amber)}
+.dash-urg-body{flex:1;min-width:0}
+.dash-urg-titulo{font-size:12px;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-urg-meta{font-size:10px;color:var(--muted);margin-top:1px}
+/* Entradas */
+.dash-receita-acum{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:rgba(39,192,138,.08);border:1px solid rgba(39,192,138,.2);border-radius:8px;margin-bottom:10px}
+.dash-receita-lbl{font-size:10px;color:var(--green);font-weight:600;text-transform:uppercase}
+.dash-receita-val{font-size:18px;font-weight:800;color:var(--green)}
+.dash-entrada-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
+.dash-entrada-item:last-child{border-bottom:none}
+.dash-entrada-desc{color:var(--fg);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.dash-entrada-val{color:var(--green);font-weight:700;white-space:nowrap}
+
+/* ══════════════════════════════════════════════════════════
+   SEÇÃO LANÇAMENTO
+══════════════════════════════════════════════════════════ */
+.launch-hero{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;background:linear-gradient(135deg,rgba(45,107,228,.08),rgba(39,192,138,.05));border:1px solid rgba(45,107,228,.2);border-radius:14px;padding:24px;margin-bottom:20px}
+@media(max-width:600px){.launch-hero{grid-template-columns:1fr}}
+.launch-countdown{text-align:center}
+.launch-cd-num{font-size:56px;font-weight:900;color:var(--blue);line-height:1}
+.launch-cd-lbl{font-size:12px;color:var(--muted);margin-top:2px}
+.launch-cd-data{font-size:11px;color:var(--blue);margin-top:4px;opacity:.7}
+.launch-prog-header{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:8px}
+.launch-prog-track{height:12px;background:var(--border);border-radius:6px;overflow:hidden}
+.launch-prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:6px;transition:width .6s}
+.launch-cat-filters{display:flex;gap:6px;flex-wrap:wrap}
+/* Marco item */
+.lc-marco{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:all .15s}
+.lc-marco.done{opacity:.6;background:var(--surface)}
+.lc-marco.done .lc-marco-titulo{text-decoration:line-through;color:var(--muted)}
+.lc-marco-check{width:20px;height:20px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
+.lc-marco-body{flex:1;min-width:0}
+.lc-marco-titulo{font-size:13px;font-weight:600;color:var(--fg)}
+.lc-marco-cat{font-size:10px;color:var(--muted);margin-top:2px}
+.lc-marco-tarefas{font-size:10px;color:var(--blue);margin-top:3px;cursor:pointer}
+.lc-marco-actions{display:flex;gap:6px;opacity:0;transition:opacity .15s}
+.lc-marco:hover .lc-marco-actions{opacity:1}
+.lc-marco-btn{font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer}
+.lc-marco-btn:hover{color:var(--fg)}
 </style>
 </head>
 <body>
@@ -1291,175 +1388,77 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
       <nav class="sidebar-nav">
 
-                <!-- ── PRINCIPAL -->
-        <div class="nav-group-header open" data-group="principal">
-          <span class="nav-group-toggle">▾</span>
-          <span class="nav-group-label">Principal</span>
-        </div>
-        <div class="nav-group-items" id="navg-principal">
-          <div class="nav-item" data-sec="home">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-            <span class="nav-label">Dashboard</span>
-          </div>
-        </div>
+                <!-- SIDEBAR SIMPLIFICADA -->
+        <nav class="nav-item-list" id="nav-main">
 
-        <!-- ── FINANCEIRO -->
-        <div class="nav-group-header open" data-group="financeiro">
-          <span class="nav-group-toggle">▾</span>
-          <span class="nav-group-label">Financeiro</span>
-        </div>
-        <div class="nav-group-items" id="navg-financeiro">
-          <div class="nav-item" data-sec="financas">
+          <!-- INÍCIO -->
+          <div class="nav-item nav-item-main active" data-sec="home">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <span class="nav-label">Início</span>
+          </div>
+
+          <!-- FINANÇAS -->
+          <div class="nav-item nav-item-main" data-sec="financas">
             <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             <span class="nav-label">Finanças</span>
           </div>
-          <div class="nav-item" data-sec="simulador">
-            <svg viewBox="0 0 24 24"><path d="M9 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-3"/><path d="M9 15h3l8.5-8.5a1.5 1.5 0 0 0-3-3L9 12v3"/></svg>
-            <span class="nav-label">Simulador</span>
-          </div>
-          <div class="nav-item" data-sec="precificacao">
-            <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-            <span class="nav-label">Precificação</span>
-          </div>
-          <div class="nav-item" data-sec="roi">
-            <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            <span class="nav-label">Simulador ROI</span>
-          </div>
-          <div class="nav-item" data-sec="metas">
-            <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            <span class="nav-label">Metas & OKRs</span>
-          </div>
-        </div>
 
-        <!-- ── FISCAL -->
-        <div class="nav-group-header open" data-group="fiscal">
-          <span class="nav-group-toggle">▾</span>
-          <span class="nav-group-label">Fiscal</span>
-        </div>
-        <div class="nav-group-items" id="navg-fiscal">
-          <div class="nav-item" data-sec="fiscal">
-            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span class="nav-label">Calendário Fiscal</span>
-            <span class="nav-badge" id="badge-fiscal" style="display:none">0</span>
+          <!-- TAREFAS -->
+          <div class="nav-item nav-item-main" data-sec="tarefas">
+            <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span class="nav-label">Tarefas</span>
+            <span class="nav-badge" id="badge-tarefas" style="display:none">0</span>
           </div>
-          <div class="nav-item" data-sec="contadora">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
-            <span class="nav-label">Docs Contadora</span>
-            <span class="nav-badge" id="badge-contadora" style="display:none">0</span>
-          </div>
-          <div class="nav-item" data-sec="projecao">
-            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <span class="nav-label">Projeção de Caixa</span>
-          </div>
-          <div class="nav-item" data-sec="config">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-            <span class="nav-label">Configurações</span>
-          </div>
-        </div>
 
-        <!-- ── PARCEIROS -->
-        <div class="nav-group-header open" data-group="parceiros-grupo">
-          <span class="nav-group-toggle">▾</span>
-          <span class="nav-group-label">Parceiros</span>
-        </div>
-        <div class="nav-group-items" id="navg-parceiros-grupo">
-          <div class="nav-item" data-sec="fornecedores">
-            <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-            <span class="nav-label">Fornecedores</span>
-          </div>
-          <div class="nav-item" data-sec="fretes">
-            <svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
-            <span class="nav-label">Fretes</span>
-          </div>
-        </div>
-
-        <!-- ── MARKETING -->
-        <div class="nav-group-header open" data-group="marketing-grupo">
-          <span class="nav-group-toggle">▾</span>
-          <span class="nav-group-label">Marketing</span>
-        </div>
-        <div class="nav-group-items" id="navg-marketing-grupo">
-          <div class="nav-item" data-sec="parceiros">
-            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span class="nav-label">Parceiros & Influenc.</span>
-          </div>
-          <div class="nav-item" data-sec="postagens">
-            <svg viewBox="0 0 24 24"><path d="M21 2H3v16h5l3 3 3-3h7z"/></svg>
-            <span class="nav-label">Postagens</span>
-          </div>
-          <div class="nav-item" data-sec="marketing">
-            <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 3-4-6-3 3H2"/></svg>
-            <span class="nav-label">Marketing</span>
-          </div>
-          <div class="nav-item" data-sec="clientes">
-            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <span class="nav-label">Clientes</span>
-          </div>
-        </div>
-
-        <!-- ── PRODUTO -->
-        <div class="nav-group-header open" data-group="produtos-grupo">
-          <span class="nav-group-toggle">▾</span>
-          <span class="nav-group-label">Produto</span>
-        </div>
-        <div class="nav-group-items" id="navg-produtos-grupo">
-          <div class="nav-item" data-sec="produtos">
+          <!-- PRODUTOS -->
+          <div class="nav-item nav-item-main" data-sec="produtos">
             <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
             <span class="nav-label">Produtos</span>
           </div>
-          <div class="nav-item" data-sec="estoque">
-            <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-            <span class="nav-label">Estoque</span>
-          </div>
-          <div class="nav-item" data-sec="colecoes">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-            <span class="nav-label">Coleções</span>
-          </div>
-        </div>
 
-        <!-- ── OPERAÇÕES -->
-        <div class="nav-group-header open" data-group="operacoes-grupo">
-          <span class="nav-group-toggle">▾</span>
-          <span class="nav-group-label">Operações</span>
-        </div>
-        <div class="nav-group-items" id="navg-operacoes-grupo">
-          <div class="nav-item" data-sec="producao">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span class="nav-label">Produção</span>
+          <!-- LANÇAMENTO -->
+          <div class="nav-item nav-item-main nav-item-launch" data-sec="lancamento">
+            <svg viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+            <span class="nav-label">Lançamento</span>
           </div>
-          <div class="nav-item" data-sec="pedidos">
-            <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-            <span class="nav-label">Pedidos</span>
-          </div>
-        </div>
 
-        <!-- ── GESTÃO DE TAREFAS -->
-        <div class="nav-group-header open" data-group="tarefas-grupo">
-          <span class="nav-group-toggle">▾</span>
-          <span class="nav-group-label">Gestão de Tarefas</span>
-        </div>
-        <div class="nav-group-items" id="navg-tarefas-grupo">
-          <div class="nav-item" data-sec="tarefas">
-            <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            <span class="nav-label">Tarefas</span>
-          </div>
-        </div>
+          <div class="nav-divider"></div>
 
-        <!-- ── ADMIN -->
-        <div class="nav-group-header open" data-group="admin">
-          <span class="nav-group-toggle">▾</span>
-          <span class="nav-group-label">Admin</span>
-        </div>
-        <div class="nav-group-items" id="navg-admin">
-          <div class="nav-item" data-sec="log">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <span class="nav-label">Log de Acessos</span>
+          <!-- MAIS -->
+          <div class="nav-item nav-item-mais" id="btn-nav-mais">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            <span class="nav-label">Mais</span>
           </div>
-          <div class="nav-item" data-sec="pessoas">
-            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <span class="nav-label">Pessoas</span>
+
+          <!-- SUBMENU MAIS -->
+          <div class="nav-mais-menu" id="nav-mais-menu" style="display:none">
+            <div class="nav-mais-title">Mais seções</div>
+            <div class="nav-item nav-item-sub" data-sec="simulador"><span>📊</span><span class="nav-label">Simulador</span></div>
+            <div class="nav-item nav-item-sub" data-sec="roi"><span>📈</span><span class="nav-label">Simulador ROI</span></div>
+            <div class="nav-item nav-item-sub" data-sec="precificacao"><span>🏷️</span><span class="nav-label">Precificação</span></div>
+            <div class="nav-item nav-item-sub" data-sec="metas"><span>🎯</span><span class="nav-label">Metas & OKRs</span></div>
+            <div class="nav-mais-sep"></div>
+            <div class="nav-item nav-item-sub" data-sec="fiscal"><span>📅</span><span class="nav-label">Calendário Fiscal</span></div>
+            <div class="nav-item nav-item-sub" data-sec="contadora"><span>📄</span><span class="nav-label">Docs Contadora</span></div>
+            <div class="nav-item nav-item-sub" data-sec="projecao"><span>📉</span><span class="nav-label">Projeção de Caixa</span></div>
+            <div class="nav-mais-sep"></div>
+            <div class="nav-item nav-item-sub" data-sec="estoque"><span>📦</span><span class="nav-label">Estoque</span></div>
+            <div class="nav-item nav-item-sub" data-sec="colecoes"><span>🗂️</span><span class="nav-label">Coleções</span></div>
+            <div class="nav-item nav-item-sub" data-sec="producao"><span>⚙️</span><span class="nav-label">Produção</span></div>
+            <div class="nav-item nav-item-sub" data-sec="pedidos"><span>🛍️</span><span class="nav-label">Pedidos</span></div>
+            <div class="nav-mais-sep"></div>
+            <div class="nav-item nav-item-sub" data-sec="fornecedores"><span>🚚</span><span class="nav-label">Fornecedores</span></div>
+            <div class="nav-item nav-item-sub" data-sec="fretes"><span>📬</span><span class="nav-label">Fretes</span></div>
+            <div class="nav-item nav-item-sub" data-sec="parceiros"><span>🤝</span><span class="nav-label">Parceiros & Influenc.</span></div>
+            <div class="nav-item nav-item-sub" data-sec="postagens"><span>💬</span><span class="nav-label">Postagens</span></div>
+            <div class="nav-item nav-item-sub" data-sec="marketing"><span>📣</span><span class="nav-label">Marketing</span></div>
+            <div class="nav-item nav-item-sub" data-sec="clientes"><span>👥</span><span class="nav-label">Clientes</span></div>
+            <div class="nav-mais-sep"></div>
+            <div class="nav-item nav-item-sub" data-sec="log"><span>📋</span><span class="nav-label">Log de Acessos</span></div>
+            <div class="nav-item nav-item-sub" data-sec="pessoas"><span>👤</span><span class="nav-label">Pessoas</span></div>
+            <div class="nav-item nav-item-sub" data-sec="config"><span>⚙️</span><span class="nav-label">Configurações</span></div>
           </div>
-        </div>
+
         </nav>
 
       <div class="sidebar-footer">
@@ -1488,61 +1487,87 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
       <div class="content">
 
         <!-- DASHBOARD HOME -->
-        <div class="cw visible" id="section-home">
-          <div class="dash-header">
-            <div><h2 class="dash-main-title" id="dash-greeting">Bom dia!</h2><p class="dash-main-sub">Seu painel de operacoes</p></div>
-            <div class="dash-person-filter" id="dash-person-filter"><button class="dpf-btn active" data-person="all">Todos</button></div>
+          <div class="dash-command">
+            <!-- BARRA DE LANÇAMENTO (só na home) -->
+            <div class="launch-bar-home" id="launch-bar">
+              <div class="launch-bar-left">
+                <span class="launch-bar-rocket">🚀</span>
+                <span class="launch-bar-label">Lançamento <strong id="lb-data-txt">15/set</strong></span>
+                <span class="launch-bar-dias" id="lb-dias">58 dias</span>
+              </div>
+              <div class="launch-bar-mid">
+                <div class="launch-bar-track"><div class="launch-bar-fill" id="lb-fill" style="width:0%"></div></div>
+                <span class="launch-bar-pct" id="lb-pct">0% concluído</span>
+              </div>
+              <div class="launch-bar-right">
+                <span class="launch-bar-stat" id="lb-tarefas-stat">— tarefas abertas</span>
+              </div>
+            </div>
+
+            <!-- LINHA 1: KPIs -->
+            <div class="dash-kpis" id="dash-kpis">
+              <div class="dash-kpi" id="dash-kpi-invest" data-sec="financas">
+                <div class="dash-kpi-icon">💸</div>
+                <div class="dash-kpi-body">
+                  <div class="dash-kpi-val" id="dk-invest">R$ —</div>
+                  <div class="dash-kpi-lbl">Total investido</div>
+                </div>
+              </div>
+              <div class="dash-kpi" id="dash-kpi-caixa" data-sec="financas">
+                <div class="dash-kpi-icon">📊</div>
+                <div class="dash-kpi-body">
+                  <div class="dash-kpi-val" id="dk-caixa">R$ —</div>
+                  <div class="dash-kpi-lbl">Resultado do mês</div>
+                </div>
+              </div>
+              <div class="dash-kpi" id="dash-kpi-tarefas" data-sec="tarefas">
+                <div class="dash-kpi-icon">✅</div>
+                <div class="dash-kpi-body">
+                  <div class="dash-kpi-val" id="dk-tarefas">—</div>
+                  <div class="dash-kpi-lbl">Tarefas atrasadas</div>
+                </div>
+              </div>
+              <div class="dash-kpi" id="dash-kpi-marcos" data-sec="lancamento">
+                <div class="dash-kpi-icon">🎯</div>
+                <div class="dash-kpi-body">
+                  <div class="dash-kpi-val" id="dk-marcos">— / 14</div>
+                  <div class="dash-kpi-lbl">Marcos concluídos</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- LINHA 2: Urgente + Últimas entradas -->
+            <div class="dash-main">
+
+              <div class="dash-card dash-urgente">
+                <div class="dash-card-header">
+                  <span class="dash-card-title">🔴 Urgente hoje</span>
+                  <button class="dash-card-link" data-sec="tarefas">ver todas</button>
+                </div>
+                <div id="dash-urgente-lista">
+                  <p class="dash-empty">Carregando...</p>
+                </div>
+              </div>
+
+              <div class="dash-card dash-financeiro">
+                <div class="dash-card-header">
+                  <span class="dash-card-title">💰 Últimas entradas</span>
+                  <button class="dash-card-link" data-sec="financas">ver finanças</button>
+                </div>
+                <div class="dash-receita-acum">
+                  <span class="dash-receita-lbl">Acumulado do mês</span>
+                  <span class="dash-receita-val" id="dash-acum-mes">R$ —</span>
+                </div>
+                <div id="dash-entradas-lista">
+                  <p class="dash-empty">Carregando...</p>
+                </div>
+              </div>
+
+            </div>
+
           </div>
-          <div class="home-cards-grid">
 
-            <!-- CARD TAREFAS -->
-            <div class="home-cat-card" id="hcard-tarefas">
-              <div class="hcc-header" data-sec="tarefas">
-                <div class="hcc-icon-wrap" style="background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-                <span class="hcc-title">Tarefas</span>
-                <span class="hcc-link">Ver tudo &#8250;</span>
-              </div>
-              <div id="hcb-tarefas-prio"></div>
-              <div class="hcc-divider"></div>
-              <div class="hcc-body" id="hcb-tarefas"></div>
-            </div>
-
-            <!-- CARD FINANCAS -->
-            <div class="home-cat-card" id="hcard-financas">
-              <div class="hcc-header" data-sec="financas">
-                <div class="hcc-icon-wrap" style="background:rgba(45,107,228,.1);border-color:rgba(45,107,228,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-                <span class="hcc-title">Finanças</span>
-                <span class="hcc-link">Ver tudo &#8250;</span>
-              </div>
-              <div id="hck-financas"></div>
-              <div class="hcc-divider"></div>
-              <div class="hcc-body" id="hcb-financas"></div>
-            </div>
-
-            <!-- CARD PRODUCAO -->
-            <div class="home-cat-card" id="hcard-producao">
-              <div class="hcc-header" data-sec="producao">
-                <div class="hcc-icon-wrap" style="background:rgba(139,124,246,.1);border-color:rgba(139,124,246,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
-                <span class="hcc-title">Produção</span>
-                <span class="hcc-link">Ver tudo &#8250;</span>
-              </div>
-              <div id="hck-producao"></div>
-              <div class="hcc-divider"></div>
-              <div class="hcc-body" id="hcb-producao"></div>
-            </div>
-
-            <!-- CARD ALERTAS GERAIS -->
-            <div class="home-cat-card" id="hcard-alertas">
-              <div class="hcc-header">
-                <div class="hcc-icon-wrap" style="background:rgba(224,82,82,.1);border-color:rgba(224,82,82,.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-                <span class="hcc-title">Alertas</span>
-              </div>
-              <div class="hcc-body" id="hcb-alertas"></div>
-            </div>
-
-          </div>
-        </div>
-        <!-- TAREFAS -->
+          <!-- TAREFAS -->
         <div class="cw" id="section-tarefas">
           <div class="section-header"><h2 class="section-title">Tarefas</h2><div class="header-actions">
   <div class="view-toggle">
@@ -1881,6 +1906,48 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- LANÇAMENTO -->
+        <div class="cw" id="section-lancamento">
+          <div class="section-header">
+            <h2 class="section-title">🚀 Lançamento</h2>
+          </div>
+
+          <!-- COUNTDOWN HERO -->
+          <div class="launch-hero">
+            <div class="launch-countdown" id="lc-countdown">
+              <div class="launch-cd-num" id="lc-dias">58</div>
+              <div class="launch-cd-lbl">dias para o lançamento</div>
+              <div class="launch-cd-data">15 de setembro de 2026</div>
+            </div>
+            <div class="launch-progress-big">
+              <div class="launch-prog-header">
+                <span>Progresso geral</span>
+                <span id="lc-pct-txt">0 de 14 marcos concluídos</span>
+              </div>
+              <div class="launch-prog-track">
+                <div class="launch-prog-fill" id="lc-prog-fill" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTROLES -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+            <div class="launch-cat-filters" id="lc-cat-filters">
+              <button class="fb active" data-lc-cat="all">Todos</button>
+              <button class="fb" data-lc-cat="Tecnologia">Tecnologia</button>
+              <button class="fb" data-lc-cat="Produto">Produto</button>
+              <button class="fb" data-lc-cat="Marca">Marca</button>
+              <button class="fb" data-lc-cat="Marketing">Marketing</button>
+              <button class="fb" data-lc-cat="Financeiro">Financeiro</button>
+            </div>
+            <button class="btn-add" id="lc-add-marco" style="white-space:nowrap">+ Marco</button>
+          </div>
+
+          <!-- LISTA DE MARCOS -->
+          <div id="lc-marcos-lista"></div>
+
         </div>
 
         <!-- SIMULADOR ROI -->
@@ -7249,6 +7316,7 @@ if(L&&L.sections){
   L.sections['config']='Configurações';
   L.sections['home']='Dashboard';
   L.sections['roi']='Simulador ROI';
+  L.sections['lancamento']='Lançamento';
   L.sections['fiscal']='Calendário Fiscal';
   L.sections['contadora']='Docs Contadora';
   L.sections['projecao']='Projeção de Caixa';
@@ -8710,6 +8778,345 @@ initFinTabs = function(){
       }
     });
   });
+};
+
+// ══════════════════════════════════════════════════════════
+//  SISTEMA DE LANÇAMENTO
+// ══════════════════════════════════════════════════════════
+var LAUNCH_DATE = new Date('2026-09-15T00:00:00');
+var D_marcos = [];
+
+// ── BARRA DE LANÇAMENTO (topo) ────────────────────────────
+function updateLaunchBar(){
+  var hoje = new Date();
+  var diff  = Math.ceil((LAUNCH_DATE - hoje) / (1000*60*60*24));
+  var diasEl = document.getElementById('lb-dias');
+  if(diasEl) diasEl.textContent = diff > 0 ? diff + ' dias' : diff === 0 ? 'Hoje!' : 'Lançado!';
+
+  // Progresso por marcos
+  var total   = D_marcos.length || 14;
+  var feitos  = D_marcos.filter(function(m){return m.concluido;}).length;
+  var pct     = total > 0 ? Math.round(feitos/total*100) : 0;
+  var fillEl  = document.getElementById('lb-fill');
+  var pctEl   = document.getElementById('lb-pct');
+  if(fillEl) fillEl.style.width = pct + '%';
+  if(pctEl)  pctEl.textContent  = pct + '% concluído';
+
+  // Tarefas abertas
+  var abertas = D.tarefas ? D.tarefas.filter(function(t){return t.status!=='done';}).length : 0;
+  var statEl  = document.getElementById('lb-tarefas-stat');
+  if(statEl) statEl.textContent = abertas + ' tarefas abertas';
+}
+
+// ── DASHBOARD — CENTRO DE COMANDO ────────────────────────
+function renderDashboardNovo(){
+  var hoje     = new Date();
+  var curMonth = hoje.getFullYear()+'-'+(String(hoje.getMonth()+1).padStart(2,'0'));
+  var todayStr = hoje.toISOString().split('T')[0];
+
+  // KPI: Total investido (all time)
+  var totalInvest = D.costs.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var dkInvest = document.getElementById('dk-invest');
+  if(dkInvest) dkInvest.textContent = mo(totalInvest);
+
+  // KPI: Resultado do mês (receita - saídas do mês atual)
+  var recMes = D.costs.filter(function(c){
+    return (c.tipo_lancamento==='receita'||c.tipo==='receita') && c.data && c.data.startsWith(curMonth);
+  }).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var saidaMes = D.costs.filter(function(c){
+    var t=c.tipo_lancamento||c.tipo||'';
+    return t!=='receita' && c.data && c.data.startsWith(curMonth);
+  }).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
+  var resultMes = recMes - saidaMes;
+  var dkCaixa = document.getElementById('dk-caixa');
+  if(dkCaixa){
+    dkCaixa.textContent = mo(resultMes);
+    dkCaixa.style.color = resultMes >= 0 ? 'var(--green)' : 'var(--red)';
+  }
+
+  // KPI: Tarefas atrasadas
+  var atrasadas = (D.tarefas||[]).filter(function(t){
+    return t.status!=='done' && t.data_entrega && t.data_entrega < todayStr;
+  }).length;
+  var dkTar = document.getElementById('dk-tarefas');
+  if(dkTar){
+    dkTar.textContent = atrasadas;
+    dkTar.style.color = atrasadas > 0 ? 'var(--red)' : 'var(--green)';
+  }
+
+  // KPI: Marcos concluídos
+  var marcosFeitos = D_marcos.filter(function(m){return m.concluido;}).length;
+  var dkMarcos = document.getElementById('dk-marcos');
+  if(dkMarcos) dkMarcos.textContent = marcosFeitos + ' / ' + D_marcos.length;
+
+  // URGENTE HOJE: tarefas vencidas ou vencendo hoje
+  var urgentes = (D.tarefas||[]).filter(function(t){
+    return t.status !== 'done' && t.data_entrega && t.data_entrega <= todayStr;
+  }).sort(function(a,b){return (a.data_entrega||'').localeCompare(b.data_entrega||'');}).slice(0,5);
+
+  var urgEl = document.getElementById('dash-urgente-lista');
+  if(urgEl){
+    if(!urgentes.length){
+      urgEl.innerHTML = '<p class="dash-empty">✅ Nenhuma tarefa urgente!</p>';
+    } else {
+      urgEl.innerHTML = urgentes.map(function(t){
+        var vencido = t.data_entrega < todayStr;
+        var metaTxt = (vencido ? '🔴 Vencida em ' : '🟡 Vence hoje — ') + fmtDate(t.data_entrega) +
+          (t.responsavel_nome ? ' · ' + t.responsavel_nome.split(' ')[0] : '');
+        return '<div class="dash-urgente-item">'+
+          '<div class="dash-urg-dot '+(vencido?'vencido':'hoje')+'"></div>'+
+          '<div class="dash-urg-body">'+
+            '<div class="dash-urg-titulo">'+t.titulo+'</div>'+
+            '<div class="dash-urg-meta">'+metaTxt+'</div>'+
+          '</div>'+
+        '</div>';
+      }).join('');
+    }
+  }
+
+  // ÚLTIMAS ENTRADAS + acumulado do mês
+  var entradas = D.costs.filter(function(c){
+    return (c.tipo_lancamento==='receita'||c.tipo==='receita') && c.data;
+  }).sort(function(a,b){return (b.data||'').localeCompare(a.data||'');}).slice(0,5);
+
+  var acumEl = document.getElementById('dash-acum-mes');
+  if(acumEl) acumEl.textContent = mo(recMes);
+
+  var entEl = document.getElementById('dash-entradas-lista');
+  if(entEl){
+    if(!entradas.length){
+      entEl.innerHTML = '<p class="dash-empty">Nenhuma entrada registrada ainda</p>';
+    } else {
+      entEl.innerHTML = entradas.map(function(c){
+        return '<div class="dash-entrada-item">'+
+          '<div>'+
+            '<div class="dash-entrada-desc">'+c.descricao+'</div>'+
+            '<div style="font-size:10px;color:var(--muted)">'+fmtDate(c.data)+'</div>'+
+          '</div>'+
+          '<div class="dash-entrada-val">+'+mo(c.valor)+'</div>'+
+        '</div>';
+      }).join('');
+    }
+  }
+
+  // Clicks nos KPIs navegam para a seção
+  document.querySelectorAll('.dash-kpi[data-sec]').forEach(function(el){
+    if(!el._dashClick){
+      el._dashClick = true;
+      el.addEventListener('click', function(){openSection(el.dataset.sec);});
+    }
+  });
+  // Clicks nos links de card
+  document.querySelectorAll('.dash-card-link[data-sec]').forEach(function(el){
+    if(!el._dashClick){
+      el._dashClick = true;
+      el.addEventListener('click', function(){openSection(el.dataset.sec);});
+    }
+  });
+}
+
+// ── SEÇÃO LANÇAMENTO ──────────────────────────────────────
+var D_tarefas_marco = {}; // marco_id → [tarefas]
+var lcCatFiltro = 'all';
+
+function loadMarcos(){
+  return db.from('launch_marcos').select('*').order('ordem',{ascending:true}).then(function(r){
+    D_marcos = r.data||[];
+    updateLaunchBar();
+  });
+}
+
+function initLancamento(){
+  renderMarcos();
+  buildTarefasPorMarco();
+
+  // Filtros de categoria
+  document.querySelectorAll('[data-lc-cat]').forEach(function(btn){
+    if(btn._lcInit) return;
+    btn._lcInit = true;
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('[data-lc-cat]').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      lcCatFiltro = btn.dataset.lcCat;
+      renderMarcos();
+    });
+  });
+
+  // Botão + Marco
+  var btnAdd = document.getElementById('lc-add-marco');
+  if(btnAdd && !btnAdd._init){
+    btnAdd._init = true;
+    btnAdd.addEventListener('click', function(){ lcAdicionarMarco(); });
+  }
+}
+
+function buildTarefasPorMarco(){
+  D_tarefas_marco = {};
+  (D.tarefas||[]).forEach(function(t){
+    if(t.marco_id){
+      if(!D_tarefas_marco[t.marco_id]) D_tarefas_marco[t.marco_id]=[];
+      D_tarefas_marco[t.marco_id].push(t);
+    }
+  });
+}
+
+function renderMarcos(){
+  var lista = document.getElementById('lc-marcos-lista');
+  if(!lista) return;
+
+  var filtered = lcCatFiltro === 'all' ? D_marcos : D_marcos.filter(function(m){return m.categoria===lcCatFiltro;});
+  var feitos   = D_marcos.filter(function(m){return m.concluido;}).length;
+  var pct      = D_marcos.length > 0 ? Math.round(feitos/D_marcos.length*100) : 0;
+
+  var fillEl = document.getElementById('lc-prog-fill');
+  var pctEl  = document.getElementById('lc-pct-txt');
+  if(fillEl) fillEl.style.width = pct+'%';
+  if(pctEl)  pctEl.textContent  = feitos+' de '+D_marcos.length+' marcos concluídos';
+
+  if(!filtered.length){
+    lista.innerHTML = '<p class="dash-empty">Nenhum marco nesta categoria</p>';
+    return;
+  }
+
+  lista.innerHTML = filtered.map(function(m){
+    var tarefasM = D_tarefas_marco[m.id]||[];
+    var tarefasTxt = tarefasM.length
+      ? tarefasM.length + ' tarefa(s) vinculada(s)'
+      : 'Clique para vincular tarefas';
+    var corCat = {Tecnologia:'var(--blue)',Produto:'var(--green)',Marca:'var(--amber)',Marketing:'var(--red)',Financeiro:'var(--muted)'}[m.categoria]||'var(--muted)';
+
+    return '<div class="lc-marco '+(m.concluido?'done':'')+'" data-marco-id="'+m.id+'">'+
+      '<input type="checkbox" class="lc-marco-check" '+(m.concluido?'checked':'')+' data-marco-id="'+m.id+'">'+
+      '<div class="lc-marco-body">'+
+        '<div class="lc-marco-titulo">'+m.titulo+'</div>'+
+        '<div class="lc-marco-cat" style="color:'+corCat+'">'+m.categoria+'</div>'+
+        '<div class="lc-marco-tarefas" data-marco-id="'+m.id+'">📋 '+tarefasTxt+'</div>'+
+      '</div>'+
+      '<div class="lc-marco-actions">'+
+        '<button class="lc-marco-btn" data-lc-edit="'+m.id+'">✏ Editar</button>'+
+        '<button class="lc-marco-btn del" data-lc-del="'+m.id+'">× Excluir</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  // Listeners checkboxes
+  lista.querySelectorAll('.lc-marco-check').forEach(function(ck){
+    ck.addEventListener('change', function(){
+      var id = ck.dataset.marcoId;
+      db.from('launch_marcos').update({concluido:ck.checked,updated_at:new Date().toISOString()}).eq('id',id)
+        .then(function(){
+          var m = D_marcos.find(function(x){return x.id===id;});
+          if(m) m.concluido = ck.checked;
+          renderMarcos();
+          updateLaunchBar();
+          renderDashboardNovo();
+        });
+    });
+  });
+
+  // Editar
+  lista.querySelectorAll('[data-lc-edit]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var id = btn.dataset.lcEdit;
+      var m  = D_marcos.find(function(x){return x.id===id;});
+      if(!m) return;
+      var novoTitulo = prompt('Título do marco:', m.titulo);
+      if(!novoTitulo||novoTitulo===m.titulo) return;
+      db.from('launch_marcos').update({titulo:novoTitulo,updated_at:new Date().toISOString()}).eq('id',id)
+        .then(function(){ m.titulo=novoTitulo; renderMarcos(); toast('Marco atualizado!'); });
+    });
+  });
+
+  // Excluir
+  lista.querySelectorAll('[data-lc-del]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(!confirm('Excluir este marco?')) return;
+      var id = btn.dataset.lcDel;
+      db.from('launch_marcos').delete().eq('id',id).then(function(){
+        D_marcos = D_marcos.filter(function(x){return x.id!==id;});
+        renderMarcos(); updateLaunchBar(); toast('Marco excluído!');
+      });
+    });
+  });
+}
+
+function lcAdicionarMarco(){
+  var titulo = prompt('Nome do marco:');
+  if(!titulo) return;
+  var cat = prompt('Categoria (Tecnologia / Produto / Marca / Marketing / Financeiro):', 'Produto');
+  if(!cat) return;
+  var ordem = D_marcos.length > 0 ? Math.max.apply(null,D_marcos.map(function(m){return m.ordem;}))+1 : 1;
+  db.from('launch_marcos').insert({titulo:titulo,categoria:cat,ordem:ordem,concluido:false})
+    .then(function(r){
+      if(r&&r.error){toast('Erro: '+r.error.message);return;}
+      loadMarcos().then(renderMarcos);
+      toast('Marco adicionado!');
+    });
+}
+
+// ── SIDEBAR — NOVO SISTEMA DE NAV ────────────────────────
+(function(){
+  // Nav principal
+  document.querySelectorAll('.nav-item-main[data-sec], .nav-item-sub[data-sec]').forEach(function(item){
+    item.addEventListener('click', function(){
+      document.querySelectorAll('.nav-item-main, .nav-item-sub').forEach(function(i){i.classList.remove('active');});
+      item.classList.add('active');
+      // Fechar menu Mais
+      var maisMenu = document.getElementById('nav-mais-menu');
+      if(maisMenu) maisMenu.style.display = 'none';
+      openSection(item.dataset.sec);
+    });
+  });
+
+  // Botão Mais
+  var btnMais = document.getElementById('btn-nav-mais');
+  var maisMenu = document.getElementById('nav-mais-menu');
+  if(btnMais && maisMenu){
+    btnMais.addEventListener('click', function(e){
+      e.stopPropagation();
+      maisMenu.style.display = maisMenu.style.display==='none' ? 'block' : 'none';
+    });
+    document.addEventListener('click', function(){
+      maisMenu.style.display = 'none';
+    });
+    maisMenu.addEventListener('click', function(e){ e.stopPropagation(); });
+  }
+})();
+
+// ── HOOKS ─────────────────────────────────────────────────
+// Renderizar dashboard novo quando a home abre
+var _origOpenSectionLaunch = openSection;
+openSection = function(name){
+  _origOpenSectionLaunch(name);
+  if(name==='home'){
+    setTimeout(function(){
+      renderDashboardNovo();
+    }, 100);
+  }
+  if(name==='lancamento'){
+    loadMarcos().then(function(){
+      setTimeout(initLancamento, 80);
+    });
+  }
+  // Atualizar nav ativo
+  document.querySelectorAll('.nav-item-main[data-sec], .nav-item-sub[data-sec]').forEach(function(i){
+    i.classList.toggle('active', i.dataset.sec===name);
+  });
+};
+
+// Atualizar barra após carregar tarefas e marcos
+var _origRenderDash = renderDashboard;
+renderDashboard = function(){
+  try{ _origRenderDash(); } catch(e){}
+  renderDashboardNovo();
+  updateLaunchBar();
+};
+
+// Carregar marcos no init
+var _origInitLaunch = init;
+init = function(){
+  _origInitLaunch();
+  loadMarcos();
 };
 })();
 </script>
