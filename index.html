@@ -1359,6 +1359,11 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 }
 
 #app-screen{display:flex;flex-direction:column;height:100vh}
+
+/* ── ÉPICOS (filtro categoria) ──────────────────────────── */
+.epico-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;flex-shrink:0;vertical-align:middle}
+.epico-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.task-epico-filters{flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -1607,6 +1612,18 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             <div class="filters"><span class="fl">Status:</span><button class="fb active" data-f="task" data-k="status" data-v="all">Todas</button><button class="fb" data-f="task" data-k="status" data-v="todo">A fazer</button><button class="fb" data-f="task" data-k="status" data-v="doing">Em andamento</button><button class="fb" data-f="task" data-k="status" data-v="done">Concluído</button><button class="fb" data-f="task" data-k="status" data-v="blocked">Bloqueado</button></div>
             <div class="filters"><span class="fl">Prioridade:</span><button class="fb active" data-f="task" data-k="prio" data-v="all">Todas</button><button class="fb" data-f="task" data-k="prio" data-v="alta">Alta</button><button class="fb" data-f="task" data-k="prio" data-v="media">Média</button><button class="fb" data-f="task" data-k="prio" data-v="baixa">Baixa</button></div>
             <div class="filters"><span class="fl">Responsável:</span><div id="task-resp-filters" style="display:flex;gap:5px;flex-wrap:wrap"></div></div>
+            <div class="filters task-epico-filters"><span class="fl">Épico:</span>
+              <button class="fb active" data-f="task" data-k="cat" data-v="all">Todos</button>
+              <button class="fb" data-f="task" data-k="cat" data-v="Marca"><span class="epico-dot" style="background:#8B5CF6"></span>Marca</button>
+              <button class="fb" data-f="task" data-k="cat" data-v="Site"><span class="epico-dot" style="background:#2D6BE4"></span>Site</button>
+              <button class="fb" data-f="task" data-k="cat" data-v="Artes"><span class="epico-dot" style="background:#EC4899"></span>Artes</button>
+              <button class="fb" data-f="task" data-k="cat" data-v="Produto"><span class="epico-dot" style="background:#27C08A"></span>Produto</button>
+              <button class="fb" data-f="task" data-k="cat" data-v="Fornecedor"><span class="epico-dot" style="background:#F59E0B"></span>Fornecedor</button>
+              <button class="fb" data-f="task" data-k="cat" data-v="Marketing"><span class="epico-dot" style="background:#EF4444"></span>Marketing</button>
+              <button class="fb" data-f="task" data-k="cat" data-v="Jurídico"><span class="epico-dot" style="background:#6B7280"></span>Jurídico</button>
+              <button class="fb" data-f="task" data-k="cat" data-v="Financeiro"><span class="epico-dot" style="background:#10B981"></span>Financeiro</button>
+              <button class="fb" data-f="task" data-k="cat" data-v="Outro"><span class="epico-dot" style="background:#94A3B8"></span>Outro</button>
+            </div>
           </div>
 
           <!-- Filtros Cronograma (multi-select) -->
@@ -3623,6 +3640,7 @@ function renderTasks(){
       if(f.status!=='all'&&t.status!==f.status)return false;
       if(f.prio!=='all'&&t.prioridade!==f.prio)return false;
       if(f.resp!=='all'&&t.responsavel_pessoa_id!==f.resp)return false;
+      if(f.cat!=='all'&&t.categoria!==f.cat)return false;
     } else {
       // Filtros multi-select do cronograma
       if(!gfStatus.all&&!gfStatus[t.status])return false;
@@ -3657,7 +3675,7 @@ function renderTasks(){
   var el=$('task-list');
   if(!list.length){el.innerHTML='<p class="empty">Nenhuma tarefa</p>';return;}
   el.innerHTML=list.map(function(t){
-    return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+t.titulo+'</p><div class="card-meta">'+badge(t.status,L.status[t.status])+badge(t.prioridade||'media',L.prio[t.prioridade||'media'])+(t.categoria?catTag(t.categoria):'')+(t.prazo?'<span style="font-size:9px;color:var(--muted)">📅 '+fmtDate(t.prazo)+'</span>':'')+'</div>'+(t.descricao?'<p class="card-desc">'+t.descricao+'</p>':'')+(t.tags?'<div style="margin-top:5px;display:flex;gap:3px;flex-wrap:wrap">'+t.tags.split(',').map(function(g){return '<span class="tag-pill">'+g.trim()+'</span>';}).join('')+'</div>':'')+'</div><div class="card-actions"><div class="avg">'+(t.responsavel?av(t.responsavel.nome,'Resp: '+t.responsavel.nome):'')+(t.coresponsavel?av(t.coresponsavel.nome,'Co: '+t.coresponsavel.nome):'')+'</div>'+editBtn(t.id,'task')+'<button class="del" data-del-task="'+t.id+'">×</button></div></div></div>';
+    return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+t.titulo+'</p><div class="card-meta">'+badge(t.status,L.status[t.status])+badge(t.prioridade||'media',L.prio[t.prioridade||'media'])+(t.categoria?epicoTag(t.categoria):'')+(t.prazo?'<span style="font-size:9px;color:var(--muted)">📅 '+fmtDate(t.prazo)+'</span>':'')+'</div>'+(t.descricao?'<p class="card-desc">'+t.descricao+'</p>':'')+(t.tags?'<div style="margin-top:5px;display:flex;gap:3px;flex-wrap:wrap">'+t.tags.split(',').map(function(g){return '<span class="tag-pill">'+g.trim()+'</span>';}).join('')+'</div>':'')+'</div><div class="card-actions"><div class="avg">'+(t.responsavel?av(t.responsavel.nome,'Resp: '+t.responsavel.nome):'')+(t.coresponsavel?av(t.coresponsavel.nome,'Co: '+t.coresponsavel.nome):'')+'</div>'+editBtn(t.id,'task')+'<button class="del" data-del-task="'+t.id+'">×</button></div></div></div>';
   }).join('');
 }
 
@@ -3682,7 +3700,7 @@ function renderKanban(list){
           var prioColor={alta:'var(--red)',media:'var(--amber)',baixa:'var(--green)'}[t.prioridade||'media'];
           return '<div class="kanban-card" draggable="true" data-task-id="'+t.id+'">'+
             '<div class="kanban-card-top">'+
-              (t.categoria?'<span class="kanban-card-cat">'+t.categoria+'</span>':'<span></span>')+
+              (t.categoria?epicoTag(t.categoria):'<span></span>')+
               '<span class="kanban-card-prio" style="color:'+prioColor+'" title="Prioridade: '+(t.prioridade||'média')+'">●</span>'+
             '</div>'+
             '<p class="kanban-card-title">'+t.titulo+'</p>'+
@@ -9145,6 +9163,26 @@ init = function(){
 };
 
 // toggle barra removido
+
+// ── ÉPICOS — mapa de cores ───────────────────────────────
+var EPICO_CORES = {
+  'Marca':      {bg:'rgba(139,92,246,.15)',  cor:'#8B5CF6', borda:'rgba(139,92,246,.3)'},
+  'Site':       {bg:'rgba(45,107,228,.15)',  cor:'#2D6BE4', borda:'rgba(45,107,228,.3)'},
+  'Artes':      {bg:'rgba(236,72,153,.15)',  cor:'#EC4899', borda:'rgba(236,72,153,.3)'},
+  'Produto':    {bg:'rgba(39,192,138,.15)',  cor:'#27C08A', borda:'rgba(39,192,138,.3)'},
+  'Fornecedor': {bg:'rgba(245,158,11,.15)',  cor:'#F59E0B', borda:'rgba(245,158,11,.3)'},
+  'Marketing':  {bg:'rgba(239,68,68,.15)',   cor:'#EF4444', borda:'rgba(239,68,68,.3)'},
+  'Jurídico':   {bg:'rgba(107,114,128,.15)', cor:'#6B7280', borda:'rgba(107,114,128,.3)'},
+  'Financeiro': {bg:'rgba(16,185,129,.15)',  cor:'#10B981', borda:'rgba(16,185,129,.3)'},
+  'Outro':      {bg:'rgba(148,163,184,.15)', cor:'#94A3B8', borda:'rgba(148,163,184,.3)'},
+};
+
+function epicoTag(cat){
+  if(!cat) return '';
+  var e = EPICO_CORES[cat];
+  if(!e) return '<span class="epico-tag" style="background:rgba(148,163,184,.1);color:#94A3B8;border:1px solid rgba(148,163,184,.2)"><span class="epico-dot" style="background:#94A3B8"></span>'+cat+'</span>';
+  return '<span class="epico-tag" style="background:'+e.bg+';color:'+e.cor+';border:1px solid '+e.borda+'"><span class="epico-dot" style="background:'+e.cor+'"></span>'+cat+'</span>';
+}
 })();
 </script>
 </body>
