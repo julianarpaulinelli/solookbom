@@ -2942,6 +2942,244 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 </div></div>
 
 
+<div class="modal-bg" id="modal-estoque"><div class="modal">
+  <div class="modal-title"><span id="est-modal-title">Novo Item de Estoque</span><button class="modal-close-btn" data-close="estoque">×</button></div>
+  <input type="hidden" id="e-id">
+  <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="e-nome" placeholder="Ex: Tecido linho bege"></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="e-cat"><option>Tecido</option><option>Aviamento</option><option>Produto acabado</option><option>Embalagem</option><option>Outro</option></select></div><div class="form-group"><label class="form-label">SKU</label><input class="form-input" id="e-sku" placeholder="TEC-001"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Quantidade *</label><input class="form-input" id="e-qtd" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Unidade</label><select class="form-select" id="e-un"><option value="un">un</option><option value="m">m</option><option value="m²">m²</option><option value="kg">kg</option><option value="pç">pç</option><option value="cx">cx</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Qtd mínima</label><input class="form-input" id="e-qtdmin" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Localização</label><input class="form-input" id="e-local" placeholder="Prateleira A3"></div></div>
+  <div class="form-group"><label class="form-label">Produto vinculado (SKU)</label><select class="form-select" id="e-produto-id"><option value="">— Nenhum —</option></select><p style="font-size:9px;color:var(--muted);margin-top:4px">Vincule a um SKU para rastrear o consumo de estoque por produto.</p></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Preço custo</label><input class="form-input" id="e-custo" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Preço venda</label><input class="form-input" id="e-venda" type="number" step="0.01" placeholder="0,00"></div></div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="e-obs"></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="save-estoque">Salvar Item</button><button class="btn-delete-modal" id="delete-estoque" style="display:none">Excluir</button><button class="btn-close-modal" data-close="estoque">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-colecao"><div class="modal">
+  <div class="modal-title"><span id="col-modal-title">Nova Coleção</span><button class="modal-close-btn" data-close="colecao">×</button></div>
+  <input type="hidden" id="col-id">
+  <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="col-nome" placeholder="Ex: Coleção Zamna 2026"></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Temporada</label><input class="form-input" id="col-temporada" placeholder="Verão, Inverno..."></div><div class="form-group"><label class="form-label">Ano</label><input class="form-input" id="col-ano" type="number" placeholder="2026"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="col-status"><option value="planejamento">Planejamento</option><option value="em_producao">Em produção</option><option value="lancada">Lançada</option><option value="encerrada">Encerrada</option></select></div><div class="form-group"><label class="form-label">Data lançamento</label><input class="form-input" id="col-lancamento" type="date"></div></div>
+  <div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="col-resp"></select></div>
+  <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="col-desc" placeholder="Conceito, inspiração..."></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="save-colecao">Salvar Coleção</button><button class="btn-delete-modal" id="delete-colecao" style="display:none">Excluir</button><button class="btn-close-modal" data-close="colecao">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-producao"><div class="modal">
+  <div class="modal-title"><span id="prd-modal-title">Nova Produção</span><button class="modal-close-btn" data-close="producao">×</button></div>
+  <input type="hidden" id="prd-id">
+  <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="prd-nome" placeholder="Ex: Camiseta Preta P/M/G - Coleção Zamna"></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="prd-colecao"></select></div><div class="form-group"><label class="form-label">Fornecedor</label><select class="form-select" id="prd-fornecedor"></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="prd-status"><option value="ideacao">Ideação</option><option value="aprovacao">Aguardando aprovação</option><option value="em_criacao">Em criação</option><option value="em_producao">Em produção</option><option value="produzido">Produzido</option><option value="recebido">Recebido</option><option value="disponivel">Disponível para venda</option></select></div><div class="form-group"><label class="form-label">Responsável</label>
+    <div class="resp-chips" id="prd-resp-chips">
+      <label class="resp-chip"><input type="checkbox" value="all" id="prd-resp-all" onchange="prdRespToggleAll(this)"> Todos</label>
+    </div>
+    <input type="hidden" id="prd-resp">
+  </div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Quantidade</label><input class="form-input" id="prd-qtd" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Custo total (R$)</label><input class="form-input" id="prd-custo" type="number" step="0.01" placeholder="0,00"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Data início</label><input class="form-input" id="prd-inicio" type="date"></div><div class="form-group"><label class="form-label">Previsão fim</label><input class="form-input" id="prd-prevfim" type="date"></div></div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="prd-obs"></textarea></div>
+  <p class="form-section">Aprovação dos sócios</p>
+  <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:4px">
+    <label class="form-check"><input type="checkbox" id="aprov-ju"> Juliana Paulinelli</label>
+    <label class="form-check"><input type="checkbox" id="aprov-fe"> Fernando Araújo</label>
+    <label class="form-check"><input type="checkbox" id="aprov-vi"> Victor Paulinelli</label>
+    <label class="form-check"><input type="checkbox" id="aprov-ya"> Yasmin Zurdo</label>
+  </div>
+  <p style="font-size:9px;color:var(--muted);margin-top:6px">⚠️ Avança para "Em criação" somente após aprovação dos 4 sócios.</p>
+  <p class="form-section">Fotografia / Amostras</p>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status da foto</label><select class="form-select" id="prd-status-foto"><option value="sem_amostra">Sem amostra</option><option value="amostra_enviada">Amostra enviada</option><option value="em_fotografia">Em fotografia</option><option value="foto_aprovada">&#9989; Foto aprovada</option><option value="foto_reprovada">&#10060; Foto reprovada</option></select></div><div class="form-group"><label class="form-label">Data da fotografia</label><input class="form-input" id="prd-data-foto" type="date"></div></div>
+  <div class="form-group"><label class="form-label">Link das fotos</label><input class="form-input" id="prd-link-foto" placeholder="Drive, Dropbox, Google Photos..."></div>
+  <div class="modal-footer"><button class="btn-save" id="save-producao">Salvar Produção</button><button class="btn-delete-modal" id="delete-producao" style="display:none">Excluir</button><button class="btn-close-modal" data-close="producao">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-pedido"><div class="modal wide">
+  <div class="modal-title"><span id="ped-modal-title">Novo Pedido</span><button class="modal-close-btn" data-close="pedido">×</button></div>
+  <input type="hidden" id="ped-id">
+  <p class="form-section" style="margin-top:0;padding-top:0;border:none">Cliente</p>
+  <div class="form-row"><div class="form-group"><label class="form-label">Nome do cliente *</label><input class="form-input" id="ped-cliente" placeholder="Nome completo"></div><div class="form-group"><label class="form-label">CPF</label><input class="form-input" id="ped-cpf" placeholder="000.000.000-00"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="ped-email" placeholder="cliente@email.com"></div><div class="form-group"><label class="form-label">Telefone</label><input class="form-input" id="ped-fone" placeholder="(11) 9 9999-0000"></div></div>
+  <p class="form-section">Pedido</p>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="ped-status"><option value="pago">Pago</option><option value="separacao">Em separação</option><option value="producao">Produção</option><option value="enviado">Enviado</option><option value="entregue">Entregue</option><option value="troca">Troca</option><option value="cancelado">Cancelado</option></select></div><div class="form-group"><label class="form-label">Canal de venda</label><input class="form-input" id="ped-canal" placeholder="Instagram, Loja, Site..."></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Valor total (R$) *</label><input class="form-input" id="ped-valor" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Valor frete (R$)</label><input class="form-input" id="ped-frete" type="number" step="0.01" placeholder="0,00"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Transportadora</label><input class="form-input" id="ped-transp" placeholder="Correios, Jadlog..."></div><div class="form-group"><label class="form-label">Código de rastreio</label><input class="form-input" id="ped-rastreio" placeholder="BR123456789BR"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="ped-colecao"></select></div><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="ped-resp"></select></div></div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="ped-obs"></textarea></div>
+  <div class="form-group"><label class="form-label">Cliente no CRM</label><select class="form-select" id="ped-cliente-id"><option value="">— Criar/atualizar automaticamente pelo e-mail —</option></select><p style="font-size:9px;color:var(--muted);margin-top:4px">Se o e-mail já existir no CRM, o registro será atualizado ao salvar.</p></div>
+  <div class="modal-footer"><button class="btn-save" id="save-pedido">Salvar Pedido</button><button class="btn-delete-modal" id="delete-pedido" style="display:none">Excluir</button><button class="btn-close-modal" data-close="pedido">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-frete"><div class="modal">
+  <div class="modal-title"><span id="frete-modal-title">Nova Tabela de Frete</span><button class="modal-close-btn" data-close="frete">×</button></div>
+  <input type="hidden" id="fr-id">
+
+  <div class="form-group"><label class="form-label">Transportadora *</label><input class="form-input" id="fr-trans" placeholder="Correios PAC, Loggi, Mandaê..."></div>
+
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Modalidade</label>
+      <select class="form-select" id="fr-tipo">
+        <option value="fixo">Fixo</option>
+        <option value="variavel">Variável (por peso)</option>
+        <option value="gratis">Grátis</option>
+        <option value="pac">Correios — PAC</option>
+        <option value="sedex">Correios — SEDEX</option>
+        <option value="mini_envios">Correios — Mini Envios</option>
+        <option value="loggi">Loggi</option>
+        <option value="mandae">Mandaê</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="fr-status">
+        <option value="ativo">Ativo</option>
+        <option value="inativo">Inativo</option>
+      </select>
+    </div>
+  </div>
+
+  <p class="form-section">Acordo comercial</p>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Tem acordo de preços fechado?</label>
+      <select class="form-select" id="fr-acordo">
+        <option value="nao">Não — tabela balcão</option>
+        <option value="negociando">Em negociação</option>
+        <option value="sim">Sim — acordo fechado</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Status da negociação</label>
+      <select class="form-select" id="fr-neg-status">
+        <option value="">— Sem negociação —</option>
+        <option value="prospeccao">Prospecção</option>
+        <option value="contato_feito">Contato feito</option>
+        <option value="proposta_recebida">Proposta recebida</option>
+        <option value="em_analise">Em análise</option>
+        <option value="fechado">Fechado ✓</option>
+        <option value="cancelado">Cancelado</option>
+      </select>
+    </div>
+  </div>
+
+  <p class="form-section">Cobertura e preços</p>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Região / Cobertura</label><input class="form-input" id="fr-regiao" placeholder="Todo Brasil, Sul/Sudeste..."></div>
+    <div class="form-group"><label class="form-label">Prazo (dias úteis)</label><input class="form-input" id="fr-prazo" type="number" placeholder="5"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Preço fixo (R$)</label><input class="form-input" id="fr-preco" type="number" step="0.01" placeholder="0,00"></div>
+    <div class="form-group"><label class="form-label">Por kg (R$)</label><input class="form-input" id="fr-preckg" type="number" step="0.01" placeholder="0,00"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Peso máx. (kg)</label><input class="form-input" id="fr-pesomax" type="number" step="0.1" placeholder="30"></div>
+    <div class="form-group"><label class="form-label">Pedido mínimo (R$)</label><input class="form-input" id="fr-pedmin" type="number" step="0.01" placeholder="0,00"></div>
+  </div>
+
+  <p class="form-section">Links e observações</p>
+  <div class="form-group"><label class="form-label">Link do simulador oficial</label><input class="form-input" id="fr-link-sim" placeholder="https://..."></div>
+  <div class="form-group"><label class="form-label">Observações / condições negociadas</label><textarea class="form-textarea" id="fr-obs" placeholder="Descontos negociados, condições especiais..."></textarea></div>
+
+  <div class="modal-footer">
+    <button class="btn-save" id="save-frete">Salvar</button>
+    <button class="btn-delete-modal" id="delete-frete" style="display:none">Excluir</button>
+    <button class="btn-close-modal" data-close="frete">Fechar</button>
+  </div>
+</div></div>
+
+<div class="modal-bg" id="modal-parceiro"><div class="modal wide">
+  <div class="modal-title"><span id="par-modal-title">Novo Parceiro / Influenciador</span><button class="modal-close-btn" data-close="parceiro">×</button></div>
+  <input type="hidden" id="pa-id">
+  <div class="form-row"><div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="pa-nome" placeholder="Nome / @handle"></div><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="pa-tipo"><option value="influenciador">Influenciador</option><option value="embaixador">Embaixador</option><option value="loja">Loja</option><option value="imprensa">Imprensa</option><option value="outro">Outro</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="pa-status"><option value="prospecto">Prospecto</option><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div><div class="form-group"><label class="form-label">Status Collab</label><select class="form-select" id="pa-status-collab"><option value="prospecto">Prospecto</option><option value="contato">Contato feito</option><option value="produto_enviado">Produto enviado</option><option value="postou">Postou</option><option value="encerrado">Encerrado</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Nicho</label><input class="form-input" id="pa-nicho" placeholder="Moda, Festival, Lifestyle..."></div><div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="pa-cidade" placeholder="São Paulo, Rio..."></div></div>
+  <p class="form-section">Redes Sociais</p>
+  <div class="form-row"><div class="form-group"><label class="form-label">Instagram @</label><input class="form-input" id="pa-ig" placeholder="@handle"></div><div class="form-group"><label class="form-label">Seguidores IG</label><input class="form-input" id="pa-ig-seg" type="number" placeholder="50000"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">TikTok @</label><input class="form-input" id="pa-tt" placeholder="@handle"></div><div class="form-group"><label class="form-label">Seguidores TikTok</label><input class="form-input" id="pa-tt-seg" type="number" placeholder="20000"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Threads @</label><input class="form-input" id="pa-threads" placeholder="@handle"></div><div class="form-group"><label class="form-label">YouTube @</label><input class="form-input" id="pa-yt" placeholder="@handle"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Engajamento (%)</label><input class="form-input" id="pa-eng" type="number" step="0.1" placeholder="3.5"></div><div class="form-group"><label class="form-label">Cachê / Valor (R$)</label><input class="form-input" id="pa-cache" type="number" step="0.01" placeholder="0,00"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="pa-whatsapp" placeholder="(11) 9 9999-0000"></div><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="pa-email" placeholder="contato@"></div></div>
+  <p class="form-section">Colaboração</p>
+  <div class="form-row"><div class="form-group"><label class="form-label">Data de envio do produto</label><input class="form-input" id="pa-data-envio" type="date"></div><div class="form-group"><label class="form-label">Coleção enviada</label><select class="form-select" id="pa-colecao"></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Vendas geradas</label><input class="form-input" id="pa-vendas" type="number" placeholder="0" min="0"></div><div class="form-group"><label class="form-label">Código de desconto</label><input class="form-input" id="pa-cod-desc" placeholder="SLB_INFL10"></div></div>
+  <div class="form-group"><label class="form-label">Resultado / Observações</label><textarea class="form-textarea" id="pa-resultado" placeholder="Ex: Recebeu produto em 15/07, postou reels em 20/07, gerou 3 vendas, alcance de 15k..."></textarea></div>
+  <div class="form-group"><label class="form-label">Endereço de envio</label><input class="form-input" id="pa-end-envio" placeholder="Rua, número, CEP, cidade"></div>
+  <div class="form-group"><label class="form-label">Responsável SLB</label><select class="form-select" id="pa-resp"></select></div>
+  <div class="modal-footer"><button class="btn-save" id="save-parceiro">Salvar</button><button class="btn-delete-modal" id="delete-parceiro" style="display:none">Excluir</button><button class="btn-close-modal" data-close="parceiro">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-pessoa"><div class="modal">
+  <div class="modal-title">Nova Pessoa<button class="modal-close-btn" data-close="pessoa">×</button></div>
+  <div class="form-group"><label class="form-label">Nome completo *</label><input class="form-input" id="p-nome" placeholder="Nome da pessoa"></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Cargo / Função</label><input class="form-input" id="p-cargo" placeholder="Designer, Fotógrafo..."></div><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="p-tipo"><option value="equipe">Equipe</option><option value="externo">Externo</option><option value="socio">Sócio</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="p-whatsapp" placeholder="(11) 9 9999-0000"></div><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="p-email" placeholder="nome@email.com"></div></div>
+  <div class="modal-footer"><button class="btn-save" id="save-pessoa">Salvar Pessoa</button><button class="btn-close-modal" data-close="pessoa">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-postagem"><div class="modal wide">
+  <div class="modal-title"><span id="post-modal-title">Nova Postagem</span><button class="modal-close-btn" data-close="postagem">×</button></div>
+  <input type="hidden" id="po-id">
+  <div class="form-row"><div class="form-group"><label class="form-label">Parceiro / Influenciador</label><select class="form-select" id="po-parceiro"></select></div><div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="po-colecao"></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Rede social</label><select class="form-select" id="po-rede"><option value="instagram_feed">Instagram Feed</option><option value="instagram_reels">Instagram Reels</option><option value="instagram_stories">Instagram Stories</option><option value="tiktok">TikTok</option><option value="threads">Threads</option><option value="youtube">YouTube</option></select></div><div class="form-group"><label class="form-label">Tipo de conteúdo</label><input class="form-input" id="po-tipo" placeholder="Look do dia, Review, Collab..."></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Data prevista</label><input class="form-input" id="po-data-prev" type="date"></div><div class="form-group"><label class="form-label">Data real de postagem</label><input class="form-input" id="po-data-real" type="date"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="po-status"><option value="planejado">Planejado</option><option value="confirmado">Confirmado</option><option value="postado">Postado</option><option value="cancelado">Cancelado</option></select></div><div class="form-group"><label class="form-label">Código de desconto</label><input class="form-input" id="po-cod-desc" placeholder="SLB10"></div></div>
+  <div class="form-group"><label class="form-label">Link da postagem</label><input class="form-input" id="po-link" placeholder="https://instagram.com/p/..."></div>
+  <p class="form-section">Métricas (após postagem)</p>
+  <div class="form-row3"><div class="form-group"><label class="form-label">Alcance</label><input class="form-input" id="po-alcance" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Curtidas</label><input class="form-input" id="po-curtidas" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Comentários</label><input class="form-input" id="po-coments" type="number" placeholder="0"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Cliques no link</label><input class="form-input" id="po-cliques" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Vendas geradas</label><input class="form-input" id="po-vendas" type="number" placeholder="0"></div></div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="po-obs" placeholder="Contexto, detalhes..."></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="save-postagem">Salvar</button><button class="btn-delete-modal" id="delete-postagem" style="display:none">Excluir</button><button class="btn-close-modal" data-close="postagem">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-marketing"><div class="modal wide">
+  <div class="modal-title"><span id="mkt-modal-title">Nova Ação de Marketing</span><button class="modal-close-btn" data-close="marketing">×</button></div>
+  <input type="hidden" id="mk-id">
+  <div class="form-group"><label class="form-label">Título *</label><input class="form-input" id="mk-titulo" placeholder="Ex: Campanha Zamna 2026, Reels com @influencer..."></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="mk-tipo"><option value="post_organico">Post orgânico</option><option value="reels">Reels</option><option value="campanha_paga">Campanha paga</option><option value="ads">Ads (Meta/Google)</option><option value="email">E-mail</option><option value="whatsapp">WhatsApp</option><option value="outro">Outro</option></select></div><div class="form-group"><label class="form-label">Plataforma</label><select class="form-select" id="mk-plat"><option value="instagram">Instagram</option><option value="tiktok">TikTok</option><option value="meta_ads">Meta Ads</option><option value="google">Google</option><option value="whatsapp">WhatsApp</option><option value="email">E-mail</option><option value="outro">Outro</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="mk-status"><option value="planejada">Planejada</option><option value="ativa">Ativa</option><option value="encerrada">Encerrada</option><option value="cancelada">Cancelada</option></select></div><div class="form-group"><label class="form-label">Coleção vinculada</label><select class="form-select" id="mk-colecao"></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Data início</label><input class="form-input" id="mk-inicio" type="date"></div><div class="form-group"><label class="form-label">Data fim</label><input class="form-input" id="mk-fim" type="date"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Investimento (R$)</label><input class="form-input" id="mk-invest" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="mk-resp"></select></div></div>
+  <div class="form-group"><label class="form-label">Público-alvo</label><input class="form-input" id="mk-publico" placeholder="Mulheres 18-35, amantes de festival..."></div>
+  <div class="form-group"><label class="form-label">Descrição / Criativo</label><textarea class="form-textarea" id="mk-desc" placeholder="Detalhes da campanha, link do criativo..."></textarea></div>
+  <p class="form-section">Resultados</p>
+  <div class="form-row3"><div class="form-group"><label class="form-label">Alcance</label><input class="form-input" id="mk-alcance" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Impressões</label><input class="form-input" id="mk-impressoes" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Cliques</label><input class="form-input" id="mk-cliques" type="number" placeholder="0"></div></div>
+  <div class="form-row3"><div class="form-group"><label class="form-label">Leads</label><input class="form-input" id="mk-leads" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Vendas</label><input class="form-input" id="mk-vendas" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Receita gerada (R$)</label><input class="form-input" id="mk-receita" type="number" step="0.01" placeholder="0,00"></div></div>
+  <div class="modal-footer"><button class="btn-save" id="save-marketing">Salvar</button><button class="btn-delete-modal" id="delete-marketing" style="display:none">Excluir</button><button class="btn-close-modal" data-close="marketing">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-cliente"><div class="modal wide">
+  <div class="modal-title"><span id="cli-modal-title">Novo Cliente</span><button class="modal-close-btn" data-close="cliente">×</button></div>
+  <input type="hidden" id="cl-id">
+  <div class="form-row"><div class="form-group"><label class="form-label">Nome completo *</label><input class="form-input" id="cl-nome" placeholder="Nome do cliente"></div><div class="form-group"><label class="form-label">CPF</label><input class="form-input" id="cl-cpf" placeholder="000.000.000-00"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="cl-email" placeholder="cliente@email.com"></div><div class="form-group"><label class="form-label">Telefone / WhatsApp</label><input class="form-input" id="cl-tel" placeholder="(11) 9 9999-0000"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="cl-cidade" placeholder="São Paulo"></div><div class="form-group"><label class="form-label">Estado</label><select class="form-select" id="cl-estado"><option value="">-</option><option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>RS</option><option>SC</option><option>BA</option><option>CE</option><option>DF</option><option>GO</option><option>PE</option><option>Outro</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Aniversário</label><input class="form-input" id="cl-nasc" type="date"></div><div class="form-group"><label class="form-label">Como conheceu a SLB</label><select class="form-select" id="cl-origem"><option value="">-</option><option>Instagram</option><option>TikTok</option><option>Indicação</option><option>Evento / Festival</option><option>Loja física</option><option>Site</option><option>Outro</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Tamanho preferido</label><select class="form-select" id="cl-tam"><option value="">-</option><option>P</option><option>M</option><option>G</option><option>GG</option><option>Especial</option></select></div><div class="form-group"><label class="form-label">Estilo favorito</label><input class="form-input" id="cl-estilo" placeholder="Festival, streetwear, casual..."></div></div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px"><label class="form-check"><input type="checkbox" id="cl-vip"> ⭐ Cliente VIP</label><label class="form-check"><input type="checkbox" id="cl-optin-wp"> WhatsApp opt-in</label><label class="form-check"><input type="checkbox" id="cl-optin-email"> E-mail opt-in</label></div>
+  <div class="form-group"><label class="form-label">Observações internas</label><textarea class="form-textarea" id="cl-obs" placeholder="Preferências, histórico, notas da equipe..."></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="save-cliente">Salvar</button><button class="btn-delete-modal" id="delete-cliente" style="display:none">Excluir</button><button class="btn-close-modal" data-close="cliente">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-evento"><div class="modal">
+  <div class="modal-title"><span id="ev-modal-title">Novo Evento</span><button class="modal-close-btn" data-close="evento">×</button></div>
+  <input type="hidden" id="ev-id">
+  <input type="hidden" id="ev-colecao-id">
+  <div class="form-group"><label class="form-label">Nome do evento *</label><input class="form-input" id="ev-nome" placeholder="Ex: Zamna Festival, Warung, Time Warp..."></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Data do evento</label><input class="form-input" id="ev-data" type="date"></div><div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="ev-cidade" placeholder="Tulum, Floripa..."></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="ev-tipo"><option value="festival">Festival</option><option value="balada">Balada</option><option value="popup">Pop-up</option><option value="lancamento">Lançamento</option><option value="outro">Outro</option></select></div><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="ev-status"><option value="negociacao">Em negociação</option><option value="confirmado">Confirmado</option><option value="cancelado">Cancelado</option></select></div></div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="ev-obs" placeholder="Detalhes, contato, planejamento..."></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="save-evento">Salvar Evento</button><button class="btn-delete-modal" id="delete-evento" style="display:none">Excluir</button><button class="btn-close-modal" data-close="evento">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-meta"><div class="modal">
+  <div class="modal-title"><span id="meta-modal-title">Nova Meta</span><button class="modal-close-btn" data-close="meta">×</button></div>
+  <input type="hidden" id="me-id">
+  <div class="form-group"><label class="form-label">Título *</label><input class="form-input" id="me-titulo" placeholder="Ex: Faturamento mensal de R$ 10k"></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="me-cat"><option value="financeiro">Financeiro</option><option value="vendas">Vendas</option><option value="marketing">Marketing</option><option value="producao">Produção</option><option value="operacional">Operacional</option><option value="outro">Outro</option></select></div><div class="form-group"><label class="form-label">Tipo de métrica</label><select class="form-select" id="me-tipo"><option value="moeda">Moeda (R$)</option><option value="numero">Número</option><option value="percentual">Percentual (%)</option><option value="booleano">Sim/Não</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Valor da meta</label><input class="form-input" id="me-meta" type="number" step="0.01" placeholder="10000"></div><div class="form-group"><label class="form-label">Valor atual</label><input class="form-input" id="me-atual" type="number" step="0.01" placeholder="0"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Período</label><select class="form-select" id="me-periodo"><option value="mensal">Mensal</option><option value="trimestral">Trimestral</option><option value="semestral">Semestral</option><option value="anual">Anual</option></select></div><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="me-resp"></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Inicio</label><input class="form-input" id="me-inicio" type="date"></div><div class="form-group"><label class="form-label">Prazo</label><input class="form-input" id="me-fim" type="date"></div></div>
+  <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="me-desc" placeholder="Contexto e estratégia para atingir essa meta..."></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="save-meta">Salvar</button><button class="btn-delete-modal" id="delete-meta" style="display:none">Excluir</button><button class="btn-close-modal" data-close="meta">Fechar</button></div>
+</div></div>
+
 <!-- ONBOARDING -->
 <div class="modal-bg" id="modal-onboarding" style="z-index:9999">
   <div class="modal" style="max-width:420px;text-align:center;padding:32px 28px">
