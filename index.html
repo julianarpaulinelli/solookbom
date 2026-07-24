@@ -3368,7 +3368,7 @@ function doLogout(){
   $('login-pass').value='';$('login-user').value='';
 }
 function showApp(){
-  $('login-screen').style.display='none';$('app-screen').style.display='block';
+  $('login-screen').style.display='none';$('app-screen').style.display='flex';
   var names={JU:'Juliana',FE:'Fernando',VI:'Victor',YA:'Yasmin'};
   var name=names[me]||me;
   $('logged-label').textContent=name;$('topbar-user').textContent=name.toUpperCase();
