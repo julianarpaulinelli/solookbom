@@ -5943,16 +5943,16 @@ document.addEventListener('DOMContentLoaded',function(){
   document.addEventListener('click',handleClick);
 
   // Save buttons
-  $('save-task').addEventListener('click',saveTask);
-  $('save-supplier').addEventListener('click',saveSupplier);
+  var _stk=$('save-task');if(_stk)_stk.addEventListener('click',saveTask);
+  var _ssup=$('save-supplier');if(_ssup)_ssup.addEventListener('click',saveSupplier);
   // save-cost removido (substituído por save-entrada e save-saida)
-  $('save-produto').addEventListener('click',saveProduto);
-  $('save-estoque').addEventListener('click',saveEstoque);
-  $('save-colecao').addEventListener('click',saveColecao);
-  $('save-producao').addEventListener('click',saveProducao);
-  $('save-pedido').addEventListener('click',savePedido);
-  $('save-frete').addEventListener('click',saveFrete);
-  $('save-parceiro').addEventListener('click',saveParceiro);
+  var _sp=$('save-produto');if(_sp)_sp.addEventListener('click',saveProduto);
+  var _se=$('save-estoque');if(_se)_se.addEventListener('click',saveEstoque);
+  var _sc=$('save-colecao');if(_sc)_sc.addEventListener('click',saveColecao);
+  var _sprod=$('save-producao');if(_sprod)_sprod.addEventListener('click',saveProducao);
+  var _sped=$('save-pedido');if(_sped)_sped.addEventListener('click',savePedido);
+  var _sfr=$('save-frete');if(_sfr)_sfr.addEventListener('click',saveFrete);
+  var _spar=$('save-parceiro');if(_spar)_spar.addEventListener('click',saveParceiro);
   $('save-meta')&&$('save-meta').addEventListener('click',saveMeta);
   $('save-postagem').addEventListener('click',savePostagem);
   $('save-marketing').addEventListener('click',saveMarketing);
@@ -9151,8 +9151,11 @@ openSection = function(name){
 var _origRenderDash = renderDashboard;
 renderDashboard = function(){
   try{ _origRenderDash(); } catch(e){}
-  renderDashboardNovo();
+  // Só atualizar dashboard/barra quando dados carregam
   updateLaunchBar();
+  // renderDashboardNovo só roda se home estiver visível
+  var homeEl = document.getElementById('section-home');
+  if(homeEl && homeEl.classList.contains('visible')) renderDashboardNovo();
 };
 
 // Carregar marcos no init
