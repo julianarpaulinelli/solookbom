@@ -3202,6 +3202,40 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   </div>
 </div>
 
+<!-- MODAL: NOVO/EDITAR MARCO -->
+<div class="modal-bg" id="modal-marco">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-title">
+      <span id="marco-modal-title">Novo Marco</span>
+      <button class="modal-close-btn" data-close="marco">×</button>
+    </div>
+    <input type="hidden" id="marco-id">
+    <div class="form-group">
+      <label class="form-label">Nome do marco *</label>
+      <input class="form-input" id="marco-titulo" placeholder="Ex: Site no ar, Fotos prontas...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Categoria *</label>
+      <select class="form-select" id="marco-categoria">
+        <option value="Tecnologia">Tecnologia</option>
+        <option value="Produto">Produto</option>
+        <option value="Marca">Marca</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Financeiro">Financeiro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Vincular tarefas</label>
+      <input class="form-input" id="marco-task-search" placeholder="Buscar tarefa..." style="margin-bottom:8px">
+      <div id="marco-task-lista" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;border:1px solid var(--border);border-radius:8px;padding:8px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-save" id="marco-salvar">Salvar Marco</button>
+      <button class="btn-close-modal" data-close="marco">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ONBOARDING -->
 <div class="modal-bg" id="modal-onboarding" style="z-index:9999">
   <div class="modal" style="max-width:420px;text-align:center;padding:32px 28px">
@@ -9365,13 +9399,7 @@ function renderMarcos(){
   // Editar
   lista.querySelectorAll('[data-lc-edit]').forEach(function(btn){
     btn.addEventListener('click', function(){
-      var id = btn.dataset.lcEdit;
-      var m  = D_marcos.find(function(x){return x.id===id;});
-      if(!m) return;
-      var novoTitulo = prompt('Título do marco:', m.titulo);
-      if(!novoTitulo||novoTitulo===m.titulo) return;
-      db.from('launch_marcos').update({titulo:novoTitulo,updated_at:new Date().toISOString()}).eq('id',id)
-        .then(function(){ m.titulo=novoTitulo; renderMarcos(); toast('Marco atualizado!'); });
+      openMarcoModal(btn.dataset.lcEdit);
     });
   });
 
@@ -9389,17 +9417,7 @@ function renderMarcos(){
 }
 
 function lcAdicionarMarco(){
-  var titulo = prompt('Nome do marco:');
-  if(!titulo) return;
-  var cat = prompt('Categoria (Tecnologia / Produto / Marca / Marketing / Financeiro):', 'Produto');
-  if(!cat) return;
-  var ordem = D_marcos.length > 0 ? Math.max.apply(null,D_marcos.map(function(m){return m.ordem;}))+1 : 1;
-  db.from('launch_marcos').insert({titulo:titulo,categoria:cat,ordem:ordem,concluido:false})
-    .then(function(r){
-      if(r&&r.error){toast('Erro: '+r.error.message);return;}
-      loadMarcos().then(renderMarcos);
-      toast('Marco adicionado!');
-    });
+  openMarcoModal(null);
 }
 
 // ── SIDEBAR — NOVO SISTEMA DE NAV ────────────────────────
@@ -9614,6 +9632,134 @@ renderMarcos = function(){
     el.style.cursor = 'pointer';
   });
 };
+
+// ── MODAL DE MARCO ────────────────────────────────────────
+var _marcoTasksSel = {};
+
+function openMarcoModal(marcoId){
+  var isEdit = !!marcoId;
+  var marco = isEdit ? D_marcos.find(function(m){return m.id===marcoId;}) : null;
+
+  // Preencher campos
+  document.getElementById('marco-id').value = marcoId || '';
+  document.getElementById('marco-modal-title').textContent = isEdit ? 'Editar Marco' : 'Novo Marco';
+  document.getElementById('marco-titulo').value = marco ? marco.titulo : '';
+  document.getElementById('marco-categoria').value = marco ? marco.categoria : 'Produto';
+
+  // Tarefas já vinculadas
+  _marcoTasksSel = {};
+  if(isEdit){
+    (D.tasks||[]).forEach(function(t){
+      if(t.marco_id === marcoId) _marcoTasksSel[t.id] = true;
+    });
+  }
+
+  renderMarcoTaskLista('');
+  openModal('marco');
+
+  // Bind search
+  var search = document.getElementById('marco-task-search');
+  if(search){
+    search.value = '';
+    if(!search._marcoInit){
+      search._marcoInit = true;
+      search.addEventListener('input', function(){
+        renderMarcoTaskLista(search.value.toLowerCase());
+      });
+    }
+  }
+}
+
+function renderMarcoTaskLista(q){
+  var el = document.getElementById('marco-task-lista');
+  if(!el) return;
+  var lista = (D.tasks||[]).filter(function(t){
+    return !q || t.titulo.toLowerCase().includes(q);
+  }).sort(function(a,b){return a.titulo.localeCompare(b.titulo,'pt-BR');});
+
+  if(!lista.length){
+    el.innerHTML = '<p class="empty" style="font-size:11px;padding:8px">Nenhuma tarefa encontrada</p>';
+    return;
+  }
+
+  el.innerHTML = lista.map(function(t){
+    var checked = _marcoTasksSel[t.id] ? 'checked' : '';
+    return '<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;cursor:pointer;background:var(--surface)">'+
+      '<input type="checkbox" '+checked+' data-marco-task="'+t.id+'" style="accent-color:var(--blue);width:15px;height:15px;flex-shrink:0">'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:12px;font-weight:600;color:var(--fg)">'+t.titulo+'</div>'+
+        '<div style="font-size:10px;color:var(--muted)">'+(t.categoria||'—')+(t.prazo?' · 📅 '+fmtDate(t.prazo):'')+'</div>'+
+      '</div>'+
+    '</label>';
+  }).join('');
+
+  el.querySelectorAll('[data-marco-task]').forEach(function(ck){
+    ck.addEventListener('change', function(){
+      if(ck.checked) _marcoTasksSel[ck.dataset.marcoTask] = true;
+      else delete _marcoTasksSel[ck.dataset.marcoTask];
+    });
+  });
+}
+
+function salvarMarco(){
+  var titulo = (document.getElementById('marco-titulo')||{value:''}).value.trim();
+  var cat    = (document.getElementById('marco-categoria')||{value:''}).value;
+  var id     = (document.getElementById('marco-id')||{value:''}).value;
+  if(!titulo){ toast('Informe o nome do marco'); return; }
+
+  var isEdit = !!id;
+  var ordem  = isEdit
+    ? (D_marcos.find(function(m){return m.id===id;})||{ordem:0}).ordem
+    : (D_marcos.length ? Math.max.apply(null,D_marcos.map(function(m){return m.ordem;}))+1 : 1);
+
+  var payload = {titulo:titulo, categoria:cat, ordem:ordem};
+  var q = isEdit
+    ? db.from('launch_marcos').update(payload).eq('id',id)
+    : db.from('launch_marcos').insert(payload).select();
+
+  q.then(function(r){
+    if(r&&r.error){ toast('Erro: '+r.error.message); return; }
+    var marcoId = isEdit ? id : (r.data&&r.data[0]&&r.data[0].id);
+    if(!marcoId){ toast('Erro ao obter ID do marco'); return; }
+
+    // Atualizar local
+    if(isEdit){
+      var m = D_marcos.find(function(x){return x.id===id;});
+      if(m){ m.titulo=titulo; m.categoria=cat; }
+    } else {
+      D_marcos.push({id:marcoId,titulo:titulo,categoria:cat,ordem:ordem,concluido:false});
+    }
+
+    // Vincular/desvincular tarefas
+    var selecionadas = Object.keys(_marcoTasksSel);
+    var promises = (D.tasks||[]).filter(function(t){
+      return t.marco_id===marcoId && !_marcoTasksSel[t.id];
+    }).map(function(t){
+      return db.from('tarefas').update({marco_id:null}).eq('id',t.id)
+        .then(function(){ t.marco_id=null; });
+    });
+    selecionadas.forEach(function(tid){
+      var task=(D.tasks||[]).find(function(t){return t.id===tid;});
+      if(!task||task.marco_id===marcoId)return;
+      promises.push(db.from('tarefas').update({marco_id:marcoId}).eq('id',tid)
+        .then(function(){ if(task)task.marco_id=marcoId; }));
+    });
+
+    Promise.all(promises).then(function(){
+      closeModal('marco');
+      buildTarefasPorMarco();
+      renderMarcos();
+      updateLaunchBar();
+      toast(isEdit?'Marco atualizado! ✅':'Marco criado! ✅');
+    });
+  });
+}
+
+// Bind botão salvar
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.getElementById('marco-salvar');
+  if(btn) btn.addEventListener('click', salvarMarco);
+});
 })();
 </script>
 </body>
