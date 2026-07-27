@@ -3184,6 +3184,23 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <div class="modal-footer"><button class="btn-save" id="save-meta">Salvar</button><button class="btn-delete-modal" id="delete-meta" style="display:none">Excluir</button><button class="btn-close-modal" data-close="meta">Fechar</button></div>
 </div></div>
 
+<!-- MODAL: VINCULAR TAREFAS AO MARCO -->
+<div class="modal-bg" id="modal-vincular-marco">
+  <div class="modal" style="max-width:520px;max-height:80vh;display:flex;flex-direction:column">
+    <div class="modal-title">
+      <span>📋 Vincular Tarefas ao Marco</span>
+      <button class="modal-close-btn" data-close="vincular-marco">×</button>
+    </div>
+    <p class="prod-seo-hint" id="vm-marco-titulo" style="margin-bottom:12px"></p>
+    <input class="form-input" id="vm-search" placeholder="Buscar tarefa..." style="margin-bottom:10px">
+    <div id="vm-lista" style="flex:1;overflow-y:auto;max-height:360px;display:flex;flex-direction:column;gap:6px"></div>
+    <div class="modal-footer" style="margin-top:12px">
+      <button class="btn-save" id="vm-salvar">Salvar vínculos</button>
+      <button class="btn-close-modal" data-close="vincular-marco">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ONBOARDING -->
 <div class="modal-bg" id="modal-onboarding" style="z-index:9999">
   <div class="modal" style="max-width:420px;text-align:center;padding:32px 28px">
@@ -9462,6 +9479,128 @@ function epicoTag(cat){
   if(!e) return '<span class="epico-tag" style="background:rgba(148,163,184,.1);color:#94A3B8;border:1px solid rgba(148,163,184,.2)"><span class="epico-dot" style="background:#94A3B8"></span>'+cat+'</span>';
   return '<span class="epico-tag" style="background:'+e.bg+';color:'+e.cor+';border:1px solid '+e.borda+'"><span class="epico-dot" style="background:'+e.cor+'"></span>'+cat+'</span>';
 }
+
+// ── VINCULAR TAREFAS A MARCOS ─────────────────────────────
+var _vmMarcoId = null;
+var _vmSelecionadas = {};
+
+function openVincularMarco(marcoId){
+  _vmMarcoId = marcoId;
+  var marco = D_marcos.find(function(m){return m.id===marcoId;});
+  var tituloEl = document.getElementById('vm-marco-titulo');
+  if(tituloEl) tituloEl.textContent = marco ? marco.titulo : '';
+
+  // Carregar tarefas já vinculadas a esse marco
+  _vmSelecionadas = {};
+  (D.tarefas||[]).forEach(function(t){
+    if(t.marco_id === marcoId) _vmSelecionadas[t.id] = true;
+  });
+
+  renderVMlista('');
+  openModal('vincular-marco');
+
+  // Bind search
+  var search = document.getElementById('vm-search');
+  if(search){
+    search.value = '';
+    if(!search._vmInit){
+      search._vmInit = true;
+      search.addEventListener('input', function(){
+        renderVMlista(search.value.toLowerCase());
+      });
+    }
+  }
+}
+
+function renderVMlista(q){
+  var el = document.getElementById('vm-lista');
+  if(!el) return;
+  var lista = (D.tarefas||[]).filter(function(t){
+    if(q && !t.titulo.toLowerCase().includes(q)) return false;
+    return true;
+  }).sort(function(a,b){return a.titulo.localeCompare(b.titulo,'pt-BR');});
+
+  if(!lista.length){
+    el.innerHTML = '<p class="empty" style="font-size:11px">Nenhuma tarefa encontrada</p>';
+    return;
+  }
+
+  el.innerHTML = lista.map(function(t){
+    var checked = _vmSelecionadas[t.id] ? 'checked' : '';
+    var vinc = t.marco_id && t.marco_id !== _vmMarcoId ? ' (vinculada a outro marco)' : '';
+    return '<label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer;background:var(--surface);border:1px solid var(--border)">'+
+      '<input type="checkbox" '+checked+' data-vm-id="'+t.id+'" style="accent-color:var(--blue);width:16px;height:16px;flex-shrink:0">'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:12px;font-weight:600;color:var(--fg)">'+t.titulo+'</div>'+
+        '<div style="font-size:10px;color:var(--muted)">'+
+          (t.categoria||'—')+
+          (t.prazo?' · 📅 '+fmtDate(t.prazo):'')+
+          vinc+
+        '</div>'+
+      '</div>'+
+    '</label>';
+  }).join('');
+
+  // Listeners dos checkboxes
+  el.querySelectorAll('[data-vm-id]').forEach(function(ck){
+    ck.addEventListener('change', function(){
+      if(ck.checked) _vmSelecionadas[ck.dataset.vmId] = true;
+      else delete _vmSelecionadas[ck.dataset.vmId];
+    });
+  });
+}
+
+function salvarVinculos(){
+  if(!_vmMarcoId){ toast('Marco não definido'); return; }
+  var selecionadas = Object.keys(_vmSelecionadas);
+
+  // Desvincular tarefas que eram desse marco mas foram desmarcadas
+  var promises = (D.tarefas||[]).filter(function(t){
+    return t.marco_id === _vmMarcoId && !_vmSelecionadas[t.id];
+  }).map(function(t){
+    return db.from('tarefas').update({marco_id: null}).eq('id', t.id)
+      .then(function(){ t.marco_id = null; });
+  });
+
+  // Vincular as selecionadas
+  selecionadas.forEach(function(tid){
+    var task = (D.tarefas||[]).find(function(t){return t.id===tid;});
+    if(!task || task.marco_id === _vmMarcoId) return;
+    promises.push(
+      db.from('tarefas').update({marco_id: _vmMarcoId}).eq('id', tid)
+        .then(function(){ if(task) task.marco_id = _vmMarcoId; })
+    );
+  });
+
+  Promise.all(promises).then(function(){
+    closeModal('vincular-marco');
+    buildTarefasPorMarco();
+    renderMarcos();
+    toast('Vínculos salvos! ✅');
+  });
+}
+
+// Bind botão salvar e listener de abertura
+document.addEventListener('DOMContentLoaded', function(){
+  var btnSalvar = document.getElementById('vm-salvar');
+  if(btnSalvar) btnSalvar.addEventListener('click', salvarVinculos);
+});
+
+// Listener nos cards de marco para o clique em "vincular tarefas"
+var _origRenderMarcos = renderMarcos;
+renderMarcos = function(){
+  _origRenderMarcos();
+  // Adicionar listener no .lc-marco-tarefas após renderizar
+  document.querySelectorAll('.lc-marco-tarefas[data-marco-id]').forEach(function(el){
+    if(el._vmInit) return;
+    el._vmInit = true;
+    el.addEventListener('click', function(e){
+      e.stopPropagation();
+      openVincularMarco(el.dataset.marcoId);
+    });
+    el.style.cursor = 'pointer';
+  });
+};
 })();
 </script>
 </body>
