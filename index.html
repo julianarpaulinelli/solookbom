@@ -4256,6 +4256,15 @@ function renderTimeline(list){
   },50);
 }
 
+function populateMarcoSelect(selectedId){
+  var sel=document.getElementById('t-marco-id');
+  if(!sel)return;
+  sel.innerHTML='<option value="">— Nenhum —</option>'+
+    (D_marcos||[]).map(function(m){
+      return '<option value="'+m.id+'"'+(m.id===selectedId?' selected':'')+'>'+m.titulo+'</option>';
+    }).join('');
+}
+
 function openTaskEdit(id){
   var t=D.tasks.find(function(x){return x.id===id;});if(!t)return;
   $('task-modal-title').textContent='Editar Tarefa';$('t-id').value=t.id;$('t-title').value=t.titulo;$('t-cat').value=t.categoria||'';$('t-prio').value=t.prioridade||'media';$('t-status').value=t.status;$('t-prazo').value=t.prazo||'';$('t-desc').value=t.descricao||'';$('t-tags').value=t.tags||'';$('t-coment').value=t.comentarios||'';
