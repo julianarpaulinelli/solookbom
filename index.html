@@ -6230,7 +6230,7 @@ document.addEventListener('DOMContentLoaded',function(){
   $('produto-search').addEventListener('input',renderProdutos);
   $('pedido-search').addEventListener('input',renderPedidos);
   $('task-search')&&$('task-search').addEventListener('input',renderTasks);
-  $('cost-search')&&$('cost-search').addEventListener('input',renderCosts);
+  var _cs=$('cost-search');if(_cs)_cs.addEventListener('input',renderCosts);
   $('estoque-search')&&$('estoque-search').addEventListener('input',renderEstoque);
   $('colecao-search')&&$('colecao-search').addEventListener('input',renderColecoes);
   $('producao-search')&&$('producao-search').addEventListener('input',renderProducoes);
