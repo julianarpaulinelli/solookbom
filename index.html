@@ -1955,9 +1955,12 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           <!-- COUNTDOWN HERO -->
           <div class="launch-hero">
             <div class="launch-countdown" id="lc-countdown">
-              <div class="launch-cd-num" id="lc-dias">58</div>
+              <div class="launch-cd-num" id="lc-dias">—</div>
               <div class="launch-cd-lbl">dias para o lançamento</div>
-              <div class="launch-cd-data">15 de setembro de 2026</div>
+              <div class="launch-cd-data" id="lc-data-txt">15 de setembro de 2026</div>
+            <div style="margin-top:10px">
+                <button class="lc-marco-btn" id="lc-edit-date" style="font-size:11px;padding:4px 12px;opacity:.7">✏ Editar data</button>
+              </div>
             </div>
             <div class="launch-progress-big">
               <div class="launch-prog-header">
@@ -9067,15 +9070,27 @@ initFinTabs = function(){
 // ══════════════════════════════════════════════════════════
 //  SISTEMA DE LANÇAMENTO
 // ══════════════════════════════════════════════════════════
-var LAUNCH_DATE = new Date('2026-09-15T00:00:00');
+var LAUNCH_DATE = (function(){
+  var saved = localStorage.getItem('slb_launch_date');
+  return saved ? new Date(saved) : new Date('2026-09-15T00:00:00');
+})();
 var D_marcos = [];
 
 // ── BARRA DE LANÇAMENTO (topo) ────────────────────────────
 function updateLaunchBar(){
   var hoje = new Date();
+  hoje.setHours(0,0,0,0);
   var diff  = Math.ceil((LAUNCH_DATE - hoje) / (1000*60*60*24));
+  var diasTxt = diff > 0 ? diff + ' dias' : diff === 0 ? 'Hoje!' : 'Lançado!';
   var diasEl = document.getElementById('lb-dias');
-  if(diasEl) diasEl.textContent = diff > 0 ? diff + ' dias' : diff === 0 ? 'Hoje!' : 'Lançado!';
+  if(diasEl) diasEl.textContent = diasTxt;
+  // Atualizar também a seção lançamento
+  var lcDias = document.getElementById('lc-dias');
+  if(lcDias) lcDias.textContent = diff > 0 ? diff : diff === 0 ? '0' : '✓';
+  var lcData = document.getElementById('lc-data-txt');
+  if(lcData) lcData.textContent = LAUNCH_DATE.toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'});
+  var lbData = document.getElementById('lb-data-txt');
+  if(lbData) lbData.textContent = LAUNCH_DATE.toLocaleDateString('pt-BR',{day:'numeric',month:'short'}).replace('.','');
 
   // Progresso por marcos
   var total   = D_marcos.length || 14;
@@ -9231,6 +9246,23 @@ function initLancamento(){
   if(btnAdd && !btnAdd._init){
     btnAdd._init = true;
     btnAdd.addEventListener('click', function(){ lcAdicionarMarco(); });
+  }
+
+  // Editar data de lançamento
+  var btnEditDate = document.getElementById('lc-edit-date');
+  if(btnEditDate && !btnEditDate._init){
+    btnEditDate._init = true;
+    btnEditDate.addEventListener('click', function(){
+      var atual = LAUNCH_DATE.toISOString().split('T')[0];
+      var nova = prompt('Nova data de lançamento (AAAA-MM-DD):', atual);
+      if(!nova) return;
+      var d = new Date(nova + 'T00:00:00');
+      if(isNaN(d.getTime())){ toast('Data inválida'); return; }
+      LAUNCH_DATE = d;
+      localStorage.setItem('slb_launch_date', nova + 'T00:00:00');
+      updateLaunchBar();
+      toast('Data atualizada! 🚀');
+    });
   }
 }
 
