@@ -1622,6 +1622,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
               <button class="fb" data-f="task" data-k="cat" data-v="Jurídico"><span class="epico-dot" style="background:#6B7280"></span>Jurídico</button>
               <button class="fb" data-f="task" data-k="cat" data-v="Financeiro"><span class="epico-dot" style="background:#10B981"></span>Financeiro</button>
               <button class="fb" data-f="task" data-k="cat" data-v="Outro"><span class="epico-dot" style="background:#94A3B8"></span>Outro</button>
+              <button class="fb" data-f="task" data-k="cat" data-v="Evento Pré-Lançamento"><span class="epico-dot" style="background:#F97316"></span>Evento Pré-Lançamento</button>
             </div>
           </div>
 
@@ -2717,7 +2718,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <div class="modal-title"><span id="task-modal-title">Nova Tarefa</span><button class="modal-close-btn" data-close="task">×</button></div>
   <input type="hidden" id="t-id">
   <div class="form-group"><label class="form-label">Título *</label><input class="form-input" id="t-title" placeholder="Descreva a tarefa"></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="t-cat"><option value="">—</option><option>Marca</option><option>Site</option><option>Artes</option><option>Produto</option><option>Fornecedor</option><option>Marketing</option><option>Jurídico</option><option>Financeiro</option><option>Outro</option></select></div><div class="form-group"><label class="form-label">Prioridade</label><select class="form-select" id="t-prio"><option value="alta">🔴 Alta</option><option value="media" selected>🟡 Média</option><option value="baixa">🟢 Baixa</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="t-cat"><option value="">—</option><option>Marca</option><option>Site</option><option>Artes</option><option>Produto</option><option>Fornecedor</option><option>Marketing</option><option>Jurídico</option><option>Financeiro</option><option>Outro</option><option>Evento Pré-Lançamento</option></select></div><div class="form-group"><label class="form-label">Prioridade</label><select class="form-select" id="t-prio"><option value="alta">🔴 Alta</option><option value="media" selected>🟡 Média</option><option value="baixa">🟢 Baixa</option></select></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="t-status"><option value="todo">A fazer</option><option value="doing">Em andamento</option><option value="done">Concluído</option><option value="blocked">Bloqueado</option></select></div><div class="form-group"><label class="form-label">Prazo</label><input class="form-input" id="t-prazo" type="date"></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="t-owner"></select></div><div class="form-group"><label class="form-label">Co-responsável</label><select class="form-select" id="t-coowner"></select></div></div>
   <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="t-desc" placeholder="Contexto, links..."></textarea></div>
@@ -9451,6 +9452,7 @@ var EPICO_CORES = {
   'Jurídico':   {bg:'rgba(107,114,128,.15)', cor:'#6B7280', borda:'rgba(107,114,128,.3)'},
   'Financeiro': {bg:'rgba(16,185,129,.15)',  cor:'#10B981', borda:'rgba(16,185,129,.3)'},
   'Outro':      {bg:'rgba(148,163,184,.15)', cor:'#94A3B8', borda:'rgba(148,163,184,.3)'},
+  'Evento Pré-Lançamento': {bg:'rgba(249,115,22,.15)', cor:'#F97316', borda:'rgba(249,115,22,.3)'},
 };
 
 function epicoTag(cat){
