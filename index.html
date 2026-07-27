@@ -2722,6 +2722,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="t-status"><option value="todo">A fazer</option><option value="doing">Em andamento</option><option value="done">Concluído</option><option value="blocked">Bloqueado</option><option value="hold">Em Hold</option></select></div><div class="form-group"><label class="form-label">Prazo</label><input class="form-input" id="t-prazo" type="date"></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="t-owner"></select></div><div class="form-group"><label class="form-label">Co-responsável</label><select class="form-select" id="t-coowner"></select></div></div>
   <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="t-desc" placeholder="Contexto, links..."></textarea></div>
+  <div class="form-group"><label class="form-label">Marco de lançamento</label><select class="form-select" id="t-marco-id"><option value="">— Nenhum —</option></select></div>
   <div class="form-group"><label class="form-label">Tags (vírgula)</label><input class="form-input" id="t-tags" placeholder="urgente, aprovação"></div>
   <div class="form-group"><label class="form-label">Comentários</label><textarea class="form-textarea" id="t-coment" placeholder="Notas e histórico..."></textarea></div>
   <div class="modal-footer"><button class="btn-save" id="save-task">Salvar Tarefa</button><button class="btn-delete-modal" id="delete-task" style="display:none">Excluir</button><button class="btn-close-modal" data-close="task">Fechar</button></div>
@@ -3430,6 +3431,8 @@ function openModal(type){
       prodInitSEO();
     },50);
   }
+  if(type==='task') setTimeout(function(){populateMarcoSelect('');},50);
+  if(type==='cost') setTimeout(initModalLancamento,50);
 }
 
 // ── PRODUTO ABAS ──────────────────────────────────────────
@@ -4258,12 +4261,13 @@ function openTaskEdit(id){
   $('task-modal-title').textContent='Editar Tarefa';$('t-id').value=t.id;$('t-title').value=t.titulo;$('t-cat').value=t.categoria||'';$('t-prio').value=t.prioridade||'media';$('t-status').value=t.status;$('t-prazo').value=t.prazo||'';$('t-desc').value=t.descricao||'';$('t-tags').value=t.tags||'';$('t-coment').value=t.comentarios||'';
   if(t.responsavel_pessoa_id)$('t-owner').value=t.responsavel_pessoa_id;
   if(t.co_responsavel_pessoa_id)$('t-coowner').value=t.co_responsavel_pessoa_id;
-  var dBtn=$('delete-task');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('task');
+  var dBtn=$('delete-task');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}populateMarcoSelect(t.marco_id||'');openModal('task');
 }
 function saveTask(){
   var titulo=val('t-title').trim();if(!titulo){toast('Informe o título');return;}
   var id=val('t-id'),o=val('t-owner'),c=val('t-coowner');
-  var payload={titulo:titulo,categoria:val('t-cat')||null,prioridade:val('t-prio'),status:val('t-status'),responsavel_pessoa_id:o||null,co_responsavel_pessoa_id:(c&&c!==o?c:null),prazo:val('t-prazo')||null,descricao:val('t-desc')||null,tags:val('t-tags')||null,comentarios:val('t-coment')||null,updated_at:new Date().toISOString()};
+  var marcoId=val('t-marco-id')||null;
+  var payload={titulo:titulo,categoria:val('t-cat')||null,prioridade:val('t-prio'),status:val('t-status'),responsavel_pessoa_id:o||null,co_responsavel_pessoa_id:(c&&c!==o?c:null),marco_id:marcoId,prazo:val('t-prazo')||null,descricao:val('t-desc')||null,tags:val('t-tags')||null,comentarios:val('t-coment')||null,updated_at:new Date().toISOString()};
   var q=id?db.from('tarefas').update(payload).eq('id',id):db.from('tarefas').insert(payload);
   q.then(function(res){if(res&&res.error){toast('Erro: '+res.error.message);console.error('[saveTask]',res.error.message);return;}closeModal('task');resetForm('task');toast(id?'Atualizada!':'Criada!');loadTasks();});
 }
@@ -9287,7 +9291,7 @@ function initLancamento(){
 
 function buildTarefasPorMarco(){
   D_tarefas_marco = {};
-  (D.tarefas||[]).forEach(function(t){
+  (D.tasks||[]).forEach(function(t){
     if(t.marco_id){
       if(!D_tarefas_marco[t.marco_id]) D_tarefas_marco[t.marco_id]=[];
       D_tarefas_marco[t.marco_id].push(t);
@@ -9492,7 +9496,7 @@ function openVincularMarco(marcoId){
 
   // Carregar tarefas já vinculadas a esse marco
   _vmSelecionadas = {};
-  (D.tarefas||[]).forEach(function(t){
+  (D.tasks||[]).forEach(function(t){
     if(t.marco_id === marcoId) _vmSelecionadas[t.id] = true;
   });
 
@@ -9515,7 +9519,7 @@ function openVincularMarco(marcoId){
 function renderVMlista(q){
   var el = document.getElementById('vm-lista');
   if(!el) return;
-  var lista = (D.tarefas||[]).filter(function(t){
+  var lista = (D.tasks||[]).filter(function(t){
     if(q && !t.titulo.toLowerCase().includes(q)) return false;
     return true;
   }).sort(function(a,b){return a.titulo.localeCompare(b.titulo,'pt-BR');});
@@ -9555,7 +9559,7 @@ function salvarVinculos(){
   var selecionadas = Object.keys(_vmSelecionadas);
 
   // Desvincular tarefas que eram desse marco mas foram desmarcadas
-  var promises = (D.tarefas||[]).filter(function(t){
+  var promises = (D.tasks||[]).filter(function(t){
     return t.marco_id === _vmMarcoId && !_vmSelecionadas[t.id];
   }).map(function(t){
     return db.from('tarefas').update({marco_id: null}).eq('id', t.id)
@@ -9564,7 +9568,7 @@ function salvarVinculos(){
 
   // Vincular as selecionadas
   selecionadas.forEach(function(tid){
-    var task = (D.tarefas||[]).find(function(t){return t.id===tid;});
+    var task = (D.tasks||[]).find(function(t){return t.id===tid;});
     if(!task || task.marco_id === _vmMarcoId) return;
     promises.push(
       db.from('tarefas').update({marco_id: _vmMarcoId}).eq('id', tid)
