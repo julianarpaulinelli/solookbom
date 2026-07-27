@@ -1364,6 +1364,13 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .epico-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;flex-shrink:0;vertical-align:middle}
 .epico-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap}
 .task-epico-filters{flex-wrap:wrap}
+
+/* ── MARCO PROGRESS BAR ─────────────────────────────────── */
+.lc-marco-progress{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+.lc-marco-bar-wrap{flex:1;min-width:80px;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.lc-marco-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:3px;transition:width .4s}
+.lc-marco-bar-txt{font-size:10px;color:var(--muted);white-space:nowrap}
+.lc-marco-bar-open{font-size:10px;color:var(--amber);white-space:nowrap;margin-left:auto}
 </style>
 </head>
 <body>
@@ -9362,10 +9369,21 @@ function renderMarcos(){
 
   lista.innerHTML = filtered.map(function(m){
     var tarefasM = D_tarefas_marco[m.id]||[];
-    var tarefasTxt = tarefasM.length
-      ? tarefasM.length + ' tarefa(s) vinculada(s)'
-      : 'Clique para vincular tarefas';
-    var corCat = {Tecnologia:'var(--blue)',Produto:'var(--green)',Marca:'var(--amber)',Marketing:'var(--red)',Financeiro:'var(--muted)'}[m.categoria]||'var(--muted)';
+    var totalT   = tarefasM.length;
+    var doneT    = tarefasM.filter(function(t){return t.status==='done';}).length;
+    var abertoT  = tarefasM.filter(function(t){return t.status==='todo'||t.status==='doing'||t.status==='blocked';}).length;
+    var pctT     = totalT>0 ? Math.round(doneT/totalT*100) : 0;
+    var tarefasTxt = totalT ? totalT+' tarefa(s) vinculada(s)' : 'Clique para vincular tarefas';
+    var corCat = {Tecnologia:'var(--blue)',Produto:'var(--green)',Marca:'var(--amber)',Marketing:'var(--red)',Financeiro:'var(--muted)','Evento Pré-Lançamento':'#F97316'}[m.categoria]||'var(--muted)';
+    var barraHTML = totalT>0
+      ? '<div class="lc-marco-progress">'+
+          '<div class="lc-marco-bar-wrap">'+
+            '<div class="lc-marco-bar-fill" style="width:'+pctT+'%"></div>'+
+          '</div>'+
+          '<span class="lc-marco-bar-txt">'+pctT+'% concluído</span>'+
+          (abertoT>0?'<span class="lc-marco-bar-open">'+abertoT+' em aberto</span>':'<span class="lc-marco-bar-open" style="color:var(--green)">✅ todas concluídas</span>')+
+        '</div>'
+      : '';
 
     return '<div class="lc-marco '+(m.concluido?'done':'')+'" data-marco-id="'+m.id+'">'+
       '<input type="checkbox" class="lc-marco-check" '+(m.concluido?'checked':'')+' data-marco-id="'+m.id+'">'+
@@ -9373,6 +9391,7 @@ function renderMarcos(){
         '<div class="lc-marco-titulo">'+m.titulo+'</div>'+
         '<div class="lc-marco-cat" style="color:'+corCat+'">'+m.categoria+'</div>'+
         '<div class="lc-marco-tarefas" data-marco-id="'+m.id+'">📋 '+tarefasTxt+'</div>'+
+        barraHTML+
       '</div>'+
       '<div class="lc-marco-actions">'+
         '<button class="lc-marco-btn" data-lc-edit="'+m.id+'">✏ Editar</button>'+
