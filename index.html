@@ -6209,7 +6209,7 @@ document.addEventListener('DOMContentLoaded',function(){
   // Conditional fields
   $('s-frete').addEventListener('change',function(e){$('frete-info-group').style.display=e.target.checked?'block':'none';});
   $('s-pedmin').addEventListener('change',function(e){$('pedmin-group').style.display=e.target.checked?'block':'none';});
-  $('c-tipo-comp').addEventListener('change',onTipoCompChange);
+  var _ctc=$('c-tipo-comp');if(_ctc)_ctc.addEventListener('change',onTipoCompChange);
   function onTipoCompChange(){var v=val('c-tipo-comp');$('recorrencia-group').style.display=v==='recorrente'?'block':'none';$('parcela-group').style.display=v==='parcelado'?'block':'none';}
   // legacy checkbox support
   var oldRec=$('c-recorrente');if(oldRec)oldRec.addEventListener('change',function(e){$('recorrencia-group').style.display=e.target.checked?'block':'none';});
