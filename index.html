@@ -3486,7 +3486,7 @@ function openModal(type){
       prodInitSEO();
     },50);
   }
-  if(type==='task') setTimeout(function(){populateMarcoSelect('');},50);
+  // populateMarcoSelect é chamada individualmente em openTaskEdit e nova tarefa
   if(type==='cost') setTimeout(initModalLancamento,50);
 }
 
