@@ -4558,7 +4558,7 @@ function renderFinDashboard(){
 
   // Próximos 6 meses
   var futureKeys = [];
-  for(var fi=1;fi<=6;fi++){
+  for(var fi=1;fi<=12;fi++){
     var fd=new Date(now);fd.setMonth(fd.getMonth()+fi);
     futureKeys.push(fd.getFullYear()+'-'+(String(fd.getMonth()+1).padStart(2,'0')));
   }
@@ -4569,11 +4569,18 @@ function renderFinDashboard(){
     var tipo = c.tipo_lancamento||c.tipo||'';
     var baseDate = new Date(c.data);
 
-    // PARCELADO: gerar parcelas restantes
+    // PARCELADO: gerar parcelas restantes usando data_vencimento como âncora
     if(c.tipo_compromisso==='parcelado' && c.total_parcelas && c.parcela_atual){
+      // Usar data_vencimento se disponível, senão usar data do lançamento
+      var anchorDate = c.data_vencimento ? new Date(c.data_vencimento) : baseDate;
+      var diaVenc = anchorDate.getDate(); // dia do mês (ex: 9)
       var restantes = c.total_parcelas - c.parcela_atual;
       for(var p=1;p<=restantes;p++){
-        var pd=new Date(baseDate);pd.setMonth(pd.getMonth()+p);
+        var pd=new Date(anchorDate);
+        pd.setMonth(pd.getMonth()+p);
+        // Garantir o mesmo dia (evitar rollover: ex 31/jan → 28/fev)
+        var maxDia = new Date(pd.getFullYear(), pd.getMonth()+1, 0).getDate();
+        pd.setDate(Math.min(diaVenc, maxDia));
         var pk=pd.getFullYear()+'-'+(String(pd.getMonth()+1).padStart(2,'0'));
         if(futureKeys.indexOf(pk)>=0) addProj(pk,tipo,val);
       }
