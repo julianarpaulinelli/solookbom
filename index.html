@@ -2354,7 +2354,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
       </div>
       <div class="form-group">
         <label class="form-label">SKU (gerado automaticamente)</label>
-        <input class="form-input" id="pr-sku" readonly placeholder="SLB0001">
+        <input class="form-input" id="pr-sku" placeholder="SLB0001">
       </div>
     </div>
     <div class="form-row">
@@ -5396,10 +5396,18 @@ function openProdutoEdit(id){
   openModal('produto');
 }
 function updateMargem(){var c=num('pr-custo'),v=num('pr-venda');$('pr-margem').value=v>0&&c>0?Math.round(((v-c)/v)*100)+'%':'—';custoSkuRecalc();}
-function nextSKU(){if(!D.produtos.length)return 'SLB0001';var nums=D.produtos.map(function(p){return parseInt((p.sku||'SLB0000').replace('SLB',''))||0;});return 'SLB'+String(Math.max.apply(null,nums)+1).padStart(4,'0');}
+function nextSKU(){
+  // Pegar o maior número de todos os SKUs em memória
+  if(!D.produtos.length) return 'SLB0001';
+  var nums = D.produtos.map(function(p){
+    return parseInt((p.sku||'SLB0000').replace(/[^0-9]/g,''))||0;
+  });
+  var next = Math.max.apply(null, nums) + 1;
+  return 'SLB' + String(next).padStart(4,'0');
+}
 function saveProduto(){
   var nome=val('pr-nome').trim();if(!nome){toast('Informe o título do produto');return;}
-  var id=val('pr-id');var sku=id?val('pr-sku'):nextSKU();
+  var id=val('pr-id');var sku=val('pr-sku')||(!id?nextSKU():'');
   var canais=[];
   if($('pr-canal-loja')&&$('pr-canal-loja').checked)canais.push('loja_online');
   if($('pr-canal-ig')&&$('pr-canal-ig').checked)canais.push('instagram');
@@ -6219,7 +6227,12 @@ function resetForm(type){
     var dBtn=document.getElementById('delete-task');if(dBtn){dBtn.style.display='none';}
     var tTitle=document.getElementById('task-modal-title');if(tTitle)tTitle.textContent='Nova Tarefa';
   }
-  if(type==='produto'){custoSkuReset();} var dBtnReset=document.getElementById('delete-'+type);if(dBtnReset){dBtnReset.style.display='none';delete dBtnReset.dataset.deleteId;}
+  if(type==='produto'){
+    custoSkuReset();
+    // Mostrar SKU gerado no campo (editável pelo usuário)
+    var skuEl = document.getElementById('pr-sku');
+    if(skuEl && !skuEl.value) skuEl.value = nextSKU();
+  } var dBtnReset=document.getElementById('delete-'+type);if(dBtnReset){dBtnReset.style.display='none';delete dBtnReset.dataset.deleteId;}
   // reset title
   var titles={task:'Nova Tarefa',supplier:'Novo Fornecedor',cost:'Novo Lançamento',produto:'Novo Produto',estoque:'Novo Item de Estoque',colecao:'Nova Coleção',producao:'Nova Produção',pedido:'Novo Pedido',parceiro:'Novo Parceiro'};
   var tEl=$(type.replace('supplier','sup').replace('produto','prod').replace('estoque','est').replace('colecao','col').replace('producao','prd').replace('pedido','ped').replace('parceiro','pa')+'-modal-title')||$('task-modal-title');
