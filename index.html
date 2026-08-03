@@ -4518,20 +4518,62 @@ function renderFinDashboard(){
     var saidas=allCosts.filter(function(c){return c.data&&c.data.startsWith(key)&&c.tipo_lancamento!=='receita'&&c.tipo!=='receita';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
     monthsData.push({lbl:lbl,key:key,entradas:entradas+entradasPed,saidas:saidas,projetado:false,isCur:key===curMonth});
   }
-  // Calcular média de saídas dos últimos 3 meses para projeção
-  var ultimos3=monthsData.slice(-3).map(function(m){return m.saidas;});
-  var mediaSaidas=ultimos3.reduce(function(a,v){return a+v;},0)/(ultimos3.filter(function(v){return v>0;}).length||1);
-  // Soma de recorrentes mensais cadastrados
-  var recorrentesVal=allCosts.filter(function(c){return c.recorrente||c.tipo_compromisso==='recorrente'||c.recorrencia_tipo==='mensal';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
-  // Projeção = recorrentes + média de variáveis (média - recorrentes, mínimo 0)
-  var variaveisMedia=Math.max(mediaSaidas-recorrentesVal,0);
-  var projecaoMensal=recorrentesVal+variaveisMedia;
-  // 6 meses futuros (projeção)
+  // ── PROJEÇÃO BASEADA EM DADOS CONFIRMADOS ─────────────────
+  // Mapa: key (YYYY-MM) → {entradas, saidas}
+  var projMap = {};
+  function addProj(key, tipo, valor){
+    if(!projMap[key]) projMap[key]={entradas:0,saidas:0};
+    if(tipo==='receita') projMap[key].entradas += valor;
+    else                 projMap[key].saidas   += valor;
+  }
+
+  // Próximos 6 meses
+  var futureKeys = [];
+  for(var fi=1;fi<=6;fi++){
+    var fd=new Date(now);fd.setMonth(fd.getMonth()+fi);
+    futureKeys.push(fd.getFullYear()+'-'+(String(fd.getMonth()+1).padStart(2,'0')));
+  }
+
+  allCosts.forEach(function(c){
+    if(!c.data||!c.ativo===false) return;
+    var val  = parseFloat(c.valor||0);
+    var tipo = c.tipo_lancamento||c.tipo||'';
+    var baseDate = new Date(c.data);
+
+    // PARCELADO: gerar parcelas restantes
+    if(c.tipo_compromisso==='parcelado' && c.total_parcelas && c.parcela_atual){
+      var restantes = c.total_parcelas - c.parcela_atual;
+      for(var p=1;p<=restantes;p++){
+        var pd=new Date(baseDate);pd.setMonth(pd.getMonth()+p);
+        var pk=pd.getFullYear()+'-'+(String(pd.getMonth()+1).padStart(2,'0'));
+        if(futureKeys.indexOf(pk)>=0) addProj(pk,tipo,val);
+      }
+      return;
+    }
+
+    // RECORRENTE: repetir nos próximos meses
+    if(c.tipo_compromisso==='recorrente'||c.recorrente===true){
+      var freq = c.recorrencia_tipo||'mensal';
+      futureKeys.forEach(function(fk){
+        var fm = parseInt(fk.split('-')[1]);
+        var bm = baseDate.getMonth()+1;
+        if(freq==='mensal'){ addProj(fk,tipo,val); }
+        else if(freq==='semanal'){ addProj(fk,tipo,val*4.33); }
+        else if(freq==='anual' && fm===bm){ addProj(fk,tipo,val); }
+        else if(freq==='trimestral' && (fm-bm)%3===0){ addProj(fk,tipo,val); }
+      });
+      return;
+    }
+  });
+
+  // Montar meses futuros com dados confirmados
   for(var j=1;j<=6;j++){
     var df=new Date(now);df.setMonth(df.getMonth()+j);
     var keyf=df.getFullYear()+'-'+(String(df.getMonth()+1).padStart(2,'0'));
     var lblf=df.toLocaleString('pt-BR',{month:'short'}).replace('.','');
-    monthsData.push({lbl:lblf,key:keyf,entradas:0,saidas:projecaoMensal,projetado:true,isCur:false});
+    var pEntradas=(projMap[keyf]&&projMap[keyf].entradas)||0;
+    var pSaidas  =(projMap[keyf]&&projMap[keyf].saidas)||0;
+    monthsData.push({lbl:lblf,key:keyf,entradas:pEntradas,saidas:pSaidas,projetado:true,isCur:false});
   }
   // Escala
   var allVals=monthsData.map(function(m){return Math.max(m.entradas,m.saidas);}).concat([1]);
