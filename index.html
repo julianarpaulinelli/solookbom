@@ -3480,6 +3480,31 @@ function openSection(name){
   if(name==='projecao')setTimeout(function(){initProjecao();calcCaixaAuto();},100);
   if(name==='precificacao')setTimeout(initPrecificacao,50);
 }
+function resetModal(type){
+  var modal = $('modal-'+type);
+  if(!modal) return;
+  // Limpar inputs de texto e number
+  modal.querySelectorAll('input[type="text"],input[type="number"],input[type="date"],input[type="email"],textarea').forEach(function(el){
+    el.value = '';
+  });
+  // Resetar selects para primeira opção
+  modal.querySelectorAll('select').forEach(function(el){
+    el.selectedIndex = 0;
+  });
+  // Esconder grupos condicionais
+  modal.querySelectorAll('[id$="-group"]').forEach(function(el){
+    if(el.dataset.alwaysShow !== 'true') el.style.display = 'none';
+  });
+  // Limpar checkboxes
+  modal.querySelectorAll('input[type="checkbox"]').forEach(function(el){
+    el.checked = false;
+  });
+  // Limpar hidden ids
+  modal.querySelectorAll('input[type="hidden"]').forEach(function(el){
+    el.value = '';
+  });
+}
+
 function openModal(type){
   $('modal-'+type).classList.add('open');
   if(type==='produto'){
@@ -6172,6 +6197,21 @@ function resetForm(type){
   modal.querySelectorAll('[type=hidden]').forEach(function(el){el.value='';});
   if(type==='supplier'){$('frete-info-group').style.display='none';$('pedmin-group').style.display='none';}
   if(type==='cost'){$('recorrencia-group').style.display='none';$('parcela-group').style.display='none';}
+  if(type==='saida'){
+    var pg=document.getElementById('sai-parcelas-group');if(pg)pg.style.display='none';
+    var vtg=document.getElementById('sai-valor-total-group');if(vtg)vtg.style.display='none';
+    var hint=document.getElementById('sai-val-hint');if(hint)hint.textContent='';
+    var catG=document.getElementById('sai-cat-group');if(catG)catG.style.display='none';
+    var prodG=document.getElementById('sai-produto-group');if(prodG)prodG.style.display='none';
+  }
+  if(type==='entrada'){
+    var recG=document.getElementById('ent-recorrencia-group');if(recG)recG.style.display='none';
+  }
+  if(type==='task'){
+    populateMarcoSelect('');
+    var dBtn=document.getElementById('delete-task');if(dBtn){dBtn.style.display='none';}
+    var tTitle=document.getElementById('task-modal-title');if(tTitle)tTitle.textContent='Nova Tarefa';
+  }
   if(type==='produto'){custoSkuReset();} var dBtnReset=document.getElementById('delete-'+type);if(dBtnReset){dBtnReset.style.display='none';delete dBtnReset.dataset.deleteId;}
   // reset title
   var titles={task:'Nova Tarefa',supplier:'Novo Fornecedor',cost:'Novo Lançamento',produto:'Novo Produto',estoque:'Novo Item de Estoque',colecao:'Nova Coleção',producao:'Nova Produção',pedido:'Novo Pedido',parceiro:'Novo Parceiro'};
@@ -8221,6 +8261,7 @@ document.addEventListener('DOMContentLoaded',function(){
   });
   var btnSai=document.getElementById('btn-nova-saida');
   if(btnSai)btnSai.addEventListener('click',function(){
+    resetForm('saida');
     document.getElementById('sai-id').value='';
     document.getElementById('sai-date').value=new Date().toISOString().split('T')[0];
     var dBtn=document.getElementById('delete-saida');if(dBtn)dBtn.style.display='none';
