@@ -1706,7 +1706,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           <div class="section-header">
             <h2 class="section-title">Finanças</h2>
             <div class="header-actions">
-              <button class="btn-sec" onclick="exportFinancas()">&#8595; CSV</button>
+              <button class="btn-sec" onclick="window.exportFinancas()">&#8595; CSV</button>
               <button class="btn-entrada" id="btn-nova-entrada">&#43; Entrada</button>
               <button class="btn-saida" id="btn-nova-saida">&#43; Saída</button>
             </div>
@@ -9927,6 +9927,12 @@ document.addEventListener('DOMContentLoaded', function(){
   var btn = document.getElementById('marco-salvar');
   if(btn) btn.addEventListener('click', salvarMarco);
 });
+
+// ── EXPOR FUNÇÕES GLOBAIS (acessíveis por onclick no HTML) ───
+window.exportFinancas  = exportFinancas;
+window.exportProdutos  = exportProdutos;
+window.exportTarefas   = typeof exportTarefas  !== 'undefined' ? exportTarefas  : function(){};
+window.exportFornecedores = typeof exportFornecedores !== 'undefined' ? exportFornecedores : function(){};
 })();
 </script>
 </body>
