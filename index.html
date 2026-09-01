@@ -1382,12 +1382,12 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
       <div><div class="login-brand">S L B</div><div class="login-tagline">Vista a Experiência</div></div>
     </div>
     <div class="login-divider"></div>
-    <div class="login-group"><label class="login-label">Identificação</label>
-      <select class="login-input" id="login-user"><option value="">Selecione seu nome</option><option value="JU">Juliana Paulinelli</option><option value="FE">Fernando Araújo</option><option value="VI">Victor Paulinelli</option><option value="YA">Yasmin Zurdo</option></select>
+    <div class="login-group"><label class="login-label">E-mail</label>
+      <input class="login-input" id="login-email" type="email" placeholder="voce@email.com" autocomplete="username">
     </div>
     <div class="login-group"><label class="login-label">Senha</label><input class="login-input" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
     <button class="login-btn" id="login-btn">Entrar</button>
-    <p class="login-error" id="login-error">Credenciais incorretas</p>
+    <p class="login-error" id="login-error">E-mail ou senha incorretos</p>
   </div>
 </div>
 
@@ -2838,8 +2838,14 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
       <input class="form-input" id="sai-name" placeholder="Ex: Compra tecido, Shopify, Máquina...">
     </div>
     <div class="form-group">
-      <label class="form-label">Data *</label>
+      <label class="form-label">Data da compra *</label>
       <input class="form-input" id="sai-date" type="date">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group" style="flex:2">
+      <label class="form-label">Item de compra <span style="font-weight:400;color:var(--muted);font-size:10px">— nome que aparece na fatura/extrato</span></label>
+      <input class="form-input" id="sai-item" placeholder="Ex: PAG*TECIDOSSA, IFOOD, 99APP...">
     </div>
   </div>
   <div class="form-row">
@@ -2908,14 +2914,14 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <p class="form-section">Controle de pagamento</p>
   <div class="form-row">
     <div class="form-group">
-      <label class="form-label">Data de vencimento</label>
+      <label class="form-label" id="sai-venc-label">Data de vencimento</label>
       <input class="form-input" id="sai-venc" type="date">
     </div>
     <div class="form-group">
       <label class="form-label">Status</label>
       <select class="form-select" id="sai-status">
         <option value="pago">✅ Pago</option>
-        <option value="pendente">⏳ Pendente</option>
+        <option value="pendente">⏳ A vencer</option>
         <option value="vencido">🔴 Vencido</option>
       </select>
     </div>
@@ -2924,12 +2930,13 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
     <div class="form-group">
       <label class="form-label">Compromisso</label>
       <select class="form-select" id="sai-tipo-comp">
-        <option value="unico">Único</option>
-        <option value="recorrente">Recorrente / Assinatura</option>
+        <option value="unico">À vista</option>
         <option value="parcelado">Parcelado</option>
       </select>
     </div>
-    <div class="form-group" id="sai-parcelas-group" style="display:none">
+  </div>
+  <div class="form-row" id="sai-parcelas-group" style="display:none">
+    <div class="form-group">
       <label class="form-label">Nº de parcelas</label>
       <select class="form-select" id="sai-parcelas-sel">
         <option value="2">2x</option><option value="3">3x</option><option value="4">4x</option>
@@ -2939,11 +2946,21 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
         <option value="custom">Mais...</option>
       </select>
     </div>
+    <div class="form-group">
+      <label class="form-label">Parcela atual <span style="font-weight:400;color:var(--muted);font-size:10px">— em qual já estamos</span></label>
+      <input class="form-input" id="sai-parcela-atual" type="number" min="1" value="1">
+    </div>
   </div>
   <div id="sai-parcelas-custom" style="display:none">
     <div class="form-group">
       <label class="form-label">Número de parcelas</label>
       <input class="form-input" id="sai-total-parcelas" type="number" min="13" placeholder="Ex: 24">
+    </div>
+  </div>
+  <div id="sai-parcelas-preview" style="display:none">
+    <div class="lanc-hint" style="margin-bottom:8px">
+      <div style="font-weight:600;margin-bottom:4px">📅 Datas das próximas parcelas</div>
+      <div id="sai-parcelas-preview-list" style="font-size:11px;color:var(--muted)"></div>
     </div>
   </div>
   <div class="form-group">
@@ -3394,8 +3411,16 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 'use strict';
 var SB_URL='https://urajtknwzqbwihrvgjel.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyYWp0a253enFid2locnZnamVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjg0OTQsImV4cCI6MjA5NzgwNDQ5NH0.GPCqGjkceSd7hoSO4J0neD7asLwCWh1BaMD-ZYbxpZw';
-var PWD='SLB272Atucuri';
 var db=supabase.createClient(SB_URL,SB_KEY);
+
+// Mapa de conta (Supabase Auth) → papel no app.
+// Login é feito de verdade contra o Supabase Auth (ver doLogin); por enquanto só existem
+// dois papéis, sem regra de permissão diferente entre eles no banco — é só pra identificar
+// quem fez o quê (log de auditoria, "criado por") e mostrar o rótulo certo na barra superior.
+var EMAIL_ROLES={
+  'jurodriguesgsg@gmail.com':'admin',
+  'contato@solookbom.com.br':'user'
+};
 
 var L={
   tipoLanc:{receita:'Receita',custo:'Custo',despesa:'Despesa',investimento:'Investimento',outros:'Outros'},
@@ -3702,20 +3727,39 @@ function applyFilter(entity,key,value,btn){
 }
 
 // ── AUTH ────────────────────────────────────────────────────
+// Autenticação real via Supabase Auth (e-mail + senha). Cada sócio tem a própria conta;
+// a sessão fica guardada pelo supabase-js (não mais num "senha compartilhada" no código).
 function doLogin(){
-  var u=val('login-user'),p=val('login-pass');
-  if(!u||p!==PWD){$('login-error').style.display='block';return;}
+  var email=val('login-email'),p=val('login-pass');
+  if(!email||!p){$('login-error').textContent='Preencha e-mail e senha';$('login-error').style.display='block';return;}
+  var btn=$('login-btn');if(btn){btn.disabled=true;btn.textContent='Entrando...';}
+  db.auth.signInWithPassword({email:email,password:p}).then(function(res){
+    if(btn){btn.disabled=false;btn.textContent='Entrar';}
+    if(res.error||!res.data||!res.data.user){
+      $('login-error').textContent='E-mail ou senha incorretos';$('login-error').style.display='block';return;
+    }
+    afterAuth(res.data.user);
+  });
+}
+function afterAuth(user){
+  var role=EMAIL_ROLES[(user.email||'').toLowerCase()];
+  if(!role){
+    // Conta existe no Supabase Auth mas não é uma conta reconhecida pelo app — não deixa entrar.
+    db.auth.signOut();
+    $('login-error').textContent='Essa conta não tem acesso ao app';$('login-error').style.display='block';
+    return;
+  }
   $('login-error').style.display='none';
-  me=u;sessionStorage.setItem('slb_user',u);showApp();
+  me=role;showApp();
 }
 function doLogout(){
-  sessionStorage.removeItem('slb_user');me=null;
+  db.auth.signOut();me=null;
   $('login-screen').style.display='flex';$('app-screen').style.display='none';
-  $('login-pass').value='';$('login-user').value='';
+  $('login-pass').value='';$('login-email').value='';
 }
 function showApp(){
   $('login-screen').style.display='none';$('app-screen').style.display='flex';
-  var names={JU:'Juliana',FE:'Fernando',VI:'Victor',YA:'Yasmin'};
+  var names={admin:'Administrador',user:'Usuário'};
   var name=names[me]||me;
   $('logged-label').textContent=name;$('topbar-user').textContent=name.toUpperCase();
   init();
@@ -6218,6 +6262,9 @@ function resetForm(type){
     var hint=document.getElementById('sai-val-hint');if(hint)hint.textContent='';
     var catG=document.getElementById('sai-cat-group');if(catG)catG.style.display='none';
     var prodG=document.getElementById('sai-produto-group');if(prodG)prodG.style.display='none';
+    var prev=document.getElementById('sai-parcelas-preview');if(prev)prev.style.display='none';
+    var pAtual=document.getElementById('sai-parcela-atual');if(pAtual)pAtual.value='1';
+    var vencLblReset=document.getElementById('sai-venc-label');if(vencLblReset)vencLblReset.textContent='Data de vencimento';
   }
   if(type==='entrada'){
     var recG=document.getElementById('ent-recorrencia-group');if(recG)recG.style.display='none';
@@ -6461,9 +6508,19 @@ document.addEventListener('DOMContentLoaded',function(){
 // ══════════════════════════════════════════════════════════════
 // Also hook into section switch to lazy-load sups — handled via openSection()
 
-  // Session restore
-  var saved=sessionStorage.getItem('slb_user');
-  if(saved){me=saved;showApp();}
+  // Session restore — checa se já existe uma sessão válida do Supabase Auth
+  // (o supabase-js guarda o token sozinho; não confiamos mais num "usuário salvo" nosso).
+  db.auth.getSession().then(function(res){
+    var session=res&&res.data&&res.data.session;
+    if(session&&session.user)afterAuth(session.user);
+  });
+  // Se a sessão expirar ou for encerrada em outra aba, volta pra tela de login.
+  db.auth.onAuthStateChange(function(event){
+    if(event==='SIGNED_OUT'&&me){
+      me=null;
+      $('login-screen').style.display='flex';$('app-screen').style.display='none';
+    }
+  });
 });
 
 
@@ -6611,7 +6668,7 @@ function simRenderHistory(){
     el.innerHTML='<p class="sim-empty" style="padding:20px 0">Nenhuma simulação salva ainda.</p>';
     return;
   }
-  var names={JU:'Juliana',FE:'Fernando',VI:'Victor',YA:'Yasmin'};
+  var names={admin:'Administrador',user:'Usuário'};
   el.innerHTML=hist.map(function(s){
     var d=new Date(s.date);
     var dateStr=d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
@@ -8111,6 +8168,34 @@ function initSaidaCats(tipo){
   }
 }
 
+// Calcula e mostra as datas das próximas parcelas — mesma lógica de rollover de dia
+// (ex: vencimento dia 31/jan → 28/fev) usada na projeção financeira do DRE, pra ficar
+// consistente com o que o app já mostra em "Finanças → Parcelas".
+function calcParcelasPreview(){
+  var prevBox=document.getElementById('sai-parcelas-preview');
+  var listEl=document.getElementById('sai-parcelas-preview-list');
+  if(!prevBox||!listEl)return;
+  var vencStr=(document.getElementById('sai-venc')||{value:''}).value;
+  var parSel=document.getElementById('sai-parcelas-sel');
+  var totalPar=parSel&&parSel.value==='custom'
+    ?parseInt((document.getElementById('sai-total-parcelas')||{value:0}).value)||0
+    :parseInt((parSel&&parSel.value)||0)||0;
+  var atual=parseInt((document.getElementById('sai-parcela-atual')||{value:1}).value)||1;
+  if(!vencStr||!totalPar||totalPar<=atual){prevBox.style.display='none';return;}
+  var anchor=new Date(vencStr+'T00:00:00');
+  var diaVenc=anchor.getDate();
+  var restantes=totalPar-atual;
+  var linhas=[];
+  for(var p=1;p<=restantes;p++){
+    var pd=new Date(anchor);
+    pd.setMonth(pd.getMonth()+p);
+    var maxDia=new Date(pd.getFullYear(),pd.getMonth()+1,0).getDate();
+    pd.setDate(Math.min(diaVenc,maxDia));
+    linhas.push((atual+p)+'/'+totalPar+': '+pd.toLocaleDateString('pt-BR'));
+  }
+  listEl.innerHTML=linhas.join(' &nbsp;•&nbsp; ');
+  prevBox.style.display='block';
+}
 function initSaidaListeners(){
   // Registra listeners — seguro chamar sempre (usa flags _saiInit)
   var tipoSel=document.getElementById('sai-tipo');
@@ -8125,9 +8210,12 @@ function initSaidaListeners(){
       var isParc=tipoComp.value==='parcelado';
       var pg=document.getElementById('sai-parcelas-group');
       var vtg=document.getElementById('sai-valor-total-group');
+      var vencLbl=document.getElementById('sai-venc-label');
       if(pg)pg.style.display=isParc?'block':'none';
       if(vtg)vtg.style.display=isParc?'block':'none';
-      if(isParc)calcParcelaValor();
+      if(vencLbl)vencLbl.textContent=isParc?'Vencimento da 1ª parcela':'Data de vencimento';
+      if(isParc){calcParcelaValor();calcParcelasPreview();}
+      else{var prev=document.getElementById('sai-parcelas-preview');if(prev)prev.style.display='none';}
     });
   }
   function calcParcelaValor(){
@@ -8140,6 +8228,8 @@ function initSaidaListeners(){
       if(hint)hint.textContent='= '+mo(total)+' ÷ '+nParc+'x';
     } else if(hint){hint.textContent='';}
   }
+  // Calcula e mostra as datas das próximas parcelas — mesma lógica de rollover de dia
+  // (ex: vencimento dia 31/jan → 28/fev) usada na projeção financeira do DRE.
   var vtotalEl=document.getElementById('sai-valor-total');
   if(vtotalEl&&!vtotalEl._calcInit){vtotalEl._calcInit=true;vtotalEl.addEventListener('input',calcParcelaValor);}
 
@@ -8148,10 +8238,17 @@ function initSaidaListeners(){
     parSel._saiInit=true;
     parSel.addEventListener('change',function(){
       calcParcelaValor();
+      calcParcelasPreview();
       var cg=document.getElementById('sai-parcelas-custom');
       if(cg)cg.style.display=parSel.value==='custom'?'block':'none';
     });
   }
+  var totalParEl=document.getElementById('sai-total-parcelas');
+  if(totalParEl&&!totalParEl._calcInit){totalParEl._calcInit=true;totalParEl.addEventListener('input',calcParcelasPreview);}
+  var parcAtualEl=document.getElementById('sai-parcela-atual');
+  if(parcAtualEl&&!parcAtualEl._calcInit){parcAtualEl._calcInit=true;parcAtualEl.addEventListener('input',calcParcelasPreview);}
+  var vencEl=document.getElementById('sai-venc');
+  if(vencEl&&!vencEl._calcInit){vencEl._calcInit=true;vencEl.addEventListener('change',calcParcelasPreview);}
   // Popular selects de pessoas/produtos (uma vez)
   var socSel=document.getElementById('sai-socia-id');
   if(socSel&&!socSel._init){
@@ -8169,11 +8266,14 @@ function initSaidaListeners(){
         return '<option value="'+p.id+'">'+p.sku+' — '+p.nome+'</option>';
       }).join('');
   }
+  // "Pago por" fica restrito a sócios cadastrados (o app trata "quem efetuou a compra" como sócio).
   var pagoPor=document.getElementById('sai-pago-por');
   if(pagoPor&&!pagoPor._init){
     pagoPor._init=true;
     pagoPor.innerHTML='<option value="">— Nenhum —</option>'+
-      D.pessoas.map(function(p){return '<option value="'+p.id+'">'+p.nome.split(' ')[0]+'</option>';}).join('');
+      D.pessoas.filter(function(p){return p.tipo==='socio';}).map(function(p){
+        return '<option value="'+p.id+'">'+p.nome.split(' ')[0]+'</option>';
+      }).join('');
   }
 }
 
@@ -8202,9 +8302,11 @@ function saveSaida(){
       ?parseInt((document.getElementById('sai-total-parcelas')||{value:0}).value)||null
       :parseInt((parSel&&parSel.value)||0)||null;
   }
+  var recTipo=(document.getElementById('sai-recorrencia-tipo')||{value:'unico'}).value;
   var payload={
     descricao:d, tipo_lancamento:tipoLanc, tipo:tipoLanc,
     categoria_dre:catDre, categoria:catDre, valor:v,
+    item_compra:(document.getElementById('sai-item')||{value:''}).value.trim()||null,
     data:(document.getElementById('sai-date')||{value:''}).value||null,
     data_vencimento:(document.getElementById('sai-venc')||{value:''}).value||null,
     status_pagto:(document.getElementById('sai-status')||{value:'pago'}).value,
@@ -8213,11 +8315,13 @@ function saveSaida(){
     fornecedor_cliente:(document.getElementById('sai-fornecedor')||{value:''}).value||null,
     produto_id:(document.getElementById('sai-produto-id')||{value:''}).value||null,
     socia_id:(document.getElementById('sai-socia-id')||{value:''}).value||null,
-    recorrencia_tipo:(document.getElementById('sai-recorrencia-tipo')||{value:'unico'}).value,
-    recorrente:tipoComp==='recorrente',
+    recorrencia_tipo:recTipo,
+    // "Recorrente" saiu das opções de Compromisso — a recorrência agora só vem
+    // do campo Recorrência (Único/Mensal/Semanal), então derivamos o flag daqui.
+    recorrente:recTipo!=='unico',
     tipo_compromisso:tipoComp,
     total_parcelas:totalPar,
-    parcela_atual:isPar?1:null,
+    parcela_atual:isPar?(parseInt((document.getElementById('sai-parcela-atual')||{value:1}).value)||1):null,
     notas:(document.getElementById('sai-notas')||{value:''}).value||null,
     updated_at:new Date().toISOString()
   };
@@ -8235,6 +8339,7 @@ function openSaidaEdit(id){
   var tipo=c.tipo_lancamento||c.tipo||'despesa';
   document.getElementById('sai-id').value=c.id;
   document.getElementById('sai-name').value=c.descricao||'';
+  document.getElementById('sai-item').value=c.item_compra||'';
   document.getElementById('sai-tipo').value=tipo;
   document.getElementById('sai-val').value=c.valor||'';
   document.getElementById('sai-date').value=c.data||'';
@@ -8244,9 +8349,25 @@ function openSaidaEdit(id){
   document.getElementById('sai-fornecedor').value=c.fornecedor_cliente||'';
   document.getElementById('sai-notas').value=c.notas||'';
   document.getElementById('sai-recorrencia-tipo').value=c.recorrencia_tipo||'unico';
-  document.getElementById('sai-tipo-comp').value=c.tipo_compromisso||'unico';
+  // Registros antigos podem ter tipo_compromisso='recorrente' (opção removida do select) —
+  // trata como "À vista" na tela, a recorrência em si continua vindo do campo Recorrência.
+  var tipoCompVal=c.tipo_compromisso==='parcelado'?'parcelado':'unico';
+  document.getElementById('sai-tipo-comp').value=tipoCompVal;
+  document.getElementById('sai-parcela-atual').value=c.parcela_atual||1;
+  var isParEdit=tipoCompVal==='parcelado';
   var pg=document.getElementById('sai-parcelas-group');
-  if(pg)pg.style.display=c.tipo_compromisso==='parcelado'?'block':'none';
+  if(pg)pg.style.display=isParEdit?'block':'none';
+  var vencLblEdit=document.getElementById('sai-venc-label');
+  if(vencLblEdit)vencLblEdit.textContent=isParEdit?'Vencimento da 1ª parcela':'Data de vencimento';
+  if(isParEdit&&c.total_parcelas){
+    var parSelEdit=document.getElementById('sai-parcelas-sel');
+    var isPreset=c.total_parcelas>=2&&c.total_parcelas<=12;
+    if(parSelEdit)parSelEdit.value=isPreset?String(c.total_parcelas):'custom';
+    var cgEdit=document.getElementById('sai-parcelas-custom');
+    if(cgEdit)cgEdit.style.display=isPreset?'none':'block';
+    if(!isPreset)document.getElementById('sai-total-parcelas').value=c.total_parcelas;
+    setTimeout(calcParcelasPreview,0);
+  }
   // Popular categorias e restaurar valor salvo
   var catAtual = c.categoria_dre||c.categoria||'';
   initSaidaCats(tipo);
