@@ -2347,9 +2347,9 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
       <div class="form-group">
         <label class="form-label">Status</label>
         <select class="form-select" id="pr-status">
-          <option value="ativo">🟢 Ativo</option>
-          <option value="rascunho" selected>📝 Rascunho</option>
-          <option value="arquivado">📁 Arquivado</option>
+          <option value="ativo">Ativo</option>
+          <option value="rascunho" selected>Rascunho</option>
+          <option value="arquivado">Arquivado</option>
         </select>
       </div>
       <div class="form-group">
@@ -2725,7 +2725,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <div class="modal-title"><span id="task-modal-title">Nova Tarefa</span><button class="modal-close-btn" data-close="task">×</button></div>
   <input type="hidden" id="t-id">
   <div class="form-group"><label class="form-label">Título *</label><input class="form-input" id="t-title" placeholder="Descreva a tarefa"></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="t-cat"><option value="">—</option><option>Marca</option><option>Site</option><option>Artes</option><option>Produto</option><option>Fornecedor</option><option>Marketing</option><option>Jurídico</option><option>Financeiro</option><option>Outro</option><option>Evento Pré-Lançamento</option></select></div><div class="form-group"><label class="form-label">Prioridade</label><select class="form-select" id="t-prio"><option value="alta">🔴 Alta</option><option value="media" selected>🟡 Média</option><option value="baixa">🟢 Baixa</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="t-cat"><option value="">—</option><option>Marca</option><option>Site</option><option>Artes</option><option>Produto</option><option>Fornecedor</option><option>Marketing</option><option>Jurídico</option><option>Financeiro</option><option>Outro</option><option>Evento Pré-Lançamento</option></select></div><div class="form-group"><label class="form-label">Prioridade</label><select class="form-select" id="t-prio"><option value="alta">Alta</option><option value="media" selected>Média</option><option value="baixa">Baixa</option></select></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="t-status"><option value="todo">A fazer</option><option value="doing">Em andamento</option><option value="done">Concluído</option><option value="blocked">Bloqueado</option><option value="hold">Em Hold</option></select></div><div class="form-group"><label class="form-label">Prazo</label><input class="form-input" id="t-prazo" type="date"></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="t-owner"></select></div><div class="form-group"><label class="form-label">Co-responsável</label><select class="form-select" id="t-coowner"></select></div></div>
   <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" id="t-desc" placeholder="Contexto, links..."></textarea></div>
@@ -2740,8 +2740,8 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <div class="modal-title"><span id="sup-modal-title">Novo Fornecedor</span><button class="modal-close-btn" data-close="supplier">×</button></div>
   <input type="hidden" id="s-id">
   <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="s-name" placeholder="Nome do fornecedor"></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="s-cat"><option>Confecção</option><option>Tecidos</option><option>Aviamentos</option><option>Estamparia</option><option>Arte &amp; Design</option><option>Fotografia</option><option>Tecnologia</option><option>Marketing</option><option>Jurídico</option><option>Embalagem</option><option>Outro</option></select></div><div class="form-group"><label class="form-label">Classificação</label><select class="form-select" id="s-class"><option value="bronze">🥉 Bronze</option><option value="silver">🥈 Silver</option><option value="gold">🥇 Gold</option></select></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="s-status"><option value="prospecto">Prospecto</option><option value="negociando">Negociando</option><option value="ativo">Ativo</option><option value="pausado">Pausado</option></select></div><div class="form-group"><label class="form-label">Aprovação</label><select class="form-select" id="s-aprov"><option value="pendente">⏳ Pendente</option><option value="aprovado">✅ Aprovado</option><option value="reprovado">❌ Reprovado</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="s-cat"><option>Confecção</option><option>Tecidos</option><option>Aviamentos</option><option>Estamparia</option><option>Arte &amp; Design</option><option>Fotografia</option><option>Tecnologia</option><option>Marketing</option><option>Jurídico</option><option>Embalagem</option><option>Outro</option></select></div><div class="form-group"><label class="form-label">Classificação</label><select class="form-select" id="s-class"><option value="bronze">Bronze</option><option value="silver">Silver</option><option value="gold">Gold</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="s-status"><option value="prospecto">Prospecto</option><option value="negociando">Negociando</option><option value="ativo">Ativo</option><option value="pausado">Pausado</option></select></div><div class="form-group"><label class="form-label">Aprovação</label><select class="form-select" id="s-aprov"><option value="pendente">Pendente</option><option value="aprovado">Aprovado</option><option value="reprovado">Reprovado</option></select></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Avaliação</label><select class="form-select" id="s-aval"><option value="5">⭐⭐⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option><option value="3" selected>⭐⭐⭐</option><option value="2">⭐⭐</option><option value="1">⭐</option></select></div><div class="form-group"><label class="form-label">Responsável SLB</label><select class="form-select" id="s-resp"></select></div></div>
   <div class="form-group"><label class="form-label">Produtos fornecidos</label><input class="form-input" id="s-produtos" placeholder="Ex: camisetas, calças, aviamentos..."></div>
   <p class="form-section">Contato</p>
@@ -2810,8 +2810,8 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <div class="form-group">
     <label class="form-label">Status</label>
     <select class="form-select" id="ent-status">
-      <option value="pago">✅ Recebido</option>
-      <option value="pendente">⏳ A receber</option>
+      <option value="pago">Recebido</option>
+      <option value="pendente">A receber</option>
     </select>
   </div>
   <div class="form-group">
@@ -2936,9 +2936,9 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
     <div class="form-group">
       <label class="form-label">Status do pagamento</label>
       <select class="form-select" id="sai-status">
-        <option value="pago">✅ Pago</option>
-        <option value="pendente">⏳ À vencer</option>
-        <option value="recorrente_mensal">🔄 Recorrência Mensal</option>
+        <option value="pago">Pago</option>
+        <option value="pendente">À vencer</option>
+        <option value="recorrente_mensal">Recorrência Mensal</option>
       </select>
     </div>
     <div class="form-group">
@@ -3084,7 +3084,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
         <option value="contato_feito">Contato feito</option>
         <option value="proposta_recebida">Proposta recebida</option>
         <option value="em_analise">Em análise</option>
-        <option value="fechado">Fechado ✓</option>
+        <option value="fechado">Fechado</option>
         <option value="cancelado">Cancelado</option>
       </select>
     </div>
@@ -3327,9 +3327,9 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <div class="form-group">
     <label class="form-label">Status</label>
     <select class="form-select" id="obrig-status">
-      <option value="pendente">⏳ Pendente</option>
-      <option value="pago_enviado">✅ Pago / Enviado</option>
-      <option value="atrasado">🔴 Atrasado</option>
+      <option value="pendente">Pendente</option>
+      <option value="pago_enviado">Pago / Enviado</option>
+      <option value="atrasado">Atrasado</option>
     </select>
   </div>
   <div class="modal-footer">
@@ -3363,8 +3363,8 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
     <div class="form-group">
       <label class="form-label">Status</label>
       <select class="form-select" id="doc-status">
-        <option value="pendente">⏳ Pendente</option>
-        <option value="enviado">✅ Enviado</option>
+        <option value="pendente">Pendente</option>
+        <option value="enviado">Enviado</option>
       </select>
     </div>
     <div class="form-group">
@@ -6712,7 +6712,7 @@ function simFornecedorField(r){
     D.suppliers.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(s){
       return '<option value="'+s.id+'"'+(s.id==fId?' selected':'')+'>'+simEsc(s.nome)+'</option>';
     }).join('') +
-    '<option value="outro"'+(fId==='outro'?' selected':'')+'>✏ Outro (digitar)</option>';
+    '<option value="outro"'+(fId==='outro'?' selected':'')+'>Outro (digitar)</option>';
   var sel = '<select class="sim-sel sim-forn-sel" data-sf="fornecedor_id">'+opts+'</select>';
   var inp = '<input class="sim-inp sim-forn-inp" type="text" placeholder="Nome do fornecedor" value="'+simEsc(fNome)+'" data-sf="fornecedor" style="margin-top:4px;'+(fId==='outro'?'':'display:none')+'">';
   return sel + inp;
