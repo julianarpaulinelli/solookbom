@@ -4442,6 +4442,38 @@ function saveSupplier(){
 }
 
 // ── CUSTOS / FINANÇAS ──────────────────────────────────────
+// ── PARCELAS: geração de status computado por vencimento ────
+function gerarParcelas(c){
+  if(c.tipo_compromisso!=='parcelado'||!c.total_parcelas||!c.data_vencimento)return [];
+  var total=parseInt(c.total_parcelas)||0;
+  if(total<1)return [];
+  var anchor=new Date(c.data_vencimento+'T00:00:00');
+  var diaVenc=anchor.getDate();
+  var todayStr=new Date().toISOString().split('T')[0];
+  var out=[];
+  for(var i=0;i<total;i++){
+    var pd=new Date(anchor);
+    pd.setMonth(pd.getMonth()+i);
+    var maxDia=new Date(pd.getFullYear(),pd.getMonth()+1,0).getDate();
+    pd.setDate(Math.min(diaVenc,maxDia));
+    var pdStr=pd.getFullYear()+'-'+String(pd.getMonth()+1).padStart(2,'0')+'-'+String(pd.getDate()).padStart(2,'0');
+    out.push({numero:i+1,data:pdStr,pago:pdStr<=todayStr,valor:parseFloat(c.valor||0)});
+  }
+  return out;
+}
+function expandirParcelasParaKpi(costs){
+  var out=[];
+  costs.forEach(function(c){
+    if(c.tipo_compromisso==='parcelado'&&c.total_parcelas>1){
+      gerarParcelas(c).forEach(function(p){
+        out.push({descricao:c.descricao,valor:p.valor,data_vencimento:p.data,status_pagto:p.pago?'pago':'pendente',tipo_compromisso:c.tipo_compromisso,tipo_lancamento:c.tipo_lancamento,tipo:c.tipo,categoria:c.categoria});
+      });
+    }else{
+      out.push(c);
+    }
+  });
+  return out;
+}
 // ── FINANCIAL DASHBOARD ────────────────────────────────────
 function renderFinDashboard(){
   var now=new Date();
@@ -4453,18 +4485,19 @@ function renderFinDashboard(){
   var prevMonthStr=prevMonth.getFullYear()+'-'+(String(prevMonth.getMonth()+1).padStart(2,'0'));
 
   var allCosts=D.costs;
+  var allCostsKpi=expandirParcelasParaKpi(allCosts);
   var totAll=allCosts.reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
   var totMes=allCosts.filter(function(c){return c.data&&c.data.startsWith(curMonth);}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
   var totPrevMes=allCosts.filter(function(c){return c.data&&c.data.startsWith(prevMonthStr);}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
   var totRec=D.pedidos.reduce(function(a,p){return a+parseFloat(p.valor_total||0);},0)+
     allCosts.filter(function(c){return c.tipo_lancamento==='receita'||c.tipo==='receita';}).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
   var lucro=totRec-totAll;
-  var vencidas=allCosts.filter(function(c){return c.status_pagto==='vencido';});
-  var vencer7=allCosts.filter(function(c){return c.data_vencimento&&c.data_vencimento>todayStr&&c.data_vencimento<=in7Str&&c.status_pagto!=='pago';});
-  var comprometido90=allCosts.filter(function(c){
+  var vencidas=allCostsKpi.filter(function(c){return c.data_vencimento&&c.data_vencimento<todayStr&&c.status_pagto!=='pago';});
+  var vencer7=allCostsKpi.filter(function(c){return c.data_vencimento&&c.data_vencimento>todayStr&&c.data_vencimento<=in7Str&&c.status_pagto!=='pago';});
+  var comprometido90=allCostsKpi.filter(function(c){
     return c.status_pagto!=='pago'&&(
       (c.data_vencimento&&c.data_vencimento>todayStr&&c.data_vencimento<=in90Str)||
-      c.tipo_compromisso==='recorrente'||c.tipo_compromisso==='parcelado'
+      c.tipo_compromisso==='recorrente'
     );
   }).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
   var recorrentes=allCosts.filter(function(c){return c.tipo_compromisso==='recorrente'||c.recorrente;});
@@ -4701,12 +4734,16 @@ function renderFinDashboard(){
   }).join(''):'<p class="fin-empty">Nenhuma assinatura/recorrente cadastrada</p>';
 
   // ── PARCELAS ─────────────────────────────────────────────
-  var parcelas=allCosts.filter(function(c){return c.tipo_compromisso==='parcelado'&&c.total_parcelas;});
+  var parcelas=allCosts.filter(function(c){return c.tipo_compromisso==='parcelado'&&c.total_parcelas>1&&c.data_vencimento;});
   var parEl=$('fin-parcelas');
   if(parEl)parEl.innerHTML=parcelas.length?parcelas.slice(0,8).map(function(c){
-    var restantes=(c.total_parcelas-c.parcela_atual)||0;
-    var totRestante=restantes*parseFloat(c.valor||0);
-    return '<div class="fin-comp-row"><div class="fin-comp-dot" style="background:var(--amber)"></div><div class="fin-comp-body"><p class="fin-comp-name">'+c.descricao+'</p><div class="fin-comp-sub"><span class="fin-comp-tag amber">'+c.parcela_atual+'/'+c.total_parcelas+'</span><span>resta '+mo(totRestante)+'</span>'+(c.data_vencimento?'<span>prox: '+fmtDate(c.data_vencimento)+'</span>':'')+'</div></div><span class="fin-comp-val">'+mo(c.valor)+'/parc</span></div>';
+    var parc=gerarParcelas(c);
+    var pagas=parc.filter(function(p){return p.pago;}).length;
+    var proxima=parc.filter(function(p){return !p.pago;})[0];
+    var itens=parc.map(function(p){
+      return '<div class="fin-comp-row" style="padding-left:16px"><div class="fin-comp-dot" style="background:'+(p.pago?'var(--green)':'var(--amber)')+'"></div><div class="fin-comp-body"><p class="fin-comp-name">Parcela '+p.numero+'/'+parc.length+'</p><div class="fin-comp-sub"><span>'+fmtDate(p.data)+'</span></div></div>'+badge(p.pago?'pago':'pendente',p.pago?'Pago':'Em aberto')+'<span class="fin-comp-val">'+mo(p.valor)+'</span></div>';
+    }).join('');
+    return '<details class="fin-parcela-details"><summary style="cursor:pointer;list-style:none;display:block"><div class="fin-comp-row"><div class="fin-comp-dot" style="background:var(--amber)"></div><div class="fin-comp-body"><p class="fin-comp-name">'+c.descricao+'</p><div class="fin-comp-sub"><span class="fin-comp-tag amber">'+pagas+'/'+parc.length+' pagas</span>'+(proxima?'<span>próx: '+fmtDate(proxima.data)+'</span>':'<span>quitado</span>')+'</div></div><span class="fin-comp-val">'+mo(c.valor)+'/parc</span></div></summary>'+itens+'</details>';
   }).join(''):'<p class="fin-empty">Nenhuma compra parcelada cadastrada</p>';
 
 // timeline removida
@@ -4793,7 +4830,7 @@ function renderCosts(){
       '<p class="card-title">'+c.descricao+(c.recorrente?'<span class="badge b-recorrente" style="margin-left:6px">🔄 Recorrente</span>':'')+'</p>'+
       '<div class="card-meta">'+
         '<span class="badge badge-'+tCls+'">'+tLabel+'</span>'+
-        badge(c.status_pagto||'pago',L.pagtoSt[c.status_pagto||'pago'])+
+        (c.tipo_compromisso==='parcelado'&&c.total_parcelas>1?(function(){var _parc=gerarParcelas(c);if(!_parc.length)return badge(c.status_pagto||'pago',L.pagtoSt[c.status_pagto||'pago']);var _pagas=_parc.filter(function(p){return p.pago;}).length;return '<span class="badge" style="background:rgba(45,107,228,.12);color:var(--blue);border:1px solid rgba(45,107,228,.25)">'+_pagas+'/'+_parc.length+' pagas</span>';})():badge(c.status_pagto||'pago',L.pagtoSt[c.status_pagto||'pago']))+
         (c.status_compromisso?badge('comp-'+c.status_compromisso,L.compSt[c.status_compromisso]||c.status_compromisso):'')+
         (c.metodo_pagto?catTag(c.metodo_pagto):'')+
         (catLabel?catTag(catLabel):'')+
