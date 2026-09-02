@@ -4462,13 +4462,13 @@ function gerarParcelas(c){
   }
   return out;
 }
-function gerarOcorrenciasRecorrentes(c){
+function gerarOcorrenciasRecorrentes(c,horizonDays){
   if(c.tipo_compromisso!=='recorrente'||!c.data_vencimento)return [];
   var anchor=new Date(c.data_vencimento+'T00:00:00');
   var diaVenc=anchor.getDate();
   var today=new Date();
   var todayStr=today.toISOString().split('T')[0];
-  var horizonte=new Date(today);horizonte.setDate(horizonte.getDate()+90);
+  var horizonte=new Date(today);horizonte.setDate(horizonte.getDate()+(horizonDays||90));
   var horizonteStr=horizonte.toISOString().split('T')[0];
   var out=[];
   for(var i=0;i<240;i++){
@@ -4651,39 +4651,27 @@ function renderFinDashboard(){
   }
 
   allCosts.forEach(function(c){
-    if(!c.data||!c.ativo===false) return;
-    var val  = parseFloat(c.valor||0);
+    if(!c.data) return;
     var tipo = c.tipo_lancamento||c.tipo||'';
-    var baseDate = new Date(c.data);
 
-    // PARCELADO: gerar parcelas restantes usando data_vencimento como âncora
-    if(c.tipo_compromisso==='parcelado' && c.total_parcelas && c.parcela_atual){
-      // Usar data_vencimento se disponível, senão usar data do lançamento
-      var anchorDate = c.data_vencimento ? new Date(c.data_vencimento) : baseDate;
-      var diaVenc = anchorDate.getDate(); // dia do mês (ex: 9)
-      var restantes = c.total_parcelas - c.parcela_atual;
-      for(var p=1;p<=restantes;p++){
-        var pd=new Date(anchorDate);
-        pd.setMonth(pd.getMonth()+p);
-        // Garantir o mesmo dia (evitar rollover: ex 31/jan → 28/fev)
-        var maxDia = new Date(pd.getFullYear(), pd.getMonth()+1, 0).getDate();
-        pd.setDate(Math.min(diaVenc, maxDia));
+    // PARCELADO: usa a mesma geração de parcelas do painel "Finanças → Parcelas"
+    // (âncora = vencimento da 1ª parcela + total de parcelas, com rollover de fim de mês)
+    if(c.tipo_compromisso==='parcelado' && c.total_parcelas>1 && c.data_vencimento){
+      gerarParcelas(c).forEach(function(p){
+        var pd=new Date(p.data+'T00:00:00');
         var pk=pd.getFullYear()+'-'+(String(pd.getMonth()+1).padStart(2,'0'));
-        if(futureKeys.indexOf(pk)>=0) addProj(pk,tipo,val);
-      }
+        if(futureKeys.indexOf(pk)>=0) addProj(pk,tipo,p.valor);
+      });
       return;
     }
 
-    // RECORRENTE: repetir nos próximos meses
-    if(c.tipo_compromisso==='recorrente'||c.recorrente===true){
-      var freq = c.recorrencia_tipo||'mensal';
-      futureKeys.forEach(function(fk){
-        var fm = parseInt(fk.split('-')[1]);
-        var bm = baseDate.getMonth()+1;
-        if(freq==='mensal'){ addProj(fk,tipo,val); }
-        else if(freq==='semanal'){ addProj(fk,tipo,val*4.33); }
-        else if(freq==='anual' && fm===bm){ addProj(fk,tipo,val); }
-        else if(freq==='trimestral' && (fm-bm)%3===0){ addProj(fk,tipo,val); }
+    // RECORRENTE: mesma geração de ocorrências mensais usada nos indicadores
+    // (vencidas/vencer7/comprometido90) e a partir do vencimento cadastrado.
+    if(c.tipo_compromisso==='recorrente' && c.data_vencimento){
+      gerarOcorrenciasRecorrentes(c,400).forEach(function(o){
+        var od=new Date(o.data+'T00:00:00');
+        var ok=od.getFullYear()+'-'+(String(od.getMonth()+1).padStart(2,'0'));
+        if(futureKeys.indexOf(ok)>=0) addProj(ok,tipo,o.valor);
       });
       return;
     }
