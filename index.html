@@ -2848,11 +2848,9 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
       <input class="form-input" id="sai-name" placeholder="Ex: Compra tecido, Shopify, Máquina...">
     </div>
     <div class="form-group">
-      <label class="form-label">Método de Pagamento</label>
-      <select class="form-select" id="sai-metodo">
-        <option value="">—</option><option>Pix</option><option>Cartão de crédito</option>
-        <option>Cartão de débito</option><option>Boleto</option><option>Dinheiro</option><option>Transferência</option>
-      </select>
+      <label class="form-label">Fornecedor/Cliente</label>
+      <select class="form-select" id="sai-fornecedor-sel"><option value="">— Selecione —</option><option value="__outro__">+ Outro (digitar manualmente)</option></select>
+      <input class="form-input" id="sai-fornecedor" placeholder="Nome do fornecedor/cliente" style="margin-top:6px;display:none">
     </div>
   </div>
   <div class="form-row">
@@ -2887,6 +2885,13 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
     <div class="form-group">
       <label class="form-label">Valor total da compra (R$) *</label>
       <input class="form-input" id="sai-valor-total" type="number" step="0.01" placeholder="0,00">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Método de Pagamento</label>
+      <select class="form-select" id="sai-metodo">
+        <option value="">—</option><option>Pix</option><option>Cartão de crédito</option>
+        <option>Cartão de débito</option><option>Boleto</option><option>Dinheiro</option><option>Transferência</option>
+      </select>
     </div>
   </div>
   <p class="form-section">Compromisso</p>
@@ -2937,24 +2942,8 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
       <label class="form-label">Status do pagamento</label>
       <select class="form-select" id="sai-status">
         <option value="pago">Pago</option>
-        <option value="pendente">À vencer</option>
-        <option value="recorrente_mensal">Recorrência Mensal</option>
+        <option value="pendente">Em aberto</option>
       </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Status</label>
-      <select class="form-select" id="sai-status-comp">
-        <option value="pago">Pago</option>
-        <option value="vigente">Em período vigente</option>
-        <option value="vencido">Vencido</option>
-      </select>
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">Fornecedor/Cliente</label>
-      <select class="form-select" id="sai-fornecedor-sel"><option value="">— Selecione —</option><option value="__outro__">+ Outro (digitar manualmente)</option></select>
-      <input class="form-input" id="sai-fornecedor" placeholder="Nome do fornecedor/cliente" style="margin-top:6px;display:none">
     </div>
     <div class="form-group">
       <label class="form-label">Quem efetuou a compra</label>
@@ -3431,7 +3420,7 @@ var L={
   prdSt:{ideacao:'Ideação',aprovacao:'Aprovação',em_criacao:'Em criação',em_producao:'Em produção',produzido:'Produzido',recebido:'Recebido',disponivel:'Disponível'},
   pedSt:{pago:'Pago',separacao:'Em separação',producao:'Produção',enviado:'Enviado',entregue:'Entregue',troca:'Troca',cancelado:'Cancelado'},
   colSt:{planejamento:'Planejamento',em_producao:'Em produção',lancada:'Lançada',encerrada:'Encerrada'},
-  pagtoSt:{pago:'Pago',pendente:'À vencer',vencido:'Vencido',recorrente_mensal:'Recorrência Mensal'},
+  pagtoSt:{pago:'Pago',pendente:'Em aberto',vencido:'Vencido',recorrente_mensal:'Recorrência Mensal'},
   compSt:{pago:'Pago',vigente:'Em período vigente',vencido:'Vencido'},
   sections:{home:'Dashboard',tarefas:'Tarefas',financas:'Finanças',produtos:'Produtos',estoque:'Estoque',colecoes:'Coleções',producao:'Produção',pedidos:'Pedidos',fornecedores:'Fornecedores',fretes:'Fretes',parceiros:'Parceiros & Influenciadores',postagens:'Postagens',marketing:'Marketing',clientes:'Clientes',pessoas:'Pessoas'}
 };
@@ -8231,21 +8220,6 @@ function initSaidaListeners(){
     tipoComp._saiInit=true;
     tipoComp.addEventListener('change',refreshCompromisso);
   }
-  // "Recorrência Mensal" no Status do pagamento substitui o parcelamento — trava o
-  // Tipo de compromisso em "À vista" e esconde a seção de parcelas enquanto ativo.
-  var statusSel=document.getElementById('sai-status');
-  if(statusSel&&!statusSel._saiInit){
-    statusSel._saiInit=true;
-    statusSel.addEventListener('change',function(){
-      var isRec=statusSel.value==='recorrente_mensal';
-      var compSection=tipoComp&&tipoComp.closest('.form-row');
-      if(isRec){
-        tipoComp.value='unico';
-        if(compSection)compSection.style.display='none';
-        refreshCompromisso();
-      } else if(compSection){compSection.style.display='';}
-    });
-  }
   var vtotalEl=document.getElementById('sai-valor-total');
   if(vtotalEl&&!vtotalEl._calcInit){vtotalEl._calcInit=true;vtotalEl.addEventListener('input',calcParcelaValor);}
 
@@ -8289,12 +8263,12 @@ function initSaidaListeners(){
         return '<option value="'+p.id+'">'+p.nome.split(' ')[0]+'</option>';
       }).join('');
   }
-  // "Fornecedor/Cliente" vem do cadastro de fornecedores; "+ Outro" libera o campo de texto livre.
+  // "Fornecedor/Cliente" vem do cadastro de fornecedores aprovados; "+ Outro" libera o campo de texto livre.
   var fornSel=document.getElementById('sai-fornecedor-sel');
   if(fornSel&&!fornSel._init){
     fornSel._init=true;
     fornSel.innerHTML='<option value="">— Selecione —</option>'+
-      D.suppliers.slice().sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(s){
+      D.suppliers.filter(function(s){return s.aprovado;}).sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR');}).map(function(s){
         return '<option value="'+s.id+'">'+s.nome+'</option>';
       }).join('')+
       '<option value="__outro__">+ Outro (digitar manualmente)</option>';
@@ -8324,9 +8298,7 @@ function saveSaida(){
   var tipoLanc=(document.getElementById('sai-tipo')||{value:'despesa'}).value;
   var catDre=(document.getElementById('sai-cat')||{value:''}).value;
   var statusPagto=(document.getElementById('sai-status')||{value:'pago'}).value;
-  var isRecorrente=statusPagto==='recorrente_mensal';
-  // "Recorrência Mensal" substitui o parcelamento: força Tipo de compromisso = À vista.
-  var tipoComp=isRecorrente?'unico':(document.getElementById('sai-tipo-comp')||{value:'unico'}).value;
+  var tipoComp=(document.getElementById('sai-tipo-comp')||{value:'unico'}).value;
   var isPar=tipoComp==='parcelado';
   var parSel=document.getElementById('sai-parcelas-sel');
   var totalPar=null,v=valorTotal;
@@ -8347,17 +8319,17 @@ function saveSaida(){
     data:(document.getElementById('sai-date')||{value:''}).value||null,
     data_vencimento:(document.getElementById('sai-venc')||{value:''}).value||null,
     status_pagto:statusPagto,
-    status_compromisso:(document.getElementById('sai-status-comp')||{value:'pago'}).value,
+    status_compromisso:'pago',
     metodo_pagto:(document.getElementById('sai-metodo')||{value:''}).value||null,
     pago_por_id:(document.getElementById('sai-pago-por')||{value:''}).value||null,
     fornecedor_id:fornecedorId,
     fornecedor_cliente:fornecedorCliente,
     produto_id:(document.getElementById('sai-produto-id')||{value:''}).value||null,
     socia_id:(document.getElementById('sai-socia-id')||{value:''}).value||null,
-    // A "Recorrência" saiu como campo próprio — agora é o valor "Recorrência Mensal"
-    // do Status do pagamento que liga o flag de recorrente pro DRE.
-    recorrencia_tipo:isRecorrente?'mensal':'unico',
-    recorrente:isRecorrente,
+    // Recorrência mensal foi removida do Status do pagamento — lançamentos
+    // criados por este formulário não marcam mais o flag de recorrente.
+    recorrencia_tipo:'unico',
+    recorrente:false,
     tipo_compromisso:tipoComp,
     total_parcelas:totalPar,
     notas:(document.getElementById('sai-notas')||{value:''}).value||null,
@@ -8383,7 +8355,6 @@ function openSaidaEdit(id){
   document.getElementById('sai-date').value=c.data||'';
   document.getElementById('sai-venc').value=c.data_vencimento||'';
   document.getElementById('sai-status').value=c.status_pagto||'pago';
-  document.getElementById('sai-status-comp').value=c.status_compromisso||'pago';
   document.getElementById('sai-metodo').value=c.metodo_pagto||'';
   var fornTxtEdit=document.getElementById('sai-fornecedor');
   if(fornTxtEdit)fornTxtEdit.value=c.fornecedor_cliente||'';
