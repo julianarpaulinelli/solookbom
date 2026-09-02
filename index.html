@@ -2901,6 +2901,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
       <select class="form-select" id="sai-tipo-comp">
         <option value="unico">À vista</option>
         <option value="parcelado">Parcelado</option>
+        <option value="recorrente">Recorrência Mensal</option>
       </select>
     </div>
     <div class="form-group" id="sai-parcelas-group" style="display:none">
@@ -4461,12 +4462,36 @@ function gerarParcelas(c){
   }
   return out;
 }
+function gerarOcorrenciasRecorrentes(c){
+  if(c.tipo_compromisso!=='recorrente'||!c.data_vencimento)return [];
+  var anchor=new Date(c.data_vencimento+'T00:00:00');
+  var diaVenc=anchor.getDate();
+  var today=new Date();
+  var todayStr=today.toISOString().split('T')[0];
+  var horizonte=new Date(today);horizonte.setDate(horizonte.getDate()+90);
+  var horizonteStr=horizonte.toISOString().split('T')[0];
+  var out=[];
+  for(var i=0;i<240;i++){
+    var cand=new Date(anchor);
+    cand.setMonth(cand.getMonth()+i);
+    var maxDia=new Date(cand.getFullYear(),cand.getMonth()+1,0).getDate();
+    cand.setDate(Math.min(diaVenc,maxDia));
+    var candStr=cand.getFullYear()+'-'+String(cand.getMonth()+1).padStart(2,'0')+'-'+String(cand.getDate()).padStart(2,'0');
+    if(candStr>horizonteStr)break;
+    if(candStr>=todayStr)out.push({data:candStr,valor:parseFloat(c.valor||0)});
+  }
+  return out;
+}
 function expandirParcelasParaKpi(costs){
   var out=[];
   costs.forEach(function(c){
     if(c.tipo_compromisso==='parcelado'&&c.total_parcelas>1){
       gerarParcelas(c).forEach(function(p){
         out.push({descricao:c.descricao,valor:p.valor,data_vencimento:p.data,status_pagto:p.pago?'pago':'pendente',tipo_compromisso:c.tipo_compromisso,tipo_lancamento:c.tipo_lancamento,tipo:c.tipo,categoria:c.categoria});
+      });
+    }else if(c.tipo_compromisso==='recorrente'&&c.data_vencimento){
+      gerarOcorrenciasRecorrentes(c).forEach(function(o){
+        out.push({descricao:c.descricao,valor:o.valor,data_vencimento:o.data,status_pagto:'pendente',tipo_compromisso:c.tipo_compromisso,tipo_lancamento:c.tipo_lancamento,tipo:c.tipo,categoria:c.categoria});
       });
     }else{
       out.push(c);
@@ -4495,10 +4520,7 @@ function renderFinDashboard(){
   var vencidas=allCostsKpi.filter(function(c){return c.data_vencimento&&c.data_vencimento<todayStr&&c.status_pagto!=='pago';});
   var vencer7=allCostsKpi.filter(function(c){return c.data_vencimento&&c.data_vencimento>todayStr&&c.data_vencimento<=in7Str&&c.status_pagto!=='pago';});
   var comprometido90=allCostsKpi.filter(function(c){
-    return c.status_pagto!=='pago'&&(
-      (c.data_vencimento&&c.data_vencimento>todayStr&&c.data_vencimento<=in90Str)||
-      c.tipo_compromisso==='recorrente'
-    );
+    return c.status_pagto!=='pago'&&c.data_vencimento&&c.data_vencimento>todayStr&&c.data_vencimento<=in90Str;
   }).reduce(function(a,c){return a+parseFloat(c.valor||0);},0);
   var recorrentes=allCosts.filter(function(c){return c.tipo_compromisso==='recorrente'||c.recorrente;});
   var deltaMes=totPrevMes>0?Math.round((totMes-totPrevMes)/totPrevMes*100):0;
@@ -4729,7 +4751,7 @@ function renderFinDashboard(){
   // ── RECORRENTES ───────────────────────────────────────────
   var recEl=$('fin-recorrentes');
   if(recEl)recEl.innerHTML=recorrentes.length?recorrentes.slice(0,8).map(function(c){
-    var nextLabel=c.recorrencia==='mensal'?'mensal':c.recorrencia==='trimestral'?'trimestral':'anual';
+    var nextLabel=(c.recorrencia_tipo||c.recorrencia)==='mensal'?'mensal':(c.recorrencia_tipo||c.recorrencia)==='trimestral'?'trimestral':'anual';
     return '<div class="fin-comp-row"><div class="fin-comp-dot" style="background:var(--blue)"></div><div class="fin-comp-body"><p class="fin-comp-name">'+c.descricao+'</p><div class="fin-comp-sub"><span>'+nextLabel+'</span>'+(c.categoria_comp?'<span>'+c.categoria_comp+'</span>':'')+(c.data_vencimento?'<span>vence: '+fmtDate(c.data_vencimento)+'</span>':'')+'</div></div><span class="fin-comp-val">'+mo(c.valor)+'</span></div>';
   }).join(''):'<p class="fin-empty">Nenhuma assinatura/recorrente cadastrada</p>';
 
@@ -7023,6 +7045,7 @@ var CAT_DRE = {
     {v:'comissao', l:'Comissão de vendedor', tt:'% pago a quem vendeu.'},
     {v:'frete_entrega', l:'Frete de entrega (absorvido)', tt:'Quando a empresa banca o frete — isso come margem.'},
     {v:'internet', l:'Internet / telefone', tt:'Despesas administrativas de conexão e comunicação.'},
+    {v:'impostos', l:'Impostos', tt:'Impostos e tributos da empresa — MEI, DAS, etc.'},
     {v:'outro_despesa', l:'Outro', tt:'Despesa que não se enquadra nas categorias acima.'}
   ],
   investimento: [
@@ -8240,12 +8263,13 @@ function initSaidaListeners(){
   }
   function refreshCompromisso(){
     var isParc=tipoComp.value==='parcelado';
+    var isRec=tipoComp.value==='recorrente';
     var pg=document.getElementById('sai-parcelas-group');
     var vpg=document.getElementById('sai-valor-parcela-group');
     var vencLbl=document.getElementById('sai-venc-label');
     if(pg)pg.style.display=isParc?'block':'none';
     if(vpg)vpg.style.display=isParc?'block':'none';
-    if(vencLbl)vencLbl.textContent=isParc?'Vencimento da primeira parcela':'Data de vencimento';
+    if(vencLbl)vencLbl.textContent=isParc?'Vencimento da primeira parcela':(isRec?'Vencimento (dia da cobrança mensal)':'Data de vencimento');
     if(isParc){calcParcelaValor();calcUltimaParcela();}
     else{
       var cg=document.getElementById('sai-parcelas-custom');if(cg)cg.style.display='none';
@@ -8337,6 +8361,7 @@ function saveSaida(){
   var statusPagto=(document.getElementById('sai-status')||{value:'pago'}).value;
   var tipoComp=(document.getElementById('sai-tipo-comp')||{value:'unico'}).value;
   var isPar=tipoComp==='parcelado';
+  var isRec=tipoComp==='recorrente';
   var parSel=document.getElementById('sai-parcelas-sel');
   var totalPar=null,v=valorTotal;
   if(isPar){
@@ -8363,10 +8388,10 @@ function saveSaida(){
     fornecedor_cliente:fornecedorCliente,
     produto_id:(document.getElementById('sai-produto-id')||{value:''}).value||null,
     socia_id:(document.getElementById('sai-socia-id')||{value:''}).value||null,
-    // Recorrência mensal foi removida do Status do pagamento — lançamentos
-    // criados por este formulário não marcam mais o flag de recorrente.
-    recorrencia_tipo:'unico',
-    recorrente:false,
+    // Recorrência mensal agora é um Tipo de compromisso (junto de À vista/Parcelado),
+    // não mais uma opção do Status do pagamento.
+    recorrencia_tipo:isRec?'mensal':'unico',
+    recorrente:isRec,
     tipo_compromisso:tipoComp,
     total_parcelas:totalPar,
     notas:(document.getElementById('sai-notas')||{value:''}).value||null,
@@ -8396,20 +8421,16 @@ function openSaidaEdit(id){
   var fornTxtEdit=document.getElementById('sai-fornecedor');
   if(fornTxtEdit)fornTxtEdit.value=c.fornecedor_cliente||'';
   document.getElementById('sai-notas').value=c.notas||'';
-  // Registros antigos podem ter tipo_compromisso='recorrente' (opção removida do select) —
-  // trata como "À vista" na tela; a recorrência em si agora vem do Status do pagamento.
-  var tipoCompVal=c.tipo_compromisso==='parcelado'?'parcelado':'unico';
+  var tipoCompVal=(c.tipo_compromisso==='parcelado'||c.tipo_compromisso==='recorrente')?c.tipo_compromisso:'unico';
   document.getElementById('sai-tipo-comp').value=tipoCompVal;
   var isParEdit=tipoCompVal==='parcelado';
+  var isRecEdit=tipoCompVal==='recorrente';
   var pg=document.getElementById('sai-parcelas-group');
   if(pg)pg.style.display=isParEdit?'block':'none';
   var vpgEdit=document.getElementById('sai-valor-parcela-group');
   if(vpgEdit)vpgEdit.style.display=isParEdit?'block':'none';
   var vencLblEdit=document.getElementById('sai-venc-label');
-  if(vencLblEdit)vencLblEdit.textContent=isParEdit?'Vencimento da primeira parcela':'Data de vencimento';
-  // Esconde a seção de Compromisso quando o status é Recorrência Mensal (não se aplica).
-  var compSectionEdit=document.getElementById('sai-tipo-comp').closest('.form-row');
-  if(compSectionEdit)compSectionEdit.style.display=(c.status_pagto==='recorrente_mensal')?'none':'';
+  if(vencLblEdit)vencLblEdit.textContent=isParEdit?'Vencimento da primeira parcela':(isRecEdit?'Vencimento (dia da cobrança mensal)':'Data de vencimento');
   // Valor total da compra: coluna não existe separada — recalcula a partir de
   // valor (por parcela) × total_parcelas, ou usa o próprio valor quando é à vista.
   var valorTotalEdit=(isParEdit&&c.total_parcelas)?(parseFloat(c.valor||0)*c.total_parcelas):parseFloat(c.valor||0);
