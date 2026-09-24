@@ -3021,9 +3021,18 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <p class="form-section" style="margin-top:0;padding-top:0;border:none">Cliente</p>
   <div class="form-row"><div class="form-group"><label class="form-label">Nome do cliente *</label><input class="form-input" id="ped-cliente" placeholder="Nome completo"></div><div class="form-group"><label class="form-label">CPF</label><input class="form-input" id="ped-cpf" placeholder="000.000.000-00"></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="ped-email" placeholder="cliente@email.com"></div><div class="form-group"><label class="form-label">Telefone</label><input class="form-input" id="ped-fone" placeholder="(11) 9 9999-0000"></div></div>
+  <p class="form-section">Itens do pedido</p>
+  <div id="ped-itens-wrap">
+    <input class="form-input" id="ped-item-busca" placeholder="Buscar item no estoque por nome ou SKU..." autocomplete="off">
+    <div id="ped-item-resultados" style="display:none;max-height:180px;overflow:auto;border:1px solid var(--border);border-radius:8px;margin-top:6px"></div>
+    <div id="ped-itens-lista" style="margin-top:10px"></div>
+    <p id="ped-itens-vazio" style="font-size:11px;color:var(--muted);padding:4px 0 0">Nenhum item adicionado ainda — o valor total pode ser digitado manualmente.</p>
+    <div id="ped-itens-resumo" style="display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-size:12px;justify-content:space-between"><span style="color:var(--muted)">Subtotal (<span id="ped-itens-count">0</span> itens)</span><span id="ped-itens-subtotal" style="font-weight:800">R$ 0,00</span></div>
+  </div>
   <p class="form-section">Pedido</p>
   <div class="form-row"><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="ped-status"><option value="pago">Pago</option><option value="separacao">Em separação</option><option value="producao">Produção</option><option value="enviado">Enviado</option><option value="entregue">Entregue</option><option value="troca">Troca</option><option value="cancelado">Cancelado</option></select></div><div class="form-group"><label class="form-label">Canal de venda</label><input class="form-input" id="ped-canal" placeholder="Instagram, Loja, Site..."></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">Valor total (R$) *</label><input class="form-input" id="ped-valor" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Valor frete (R$)</label><input class="form-input" id="ped-frete" type="number" step="0.01" placeholder="0,00"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label" id="ped-valor-label">Valor total (R$) *</label><input class="form-input" id="ped-valor" type="number" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Valor frete (R$)</label><input class="form-input" id="ped-frete" type="number" step="0.01" placeholder="0,00"></div></div>
+  <div class="form-group"><label class="form-label">Desconto (R$)</label><input class="form-input" id="ped-desconto" type="number" step="0.01" placeholder="0,00" style="max-width:220px"></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Transportadora</label><input class="form-input" id="ped-transp" placeholder="Correios, Jadlog..."></div><div class="form-group"><label class="form-label">Código de rastreio</label><input class="form-input" id="ped-rastreio" placeholder="BR123456789BR"></div></div>
   <div class="form-row"><div class="form-group"><label class="form-label">Coleção</label><select class="form-select" id="ped-colecao"></select></div><div class="form-group"><label class="form-label">Responsável</label><select class="form-select" id="ped-resp"></select></div></div>
   <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="ped-obs"></textarea></div>
@@ -5639,17 +5648,147 @@ function renderPedidos(){
   var el=$('pedido-list');if(!list.length){el.innerHTML='<p class="empty">Nenhum pedido</p>';return;}
   el.innerHTML=list.map(function(p){return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title"><span class="pedido-num">'+p.numero+'</span> — '+p.cliente_nome+'</p><div class="card-meta">'+badge(p.status,L.pedSt[p.status])+(p.canal_venda?catTag(p.canal_venda):'')+(p.colecao?catTag('🗂 '+p.colecao.nome):'')+(p.transportadora?catTag('🚚 '+p.transportadora):'')+(p.codigo_rastreio?'<span class="tag-pill">📦 '+p.codigo_rastreio+'</span>':'')+'</div>'+(p.cliente_fone||p.cliente_email?'<p style="font-size:10px;color:var(--muted);margin-top:3px">'+(p.cliente_fone?'📱 '+p.cliente_fone:'')+(p.cliente_fone&&p.cliente_email?' · ':'')+(p.cliente_email||'')+'</p>':'')+'</div><div class="card-actions" style="flex-direction:column;align-items:flex-end;gap:4px"><span style="font-size:13px;font-weight:800">'+mo(p.valor_total)+'</span><div style="display:flex;gap:4px">'+editBtn(p.id,'pedido')+'<button class="del" data-del-ped="'+p.id+'">×</button></div></div></div></div>';}).join('');
 }
+// Estado dos itens do pedido em edição (não persiste até salvar)
+var pedItens=[]; // {estoque_id,nome,sku,quantidade,preco_unitario,disponivel}
+var pedItensOriginais=[]; // snapshot ao abrir edição, pra calcular diff de estoque
+var pedStatusOriginal=null;
+function pedidoContaEstoque(status){return status!=='cancelado';}
+function renderPedItens(){
+  var wrap=$('ped-itens-lista');if(!wrap)return;
+  if(!pedItens.length){
+    wrap.innerHTML='';
+    $('ped-itens-vazio').style.display='block';
+    $('ped-itens-resumo').style.display='none';
+  }else{
+    $('ped-itens-vazio').style.display='none';
+    $('ped-itens-resumo').style.display='flex';
+    wrap.innerHTML=pedItens.map(function(it,idx){
+      var excede=it.quantidade>it.disponivel;
+      return '<div class="card" style="padding:8px 10px;margin-bottom:6px'+(excede?';border-color:var(--red)':'')+'"><div class="card-row" style="align-items:center"><div class="card-body"><p class="card-title" style="font-size:12px">'+it.nome+(it.sku?' <span style="color:var(--muted);font-weight:400">· SKU '+it.sku+'</span>':'')+'</p><p style="font-size:10px;color:'+(excede?'var(--red)':'var(--muted)')+';margin-top:2px">'+(excede?'⚠️ só '+it.disponivel+' em estoque':it.disponivel+' disponível(is)')+' · '+mo(it.preco_unitario)+'/un</p></div><div class="card-actions" style="align-items:center;gap:6px"><input type="number" min="1" step="1" value="'+it.quantidade+'" data-ped-item-qtd="'+idx+'" class="form-input" style="width:60px;padding:4px 6px;text-align:center"><span style="font-size:12px;font-weight:800;min-width:70px;text-align:right">'+mo(it.quantidade*it.preco_unitario)+'</span><button class="del" data-ped-item-del="'+idx+'">×</button></div></div></div>';
+    }).join('');
+  }
+  var count=pedItens.reduce(function(a,it){return a+it.quantidade;},0);
+  var subtotal=pedItens.reduce(function(a,it){return a+it.quantidade*it.preco_unitario;},0);
+  $('ped-itens-count').textContent=count;
+  $('ped-itens-subtotal').textContent=mo(subtotal);
+  var lbl=$('ped-valor-label');
+  if(pedItens.length){
+    $('ped-valor').readOnly=true;$('ped-valor').style.opacity='.65';$('ped-valor').style.cursor='not-allowed';
+    if(lbl)lbl.textContent='Valor total (R$) — calculado automaticamente';
+    recalcPedTotal();
+  }else{
+    $('ped-valor').readOnly=false;$('ped-valor').style.opacity='';$('ped-valor').style.cursor='';
+    if(lbl)lbl.textContent='Valor total (R$) *';
+  }
+}
+function recalcPedTotal(){
+  if(!pedItens.length)return;
+  var subtotal=pedItens.reduce(function(a,it){return a+it.quantidade*it.preco_unitario;},0);
+  var frete=num('ped-frete')||0,desconto=num('ped-desconto')||0;
+  $('ped-valor').value=Math.max(0,subtotal+frete-desconto).toFixed(2);
+}
+function buscarItemPedido(){
+  var q=val('ped-item-busca').trim().toLowerCase();
+  var box=$('ped-item-resultados');
+  if(!q){box.style.display='none';box.innerHTML='';return;}
+  var matches=(D.estoques||[]).filter(function(e){return(e.nome&&e.nome.toLowerCase().includes(q))||(e.sku&&e.sku.toLowerCase().includes(q));}).slice(0,8);
+  if(!matches.length){box.style.display='block';box.innerHTML='<p style="font-size:11px;color:var(--muted);padding:8px 10px">Nenhum item encontrado no estoque.</p>';return;}
+  box.style.display='block';
+  box.innerHTML=matches.map(function(e){
+    return '<div data-add-ped-item="'+e.id+'" style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;cursor:pointer;border-bottom:1px solid var(--border)"><span style="font-size:12px">'+e.nome+(e.sku?' <span style="color:var(--muted)">· '+e.sku+'</span>':'')+'</span><span style="font-size:10px;color:var(--muted)">'+e.quantidade+' em estoque · '+mo(e.preco_venda||e.preco_custo||0)+'</span></div>';
+  }).join('');
+}
+function addItemPedido(estoqueId){
+  var e=(D.estoques||[]).find(function(x){return x.id===estoqueId;});if(!e)return;
+  var existing=pedItens.find(function(it){return it.estoque_id===estoqueId;});
+  if(existing)existing.quantidade+=1;
+  else pedItens.push({estoque_id:e.id,nome:e.nome,sku:e.sku||'',quantidade:1,preco_unitario:parseFloat(e.preco_venda||e.preco_custo||0),disponivel:e.quantidade});
+  $('ped-item-busca').value='';$('ped-item-resultados').style.display='none';$('ped-item-resultados').innerHTML='';
+  renderPedItens();
+}
+function removeItemPedido(idx){pedItens.splice(idx,1);renderPedItens();}
+function setItemPedidoQtd(idxRaw,qtdStr){
+  var idx=parseInt(idxRaw,10);
+  var qtd=parseInt(qtdStr)||1;if(qtd<1)qtd=1;
+  if(!pedItens[idx])return;
+  pedItens[idx].quantidade=qtd;
+  renderPedItens();
+}
+function calcularDeltasEstoque(){
+  var statusNovo=val('ped-status');
+  var contaNovo=pedidoContaEstoque(statusNovo);
+  var mapaNovo={};
+  if(contaNovo)pedItens.forEach(function(it){mapaNovo[it.estoque_id]=(mapaNovo[it.estoque_id]||0)+it.quantidade;});
+  var contaAntigo=pedStatusOriginal?pedidoContaEstoque(pedStatusOriginal):true;
+  var mapaAntigo={};
+  if(contaAntigo)pedItensOriginais.forEach(function(it){mapaAntigo[it.estoque_id]=(mapaAntigo[it.estoque_id]||0)+it.quantidade;});
+  var ids={};Object.keys(mapaNovo).forEach(function(k){ids[k]=true;});Object.keys(mapaAntigo).forEach(function(k){ids[k]=true;});
+  var deltas=[];
+  for(var estId in ids){
+    var novo=mapaNovo[estId]||0,antigo=mapaAntigo[estId]||0,delta=novo-antigo;
+    if(delta===0)continue;
+    var itemEst=(D.estoques||[]).find(function(e){return e.id===estId;});
+    if(delta>0&&(!itemEst||delta>itemEst.quantidade)){
+      return {bloqueado:true,nome:itemEst?itemEst.nome:'item',disponivel:itemEst?itemEst.quantidade:0,pedido:delta};
+    }
+    deltas.push({estoque_id:estId,delta:delta});
+  }
+  return {bloqueado:false,deltas:deltas};
+}
+function aplicarDeltasEstoque(deltas){
+  if(!deltas.length)return Promise.resolve();
+  return Promise.all(deltas.map(function(d){
+    var itemEst=(D.estoques||[]).find(function(e){return e.id===d.estoque_id;});
+    var novaQtd=Math.max(0,(itemEst?itemEst.quantidade:0)-d.delta);
+    return db.from('estoque').update({quantidade:novaQtd,updated_at:new Date().toISOString()}).eq('id',d.estoque_id);
+  }));
+}
+function sincronizarItensPedido(pedidoId){
+  var idsOriginais=pedItensOriginais.map(function(it){return it.estoque_id;});
+  var idsNovos=pedItens.map(function(it){return it.estoque_id;});
+  var remover=idsOriginais.filter(function(id){return idsNovos.indexOf(id)===-1;});
+  var ops=[];
+  if(remover.length)ops.push(db.from('pedido_itens').delete().eq('pedido_id',pedidoId).in('estoque_id',remover));
+  pedItens.forEach(function(it){
+    var payload={pedido_id:pedidoId,estoque_id:it.estoque_id,quantidade:it.quantidade,preco_unitario:it.preco_unitario};
+    if(idsOriginais.indexOf(it.estoque_id)>=0)ops.push(db.from('pedido_itens').update(payload).eq('pedido_id',pedidoId).eq('estoque_id',it.estoque_id));
+    else ops.push(db.from('pedido_itens').insert(payload));
+  });
+  return Promise.all(ops);
+}
 function openPedidoEdit(id){
   var p=D.pedidos.find(function(x){return x.id===id;});if(!p)return;
-  $('ped-modal-title').textContent='Editar Pedido';$('ped-id').value=p.id;$('ped-cliente').value=p.cliente_nome;$('ped-cpf').value=p.cliente_cpf||'';$('ped-email').value=p.cliente_email||'';$('ped-fone').value=p.cliente_fone||'';$('ped-status').value=p.status;$('ped-canal').value=p.canal_venda||'';$('ped-valor').value=p.valor_total||'';$('ped-frete').value=p.valor_frete||'';$('ped-transp').value=p.transportadora||'';$('ped-rastreio').value=p.codigo_rastreio||'';$('ped-obs').value=p.observacoes||'';
-  if(p.colecao_id)$('ped-colecao').value=p.colecao_id;if(p.responsavel_id)$('ped-resp').value=p.responsavel_id;var dBtn=$('delete-pedido');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}openModal('pedido');
+  $('ped-modal-title').textContent='Editar Pedido';$('ped-id').value=p.id;$('ped-cliente').value=p.cliente_nome;$('ped-cpf').value=p.cliente_cpf||'';$('ped-email').value=p.cliente_email||'';$('ped-fone').value=p.cliente_fone||'';$('ped-status').value=p.status;$('ped-canal').value=p.canal_venda||'';$('ped-valor').value=p.valor_total||'';$('ped-frete').value=p.valor_frete||'';$('ped-desconto').value=p.desconto||'';$('ped-transp').value=p.transportadora||'';$('ped-rastreio').value=p.codigo_rastreio||'';$('ped-obs').value=p.observacoes||'';
+  if(p.colecao_id)$('ped-colecao').value=p.colecao_id;if(p.responsavel_id)$('ped-resp').value=p.responsavel_id;var dBtn=$('delete-pedido');if(dBtn){dBtn.style.display='inline-flex';dBtn.dataset.deleteId=id;}
+  pedStatusOriginal=p.status;
+  db.from('pedido_itens').select('*').eq('pedido_id',id).then(function(r){
+    var rows=(r&&r.data)||[];
+    pedItens=rows.map(function(row){
+      var e=(D.estoques||[]).find(function(x){return x.id===row.estoque_id;})||{};
+      return {estoque_id:row.estoque_id,nome:e.nome||'(item removido do estoque)',sku:e.sku||'',quantidade:row.quantidade,preco_unitario:parseFloat(row.preco_unitario||0),disponivel:(e.quantidade!==undefined?e.quantidade:0)+row.quantidade};
+    });
+    pedItensOriginais=rows.map(function(row){return {estoque_id:row.estoque_id,quantidade:row.quantidade};});
+    renderPedItens();
+    openModal('pedido');
+  });
 }
 function savePedido(){
   var cliente=val('ped-cliente').trim();if(!cliente){toast('Informe o nome do cliente');return;}
-  var id=val('ped-id');var numero=id?(D.pedidos.find(function(p){return p.id===id;})||{}).numero:nextPedidoNum();
-  var payload={numero:numero,cliente_nome:cliente,cliente_cpf:val('ped-cpf')||null,cliente_email:val('ped-email')||null,cliente_fone:val('ped-fone')||null,status:val('ped-status'),canal_venda:val('ped-canal')||null,valor_total:num('ped-valor')||null,valor_frete:num('ped-frete')||0,transportadora:val('ped-transp')||null,codigo_rastreio:val('ped-rastreio')||null,colecao_id:val('ped-colecao')||null,responsavel_id:val('ped-resp')||null,observacoes:val('ped-obs')||null,updated_at:new Date().toISOString()};
-  var q=id?db.from('pedidos').update(payload).eq('id',id):db.from('pedidos').insert(payload);
-  q.then(function(res){if(res.error){toast('Erro: '+res.error.message);return;}closeModal('pedido');resetForm('pedido');toast(id?'Atualizado!':'Criado!');auditLog(id?'update':'create','pedidos',id,val('ped-cliente'));loadPedidos();});
+  var id=val('ped-id');
+  var calc=calcularDeltasEstoque();
+  if(calc.bloqueado){toast('⚠️ "'+calc.nome+'" tem só '+calc.disponivel+' em estoque (esse pedido precisaria de mais '+calc.pedido+').');return;}
+  var numero=id?(D.pedidos.find(function(p){return p.id===id;})||{}).numero:nextPedidoNum();
+  var payload={numero:numero,cliente_nome:cliente,cliente_cpf:val('ped-cpf')||null,cliente_email:val('ped-email')||null,cliente_fone:val('ped-fone')||null,status:val('ped-status'),canal_venda:val('ped-canal')||null,valor_total:num('ped-valor')||null,valor_frete:num('ped-frete')||0,desconto:num('ped-desconto')||0,transportadora:val('ped-transp')||null,codigo_rastreio:val('ped-rastreio')||null,colecao_id:val('ped-colecao')||null,responsavel_id:val('ped-resp')||null,observacoes:val('ped-obs')||null,updated_at:new Date().toISOString()};
+  var q=id?db.from('pedidos').update(payload).eq('id',id):db.from('pedidos').insert(payload).select();
+  q.then(function(res){
+    if(res.error){toast('Erro: '+res.error.message);return;}
+    var pedidoId=id||(res.data&&res.data[0]&&res.data[0].id);
+    aplicarDeltasEstoque(calc.deltas).then(function(){
+      sincronizarItensPedido(pedidoId).then(function(){
+        closeModal('pedido');resetForm('pedido');toast(id?'Atualizado!':'Criado!');auditLog(id?'update':'create','pedidos',pedidoId,cliente);loadPedidos();loadEstoque();
+      });
+    });
+  });
 }
 
 // ── FRETES ─────────────────────────────────────────────────
@@ -6309,6 +6448,12 @@ function resetForm(type){
   if(type==='entrada'){
     var recG=document.getElementById('ent-recorrencia-group');if(recG)recG.style.display='none';
   }
+  if(type==='pedido'){
+    pedItens=[];pedItensOriginais=[];pedStatusOriginal=null;
+    $('ped-valor').readOnly=false;$('ped-valor').value='';
+    var itBox=document.getElementById('ped-item-resultados');if(itBox){itBox.style.display='none';itBox.innerHTML='';}
+    renderPedItens();
+  }
   if(type==='task'){
     populateMarcoSelect('');
     var dBtn=document.getElementById('delete-task');if(dBtn){dBtn.style.display='none';}
@@ -6360,6 +6505,10 @@ function handleClick(e){
     else if(emod==='meta')openMetaEdit(eid);
     return;
   }
+  var addPedItem=e.target.closest('[data-add-ped-item]');
+  if(addPedItem){addItemPedido(addPedItem.dataset.addPedItem);return;}
+  var delPedItem=e.target.closest('[data-ped-item-del]');
+  if(delPedItem){removeItemPedido(parseInt(delPedItem.dataset.pedItemDel,10));return;}
   var supCard=e.target.closest('[data-open-sup]');
   if(supCard)return openSupPanel(supCard.dataset.openSup);
   var addEv=e.target.closest('[data-add-evento]');
@@ -6373,7 +6522,23 @@ function handleClick(e){
     if(del.dataset.delEst){if(!confirm('Excluir item?'))return;db.from('estoque').delete().eq('id',del.dataset.delEst).then(function(){toast('Excluído');loadEstoque();});}
     if(del.dataset.delCol){if(!confirm('Excluir coleção?'))return;db.from('colecoes').update({ativo:false}).eq('id',del.dataset.delCol).then(function(){toast('Excluída');loadColecoes();});}
     if(del.dataset.delPrd){if(!confirm('Excluir produção?'))return;db.from('producoes').update({ativo:false}).eq('id',del.dataset.delPrd).then(function(){toast('Excluída');loadProducoes();});}
-    if(del.dataset.delPed){if(!confirm('Excluir pedido?'))return;db.from('pedidos').update({ativo:false}).eq('id',del.dataset.delPed).then(function(){toast('Excluído');loadPedidos();});}
+    if(del.dataset.delPed){
+      if(!confirm('Excluir pedido? O estoque reservado por ele será devolvido.'))return;
+      var pedIdDel=del.dataset.delPed;
+      db.from('pedido_itens').select('estoque_id,quantidade').eq('pedido_id',pedIdDel).then(function(rItens){
+        var itensDel=(rItens&&rItens.data)||[];
+        var pedAlvo=D.pedidos.find(function(x){return x.id===pedIdDel;});
+        var contava=pedAlvo?pedidoContaEstoque(pedAlvo.status):true;
+        var devolver=(contava&&itensDel.length)?Promise.all(itensDel.map(function(it){
+          var e=(D.estoques||[]).find(function(x){return x.id===it.estoque_id;});
+          var novaQtd=(e?e.quantidade:0)+it.quantidade;
+          return db.from('estoque').update({quantidade:novaQtd}).eq('id',it.estoque_id);
+        })):Promise.resolve();
+        devolver.then(function(){
+          db.from('pedidos').update({ativo:false}).eq('id',pedIdDel).then(function(){toast('Excluído');loadPedidos();loadEstoque();});
+        });
+      });
+    }
     if(del.dataset.delFre){if(!confirm('Excluir tabela?'))return;db.from('fretes').delete().eq('id',del.dataset.delFre).then(function(){toast('Excluída');loadFretes();});}
     if(del.dataset.delPar){if(!confirm('Excluir parceiro?'))return;db.from('parceiros').delete().eq('id',del.dataset.delPar).then(function(){toast('Excluído');loadParceiros();});}
     if(del.dataset.delPost){if(!confirm('Excluir postagem?'))return;db.from('postagens').update({ativo:false}).eq('id',del.dataset.delPost).then(function(){toast('Excluída');loadPostagens();});}
@@ -6486,6 +6651,11 @@ document.addEventListener('DOMContentLoaded',function(){
   // Search
   $('produto-search').addEventListener('input',renderProdutos);
   $('pedido-search').addEventListener('input',renderPedidos);
+  $('ped-item-busca')&&$('ped-item-busca').addEventListener('input',buscarItemPedido);
+  $('ped-item-busca')&&$('ped-item-busca').addEventListener('blur',function(){setTimeout(function(){var b=$('ped-item-resultados');if(b)b.style.display='none';},180);});
+  $('ped-frete')&&$('ped-frete').addEventListener('input',recalcPedTotal);
+  $('ped-desconto')&&$('ped-desconto').addEventListener('input',recalcPedTotal);
+  document.addEventListener('input',function(e){if(e.target&&e.target.matches&&e.target.matches('[data-ped-item-qtd]'))setItemPedidoQtd(e.target.dataset.pedItemQtd,e.target.value);});
   $('task-search')&&$('task-search').addEventListener('input',renderTasks);
   var _cs=$('cost-search');if(_cs)_cs.addEventListener('input',renderCosts);
   $('estoque-search')&&$('estoque-search').addEventListener('input',renderEstoque);
