@@ -5652,7 +5652,7 @@ function renderPedidos(){
 var pedItens=[]; // {estoque_id,nome,sku,quantidade,preco_unitario,disponivel}
 var pedItensOriginais=[]; // snapshot ao abrir edição, pra calcular diff de estoque
 var pedStatusOriginal=null;
-function pedidoContaEstoque(status){return status!=='cancelado';}
+function pedidoContaEstoque(status){return status!=='cancelado'&&status!=='troca';}
 function renderPedItens(){
   var wrap=$('ped-itens-lista');if(!wrap)return;
   if(!pedItens.length){
