@@ -1317,6 +1317,37 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .lc-marco-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:3px;transition:width .4s}
 .lc-marco-bar-txt{font-size:10px;color:var(--muted);white-space:nowrap}
 .lc-marco-bar-open{font-size:10px;color:var(--amber);white-space:nowrap;margin-left:auto}
+/* ===== DTF ===== */
+.dtf-tabs{display:flex;gap:4px;margin-bottom:14px;border-bottom:2px solid var(--border)}
+.dtf-tab{padding:8px 18px;font:700 11px 'Inter',sans-serif;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.dtf-tab:hover{color:var(--fg)}
+.dtf-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.dtf-thumb{width:40px;height:40px;border-radius:8px;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;text-decoration:none}
+.dtf-thumb:hover{border-color:var(--blue)}
+.dtf-thumb-empty{opacity:.6}
+.dtf-table-wrap{overflow-x:auto;margin-top:10px}
+.dtf-table{width:100%;border-collapse:collapse;font-size:12px}
+.dtf-table th{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+.dtf-table td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.dtf-table tr:last-child td{border-bottom:none}
+.dtf-table tr.dtf-low td{background:rgba(224,82,82,.06)}
+.dtf-num{text-align:right;white-space:nowrap}
+.dtf-muted{color:var(--muted)}
+.dtf-mini{padding:4px 10px;background:var(--card2);border:1px solid var(--border);border-radius:6px;font:600 10px 'Inter',sans-serif;color:var(--fg);cursor:pointer;white-space:nowrap}
+.dtf-mini:hover{border-color:var(--blue);color:var(--blue)}
+.dtf-badge{display:inline-flex;padding:2px 8px;border-radius:10px;font:700 9px 'Inter',sans-serif;letter-spacing:.5px;text-transform:uppercase;vertical-align:middle;margin-left:6px}
+.dtf-st-pedido{background:rgba(230,162,46,.15);color:var(--amber)}
+.dtf-st-recebido{background:rgba(39,192,138,.15);color:var(--green)}
+.dtf-st-cancelado{background:rgba(148,163,184,.15);color:var(--muted)}
+.dtf-itens{margin:8px 0 0 16px;font-size:11px;color:var(--fg);line-height:1.7}
+.dtf-var-head,.dtf-var-row{display:grid;grid-template-columns:1.1fr 1.1fr .8fr .9fr .8fr 28px;gap:6px;align-items:center;margin-bottom:6px}
+.dtf-var-head span{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.dtf-var-saldo{font-size:11px;text-align:center}
+.dtf-ped-row{display:grid;grid-template-columns:1fr 90px 28px;gap:6px;align-items:center;margin-bottom:6px}
+.dtf-add-row{background:none;border:1px dashed var(--border2);border-radius:7px;padding:7px 12px;font:600 11px 'Inter',sans-serif;color:var(--muted);cursor:pointer;width:100%;margin-bottom:12px}
+.dtf-add-row:hover{border-color:var(--blue);color:var(--blue)}
+.dtf-resumo{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);padding:8px 0 4px;border-top:1px dashed var(--border);margin-bottom:10px}
+@media(max-width:600px){.dtf-var-head{display:none}.dtf-var-row{grid-template-columns:1fr 1fr 28px}.dtf-var-row>input:nth-of-type(2),.dtf-var-row>input:nth-of-type(3){grid-column:auto}}
 </style>
 </head>
 <body>
@@ -1434,6 +1465,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             <div class="nav-item nav-item-sub" data-sec="projecao"><span>📉</span><span class="nav-label">Projeção de Caixa</span></div>
             <div class="nav-mais-sep"></div>
             <div class="nav-item nav-item-sub" data-sec="estoque"><span>📦</span><span class="nav-label">Estoque</span></div>
+            <div class="nav-item nav-item-sub" data-sec="dtf"><span>&#x1f3a8;</span><span class="nav-label">DTF</span></div>
             <div class="nav-item nav-item-sub" data-sec="colecoes"><span>🗂️</span><span class="nav-label">Coleções</span></div>
             <div class="nav-item nav-item-sub" data-sec="producao"><span>⚙️</span><span class="nav-label">Produção</span></div>
             <div class="nav-item nav-item-sub" data-sec="pedidos"><span>🛍️</span><span class="nav-label">Pedidos</span></div>
@@ -2510,6 +2542,16 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           <div id="estoque-list"></div>
         </div>
 
+        <!-- DTF -->
+        <div class="cw" id="section-dtf">
+          <div class="section-header"><h2 class="section-title">DTF &#x2014; Estampas</h2><div class="header-actions"><button class="export-btn" id="dtf-btn-estampa">+ Nova estampa</button><button class="btn-add" id="dtf-btn-pedido">+ Pedido de DTF</button></div></div>
+          <div class="metrics" id="dtf-metrics"></div>
+          <div class="dtf-tabs"><button class="dtf-tab active" data-dtf-tab="inv">Inventário</button><button class="dtf-tab" data-dtf-tab="ped">Pedidos ao fornecedor</button><button class="dtf-tab" data-dtf-tab="hist">Histórico</button></div>
+          <div class="search-bar" id="dtf-search-wrap"><input class="search-input" id="dtf-search" placeholder="Buscar estampa..."></div>
+          <div class="filters" id="dtf-ped-filters" style="display:none"><span class="fl">Status:</span><button class="fb active" data-dtf-st="pedido">Em aberto</button><button class="fb" data-dtf-st="recebido">Recebidos</button><button class="fb" data-dtf-st="cancelado">Cancelados</button><button class="fb" data-dtf-st="all">Todos</button></div>
+          <div id="dtf-content"></div>
+        </div>
+
         <!-- COLEÇÕES -->
         <div class="cw" id="section-colecoes">
           <div class="section-header"><h2 class="section-title">Coleções</h2><div class="header-actions"><button class="export-btn" onclick="exportColecoes()">&#8595; CSV</button><button class="btn-add" data-modal="colecao">+ Nova coleção</button></div></div>
@@ -2868,6 +2910,44 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <div class="modal-footer"><button class="btn-save" id="save-estoque">Salvar Item</button><button class="btn-delete-modal" id="delete-estoque" style="display:none">Excluir</button><button class="btn-close-modal" data-close="estoque">Fechar</button></div>
 </div></div>
 
+<div class="modal-bg" id="modal-dtf-estampa"><div class="modal wide">
+  <div class="modal-title"><span id="dtf-est-title">Nova estampa</span><button class="modal-close-btn" data-close="dtf-estampa">&#xd7;</button></div>
+  <input type="hidden" id="dtf-est-id">
+  <div class="form-group"><label class="form-label">Nome da estampa *</label><input class="form-input" id="dtf-est-nome" placeholder="Ex: Sol Neon"></div>
+  <div class="form-group"><label class="form-label">Link da arte (opcional)</label><input class="form-input" id="dtf-est-img" placeholder="Link do Drive, Canva..."></div>
+  <p class="form-section">Variações (tamanho da arte e posição)</p>
+  <div class="dtf-var-head"><span>Tamanho</span><span>Posição</span><span>Mínimo</span><span>Custo un. (R$)</span><span>Saldo</span><span></span></div>
+  <div id="dtf-var-rows"></div>
+  <datalist id="dtf-tamanhos"><option value="PP"><option value="P"><option value="M"><option value="G"><option value="GG"><option value="P/M"><option value="G/GG"><option value="Único"></datalist>
+  <button class="dtf-add-row" id="dtf-var-add">+ Adicionar variação</button>
+  <p style="font-size:10px;color:var(--muted);margin:-4px 0 12px">Em variações novas, "Saldo" é quanto vocês já têm hoje. Depois, o saldo só muda por pedido recebido ou pelo botão Movimentar &#x2014; assim fica tudo no histórico.</p>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="dtf-est-obs"></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="dtf-est-save">Salvar estampa</button><button class="btn-delete-modal" id="dtf-est-delete" style="display:none">Remover</button><button class="btn-close-modal" data-close="dtf-estampa">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-dtf-pedido"><div class="modal wide">
+  <div class="modal-title"><span id="dtf-ped-title">Novo pedido de DTF</span><button class="modal-close-btn" data-close="dtf-pedido">&#xd7;</button></div>
+  <input type="hidden" id="dtf-ped-id">
+  <div class="form-row"><div class="form-group"><label class="form-label">Fornecedor</label><select class="form-select" id="dtf-ped-forn"></select></div><div class="form-group"><label class="form-label">Como foi pedido</label><select class="form-select" id="dtf-ped-tipo"><option value="unidade">Por unidade</option><option value="metro">Por metro / folha</option></select></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Custo total (R$)</label><input class="form-input" id="dtf-ped-custo" type="number" step="0.01" min="0" placeholder="0,00"></div><div class="form-group" id="dtf-ped-metros-group" data-always-show="true" style="display:none"><label class="form-label">Metros</label><input class="form-input" id="dtf-ped-metros" type="number" step="0.01" min="0" placeholder="Ex: 1,5"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Data do pedido *</label><input class="form-input" id="dtf-ped-data" type="date"></div><div class="form-group"><label class="form-label">Previsão de chegada</label><input class="form-input" id="dtf-ped-prev" type="date"></div></div>
+  <p class="form-section">Estampas do pedido</p>
+  <div id="dtf-ped-rows"></div>
+  <button class="dtf-add-row" id="dtf-ped-add">+ Adicionar estampa</button>
+  <div class="dtf-resumo" id="dtf-ped-resumo"></div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="dtf-ped-obs"></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="dtf-ped-save">Salvar pedido</button><button class="btn-delete-modal" id="dtf-ped-delete" style="display:none">Excluir</button><button class="btn-close-modal" data-close="dtf-pedido">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-dtf-mov"><div class="modal">
+  <div class="modal-title"><span>Movimentar estoque de DTF</span><button class="modal-close-btn" data-close="dtf-mov">&#xd7;</button></div>
+  <p style="font-size:13px;font-weight:600;margin-bottom:4px" id="dtf-mov-label"></p>
+  <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Saldo atual: <b id="dtf-mov-saldo"></b></p>
+  <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="dtf-mov-tipo"><option value="saida">Saída (usou/vendeu)</option><option value="entrada">Entrada</option><option value="ajuste">Ajuste (contagem)</option></select></div><div class="form-group"><label class="form-label" id="dtf-mov-qtd-label">Quantidade</label><input class="form-input" id="dtf-mov-qtd" type="number" min="0" step="1" placeholder="0"></div></div>
+  <div class="form-group"><label class="form-label">Motivo</label><input class="form-input" id="dtf-mov-motivo"></div>
+  <div class="modal-footer"><button class="btn-save" id="dtf-mov-save">Salvar</button><button class="btn-close-modal" data-close="dtf-mov">Fechar</button></div>
+</div></div>
+
 <div class="modal-bg" id="modal-colecao"><div class="modal">
   <div class="modal-title"><span id="col-modal-title">Nova Coleção</span><button class="modal-close-btn" data-close="colecao">×</button></div>
   <input type="hidden" id="col-id">
@@ -3184,7 +3264,7 @@ var L={
   colSt:{planejamento:'Planejamento',em_producao:'Em produção',lancada:'Lançada',encerrada:'Encerrada'},
   pagtoSt:{pago:'Pago',pendente:'Em aberto',vencido:'Vencido',recorrente_mensal:'Recorrência Mensal'},
   compSt:{pago:'Pago',vigente:'Em período vigente',vencido:'Vencido'},
-  sections:{home:'Dashboard',tarefas:'Tarefas',financas:'Finanças',produtos:'Produtos',estoque:'Estoque',colecoes:'Coleções',producao:'Produção',pedidos:'Pedidos',fornecedores:'Fornecedores',pessoas:'Pessoas'}
+  sections:{home:'Dashboard',tarefas:'Tarefas',financas:'Finanças',produtos:'Produtos',estoque:'Estoque',colecoes:'Coleções',producao:'Produção',pedidos:'Pedidos',dtf:'DTF \u2014 Estampas',fornecedores:'Fornecedores',pessoas:'Pessoas'}
 };
 
 var D={tasks:[],suppliers:[],costs:[],pessoas:[],estoques:[],colecoes:[],producoes:[],pedidos:[],produtos:[]};
@@ -3254,6 +3334,7 @@ function openSection(name){
   if(name==='contadora')setTimeout(loadDocs,50);
   if(name==='projecao')setTimeout(function(){initProjecao();calcCaixaAuto();},100);
   if(name==='precificacao')setTimeout(initPrecificacao,50);
+  if(name==='dtf')dtfInit();
 }
 function resetModal(type){
   var modal = $('modal-'+type);
@@ -9530,6 +9611,349 @@ window.exportProdutos  = exportProdutos;
 window.exportTarefas   = typeof exportTarefas  !== 'undefined' ? exportTarefas  : function(){};
 window.exportFornecedores = typeof exportFornecedores !== 'undefined' ? exportFornecedores : function(){};
 })();
+
+// ----- DTF -----
+// DTF \u2014 inventário de estampas e pedidos ao fornecedor
+// Tabelas: dtf_estampas, dtf_variacoes, dtf_pedidos, dtf_pedido_itens, dtf_movimentos
+// Saldo só muda via RPC (dtf_receber_pedido / dtf_movimentar), que registra o histórico.
+var DTF={estampas:[],variacoes:[],pedidos:[],movimentos:[],tab:'inv',pedStatus:'pedido',loaded:false,erro:null};
+var DTF_POSICOES={frente:'Frente',costas:'Costas',manga:'Manga',outro:'Outro'};
+var DTF_ST={pedido:'Em aberto',recebido:'Recebido',cancelado:'Cancelado'};
+var dtfVarRows=[];   // linhas do editor de variações no modal de estampa
+var dtfPedRows=[];   // linhas de itens no modal de pedido
+var dtfMovVar=null;  // variação aberta no modal de movimento
+
+function dtfEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function dtfEstampa(id){return DTF.estampas.find(function(e){return e.id===id;});}
+function dtfVar(id){return DTF.variacoes.find(function(v){return v.id===id;});}
+function dtfVarLabel(v){if(!v)return '(variação removida)';var e=dtfEstampa(v.estampa_id);return (e?e.nome:'(estampa removida)')+' \u00b7 '+v.tamanho+' \u00b7 '+(DTF_POSICOES[v.posicao]||v.posicao);}
+function dtfVarsDe(estampaId){return DTF.variacoes.filter(function(v){return v.estampa_id===estampaId&&v.ativo;}).sort(function(a,b){return (a.tamanho+a.posicao).localeCompare(b.tamanho+b.posicao,'pt-BR');});}
+function dtfACaminho(varId){
+  return DTF.pedidos.filter(function(p){return p.status==='pedido';}).reduce(function(a,p){
+    return a+(p.itens||[]).filter(function(i){return i.variacao_id===varId;}).reduce(function(s,i){return s+i.quantidade;},0);
+  },0);
+}
+function dtfFornecedorNome(id){var s=(D.suppliers||[]).find(function(x){return x.id===id;});return s?s.nome:'';}
+function dtfPedidoUnidades(p){return (p.itens||[]).reduce(function(a,i){return a+i.quantidade;},0);}
+
+function dtfInit(){
+  if(!DTF.loaded)dtfLoad();else dtfRender();
+}
+function dtfLoad(){
+  var el=$('dtf-content');if(el&&!DTF.loaded)el.innerHTML='<p class="loading">Carregando...</p>';
+  return Promise.all([
+    db.from('dtf_estampas').select('*').eq('ativo',true).order('nome'),
+    db.from('dtf_variacoes').select('*'),
+    db.from('dtf_pedidos').select('*,itens:dtf_pedido_itens(id,variacao_id,quantidade)').eq('ativo',true).order('data_pedido',{ascending:false}).order('created_at',{ascending:false}),
+    db.from('dtf_movimentos').select('*').order('created_at',{ascending:false}).limit(150)
+  ]).then(function(rs){
+    var err=rs.find(function(r){return r.error;});
+    if(err){DTF.erro=err.error.message;console.error('[dtfLoad]',err.error);dtfRender();return;}
+    DTF.erro=null;DTF.loaded=true;
+    DTF.estampas=rs[0].data||[];DTF.variacoes=rs[1].data||[];DTF.pedidos=rs[2].data||[];DTF.movimentos=rs[3].data||[];
+    dtfRender();
+  });
+}
+
+// --- RENDER ---
+function dtfRender(){
+  var el=$('dtf-content');if(!el)return;
+  if(DTF.erro){
+    el.innerHTML='<div class="card"><p class="card-title">Não foi possível carregar o DTF</p><p style="font-size:11px;color:var(--muted)">'+
+      (/does not exist|schema cache/i.test(DTF.erro)?'As tabelas de DTF ainda não foram criadas no banco. Rode o arquivo <b>dtf_schema.sql</b> no SQL Editor do Supabase e recarregue a página.':dtfEsc(DTF.erro))+'</p></div>';
+    $('dtf-metrics').innerHTML='';return;
+  }
+  var vars=DTF.variacoes.filter(function(v){return v.ativo&&dtfEstampa(v.estampa_id);});
+  var unid=vars.reduce(function(a,v){return a+v.quantidade;},0);
+  var baixo=vars.filter(function(v){return v.minimo>0&&v.quantidade<=v.minimo;}).length;
+  var abertos=DTF.pedidos.filter(function(p){return p.status==='pedido';});
+  var aCaminho=abertos.reduce(function(a,p){return a+dtfPedidoUnidades(p);},0);
+  $('dtf-metrics').innerHTML=metric(DTF.estampas.length,'Estampas')+metric(unid,'Unidades em estoque','var(--green)')+
+    metric(baixo,'Abaixo do mínimo',baixo>0?'var(--red)':'var(--green)')+metric(aCaminho,'A caminho ('+abertos.length+' pedido'+(abertos.length===1?'':'s')+')','var(--amber)');
+  document.querySelectorAll('.dtf-tab').forEach(function(t){t.classList.toggle('active',t.dataset.dtfTab===DTF.tab);});
+  $('dtf-search-wrap').style.display=DTF.tab==='inv'?'':'none';
+  $('dtf-ped-filters').style.display=DTF.tab==='ped'?'':'none';
+  if(DTF.tab==='inv')dtfRenderInventario(el);
+  else if(DTF.tab==='ped')dtfRenderPedidos(el);
+  else dtfRenderHistorico(el);
+}
+function dtfRenderInventario(el){
+  var q=(val('dtf-search')||'').toLowerCase().trim();
+  var list=DTF.estampas.filter(function(e){return !q||e.nome.toLowerCase().includes(q);});
+  if(!DTF.estampas.length){el.innerHTML='<p class="empty">Nenhuma estampa cadastrada \u2014 clique em "+ Nova estampa"</p>';return;}
+  if(!list.length){el.innerHTML='<p class="empty">Nenhuma estampa encontrada</p>';return;}
+  el.innerHTML=list.map(function(e){
+    var vs=dtfVarsDe(e.id);
+    var total=vs.reduce(function(a,v){return a+v.quantidade;},0);
+    var temBaixo=vs.some(function(v){return v.minimo>0&&v.quantidade<=v.minimo;});
+    var rows=vs.length?vs.map(function(v){
+      var low=v.minimo>0&&v.quantidade<=v.minimo;var cam=dtfACaminho(v.id);
+      return '<tr'+(low?' class="dtf-low"':'')+'><td>'+dtfEsc(v.tamanho)+'</td><td>'+dtfEsc(DTF_POSICOES[v.posicao]||v.posicao)+'</td>'+
+        '<td class="dtf-num"><b>'+v.quantidade+'</b>'+(low?' <span title="Abaixo do mínimo">\u26a0\ufe0f</span>':'')+'</td>'+
+        '<td class="dtf-num dtf-muted">'+(cam?'+'+cam:'\u2014')+'</td><td class="dtf-num dtf-muted">'+(v.minimo||'\u2014')+'</td>'+
+        '<td class="dtf-num"><button class="dtf-mini" data-dtf-mov="'+v.id+'" title="Entrada, saída ou ajuste">\u00b1 Movimentar</button></td></tr>';
+    }).join(''):'<tr><td colspan="6" class="dtf-muted">Sem variações \u2014 edite a estampa para adicionar tamanhos/posições.</td></tr>';
+    return '<div class="card'+(temBaixo?' stock-low':'')+'"><div class="card-row">'+
+      (e.imagem_url?'<a href="'+dtfEsc(e.imagem_url)+'" target="_blank" rel="noopener" class="dtf-thumb" title="Abrir arte">\ud83d\uddbc\ufe0f</a>':'<div class="dtf-thumb dtf-thumb-empty">\ud83c\udfa8</div>')+
+      '<div class="card-body"><p class="card-title">'+dtfEsc(e.nome)+'</p><div class="card-meta"><span class="cat-tag">'+total+' em estoque</span><span class="cat-tag">'+vs.length+' variaç'+(vs.length===1?'ão':'ões')+'</span></div></div>'+
+      '<div class="card-actions"><button class="edit-btn" data-dtf-edit-est="'+e.id+'" title="Editar">\u270f\ufe0f</button></div></div>'+
+      '<div class="dtf-table-wrap"><table class="dtf-table"><thead><tr><th>Tamanho</th><th>Posição</th><th class="dtf-num">Saldo</th><th class="dtf-num">A caminho</th><th class="dtf-num">Mínimo</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  }).join('');
+}
+function dtfRenderPedidos(el){
+  document.querySelectorAll('#dtf-ped-filters .fb').forEach(function(b){b.classList.toggle('active',b.dataset.dtfSt===DTF.pedStatus);});
+  var list=DTF.pedidos.filter(function(p){return DTF.pedStatus==='all'||p.status===DTF.pedStatus;});
+  if(!list.length){el.innerHTML='<p class="empty">Nenhum pedido'+(DTF.pedStatus==='pedido'?' em aberto':'')+'</p>';return;}
+  el.innerHTML=list.map(function(p){
+    var un=dtfPedidoUnidades(p);var cu=(p.custo_total&&un)?p.custo_total/un:null;
+    var forn=dtfFornecedorNome(p.fornecedor_id);
+    var itens=(p.itens||[]).map(function(i){return '<li>'+dtfEsc(dtfVarLabel(dtfVar(i.variacao_id)))+' <b>\u00d7 '+i.quantidade+'</b></li>';}).join('');
+    var aberto=p.status==='pedido';
+    return '<div class="card"><div class="card-row"><div class="card-body">'+
+      '<p class="card-title">'+(forn?dtfEsc(forn):'Pedido de DTF')+' <span class="dtf-badge dtf-st-'+p.status+'">'+DTF_ST[p.status]+'</span></p>'+
+      '<div class="card-meta"><span class="cat-tag">Pedido em '+fmtDate(p.data_pedido)+'</span>'+
+        (aberto&&p.data_prevista?'<span class="cat-tag">Previsto '+fmtDate(p.data_prevista)+'</span>':'')+
+        (p.data_recebido?'<span class="cat-tag">Recebido '+fmtDate(p.data_recebido)+'</span>':'')+
+        '<span class="cat-tag">'+(p.tipo==='metro'?(p.metros?String(p.metros).replace('.',',')+' m':'Por metro'):'Por unidade')+'</span>'+
+        '<span class="cat-tag">'+un+' unidade'+(un===1?'':'s')+'</span>'+
+        (p.custo_total?'<span class="cat-tag">'+mo(p.custo_total)+(cu?' \u00b7 '+mo(cu)+'/un':'')+'</span>':'')+'</div>'+
+      '<ul class="dtf-itens">'+itens+'</ul>'+(p.observacoes?'<p style="font-size:10px;color:var(--muted);margin-top:4px">'+dtfEsc(p.observacoes)+'</p>':'')+'</div>'+
+      '<div class="card-actions">'+(aberto?'<button class="edit-btn" data-dtf-edit-ped="'+p.id+'" title="Editar">\u270f\ufe0f</button>':'')+'</div></div>'+
+      (aberto?'<div class="card-footer"><button class="btn-save" data-dtf-receber="'+p.id+'">\u2713 Marcar como recebido</button><button class="btn-close-modal" data-dtf-cancelar="'+p.id+'">Cancelar pedido</button></div>':'')+
+    '</div>';
+  }).join('');
+}
+function dtfRenderHistorico(el){
+  if(!DTF.movimentos.length){el.innerHTML='<p class="empty">Nenhuma movimentação ainda</p>';return;}
+  el.innerHTML='<div class="card"><div class="dtf-table-wrap"><table class="dtf-table"><thead><tr><th>Quando</th><th>Estampa</th><th>Tipo</th><th class="dtf-num">Qtd</th><th class="dtf-num">Saldo</th><th>Motivo</th><th>Quem</th></tr></thead><tbody>'+
+    DTF.movimentos.map(function(m){
+      var d=new Date(m.created_at);
+      return '<tr><td class="dtf-muted">'+d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</td>'+
+        '<td>'+dtfEsc(dtfVarLabel(dtfVar(m.variacao_id)))+'</td><td>'+({entrada:'Entrada',saida:'Saída',ajuste:'Ajuste'}[m.tipo]||m.tipo)+'</td>'+
+        '<td class="dtf-num" style="color:'+(m.quantidade>=0?'var(--green)':'var(--red)')+'">'+(m.quantidade>0?'+':'')+m.quantidade+'</td>'+
+        '<td class="dtf-num">'+m.saldo_apos+'</td><td>'+dtfEsc(m.motivo||'')+'</td><td class="dtf-muted">'+dtfEsc((m.usuario||'').split('@')[0])+'</td></tr>';
+    }).join('')+'</tbody></table></div></div>';
+}
+
+// --- ESTAMPA (modal) ---
+function dtfAbrirEstampa(id){
+  var e=id?dtfEstampa(id):null;
+  $('dtf-est-title').textContent=e?'Editar estampa':'Nova estampa';
+  $('dtf-est-id').value=e?e.id:'';$('dtf-est-nome').value=e?e.nome:'';
+  $('dtf-est-img').value=e&&e.imagem_url||'';$('dtf-est-obs').value=e&&e.observacoes||'';
+  dtfVarRows=e?dtfVarsDe(e.id).map(function(v){return {id:v.id,tamanho:v.tamanho,posicao:v.posicao,minimo:v.minimo||0,custo:v.custo_unitario||'',saldoIni:0};}):[{id:null,tamanho:'',posicao:'frente',minimo:0,custo:'',saldoIni:0}];
+  $('dtf-est-delete').style.display=e?'inline-flex':'none';
+  dtfRenderVarRows();openModal('dtf-estampa');
+  setTimeout(function(){$('dtf-est-nome').focus();},50);
+}
+function dtfRenderVarRows(){
+  $('dtf-var-rows').innerHTML=dtfVarRows.map(function(r,i){
+    return '<div class="dtf-var-row">'+
+      '<input class="form-input" list="dtf-tamanhos" placeholder="Ex: G" value="'+dtfEsc(r.tamanho)+'" data-dtf-var="'+i+'" data-k="tamanho">'+
+      '<select class="form-select" data-dtf-var="'+i+'" data-k="posicao">'+Object.keys(DTF_POSICOES).map(function(k){return '<option value="'+k+'"'+(r.posicao===k?' selected':'')+'>'+DTF_POSICOES[k]+'</option>';}).join('')+'</select>'+
+      '<input class="form-input" type="number" min="0" step="1" value="'+(r.minimo||'')+'" placeholder="0" data-dtf-var="'+i+'" data-k="minimo">'+
+      '<input class="form-input" type="number" min="0" step="0.01" value="'+(r.custo||'')+'" placeholder="0,00" data-dtf-var="'+i+'" data-k="custo">'+
+      (r.id?'<span class="dtf-muted dtf-var-saldo" title="Saldo atual \u2014 use Movimentar para alterar">'+((dtfVar(r.id)||{}).quantidade||0)+' un</span>':'<input class="form-input" type="number" min="0" step="1" value="'+(r.saldoIni||'')+'" placeholder="0" data-dtf-var="'+i+'" data-k="saldoIni" title="Quantas você já tem hoje">')+
+      '<button class="del" data-dtf-var-del="'+i+'" title="Remover">\u00d7</button></div>';
+  }).join('')||'<p class="dtf-muted" style="font-size:11px">Nenhuma variação.</p>';
+}
+function dtfSalvarEstampa(){
+  var nome=val('dtf-est-nome').trim();if(!nome){toast('Informe o nome da estampa');return;}
+  var linhas=dtfVarRows.map(function(r){return {id:r.id,tamanho:String(r.tamanho||'').trim(),posicao:r.posicao||'frente',minimo:parseInt(r.minimo)||0,custo:parseFloat(r.custo)||null,saldoIni:parseInt(r.saldoIni)||0};})
+    .filter(function(r){return r.tamanho;});
+  if(!linhas.length){toast('Adicione pelo menos uma variação (tamanho)');return;}
+  var chaves={};for(var i=0;i<linhas.length;i++){var k=linhas[i].tamanho.toLowerCase()+'|'+linhas[i].posicao;if(chaves[k]){toast('Variação repetida: '+linhas[i].tamanho+' \u00b7 '+DTF_POSICOES[linhas[i].posicao]);return;}chaves[k]=true;}
+  var id=val('dtf-est-id');var btn=$('dtf-est-save');btn.disabled=true;
+  var payload={nome:nome,imagem_url:val('dtf-est-img').trim()||null,observacoes:val('dtf-est-obs').trim()||null,updated_at:new Date().toISOString()};
+  var q=id?db.from('dtf_estampas').update(payload).eq('id',id).select():db.from('dtf_estampas').insert(payload).select();
+  q.then(function(res){
+    if(res.error)throw res.error;
+    var estId=id||res.data[0].id;
+    var existentes=DTF.variacoes.filter(function(v){return v.estampa_id===estId;});
+    var ops=[];var iniciais=[];
+    linhas.forEach(function(r){
+      var dados={tamanho:r.tamanho,posicao:r.posicao,minimo:r.minimo,custo_unitario:r.custo,ativo:true};
+      var alvo=r.id||(existentes.find(function(v){return v.tamanho.toLowerCase()===r.tamanho.toLowerCase()&&v.posicao===r.posicao;})||{}).id;
+      if(alvo)ops.push(db.from('dtf_variacoes').update(dados).eq('id',alvo).then(function(x){if(x.error)throw x.error;if(r.saldoIni>0)iniciais.push({id:alvo,q:r.saldoIni});}));
+      else ops.push(db.from('dtf_variacoes').insert(Object.assign({estampa_id:estId},dados)).select().then(function(x){if(x.error)throw x.error;if(r.saldoIni>0)iniciais.push({id:x.data[0].id,q:r.saldoIni});}));
+    });
+    var mantidos=linhas.map(function(r){return r.id;}).filter(Boolean);
+    existentes.filter(function(v){return v.ativo&&mantidos.indexOf(v.id)<0&&!linhas.some(function(r){return !r.id&&r.tamanho.toLowerCase()===v.tamanho.toLowerCase()&&r.posicao===v.posicao;});})
+      .forEach(function(v){ops.push(db.from('dtf_variacoes').update({ativo:false}).eq('id',v.id).then(function(x){if(x.error)throw x.error;}));});
+    return Promise.all(ops).then(function(){
+      return iniciais.reduce(function(p,ini){return p.then(function(){return db.rpc('dtf_movimentar',{p_variacao:ini.id,p_delta:ini.q,p_tipo:'entrada',p_motivo:'Saldo inicial'}).then(function(x){if(x.error)throw x.error;});});},Promise.resolve());
+    }).then(function(){
+      closeModal('dtf-estampa');toast(id?'Estampa atualizada!':'Estampa cadastrada!');
+      auditLog(id?'update':'create','dtf',estId,nome);dtfLoad();
+    });
+  }).catch(function(err){toast('Erro: '+(err.message||err));console.error('[dtfSalvarEstampa]',err);})
+  .then(function(){btn.disabled=false;});
+}
+function dtfExcluirEstampa(){
+  var id=val('dtf-est-id');if(!id)return;var e=dtfEstampa(id);
+  if(!confirm('Remover a estampa "'+(e?e.nome:'')+'" do inventário? O histórico e os pedidos antigos continuam guardados.'))return;
+  db.from('dtf_estampas').update({ativo:false,updated_at:new Date().toISOString()}).eq('id',id).then(function(res){
+    if(res.error){toast('Erro: '+res.error.message);return;}
+    closeModal('dtf-estampa');toast('Estampa removida');auditLog('delete','dtf',id,e?e.nome:'');dtfLoad();
+  });
+}
+
+// --- PEDIDO (modal) ---
+function dtfOpcoesVariacao(sel){
+  return '<option value="">\u2014 Escolha a estampa \u2014</option>'+DTF.estampas.map(function(e){
+    var vs=dtfVarsDe(e.id);if(!vs.length)return '';
+    return '<optgroup label="'+dtfEsc(e.nome)+'">'+vs.map(function(v){return '<option value="'+v.id+'"'+(v.id===sel?' selected':'')+'>'+dtfEsc(v.tamanho+' \u00b7 '+(DTF_POSICOES[v.posicao]||v.posicao))+' (saldo '+v.quantidade+')</option>';}).join('')+'</optgroup>';
+  }).join('');
+}
+function dtfAbrirPedido(id){
+  if(!DTF.estampas.length){toast('Cadastre uma estampa antes de criar o pedido');return;}
+  var p=id?DTF.pedidos.find(function(x){return x.id===id;}):null;
+  if(p&&p.status!=='pedido'){toast('Só pedidos em aberto podem ser editados');return;}
+  $('dtf-ped-title').textContent=p?'Editar pedido de DTF':'Novo pedido de DTF';
+  $('dtf-ped-id').value=p?p.id:'';
+  var sups=(D.suppliers||[]).slice().sort(function(a,b){return (b.aprovado?1:0)-(a.aprovado?1:0)||a.nome.localeCompare(b.nome,'pt-BR');});
+  $('dtf-ped-forn').innerHTML='<option value="">\u2014 Sem fornecedor \u2014</option>'+sups.map(function(s){return '<option value="'+s.id+'">'+dtfEsc(s.nome)+'</option>';}).join('');
+  $('dtf-ped-forn').value=p&&p.fornecedor_id||'';
+  $('dtf-ped-tipo').value=p?p.tipo:'unidade';
+  $('dtf-ped-metros').value=p&&p.metros||'';
+  $('dtf-ped-custo').value=p&&p.custo_total||'';
+  $('dtf-ped-data').value=p?p.data_pedido:new Date().toISOString().split('T')[0];
+  $('dtf-ped-prev').value=p&&p.data_prevista||'';
+  $('dtf-ped-obs').value=p&&p.observacoes||'';
+  dtfPedRows=p?(p.itens||[]).map(function(i){return {variacao_id:i.variacao_id,quantidade:i.quantidade};}):[{variacao_id:'',quantidade:''}];
+  $('dtf-ped-delete').style.display=p?'inline-flex':'none';
+  dtfTipoPedidoChange();dtfRenderPedRows();openModal('dtf-pedido');
+}
+function dtfTipoPedidoChange(){$('dtf-ped-metros-group').style.display=val('dtf-ped-tipo')==='metro'?'':'none';}
+function dtfRenderPedRows(){
+  $('dtf-ped-rows').innerHTML=dtfPedRows.map(function(r,i){
+    return '<div class="dtf-ped-row"><select class="form-select" data-dtf-ped="'+i+'" data-k="variacao_id">'+dtfOpcoesVariacao(r.variacao_id)+'</select>'+
+      '<input class="form-input" type="number" min="1" step="1" placeholder="Qtd" value="'+(r.quantidade||'')+'" data-dtf-ped="'+i+'" data-k="quantidade">'+
+      '<button class="del" data-dtf-ped-del="'+i+'" title="Remover">\u00d7</button></div>';
+  }).join('');
+  dtfResumoPedido();
+}
+function dtfResumoPedido(){
+  var un=dtfPedRows.reduce(function(a,r){return a+(parseInt(r.quantidade)||0);},0);
+  var c=num('dtf-ped-custo');
+  $('dtf-ped-resumo').innerHTML='<span>'+un+' unidade'+(un===1?'':'s')+'</span><span>'+(c&&un?'Custo por unidade: <b>'+mo(c/un)+'</b>':'Informe o custo total para ver o custo por unidade')+'</span>';
+}
+function dtfSalvarPedido(){
+  var itens=dtfPedRows.map(function(r){return {variacao_id:r.variacao_id,quantidade:parseInt(r.quantidade)||0};}).filter(function(r){return r.variacao_id&&r.quantidade>0;});
+  if(!itens.length){toast('Adicione pelo menos uma estampa com quantidade');return;}
+  var vistos={};for(var i=0;i<itens.length;i++){if(vistos[itens[i].variacao_id]){toast('A mesma estampa aparece duas vezes \u2014 some as quantidades numa linha só');return;}vistos[itens[i].variacao_id]=true;}
+  var tipo=val('dtf-ped-tipo');
+  if(!val('dtf-ped-data')){toast('Informe a data do pedido');return;}
+  var id=val('dtf-ped-id');var btn=$('dtf-ped-save');btn.disabled=true;
+  var payload={fornecedor_id:val('dtf-ped-forn')||null,tipo:tipo,metros:tipo==='metro'?(num('dtf-ped-metros')||null):null,custo_total:num('dtf-ped-custo')||null,
+    data_pedido:val('dtf-ped-data'),data_prevista:val('dtf-ped-prev')||null,observacoes:val('dtf-ped-obs').trim()||null,updated_at:new Date().toISOString()};
+  var q=id?db.from('dtf_pedidos').update(payload).eq('id',id).eq('status','pedido').select():db.from('dtf_pedidos').insert(payload).select();
+  q.then(function(res){
+    if(res.error)throw res.error;
+    if(!res.data||!res.data.length)throw new Error('Esse pedido não está mais em aberto');
+    var pedId=res.data[0].id;
+    var limpar=id?db.from('dtf_pedido_itens').delete().eq('pedido_id',pedId):Promise.resolve({});
+    return limpar.then(function(x){
+      if(x&&x.error)throw x.error;
+      return db.from('dtf_pedido_itens').insert(itens.map(function(it){return {pedido_id:pedId,variacao_id:it.variacao_id,quantidade:it.quantidade};}));
+    }).then(function(x){
+      if(x.error)throw x.error;
+      closeModal('dtf-pedido');toast(id?'Pedido atualizado!':'Pedido registrado!');
+      auditLog(id?'update':'create','dtf',pedId,'Pedido de DTF');DTF.tab='ped';DTF.pedStatus='pedido';dtfLoad();
+    });
+  }).catch(function(err){toast('Erro: '+(err.message||err));console.error('[dtfSalvarPedido]',err);})
+  .then(function(){btn.disabled=false;});
+}
+function dtfReceberPedido(id){
+  var p=DTF.pedidos.find(function(x){return x.id===id;});if(!p)return;
+  if(!confirm('Confirmar o recebimento? '+dtfPedidoUnidades(p)+' unidades entram no inventário.'))return;
+  db.rpc('dtf_receber_pedido',{p_pedido:id}).then(function(res){
+    if(res.error){toast('Erro: '+res.error.message);return;}
+    toast('Recebido \u2014 inventário atualizado!');auditLog('update','dtf',id,'Pedido de DTF recebido');dtfLoad();
+  });
+}
+function dtfCancelarPedido(id){
+  if(!confirm('Cancelar este pedido? Nada entra no inventário.'))return;
+  db.from('dtf_pedidos').update({status:'cancelado',updated_at:new Date().toISOString()}).eq('id',id).eq('status','pedido').then(function(res){
+    if(res.error){toast('Erro: '+res.error.message);return;}
+    toast('Pedido cancelado');auditLog('update','dtf',id,'Pedido de DTF cancelado');dtfLoad();
+  });
+}
+function dtfExcluirPedido(){
+  var id=val('dtf-ped-id');if(!id)return;
+  if(!confirm('Excluir este pedido em aberto?'))return;
+  db.from('dtf_pedidos').update({ativo:false,updated_at:new Date().toISOString()}).eq('id',id).eq('status','pedido').then(function(res){
+    if(res.error){toast('Erro: '+res.error.message);return;}
+    closeModal('dtf-pedido');toast('Pedido excluído');auditLog('delete','dtf',id,'Pedido de DTF');dtfLoad();
+  });
+}
+
+// --- MOVIMENTAR (modal) ---
+function dtfAbrirMov(varId){
+  dtfMovVar=dtfVar(varId);if(!dtfMovVar)return;
+  $('dtf-mov-label').textContent=dtfVarLabel(dtfMovVar);
+  $('dtf-mov-saldo').textContent=dtfMovVar.quantidade;
+  $('dtf-mov-tipo').value='saida';$('dtf-mov-qtd').value='';$('dtf-mov-motivo').value='';
+  dtfMovTipoChange();openModal('dtf-mov');setTimeout(function(){$('dtf-mov-qtd').focus();},50);
+}
+function dtfMovTipoChange(){
+  var t=val('dtf-mov-tipo');
+  $('dtf-mov-qtd-label').textContent=t==='ajuste'?'Saldo correto (contagem)':'Quantidade';
+  $('dtf-mov-motivo').placeholder=t==='saida'?'Ex: Venda #1043, peça com defeito...':t==='entrada'?'Ex: Sobrou de outro pedido':'Ex: Contagem física';
+}
+function dtfSalvarMov(){
+  if(!dtfMovVar)return;
+  var t=val('dtf-mov-tipo');var n=parseInt(val('dtf-mov-qtd'));
+  if(isNaN(n)||n<0||(t!=='ajuste'&&n===0)){toast('Informe uma quantidade válida');return;}
+  var delta=t==='entrada'?n:t==='saida'?-n:n-dtfMovVar.quantidade;
+  if(delta===0){toast('O saldo já é esse \u2014 nada a ajustar');return;}
+  if(dtfMovVar.quantidade+delta<0){toast('Saldo insuficiente: só há '+dtfMovVar.quantidade);return;}
+  var btn=$('dtf-mov-save');btn.disabled=true;
+  db.rpc('dtf_movimentar',{p_variacao:dtfMovVar.id,p_delta:delta,p_tipo:t,p_motivo:val('dtf-mov-motivo').trim()||null}).then(function(res){
+    btn.disabled=false;
+    if(res.error){toast('Erro: '+res.error.message);return;}
+    closeModal('dtf-mov');toast('Saldo atualizado: '+res.data);dtfLoad();
+  });
+}
+
+// --- EVENTOS ---
+document.addEventListener('click',function(e){
+  var t=e.target;
+  var tab=t.closest('[data-dtf-tab]');if(tab){DTF.tab=tab.dataset.dtfTab;dtfRender();return;}
+  var st=t.closest('[data-dtf-st]');if(st){DTF.pedStatus=st.dataset.dtfSt;dtfRender();return;}
+  if(t.closest('#dtf-btn-estampa')){dtfAbrirEstampa(null);return;}
+  if(t.closest('#dtf-btn-pedido')){dtfAbrirPedido(null);return;}
+  var x;
+  if((x=t.closest('[data-dtf-edit-est]'))){dtfAbrirEstampa(x.dataset.dtfEditEst);return;}
+  if((x=t.closest('[data-dtf-edit-ped]'))){dtfAbrirPedido(x.dataset.dtfEditPed);return;}
+  if((x=t.closest('[data-dtf-receber]'))){dtfReceberPedido(x.dataset.dtfReceber);return;}
+  if((x=t.closest('[data-dtf-cancelar]'))){dtfCancelarPedido(x.dataset.dtfCancelar);return;}
+  if((x=t.closest('[data-dtf-mov]'))){dtfAbrirMov(x.dataset.dtfMov);return;}
+  if((x=t.closest('[data-dtf-var-del]'))){dtfVarRows.splice(parseInt(x.dataset.dtfVarDel,10),1);dtfRenderVarRows();return;}
+  if((x=t.closest('[data-dtf-ped-del]'))){dtfPedRows.splice(parseInt(x.dataset.dtfPedDel,10),1);dtfRenderPedRows();return;}
+  if(t.closest('#dtf-var-add')){dtfVarRows.push({id:null,tamanho:'',posicao:'frente',minimo:0,custo:'',saldoIni:0});dtfRenderVarRows();return;}
+  if(t.closest('#dtf-ped-add')){dtfPedRows.push({variacao_id:'',quantidade:''});dtfRenderPedRows();return;}
+  if(t.closest('#dtf-est-save')){dtfSalvarEstampa();return;}
+  if(t.closest('#dtf-est-delete')){dtfExcluirEstampa();return;}
+  if(t.closest('#dtf-ped-save')){dtfSalvarPedido();return;}
+  if(t.closest('#dtf-ped-delete')){dtfExcluirPedido();return;}
+  if(t.closest('#dtf-mov-save')){dtfSalvarMov();return;}
+});
+document.addEventListener('input',function(e){
+  var t=e.target;if(!t||!t.dataset)return;
+  if(t.dataset.dtfVar!==undefined){var r=dtfVarRows[parseInt(t.dataset.dtfVar,10)];if(r)r[t.dataset.k]=t.value;return;}
+  if(t.dataset.dtfPed!==undefined){var p=dtfPedRows[parseInt(t.dataset.dtfPed,10)];if(p){p[t.dataset.k]=t.value;dtfResumoPedido();}return;}
+  if(t.id==='dtf-ped-custo'){dtfResumoPedido();return;}
+  if(t.id==='dtf-search'){dtfRender();return;}
+});
+document.addEventListener('change',function(e){
+  var t=e.target;if(!t)return;
+  if(t.dataset&&t.dataset.dtfVar!==undefined){var r=dtfVarRows[parseInt(t.dataset.dtfVar,10)];if(r)r[t.dataset.k]=t.value;return;}
+  if(t.dataset&&t.dataset.dtfPed!==undefined){var p=dtfPedRows[parseInt(t.dataset.dtfPed,10)];if(p){p[t.dataset.k]=t.value;dtfResumoPedido();}return;}
+  if(t.id==='dtf-ped-tipo')dtfTipoPedidoChange();
+  if(t.id==='dtf-mov-tipo')dtfMovTipoChange();
+});
+
 </script>
 </body>
 </html>
