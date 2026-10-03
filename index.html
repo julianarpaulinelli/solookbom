@@ -1348,6 +1348,12 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .dtf-add-row:hover{border-color:var(--blue);color:var(--blue)}
 .dtf-resumo{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);padding:8px 0 4px;border-top:1px dashed var(--border);margin-bottom:10px}
 @media(max-width:600px){.dtf-var-head{display:none}.dtf-var-row{grid-template-columns:1fr 1fr 28px}.dtf-var-row>input:nth-of-type(2),.dtf-var-row>input:nth-of-type(3){grid-column:auto}}
+/* ===== ESTOQUE SIMPLES ===== */
+.estq-tabs{display:flex;gap:4px;margin-bottom:14px;border-bottom:2px solid var(--border);flex-wrap:wrap}
+.estq-tab{padding:8px 16px;font:700 11px 'Inter',sans-serif;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.estq-tab:hover{color:var(--fg)}
+.estq-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.estq-hint{font-size:10px;color:var(--muted);margin-top:4px}
 </style>
 </head>
 <body>
@@ -1464,7 +1470,8 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             <div class="nav-item nav-item-sub" data-sec="contadora"><span>📄</span><span class="nav-label">Docs Contadora</span></div>
             <div class="nav-item nav-item-sub" data-sec="projecao"><span>📉</span><span class="nav-label">Projeção de Caixa</span></div>
             <div class="nav-mais-sep"></div>
-            <div class="nav-item nav-item-sub" data-sec="estoque"><span>📦</span><span class="nav-label">Estoque</span></div>
+            <div class="nav-item nav-item-sub" data-sec="estq"><span>📦</span><span class="nav-label">Estoque</span></div>
+            <div class="nav-item nav-item-sub" data-sec="estoque"><span>🗃️</span><span class="nav-label">Estoque (antigo)</span></div>
             <div class="nav-item nav-item-sub" data-sec="dtf"><span>&#x1f3a8;</span><span class="nav-label">DTF</span></div>
             <div class="nav-item nav-item-sub" data-sec="colecoes"><span>🗂️</span><span class="nav-label">Coleções</span></div>
             <div class="nav-item nav-item-sub" data-sec="producao"><span>⚙️</span><span class="nav-label">Produção</span></div>
@@ -2542,6 +2549,15 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
           <div id="estoque-list"></div>
         </div>
 
+        <!-- ESTOQUE SIMPLES -->
+        <div class="cw" id="section-estq">
+          <div class="section-header"><h2 class="section-title">Estoque</h2><div class="header-actions"><button class="btn-add" id="estq-btn-novo">+ Novo item</button></div></div>
+          <div class="metrics" id="estq-metrics"></div>
+          <div class="estq-tabs"><button class="estq-tab active" data-estq-tab="peca_lisa">Peças lisas</button><button class="estq-tab" data-estq-tab="peca_pronta">Peças prontas</button><button class="estq-tab" data-estq-tab="insumo">Embalagens e insumos</button><button class="estq-tab" data-estq-tab="hist">Histórico</button></div>
+          <div class="search-bar" id="estq-search-wrap"><input class="search-input" id="estq-search" placeholder="Buscar por nome, cor ou tamanho..."></div>
+          <div id="estq-content"></div>
+        </div>
+
         <!-- DTF -->
         <div class="cw" id="section-dtf">
           <div class="section-header"><h2 class="section-title">DTF &#x2014; Estampas</h2><div class="header-actions"><button class="export-btn" id="dtf-btn-estampa">+ Nova estampa</button><button class="btn-add" id="dtf-btn-pedido">+ Pedido de DTF</button></div></div>
@@ -2910,6 +2926,27 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
   <div class="modal-footer"><button class="btn-save" id="save-estoque">Salvar Item</button><button class="btn-delete-modal" id="delete-estoque" style="display:none">Excluir</button><button class="btn-close-modal" data-close="estoque">Fechar</button></div>
 </div></div>
 
+<div class="modal-bg" id="modal-estq-item"><div class="modal">
+  <div class="modal-title"><span id="estq-item-title">Novo item de estoque</span><button class="modal-close-btn" data-close="estq-item">×</button></div>
+  <input type="hidden" id="estq-item-id">
+  <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="estq-item-cat"><option value="peca_lisa">Peça lisa</option><option value="peca_pronta">Peça pronta</option><option value="insumo">Embalagem / insumo</option></select></div><div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="estq-item-nome" list="estq-nomes" placeholder="Ex: Camiseta oversized"><datalist id="estq-nomes"></datalist></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Cor</label><input class="form-input" id="estq-item-cor" placeholder="Ex: Preta"></div><div class="form-group"><label class="form-label" id="estq-item-tam-label">Tamanho(s)</label><input class="form-input" id="estq-item-tam" placeholder="Ex: P, M, G, GG"><p class="estq-hint" id="estq-item-tam-hint">Separe por vírgula para cadastrar a grade toda de uma vez.</p></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Unidade</label><select class="form-select" id="estq-item-un"><option value="un">un</option><option value="pct">pacote</option><option value="rolo">rolo</option><option value="m">metro</option><option value="kg">kg</option></select></div><div class="form-group"><label class="form-label">Mínimo (alerta)</label><input class="form-input" id="estq-item-min" type="number" min="0" step="1" placeholder="0"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Custo unitário (R$)</label><input class="form-input" id="estq-item-custo" type="number" min="0" step="0.01" placeholder="0,00"></div><div class="form-group" id="estq-item-saldo-group" data-always-show="true"><label class="form-label">Quantidade que já tem hoje</label><input class="form-input" id="estq-item-saldo" type="number" min="0" step="1" placeholder="0"><p class="estq-hint">Vale para cada tamanho.</p></div></div>
+  <p class="estq-hint" id="estq-item-saldo-atual" style="display:none;margin:0 0 12px"></p>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="estq-item-obs"></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="estq-item-save">Salvar</button><button class="btn-delete-modal" id="estq-item-delete" style="display:none">Remover</button><button class="btn-close-modal" data-close="estq-item">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-estq-mov"><div class="modal">
+  <div class="modal-title"><span>Movimentar estoque</span><button class="modal-close-btn" data-close="estq-mov">×</button></div>
+  <p style="font-size:13px;font-weight:600;margin-bottom:4px" id="estq-mov-label"></p>
+  <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Saldo atual: <b id="estq-mov-saldo"></b></p>
+  <div class="form-row"><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="estq-mov-tipo"><option value="entrada">Entrada</option><option value="saida">Saída</option><option value="ajuste">Ajuste (contagem)</option></select></div><div class="form-group"><label class="form-label" id="estq-mov-qtd-label">Quantidade</label><input class="form-input" id="estq-mov-qtd" type="number" min="0" step="1" placeholder="0"></div></div>
+  <div class="form-group"><label class="form-label">Motivo</label><input class="form-input" id="estq-mov-motivo"></div>
+  <div class="modal-footer"><button class="btn-save" id="estq-mov-save">Salvar</button><button class="btn-close-modal" data-close="estq-mov">Fechar</button></div>
+</div></div>
+
 <div class="modal-bg" id="modal-dtf-estampa"><div class="modal wide">
   <div class="modal-title"><span id="dtf-est-title">Nova estampa</span><button class="modal-close-btn" data-close="dtf-estampa">&#xd7;</button></div>
   <input type="hidden" id="dtf-est-id">
@@ -3264,7 +3301,7 @@ var L={
   colSt:{planejamento:'Planejamento',em_producao:'Em produção',lancada:'Lançada',encerrada:'Encerrada'},
   pagtoSt:{pago:'Pago',pendente:'Em aberto',vencido:'Vencido',recorrente_mensal:'Recorrência Mensal'},
   compSt:{pago:'Pago',vigente:'Em período vigente',vencido:'Vencido'},
-  sections:{home:'Dashboard',tarefas:'Tarefas',financas:'Finanças',produtos:'Produtos',estoque:'Estoque',colecoes:'Coleções',producao:'Produção',pedidos:'Pedidos',dtf:'DTF \u2014 Estampas',fornecedores:'Fornecedores',pessoas:'Pessoas'}
+  sections:{home:'Dashboard',tarefas:'Tarefas',financas:'Finanças',produtos:'Produtos',estq:'Estoque',estoque:'Estoque (antigo)',colecoes:'Coleções',producao:'Produção',pedidos:'Pedidos',dtf:'DTF \u2014 Estampas',fornecedores:'Fornecedores',pessoas:'Pessoas'}
 };
 
 var D={tasks:[],suppliers:[],costs:[],pessoas:[],estoques:[],colecoes:[],producoes:[],pedidos:[],produtos:[]};
@@ -3335,6 +3372,7 @@ function openSection(name){
   if(name==='projecao')setTimeout(function(){initProjecao();calcCaixaAuto();},100);
   if(name==='precificacao')setTimeout(initPrecificacao,50);
   if(name==='dtf')dtfInit();
+  if(name==='estq')estqInit();
 }
 function resetModal(type){
   var modal = $('modal-'+type);
@@ -9952,6 +9990,180 @@ document.addEventListener('change',function(e){
   if(t.id==='dtf-ped-tipo')dtfTipoPedidoChange();
   if(t.id==='dtf-mov-tipo')dtfMovTipoChange();
 });
+
+// ----- ESTOQUE SIMPLES -----
+// Tabelas: estoque_itens, estoque_movimentos. Saldo so muda via RPC estoque_movimentar (grava historico).
+var ESTQ={itens:[],movimentos:[],tab:'peca_lisa',loaded:false,erro:null};
+var ESTQ_CAT={peca_lisa:'Peças lisas',peca_pronta:'Peças prontas',insumo:'Embalagens e insumos'};
+var ESTQ_CAT_UM={peca_lisa:'Peça lisa',peca_pronta:'Peça pronta',insumo:'Embalagem / insumo'};
+var estqMovItem=null;
+
+function estqEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function estqNum(n){var x=parseFloat(n)||0;return (Math.round(x*100)/100).toLocaleString('pt-BR');}
+function estqItem(id){return ESTQ.itens.find(function(i){return i.id===id;});}
+function estqLabel(i){if(!i)return '(item removido)';return i.nome+(i.cor?' · '+i.cor:'')+(i.tamanho?' · '+i.tamanho:'');}
+function estqBaixo(i){return parseFloat(i.minimo)>0&&parseFloat(i.quantidade)<=parseFloat(i.minimo);}
+
+function estqInit(){if(!ESTQ.loaded)estqLoad();else estqRender();}
+function estqLoad(){
+  var el=$('estq-content');if(el&&!ESTQ.loaded)el.innerHTML='<p class="loading">Carregando...</p>';
+  return Promise.all([
+    db.from('estoque_itens').select('*').eq('ativo',true).order('nome').order('cor').order('tamanho'),
+    db.from('estoque_movimentos').select('*').order('created_at',{ascending:false}).limit(150)
+  ]).then(function(rs){
+    var err=rs.find(function(r){return r.error;});
+    if(err){ESTQ.erro=err.error.message;console.error('[estqLoad]',err.error);estqRender();return;}
+    ESTQ.erro=null;ESTQ.loaded=true;ESTQ.itens=rs[0].data||[];ESTQ.movimentos=rs[1].data||[];
+    estqRender();
+  });
+}
+
+// --- RENDER ---
+function estqRender(){
+  var el=$('estq-content');if(!el)return;
+  if(ESTQ.erro){
+    el.innerHTML='<div class="card"><p class="card-title">Não foi possível carregar o estoque</p><p style="font-size:11px;color:var(--muted)">'+estqEsc(ESTQ.erro)+'</p></div>';
+    $('estq-metrics').innerHTML='';return;
+  }
+  var baixo=ESTQ.itens.filter(estqBaixo).length;
+  var valor=ESTQ.itens.reduce(function(a,i){return a+(parseFloat(i.quantidade)||0)*(parseFloat(i.custo_unitario)||0);},0);
+  var porCat=function(c){return ESTQ.itens.filter(function(i){return i.categoria===c;}).reduce(function(a,i){return a+(parseFloat(i.quantidade)||0);},0);};
+  $('estq-metrics').innerHTML=metric(estqNum(porCat('peca_lisa')),'Peças lisas')+metric(estqNum(porCat('peca_pronta')),'Peças prontas')+
+    metric(baixo,'Abaixo do mínimo',baixo>0?'var(--red)':'var(--green)')+metric(mo(valor),'Valor em estoque (custo)','var(--green)');
+  document.querySelectorAll('.estq-tab').forEach(function(t){t.classList.toggle('active',t.dataset.estqTab===ESTQ.tab);});
+  $('estq-search-wrap').style.display=ESTQ.tab==='hist'?'none':'';
+  if(ESTQ.tab==='hist')estqRenderHistorico(el);else estqRenderLista(el);
+}
+function estqRenderLista(el){
+  var q=(val('estq-search')||'').toLowerCase().trim();
+  var todos=ESTQ.itens.filter(function(i){return i.categoria===ESTQ.tab;});
+  var list=todos.filter(function(i){return !q||(i.nome+' '+(i.cor||'')+' '+(i.tamanho||'')).toLowerCase().includes(q);});
+  if(!todos.length){el.innerHTML='<p class="empty">Nenhum item em '+ESTQ_CAT[ESTQ.tab]+' — clique em "+ Novo item"</p>';return;}
+  if(!list.length){el.innerHTML='<p class="empty">Nenhum item encontrado</p>';return;}
+  var rows=list.map(function(i){
+    var low=estqBaixo(i);
+    return '<tr'+(low?' class="dtf-low"':'')+'><td><b>'+estqEsc(i.nome)+'</b>'+(i.observacoes?'<div class="dtf-muted" style="font-size:10px">'+estqEsc(i.observacoes)+'</div>':'')+'</td>'+
+      '<td>'+estqEsc(i.cor||'—')+'</td><td>'+estqEsc(i.tamanho||'—')+'</td>'+
+      '<td class="dtf-num"><b>'+estqNum(i.quantidade)+'</b> <span class="dtf-muted">'+estqEsc(i.unidade||'un')+'</span>'+(low?' <span title="Abaixo do mínimo">⚠️</span>':'')+'</td>'+
+      '<td class="dtf-num dtf-muted">'+(parseFloat(i.minimo)?estqNum(i.minimo):'—')+'</td>'+
+      '<td class="dtf-num dtf-muted">'+(i.custo_unitario?mo(i.custo_unitario):'—')+'</td>'+
+      '<td class="dtf-num" style="white-space:nowrap"><button class="dtf-mini" data-estq-mov="'+i.id+'">± Movimentar</button> <button class="edit-btn" data-estq-edit="'+i.id+'" title="Editar">✏️</button></td></tr>';
+  }).join('');
+  el.innerHTML='<div class="card"><div class="dtf-table-wrap" style="margin-top:0"><table class="dtf-table"><thead><tr><th>Item</th><th>Cor</th><th>Tamanho</th><th class="dtf-num">Saldo</th><th class="dtf-num">Mínimo</th><th class="dtf-num">Custo un.</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+}
+function estqRenderHistorico(el){
+  if(!ESTQ.movimentos.length){el.innerHTML='<p class="empty">Nenhuma movimentação ainda</p>';return;}
+  el.innerHTML='<div class="card"><div class="dtf-table-wrap" style="margin-top:0"><table class="dtf-table"><thead><tr><th>Quando</th><th>Item</th><th>Tipo</th><th class="dtf-num">Qtd</th><th class="dtf-num">Saldo</th><th>Motivo</th><th>Quem</th></tr></thead><tbody>'+
+    ESTQ.movimentos.map(function(m){
+      var d=new Date(m.created_at);var q=parseFloat(m.quantidade)||0;
+      return '<tr><td class="dtf-muted">'+d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</td>'+
+        '<td>'+estqEsc(estqLabel(estqItem(m.item_id)))+'</td><td>'+({entrada:'Entrada',saida:'Saída',ajuste:'Ajuste'}[m.tipo]||m.tipo)+'</td>'+
+        '<td class="dtf-num" style="color:'+(q>=0?'var(--green)':'var(--red)')+'">'+(q>0?'+':'')+estqNum(q)+'</td>'+
+        '<td class="dtf-num">'+estqNum(m.saldo_apos)+'</td><td>'+estqEsc(m.motivo||'')+'</td><td class="dtf-muted">'+estqEsc((m.usuario||'').split('@')[0])+'</td></tr>';
+    }).join('')+'</tbody></table></div></div>';
+}
+
+// --- ITEM (modal) ---
+function estqAbrirItem(id){
+  var i=id?estqItem(id):null;
+  $('estq-item-title').textContent=i?'Editar item':'Novo item de estoque';
+  $('estq-item-id').value=i?i.id:'';
+  $('estq-item-cat').value=i?i.categoria:(ESTQ.tab==='hist'?'peca_lisa':ESTQ.tab);
+  $('estq-item-nome').value=i?i.nome:'';$('estq-item-cor').value=i&&i.cor||'';
+  $('estq-item-tam').value=i&&i.tamanho||'';$('estq-item-un').value=i&&i.unidade||'un';
+  $('estq-item-min').value=i&&parseFloat(i.minimo)?i.minimo:'';$('estq-item-custo').value=i&&i.custo_unitario||'';
+  $('estq-item-obs').value=i&&i.observacoes||'';$('estq-item-saldo').value='';
+  $('estq-item-tam-label').textContent=i?'Tamanho':'Tamanho(s)';
+  $('estq-item-tam-hint').style.display=i?'none':'';
+  $('estq-item-saldo-group').style.display=i?'none':'';
+  $('estq-item-saldo-atual').style.display=i?'':'none';
+  $('estq-item-saldo-atual').innerHTML=i?'Saldo atual: <b>'+estqNum(i.quantidade)+' '+estqEsc(i.unidade||'un')+'</b> — para alterar, use "± Movimentar" (assim fica no histórico).':'';
+  $('estq-item-delete').style.display=i?'inline-flex':'none';
+  var nomes={};ESTQ.itens.forEach(function(x){nomes[x.nome]=1;});
+  $('estq-nomes').innerHTML=Object.keys(nomes).sort().map(function(n){return '<option value="'+estqEsc(n)+'">';}).join('');
+  openModal('estq-item');setTimeout(function(){$('estq-item-nome').focus();},50);
+}
+function estqSalvarItem(){
+  var nome=val('estq-item-nome').trim();if(!nome){toast('Informe o nome do item');return;}
+  var id=val('estq-item-id');var cat=val('estq-item-cat');
+  var base={categoria:cat,nome:nome,cor:val('estq-item-cor').trim()||null,unidade:val('estq-item-un')||'un',
+    minimo:num('estq-item-min')||0,custo_unitario:num('estq-item-custo')||null,observacoes:val('estq-item-obs').trim()||null,updated_at:new Date().toISOString()};
+  var btn=$('estq-item-save');btn.disabled=true;
+  var fim=function(){btn.disabled=false;};
+  if(id){
+    var dados=Object.assign({},base,{tamanho:val('estq-item-tam').trim()||null});
+    db.from('estoque_itens').update(dados).eq('id',id).then(function(res){
+      fim();if(res.error){toast('Erro: '+res.error.message);return;}
+      closeModal('estq-item');toast('Item atualizado!');auditLog('update','estoque',id,nome);estqLoad();
+    });
+    return;
+  }
+  var tams=val('estq-item-tam').split(',').map(function(t){return t.trim();}).filter(Boolean);
+  if(!tams.length)tams=[null];
+  var dup=tams.filter(function(t){return ESTQ.itens.some(function(x){return x.categoria===cat&&x.nome.toLowerCase()===nome.toLowerCase()&&(x.cor||'').toLowerCase()===(base.cor||'').toLowerCase()&&(x.tamanho||'').toLowerCase()===(t||'').toLowerCase();});});
+  if(dup.length){fim();toast('Já existe: '+nome+(base.cor?' · '+base.cor:'')+(dup[0]?' · '+dup[0]:'')+' — use "± Movimentar" nele');return;}
+  var saldo=num('estq-item-saldo');
+  db.from('estoque_itens').insert(tams.map(function(t){return Object.assign({},base,{tamanho:t});})).select().then(function(res){
+    if(res.error)throw res.error;
+    var novos=res.data||[];
+    if(!(saldo>0))return novos;
+    return novos.reduce(function(p,it){return p.then(function(){return db.rpc('estoque_movimentar',{p_item:it.id,p_delta:saldo,p_tipo:'entrada',p_motivo:'Saldo inicial'}).then(function(x){if(x.error)throw x.error;});});},Promise.resolve()).then(function(){return novos;});
+  }).then(function(novos){
+    fim();closeModal('estq-item');toast(novos.length>1?novos.length+' itens cadastrados!':'Item cadastrado!');
+    auditLog('create','estoque',novos[0]&&novos[0].id,nome);ESTQ.tab=cat;estqLoad();
+  }).catch(function(err){fim();toast('Erro: '+(err.message||err));console.error('[estqSalvarItem]',err);});
+}
+function estqExcluirItem(){
+  var id=val('estq-item-id');if(!id)return;var i=estqItem(id);
+  if(!confirm('Remover "'+estqLabel(i)+'" do estoque? O histórico continua guardado.'))return;
+  db.from('estoque_itens').update({ativo:false,updated_at:new Date().toISOString()}).eq('id',id).then(function(res){
+    if(res.error){toast('Erro: '+res.error.message);return;}
+    closeModal('estq-item');toast('Item removido');auditLog('delete','estoque',id,estqLabel(i));estqLoad();
+  });
+}
+
+// --- MOVIMENTAR (modal) ---
+function estqAbrirMov(id){
+  estqMovItem=estqItem(id);if(!estqMovItem)return;
+  $('estq-mov-label').textContent=estqLabel(estqMovItem);
+  $('estq-mov-saldo').textContent=estqNum(estqMovItem.quantidade)+' '+(estqMovItem.unidade||'un');
+  $('estq-mov-tipo').value='entrada';$('estq-mov-qtd').value='';$('estq-mov-motivo').value='';
+  estqMovTipoChange();openModal('estq-mov');setTimeout(function(){$('estq-mov-qtd').focus();},50);
+}
+function estqMovTipoChange(){
+  var t=val('estq-mov-tipo');
+  $('estq-mov-qtd-label').textContent=t==='ajuste'?'Saldo correto (contagem)':'Quantidade';
+  $('estq-mov-motivo').placeholder=t==='saida'?'Ex: Venda, evento, peça com defeito...':t==='entrada'?'Ex: Compra do fornecedor, produção':'Ex: Contagem física';
+}
+function estqSalvarMov(){
+  if(!estqMovItem)return;
+  var t=val('estq-mov-tipo');var n=num('estq-mov-qtd');var atual=parseFloat(estqMovItem.quantidade)||0;
+  if(!(n>0)&&!(t==='ajuste'&&val('estq-mov-qtd')!=='')){toast('Informe uma quantidade válida');return;}
+  if(n<0){toast('Informe uma quantidade válida');return;}
+  var delta=t==='entrada'?n:t==='saida'?-n:Math.round((n-atual)*100)/100;
+  if(delta===0){toast('O saldo já é esse — nada a ajustar');return;}
+  if(atual+delta<0){toast('Saldo insuficiente: só há '+estqNum(atual));return;}
+  var btn=$('estq-mov-save');btn.disabled=true;
+  db.rpc('estoque_movimentar',{p_item:estqMovItem.id,p_delta:delta,p_tipo:t,p_motivo:val('estq-mov-motivo').trim()||null}).then(function(res){
+    btn.disabled=false;
+    if(res.error){toast('Erro: '+res.error.message);return;}
+    closeModal('estq-mov');toast('Saldo atualizado: '+estqNum(res.data));estqLoad();
+  });
+}
+
+// --- EVENTOS ---
+document.addEventListener('click',function(e){
+  var t=e.target,x;
+  if((x=t.closest('[data-estq-tab]'))){ESTQ.tab=x.dataset.estqTab;estqRender();return;}
+  if(t.closest('#estq-btn-novo')){estqAbrirItem(null);return;}
+  if((x=t.closest('[data-estq-edit]'))){estqAbrirItem(x.dataset.estqEdit);return;}
+  if((x=t.closest('[data-estq-mov]'))){estqAbrirMov(x.dataset.estqMov);return;}
+  if(t.closest('#estq-item-save')){estqSalvarItem();return;}
+  if(t.closest('#estq-item-delete')){estqExcluirItem();return;}
+  if(t.closest('#estq-mov-save')){estqSalvarMov();return;}
+});
+document.addEventListener('input',function(e){if(e.target&&e.target.id==='estq-search')estqRender();});
+document.addEventListener('change',function(e){if(e.target&&e.target.id==='estq-mov-tipo')estqMovTipoChange();});
 })();
 
 </script>
