@@ -1237,6 +1237,13 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 .estq-tab:hover{color:var(--fg)}
 .estq-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
 .estq-hint{font-size:10px;color:var(--muted);margin-top:4px}
+/* ===== ESTAMPAR ===== */
+.estp-tabs{display:flex;gap:4px;margin-bottom:14px;border-bottom:2px solid var(--border);flex-wrap:wrap}
+.estp-tab{padding:8px 16px;font:700 11px 'Inter',sans-serif;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.estp-tab:hover{color:var(--fg)}
+.estp-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.estp-aviso{font-size:11px;color:var(--red);margin:4px 0 10px}
+.btn-save[disabled]{opacity:.45;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -1349,6 +1356,7 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
             <div class="nav-mais-sep"></div>
             <div class="nav-item nav-item-sub" data-sec="estq"><span>📦</span><span class="nav-label">Estoque</span></div>
             <div class="nav-item nav-item-sub" data-sec="dtf"><span>&#x1f3a8;</span><span class="nav-label">DTF</span></div>
+            <div class="nav-item nav-item-sub" data-sec="estampar"><span>🖨️</span><span class="nav-label">Estampar</span></div>
             <div class="nav-mais-sep"></div>
             <div class="nav-item nav-item-sub" data-sec="fornecedores"><span>🚚</span><span class="nav-label">Fornecedores</span></div>
             <div class="nav-mais-sep"></div>
@@ -2182,6 +2190,15 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
 
 
+        <!-- ESTAMPAR -->
+        <div class="cw" id="section-estampar">
+          <div class="section-header"><h2 class="section-title">Estampar</h2><div class="header-actions"><button class="btn-add" id="estp-btn-nova">+ Nova receita</button></div></div>
+          <div class="metrics" id="estp-metrics"></div>
+          <div class="estp-tabs"><button class="estp-tab active" data-estp-tab="rec">Receitas e estampar</button><button class="estp-tab" data-estp-tab="hist">Histórico</button></div>
+          <div class="search-bar" id="estp-search-wrap"><input class="search-input" id="estp-search" placeholder="Buscar produto ou SKU..."></div>
+          <div id="estp-content"></div>
+        </div>
+
         <!-- FORNECEDORES -->
         <div class="cw" id="section-fornecedores">
           <div class="section-header"><h2 class="section-title">Fornecedores</h2><div class="header-actions"><button class="export-btn" onclick="exportFornecedores()">&#8595; CSV</button><button class="btn-add" data-modal="supplier">+ Novo fornecedor</button></div></div>
@@ -2501,6 +2518,30 @@ nav{flex:1;overflow-y:auto;padding:8px 0}
 
 
 
+<div class="modal-bg" id="modal-estp-rec"><div class="modal wide">
+  <div class="modal-title"><span id="estp-rec-title">Nova receita</span><button class="modal-close-btn" data-close="estp-rec">×</button></div>
+  <input type="hidden" id="estp-rec-id">
+  <div class="form-row"><div class="form-group"><label class="form-label">Produto *</label><input class="form-input" id="estp-rec-nome" placeholder="Ex: Camiseta Sol · Preta · M"></div><div class="form-group"><label class="form-label">SKU na Shopify</label><input class="form-input" id="estp-rec-sku" placeholder="Opcional — liga com a Shopify depois"></div></div>
+  <p class="form-section">O que é consumido para estampar 1 peça</p>
+  <div id="estp-rec-rows"></div>
+  <button class="dtf-add-row" id="estp-row-add">+ Adicionar componente</button>
+  <div class="form-group"><label class="form-label">Peça pronta (para estampar para estoque / evento)</label><select class="form-select" id="estp-rec-pp"></select><p class="estq-hint">Quando estampar para estoque, a quantidade entra nesta peça pronta. Cadastre-a antes em Estoque → Peças prontas.</p></div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" id="estp-rec-obs"></textarea></div>
+  <div class="modal-footer"><button class="btn-save" id="estp-rec-save">Salvar receita</button><button class="btn-delete-modal" id="estp-rec-delete" style="display:none">Remover</button><button class="btn-close-modal" data-close="estp-rec">Fechar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-estp-run"><div class="modal wide">
+  <div class="modal-title"><span>Estampar</span><button class="modal-close-btn" data-close="estp-run">×</button></div>
+  <p style="font-size:13px;font-weight:600;margin-bottom:12px" id="estp-run-label"></p>
+  <div class="form-row"><div class="form-group"><label class="form-label">Quantidade de peças</label><input class="form-input" id="estp-run-qtd" type="number" min="1" step="1" value="1"></div><div class="form-group"><label class="form-label">Para quê</label><select class="form-select" id="estp-run-destino"><option value="pedido">Pedido de cliente</option><option value="estoque">Para estoque (evento)</option></select></div></div>
+  <div class="form-group" id="estp-run-pedido-group" data-always-show="true"><label class="form-label">Nº do pedido na Shopify</label><input class="form-input" id="estp-run-pedido" placeholder="Ex: #1043 (opcional)"></div>
+  <p class="form-section">O que vai sair do estoque</p>
+  <div class="dtf-table-wrap" id="estp-run-preview" style="margin-top:0"></div>
+  <p class="estp-aviso" id="estp-run-aviso" style="display:none"></p>
+  <div class="form-group"><label class="form-label">Observações</label><input class="form-input" id="estp-run-obs"></div>
+  <div class="modal-footer"><button class="btn-save" id="estp-run-save">Confirmar e dar baixa</button><button class="btn-close-modal" data-close="estp-run">Cancelar</button></div>
+</div></div>
+
 <div class="modal-bg" id="modal-estq-item"><div class="modal">
   <div class="modal-title"><span id="estq-item-title">Novo item de estoque</span><button class="modal-close-btn" data-close="estq-item">×</button></div>
   <input type="hidden" id="estq-item-id">
@@ -2803,7 +2844,7 @@ var L={
   frete:{fixo:'Fixo',variavel:'Variável',gratis:'Grátis'},
   pagtoSt:{pago:'Pago',pendente:'Em aberto',vencido:'Vencido',recorrente_mensal:'Recorrência Mensal'},
   compSt:{pago:'Pago',vigente:'Em período vigente',vencido:'Vencido'},
-  sections:{home:'Dashboard',tarefas:'Tarefas',financas:'Finanças',estq:'Estoque',dtf:'DTF \u2014 Estampas',fornecedores:'Fornecedores',pessoas:'Pessoas'}
+  sections:{home:'Dashboard',tarefas:'Tarefas',financas:'Finanças',estq:'Estoque',estampar:'Estampar',dtf:'DTF \u2014 Estampas',fornecedores:'Fornecedores',pessoas:'Pessoas'}
 };
 
 var D={tasks:[],suppliers:[],costs:[],pessoas:[],pedidos:[],produtos:[]};
@@ -2875,6 +2916,7 @@ function openSection(name){
   if(name==='precificacao')setTimeout(initPrecificacao,50);
   if(name==='dtf')dtfInit();
   if(name==='estq')estqInit();
+  if(name==='estampar')estpInit();
 }
 function resetModal(type){
   var modal = $('modal-'+type);
@@ -8828,6 +8870,222 @@ document.addEventListener('click',function(e){
 });
 document.addEventListener('input',function(e){if(e.target&&e.target.id==='estq-search')estqRender();});
 document.addEventListener('change',function(e){if(e.target&&e.target.id==='estq-mov-tipo')estqMovTipoChange();});
+
+// ----- ESTAMPAR (receitas + baixa ao estampar) -----
+// Tabelas: receitas, receita_itens, estampagens. A baixa acontece na RPC estampar (tudo ou nada).
+var ESTP={receitas:[],itens:[],vars:[],hist:[],tab:'rec',loaded:false,erro:null};
+var ESTP_POS={frente:'Frente',costas:'Costas',manga:'Manga',outro:'Outro'};
+var estpRows=[];      // componentes no modal de receita
+var estpRunRec=null;  // receita aberta no modal de estampar
+
+function estpEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function estpNum(n){var x=parseFloat(n)||0;return (Math.round(x*100)/100).toLocaleString('pt-BR');}
+function estpItem(id){return ESTP.itens.find(function(i){return i.id===id;});}
+function estpVar(id){return ESTP.vars.find(function(v){return v.id===id;});}
+function estpRec(id){return ESTP.receitas.find(function(r){return r.id===id;});}
+function estpItemLabel(i){if(!i)return '(item removido)';return i.nome+(i.cor?' · '+i.cor:'')+(i.tamanho?' · '+i.tamanho:'');}
+function estpVarLabel(v){if(!v)return '(estampa removida)';return 'DTF '+(v.estampa?v.estampa.nome:'?')+' · '+v.tamanho+' · '+(ESTP_POS[v.posicao]||v.posicao);}
+function estpComp(c){
+  if(c.estoque_item_id){var i=estpItem(c.estoque_item_id);return {label:estpItemLabel(i),saldo:i?parseFloat(i.quantidade)||0:0,un:i?(i.unidade||'un'):'un',ok:!!i};}
+  var v=estpVar(c.dtf_variacao_id);return {label:estpVarLabel(v),saldo:v?v.quantidade:0,un:'un',ok:!!v};
+}
+function estpMax(r){
+  var it=r.itens||[];if(!it.length)return 0;
+  return Math.max(0,Math.min.apply(null,it.map(function(c){var x=estpComp(c);return Math.floor((x.saldo+1e-9)/parseFloat(c.quantidade));})));
+}
+
+function estpInit(){if(!ESTP.loaded)estpLoad();else estpRender();}
+function estpLoad(){
+  var el=$('estp-content');if(el&&!ESTP.loaded)el.innerHTML='<p class="loading">Carregando...</p>';
+  return Promise.all([
+    db.from('receitas').select('*,itens:receita_itens(*)').eq('ativo',true).order('nome'),
+    db.from('estoque_itens').select('*').eq('ativo',true).order('nome').order('cor').order('tamanho'),
+    db.from('dtf_variacoes').select('*,estampa:dtf_estampas(nome,ativo)').eq('ativo',true),
+    db.from('estampagens').select('*').order('created_at',{ascending:false}).limit(100)
+  ]).then(function(rs){
+    var err=rs.find(function(r){return r.error;});
+    if(err){ESTP.erro=err.error.message;console.error('[estpLoad]',err.error);estpRender();return;}
+    ESTP.erro=null;ESTP.loaded=true;
+    ESTP.receitas=rs[0].data||[];ESTP.itens=rs[1].data||[];
+    ESTP.vars=(rs[2].data||[]).filter(function(v){return v.estampa&&v.estampa.ativo;});
+    ESTP.hist=rs[3].data||[];
+    estpRender();
+  });
+}
+
+// --- RENDER ---
+function estpRender(){
+  var el=$('estp-content');if(!el)return;
+  if(ESTP.erro){el.innerHTML='<div class="card"><p class="card-title">Não foi possível carregar</p><p style="font-size:11px;color:var(--muted)">'+estpEsc(ESTP.erro)+'</p></div>';$('estp-metrics').innerHTML='';return;}
+  var hoje=new Date().toISOString().slice(0,10);
+  var mes=hoje.slice(0,7);
+  var pecasMes=ESTP.hist.filter(function(h){return (h.created_at||'').slice(0,7)===mes;}).reduce(function(a,h){return a+h.quantidade;},0);
+  var semSaldo=ESTP.receitas.filter(function(r){return (r.itens||[]).length&&estpMax(r)===0;}).length;
+  $('estp-metrics').innerHTML=metric(ESTP.receitas.length,'Receitas')+metric(pecasMes,'Peças estampadas no mês','var(--green)')+
+    metric(semSaldo,'Receitas sem material',semSaldo>0?'var(--red)':'var(--green)');
+  document.querySelectorAll('.estp-tab').forEach(function(t){t.classList.toggle('active',t.dataset.estpTab===ESTP.tab);});
+  $('estp-search-wrap').style.display=ESTP.tab==='rec'?'':'none';
+  if(ESTP.tab==='hist')estpRenderHist(el);else estpRenderReceitas(el);
+}
+function estpRenderReceitas(el){
+  if(!ESTP.receitas.length){el.innerHTML='<p class="empty">Nenhuma receita — clique em "+ Nova receita" para dizer o que cada produto consome</p>';return;}
+  var q=(val('estp-search')||'').toLowerCase().trim();
+  var list=ESTP.receitas.filter(function(r){return !q||(r.nome+' '+(r.sku||'')).toLowerCase().includes(q);});
+  if(!list.length){el.innerHTML='<p class="empty">Nenhuma receita encontrada</p>';return;}
+  el.innerHTML=list.map(function(r){
+    var max=estpMax(r);var pp=r.peca_pronta_id?estpItem(r.peca_pronta_id):null;
+    var rows=(r.itens||[]).map(function(c){
+      var x=estpComp(c);var falta=x.saldo<parseFloat(c.quantidade);
+      return '<tr'+(falta?' class="dtf-low"':'')+'><td>'+estpEsc(x.label)+'</td><td class="dtf-num">'+estpNum(c.quantidade)+' '+estpEsc(x.un)+'</td><td class="dtf-num'+(falta?'':' dtf-muted')+'">'+estpNum(x.saldo)+(falta?' ⚠️':'')+'</td></tr>';
+    }).join('')||'<tr><td colspan="3" class="dtf-muted">Sem componentes — edite a receita</td></tr>';
+    return '<div class="card"><div class="card-row"><div class="card-body"><p class="card-title">'+estpEsc(r.nome)+'</p><div class="card-meta">'+
+      (r.sku?'<span class="cat-tag">SKU '+estpEsc(r.sku)+'</span>':'')+
+      '<span class="cat-tag" style="color:'+(max>0?'var(--green)':'var(--red)')+'">Dá para estampar: <b>'+max+'</b></span>'+
+      (pp?'<span class="cat-tag">Peça pronta: '+estpEsc(estpItemLabel(pp))+' ('+estpNum(pp.quantidade)+')</span>':'')+'</div></div>'+
+      '<div class="card-actions"><button class="edit-btn" data-estp-edit="'+r.id+'" title="Editar">✏️</button></div></div>'+
+      '<div class="dtf-table-wrap"><table class="dtf-table"><thead><tr><th>Consome por peça</th><th class="dtf-num">Qtd</th><th class="dtf-num">Em estoque</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+      '<div class="card-footer"><button class="btn-save" data-estp-run="'+r.id+'"'+((r.itens||[]).length?'':' disabled')+'>🖨️ Estampar</button></div></div>';
+  }).join('');
+}
+function estpRenderHist(el){
+  if(!ESTP.hist.length){el.innerHTML='<p class="empty">Nenhuma estampagem ainda</p>';return;}
+  el.innerHTML='<div class="card"><div class="dtf-table-wrap" style="margin-top:0"><table class="dtf-table"><thead><tr><th>Quando</th><th>Receita</th><th class="dtf-num">Peças</th><th>Destino</th><th>Obs.</th><th>Quem</th></tr></thead><tbody>'+
+    ESTP.hist.map(function(h){
+      var d=new Date(h.created_at);var r=estpRec(h.receita_id);
+      var dest=h.destino==='estoque'?'Para estoque':'Pedido'+(h.pedido_ref?' '+estpEsc(h.pedido_ref):'');
+      return '<tr><td class="dtf-muted">'+d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</td><td>'+estpEsc(r?r.nome:'(receita removida)')+'</td><td class="dtf-num"><b>'+h.quantidade+'</b></td><td>'+dest+'</td><td>'+estpEsc(h.observacoes||'')+'</td><td class="dtf-muted">'+estpEsc((h.usuario||'').split('@')[0])+'</td></tr>';
+    }).join('')+'</tbody></table></div></div>';
+}
+
+// --- RECEITA (modal) ---
+function estpOpcoes(sel){
+  var grp=function(lbl,arr){return arr.length?'<optgroup label="'+lbl+'">'+arr.join('')+'</optgroup>':'';};
+  var opt=function(val,label){return '<option value="'+val+'"'+(val===sel?' selected':'')+'>'+estpEsc(label)+'</option>';};
+  var porCat=function(c){return ESTP.itens.filter(function(i){return i.categoria===c;}).map(function(i){return opt('e:'+i.id,estpItemLabel(i)+' (saldo '+estpNum(i.quantidade)+')');});};
+  var dtf=ESTP.vars.slice().sort(function(a,b){return estpVarLabel(a).localeCompare(estpVarLabel(b),'pt-BR');}).map(function(v){return opt('d:'+v.id,estpVarLabel(v)+' (saldo '+v.quantidade+')');});
+  return '<option value="">— Escolha o componente —</option>'+grp('Peças lisas',porCat('peca_lisa'))+grp('Estampas DTF',dtf)+grp('Embalagens e insumos',porCat('insumo'))+grp('Peças prontas',porCat('peca_pronta'));
+}
+function estpAbrirReceita(id){
+  var r=id?estpRec(id):null;
+  $('estp-rec-title').textContent=r?'Editar receita':'Nova receita';
+  $('estp-rec-id').value=r?r.id:'';$('estp-rec-nome').value=r?r.nome:'';$('estp-rec-sku').value=r&&r.sku||'';
+  $('estp-rec-obs').value=r&&r.observacoes||'';
+  var pps=ESTP.itens.filter(function(i){return i.categoria==='peca_pronta';});
+  $('estp-rec-pp').innerHTML='<option value="">— Nenhuma —</option>'+pps.map(function(i){return '<option value="'+i.id+'">'+estpEsc(estpItemLabel(i))+'</option>';}).join('');
+  $('estp-rec-pp').value=r&&r.peca_pronta_id||'';
+  estpRows=r?(r.itens||[]).map(function(c){return {ref:c.estoque_item_id?'e:'+c.estoque_item_id:'d:'+c.dtf_variacao_id,qtd:c.quantidade};}):[{ref:'',qtd:1},{ref:'',qtd:1}];
+  $('estp-rec-delete').style.display=r?'inline-flex':'none';
+  estpRenderRows();openModal('estp-rec');setTimeout(function(){$('estp-rec-nome').focus();},50);
+}
+function estpRenderRows(){
+  $('estp-rec-rows').innerHTML=estpRows.map(function(c,i){
+    return '<div class="dtf-ped-row"><select class="form-select" data-estp-row="'+i+'" data-k="ref">'+estpOpcoes(c.ref)+'</select>'+
+      '<input class="form-input" type="number" min="0" step="1" placeholder="Qtd" value="'+(c.qtd||'')+'" data-estp-row="'+i+'" data-k="qtd">'+
+      '<button class="del" data-estp-row-del="'+i+'" title="Remover">×</button></div>';
+  }).join('');
+}
+function estpSalvarReceita(){
+  var nome=val('estp-rec-nome').trim();if(!nome){toast('Informe o nome do produto');return;}
+  var comps=estpRows.map(function(c){return {ref:c.ref,qtd:parseFloat(c.qtd)||0};}).filter(function(c){return c.ref;});
+  if(!comps.length){toast('Adicione pelo menos um componente');return;}
+  var vistos={};
+  for(var i=0;i<comps.length;i++){
+    if(!(comps[i].qtd>0)){toast('Informe a quantidade de cada componente');return;}
+    if(comps[i].ref.charAt(0)==='d'&&comps[i].qtd!==Math.round(comps[i].qtd)){toast('Estampa DTF precisa de quantidade inteira');return;}
+    if(vistos[comps[i].ref]){toast('Um componente aparece duas vezes — some as quantidades numa linha só');return;}
+    vistos[comps[i].ref]=true;
+  }
+  var id=val('estp-rec-id');var btn=$('estp-rec-save');btn.disabled=true;
+  var payload={nome:nome,sku:val('estp-rec-sku').trim()||null,peca_pronta_id:val('estp-rec-pp')||null,observacoes:val('estp-rec-obs').trim()||null,updated_at:new Date().toISOString()};
+  var q=id?db.from('receitas').update(payload).eq('id',id).select():db.from('receitas').insert(payload).select();
+  q.then(function(res){
+    if(res.error)throw res.error;
+    var recId=id||res.data[0].id;
+    var limpar=id?db.from('receita_itens').delete().eq('receita_id',recId):Promise.resolve({});
+    return limpar.then(function(x){
+      if(x&&x.error)throw x.error;
+      return db.from('receita_itens').insert(comps.map(function(c){
+        return {receita_id:recId,quantidade:c.qtd,estoque_item_id:c.ref.charAt(0)==='e'?c.ref.slice(2):null,dtf_variacao_id:c.ref.charAt(0)==='d'?c.ref.slice(2):null};
+      }));
+    }).then(function(x){
+      if(x.error)throw x.error;
+      closeModal('estp-rec');toast(id?'Receita atualizada!':'Receita criada!');auditLog(id?'update':'create','estampar',recId,nome);estpLoad();
+    });
+  }).catch(function(err){toast('Erro: '+(err.message||err));console.error('[estpSalvarReceita]',err);})
+  .then(function(){btn.disabled=false;});
+}
+function estpExcluirReceita(){
+  var id=val('estp-rec-id');if(!id)return;var r=estpRec(id);
+  if(!confirm('Remover a receita "'+(r?r.nome:'')+'"? O histórico de estampagens continua guardado.'))return;
+  db.from('receitas').update({ativo:false,updated_at:new Date().toISOString()}).eq('id',id).then(function(res){
+    if(res.error){toast('Erro: '+res.error.message);return;}
+    closeModal('estp-rec');toast('Receita removida');auditLog('delete','estampar',id,r?r.nome:'');estpLoad();
+  });
+}
+
+// --- ESTAMPAR (modal) ---
+function estpAbrirRun(id){
+  estpRunRec=estpRec(id);if(!estpRunRec)return;
+  $('estp-run-label').textContent=estpRunRec.nome;
+  $('estp-run-qtd').value='1';$('estp-run-destino').value='pedido';$('estp-run-pedido').value='';$('estp-run-obs').value='';
+  estpRunPreview();openModal('estp-run');setTimeout(function(){$('estp-run-pedido').focus();},50);
+}
+function estpRunPreview(){
+  if(!estpRunRec)return;
+  var q=parseInt(val('estp-run-qtd'))||0;var dest=val('estp-run-destino');
+  $('estp-run-pedido-group').style.display=dest==='pedido'?'':'none';
+  var falta=false;
+  var rows=(estpRunRec.itens||[]).map(function(c){
+    var x=estpComp(c);var precisa=parseFloat(c.quantidade)*q;var f=x.saldo<precisa;if(f)falta=true;
+    return '<tr'+(f?' class="dtf-low"':'')+'><td>'+estpEsc(x.label)+'</td><td class="dtf-num">−'+estpNum(precisa)+'</td><td class="dtf-num'+(f?'':' dtf-muted')+'">'+estpNum(x.saldo)+' → '+estpNum(x.saldo-precisa)+(f?' ⚠️':'')+'</td></tr>';
+  }).join('');
+  var pp=estpRunRec.peca_pronta_id?estpItem(estpRunRec.peca_pronta_id):null;
+  var semPP=dest==='estoque'&&!pp;
+  if(dest==='estoque'&&pp)rows+='<tr><td>'+estpEsc(estpItemLabel(pp))+' <span class="dtf-muted">(peça pronta)</span></td><td class="dtf-num" style="color:var(--green)">+'+q+'</td><td class="dtf-num dtf-muted">'+estpNum(pp.quantidade)+' → '+estpNum((parseFloat(pp.quantidade)||0)+q)+'</td></tr>';
+  $('estp-run-preview').innerHTML='<table class="dtf-table"><thead><tr><th>Item</th><th class="dtf-num">Movimento</th><th class="dtf-num">Saldo</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  var aviso=q<1?'Informe a quantidade.':falta?'Falta material para essa quantidade — veja os itens em vermelho.':semPP?'Para estampar para estoque, vincule uma peça pronta nesta receita (botão editar).':'';
+  $('estp-run-aviso').textContent=aviso;$('estp-run-aviso').style.display=aviso?'':'none';
+  $('estp-run-save').disabled=!!aviso;
+}
+function estpConfirmarRun(){
+  if(!estpRunRec)return;
+  var q=parseInt(val('estp-run-qtd'))||0;var dest=val('estp-run-destino');
+  var btn=$('estp-run-save');btn.disabled=true;
+  db.rpc('estampar',{p_receita:estpRunRec.id,p_qtd:q,p_destino:dest,p_pedido:dest==='pedido'?val('estp-run-pedido'):null,p_obs:val('estp-run-obs')}).then(function(res){
+    btn.disabled=false;
+    if(res.error){toast(res.error.message);console.error('[estampar]',res.error);return;}
+    closeModal('estp-run');toast(q+(q===1?' peça estampada':' peças estampadas')+' — estoque atualizado!');
+    auditLog('create','estampar',res.data,estpRunRec.nome+' x'+q);
+    if(typeof ESTQ!=='undefined')ESTQ.loaded=false;
+    if(typeof DTF!=='undefined')DTF.loaded=false;
+    estpLoad();
+  });
+}
+
+// --- EVENTOS ---
+document.addEventListener('click',function(e){
+  var t=e.target,x;
+  if((x=t.closest('[data-estp-tab]'))){ESTP.tab=x.dataset.estpTab;estpRender();return;}
+  if(t.closest('#estp-btn-nova')){estpAbrirReceita(null);return;}
+  if((x=t.closest('[data-estp-edit]'))){estpAbrirReceita(x.dataset.estpEdit);return;}
+  if((x=t.closest('[data-estp-run]'))){if(!x.disabled)estpAbrirRun(x.dataset.estpRun);return;}
+  if((x=t.closest('[data-estp-row-del]'))){estpRows.splice(parseInt(x.dataset.estpRowDel,10),1);estpRenderRows();return;}
+  if(t.closest('#estp-row-add')){estpRows.push({ref:'',qtd:1});estpRenderRows();return;}
+  if(t.closest('#estp-rec-save')){estpSalvarReceita();return;}
+  if(t.closest('#estp-rec-delete')){estpExcluirReceita();return;}
+  if(t.closest('#estp-run-save')){estpConfirmarRun();return;}
+});
+document.addEventListener('input',function(e){
+  var t=e.target;if(!t)return;
+  if(t.dataset&&t.dataset.estpRow!==undefined){var c=estpRows[parseInt(t.dataset.estpRow,10)];if(c)c[t.dataset.k]=t.value;return;}
+  if(t.id==='estp-search'){estpRender();return;}
+  if(t.id==='estp-run-qtd'){estpRunPreview();return;}
+});
+document.addEventListener('change',function(e){
+  var t=e.target;if(!t)return;
+  if(t.dataset&&t.dataset.estpRow!==undefined){var c=estpRows[parseInt(t.dataset.estpRow,10)];if(c)c[t.dataset.k]=t.value;return;}
+  if(t.id==='estp-run-destino'){estpRunPreview();return;}
+});
 })();
 
 </script>
